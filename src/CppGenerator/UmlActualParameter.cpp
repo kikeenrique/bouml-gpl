@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,19 +28,20 @@
 #include "UmlActualParameter.h"
 #include "UmlClass.h"
 
-bool UmlActualParameter::generate(QTextOStream & f_h, bool & need_space) const {
+bool UmlActualParameter::generate(QTextOStream & f_h, BooL & need_space) const {
   QCString s = value().toString();
   
   if (s.isEmpty()) {
     if (rank() == 0)
       f_h << '<';
     
+    need_space = FALSE;
+    
     return FALSE;
   }
   
   f_h << ((rank() == 0) ? "<" : ", ");
-  UmlClass::write(f_h, value());
-  need_space = (s.at(s.length() - 1) == '>');
+  UmlClass::write(f_h, value(), TRUE, &need_space);
   
   return TRUE;
 }

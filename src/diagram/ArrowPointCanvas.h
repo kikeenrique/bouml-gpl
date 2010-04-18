@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,7 +48,7 @@ class ArrowPointCanvas : public DiagramCanvas {
     virtual QString may_start(UmlCode &) const;
     virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual void prepare_for_move(bool on_resize);
     virtual void save(QTextStream & st, bool ref, QString & warning) const;

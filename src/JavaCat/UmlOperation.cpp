@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,13 +79,14 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
   QValueList<UmlTypeSpec> exceptions;
   QCString body;
   
-  op = 0;
+  if (may_roundtrip)
 #else
   if (
 # ifdef REVERSE
       container->from_libp() &&
 # endif
       (visibility == PrivateVisibility))
+#endif
     op = 0;
   else {
     op = UmlBaseOperation::create(cl, name);
@@ -97,16 +98,17 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
       return FALSE;
     }
     
-# if defined(REVERSE) && !defined(ROUNDTRIP)
+#ifndef ROUNDTRIP
+# if defined(REVERSE)
     Statistic::one_operation_more();
 # endif
-  }
 #endif
+  }
     
   QCString def;
-    
+  
 #ifdef ROUNDTRIP
-  if (may_roundtrip) {
+  if (may_roundtrip || (op != 0)) {
 #else
   if (op != 0) {
     op->set_Visibility(visibility);
@@ -114,7 +116,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     if (abstractp) op->set_isAbstract(TRUE);
     if (finalp) op->set_isJavaFinal(TRUE);
     if (synchronizedp) op->set_isJavaSynchronized(TRUE);
-    if (! annotation.isEmpty()) op->set_JavaAnnotations(annotation);
+    if (! annotation.isEmpty()) op->set_JavaAnnotations(annotation);    
 #endif
     
     def = JavaSettings::operationDef();
@@ -203,14 +205,15 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
   UmlParameter param;
   
 #ifdef ROUNDTRIP
-  while (read_param(container, rank++, tmplts, param, def, !may_roundtrip))
-    if (may_roundtrip)
+  if (may_roundtrip)
+    while (read_param(container, rank++, tmplts, param, def, FALSE))
       params.append(param);
-#else
-  while (read_param(container, rank, tmplts, param, def, op == 0)) {
-    if ((op != 0) && ! op->addParameter(rank, param)) {
-      JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add param <i>")
-			   + name + "</i> in <i>" + cl->name() 
+  else
+#endif
+    while (read_param(container, rank, tmplts, param, def, op == 0)) {
+      if ((op != 0) && ! op->addParameter(rank, param)) {
+	JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add param <i>")
+			     + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
 # ifdef TRACE
       cout << "ERROR cannot add param '" << param.name << "' type '" << param.type.Type() << '\n';
@@ -219,7 +222,6 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     }
     rank += 1;
   }
-#endif
   
   QCString s = Lex::read_word();
   
@@ -243,9 +245,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     
     // throws
     
-#ifndef ROUNDTRIP
     rank = 0;
-#endif
     
     for (;;) {
       if ((s = Lex::read_word()).isEmpty()) {
@@ -260,7 +260,8 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	container->compute_type(s, typespec, tmplts);
 	exceptions.append(typespec);
       }
-#else
+      else
+#endif
       if (op != 0) {
 	UmlTypeSpec typespec;
 	
@@ -272,7 +273,6 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	  return FALSE;
 	}
       }
-#endif
       
       if (((s = Lex::read_word()) == "{") || (s == ";"))
 	break;
@@ -350,7 +350,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 #ifdef REVERSE
     if (
 # ifdef ROUNDTRIP
-	may_roundtrip
+	may_roundtrip || (op != 0)
 # else
 	(op != 0) && !container->from_libp()
 # endif
@@ -469,7 +469,6 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	do {
 	  op->removeParameter(rank);
 	  itp2++;
-	  rank += 1;
 	} while (itp2 != old_params.end());
       }
       
@@ -489,7 +488,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
       }
       
       if (ite1 != exceptions.end()) {
-	// have missing params
+	// have missing exceptions
 	container->set_updated();
 	do {
 	  op->addException(rank, *ite1);
@@ -498,12 +497,11 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	} while (ite1 != exceptions.end());
       }
       else if (ite2 != old_exceptions.end()) {
-	// have extra params
+	// have extra exceptions
 	container->set_updated();
 	do {
 	  op->removeException(rank);
 	  ite2++;
-	  rank += 1;
 	} while (ite2 != old_exceptions.end());
       }
 
@@ -541,6 +539,21 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 			   + "</i></b></font><br>");  
       throw 0;
     }
+    
+    expected_order.append(op);
+    
+    QValueList<UmlParameter>::ConstIterator itp;
+    
+    for (rank = 0, itp = params.begin(); itp != params.end(); ++itp)
+      op->addParameter(rank++, *itp);
+    
+    QValueList<UmlTypeSpec>::ConstIterator ite;
+    
+    for (rank = 0, ite = exceptions.begin(); ite != exceptions.end(); ++ite)
+      op->addException(rank++, *ite);
+  }
+  
+  if (op != 0) {
     op->set_JavaContextualBodyIndent(FALSE);     
     op->set_Visibility(visibility);
     if (staticp) op->set_isClassMember(TRUE);
@@ -550,23 +563,13 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     if (! annotation.isEmpty()) op->set_JavaAnnotations(annotation);
     op->set_JavaBody(body);
     op->set_ReturnType(return_type);
-    
-    QValueList<UmlParameter>::ConstIterator itp;
-      
-    for (rank = 0, itp = params.begin(); itp != params.end(); ++itp)
-      op->addParameter(rank++, *itp);
-    
-    QValueList<UmlTypeSpec>::ConstIterator ite;
-
-    for (rank = 0, ite = exceptions.begin(); ite != exceptions.end(); ++ite)
-      op->addException(rank++, *ite);
-    
-    expected_order.append(op);
+    if (def != JavaSettings::operationDef())
+      op->set_JavaDecl(def);
   }
-#endif
-  
+#else
   if ((op != 0) && (def != JavaSettings::operationDef()))
     op->set_JavaDecl(def);
+#endif  
   
   Lex::clear_comments();	// params & body comments
   Lex::finish_line();

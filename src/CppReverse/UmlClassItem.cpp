@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -24,4 +24,27 @@
 // *************************************************************************
 
 #include "UmlClassItem.h"
+
+#ifdef ROUNDTRIP
+bool UmlClassItem::set_roundtrip_expected() {
+  if (cppDecl().isEmpty())
+    return TRUE;
+  
+  roundtrip_expected = TRUE;
+  useless = TRUE;
+  
+  return isWritable();
+}
+
+void UmlClassItem::mark_useless(QList<UmlItem> & l) {
+  if (is_useless()) {
+    set_isMarked(TRUE);
+    
+    if (! parent()->isMarked()) {
+      parent()->set_childrenVisible(TRUE);
+      l.append(this);
+    }
+  }
+}
+#endif
 

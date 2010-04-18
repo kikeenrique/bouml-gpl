@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -516,7 +516,10 @@ static int msg_msg(QMessageBox::Icon icon,
 		   QString caption, QString text,
 		   int button0, int button1, int button2)
 {
-  QMessageBox mb(caption, text, icon, button0, button1, button2);
+  QMessageBox mb(caption, text, icon,
+		 button0 | QMessageBox::Default,
+		 button1,
+		 (button2 == 0) ? 0 : button2 | QMessageBox::Escape);
   
   if (UmlDesktop::fixed())
     UmlDesktop::tocenter(&mb);
@@ -527,18 +530,33 @@ static int msg_msg(QMessageBox::Icon icon,
 int msg_warning(QString caption, QString text,
 		int button0, int button1, int button2)
 {
+  if (UmlDesktop::nogui() && (button1 == 0)) {
+    printf("warning\n%s\n%s\n", (const char *) caption, (const char *) text);
+    return 0;
+  }
+  
   return msg_msg(QMessageBox::Warning, caption, text, button0, button1, button2);
 }
 
 int msg_critical(QString caption, QString text, 
 		 int button0, int button1, int button2)
 {
+  if (UmlDesktop::nogui() && (button1 == 0)) {
+    printf("critical\n%s\n%s\n", (const char *) caption, (const char *) text);
+    return 0;
+  }
+  
   return msg_msg(QMessageBox::Critical, caption, text, button0, button1, button2);
 }
 
 int msg_information(QString caption, QString text,
 		    int button0, int button1, int button2)
 {
+  if (UmlDesktop::nogui() && (button1 == 0)) {
+    printf("information\n%s\n%s\n", (const char *) caption, (const char *) text);
+    return 0;
+  }
+  
   return msg_msg(QMessageBox::Information, caption, text, button0, button1, button2);
 }
 

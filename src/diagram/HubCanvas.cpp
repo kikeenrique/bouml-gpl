@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,7 +47,7 @@ HubCanvas::HubCanvas(UmlCanvas * canvas, int x, int y, int id)
 HubCanvas::~HubCanvas() {
 }
 
-void HubCanvas::delete_available(bool &, bool & out_model) const {
+void HubCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -119,7 +119,6 @@ QString HubCanvas::may_start(UmlCode & l) const {
   default:
     return TR("illegal");
   }
-  return (l == UmlAssociation) ? 0 : TR("illegal");
 }
 
 QString HubCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {

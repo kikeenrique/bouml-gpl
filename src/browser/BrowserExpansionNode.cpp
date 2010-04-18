@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -185,15 +185,10 @@ QString BrowserExpansionNode::connexion_from(bool control) const {
 }
 
 void BrowserExpansionNode::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("expansion node");
-  
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
@@ -211,7 +206,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
 		   TR("to know who reference the <i>expansion node</i> \
 through a flow"));
-    mark_menu(m, TR("expansion node"), 90);
+    mark_menu(m, TR("the expansion node"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -300,6 +295,10 @@ void BrowserExpansionNode::modified() {
 
 UmlCode BrowserExpansionNode::get_type() const {
   return UmlExpansionNode;
+}
+
+QString BrowserExpansionNode::get_stype() const {
+  return TR("expansion node");
 }
 
 int BrowserExpansionNode::get_identifier() const {

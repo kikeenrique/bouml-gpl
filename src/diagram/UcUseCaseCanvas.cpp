@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -208,7 +208,7 @@ UmlCode UcUseCaseCanvas::type() const {
   return UmlUseCase;
 }
 
-void UcUseCaseCanvas::delete_available(bool & in_model, bool & out_model) const {
+void UcUseCaseCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -269,7 +269,7 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
@@ -433,16 +433,16 @@ QString UcUseCaseCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlDependency:
     l = UmlDependOn;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlGeneralisation:
     l = UmlInherit;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlAnchor:
   case UmlAssociation:
   case UmlDirectionalAssociation:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -460,13 +460,13 @@ QString UcUseCaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) cons
     case UmlDirectionalAssociation:
       return 0;
     default:
-      return "illegal";
+      return TR("illegal");
     }
   case UmlClass:
     return ((l == UmlAssociation) || (l == UmlDirectionalAssociation))
-      ? 0 : "illegal";
+      ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -489,6 +489,13 @@ aCorner UcUseCaseCanvas::on_resize_point(const QPoint & p) {
 
 void UcUseCaseCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o,
+			(int) (USECASE_CANVAS_MIN_WIDTH * the_canvas()->zoom()),
+			(int) (USECASE_CANVAS_MIN_HEIGHT * the_canvas()->zoom()),
+			TRUE);
+}
+
+void UcUseCaseCanvas::resize(const QSize & sz, bool w, bool h) {
+  DiagramCanvas::resize(sz, w, h,
 			(int) (USECASE_CANVAS_MIN_WIDTH * the_canvas()->zoom()),
 			(int) (USECASE_CANVAS_MIN_HEIGHT * the_canvas()->zoom()),
 			TRUE);

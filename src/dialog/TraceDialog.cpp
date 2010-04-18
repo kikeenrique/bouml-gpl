@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,6 +27,7 @@
 
 
 
+#include <stdio.h>
 #include <qtextview.h> 
 #include <qlayout.h>
 #include <qpushbutton.h>
@@ -93,20 +94,27 @@ void TraceDialog::clear()
 }
 
 void TraceDialog::add(const char * s) {
-  if (AutoRaise && (txt == 0))
-    show_it();
-  
-  if (txt != 0) {
-    the->show();
-    the->raise();
-    txt->append(s);
-    txt->update();
+  if (UmlDesktop::nogui())
+    fputs(s, stdout);
+  else {
+    if (AutoRaise && (txt == 0))
+      show_it();
+    
+    if (txt != 0) {
+      the->show();
+      the->raise();
+      txt->append(s);
+      txt->update();
+    }
+    content.append(s);
   }
-  content.append(s);
 }
 
 void TraceDialog::show_it()
 {
+  if (UmlDesktop::nogui())
+    return;
+
   if (txt == 0) {
     the = new TraceDialog();
   }
@@ -118,5 +126,6 @@ void TraceDialog::show_it()
 
 void TraceDialog::trace_auto_raise(bool y)
 {
-  AutoRaise = y;
+  if (!UmlDesktop::nogui())
+    AutoRaise = y;
 }

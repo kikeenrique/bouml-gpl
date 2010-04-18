@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Php generator</b> release 1.7<br>");
+      UmlCom::trace("<b>Php generator</b> release 1.8<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();
@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
       UmlCom::showTrace();
       UmlCom::message("");
     
-      UmlCom::bye();
+      UmlCom::bye(n_errors());
     }
     catch (...) {
     }

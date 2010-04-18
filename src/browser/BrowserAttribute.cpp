@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -238,7 +238,7 @@ void BrowserAttribute::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
@@ -274,7 +274,7 @@ Note that you can undelete it after")
 			       : TR("to delete the <i>attribute</i>. \
 Note that you can undelete it after"));
     }
-    mark_menu(m, TR("attribute"), 90);
+    mark_menu(m, TR("the attribute"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -400,6 +400,10 @@ UmlCode BrowserAttribute::get_type() const {
   return UmlAttribute;
 }
 
+QString BrowserAttribute::get_stype() const {
+  return TR("attribute");
+}
+
 int BrowserAttribute::get_identifier() const {
   return get_ident();
 }
@@ -461,6 +465,8 @@ void BrowserAttribute::referenced_by(QList<BrowserNode> & l, bool ondelete) {
 }
 
 bool BrowserAttribute::tool_cmd(ToolCom * com, const char * args) {
+  ClassData::ToolCmd dummy;
+	
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
 }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -57,8 +57,8 @@ ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstanc
   hbox->setMargin(5);
   
   hbox->addWidget(new QLabel(TR("\n"
-				"To set the association select one clicking on a cellule or on the first column then press 'Ok'\n"
-				"To unset the association press 'Unset' then press 'Ok'\n"),
+				"To set the association, select a cell or the first column with a single click, then press 'OK'\n"
+				"To unset the association press 'Unset' then press 'OK'\n"),
 			     this));
   
   init(current);	// update table

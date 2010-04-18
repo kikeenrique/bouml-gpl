@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -281,8 +281,16 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
 
     if (s == "Save")
       UmlWindow::save_it();
+    else if (s == "Save as")
+      UmlWindow::saveas_it();
+    else if (s == "Close")
+      UmlWindow::do_close();
+    else if (s == "Quit")
+      UmlWindow::do_quit();
     else if (s == "Browser search")
       UmlWindow::browser_search_it();
+    else if (s == "Open project")
+      UmlWindow::load_it();
     else {
       BrowserNode * bn = (BrowserNode *) selectedItem();
       

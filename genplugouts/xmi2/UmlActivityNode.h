@@ -36,6 +36,10 @@ class UmlActivityNode : public UmlBaseActivityNode, public UmlActivityItem {
     //the flows whose target is the object
     QList<UmlFlow> _incoming_flows;
 
+
+  public:
+    virtual void solve_output_flows() = 0;
+
 };
 
 #endif

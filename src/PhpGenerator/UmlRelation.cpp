@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -202,6 +202,23 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
 	  if (!isReadOnly())
 	    f << "$";
 	  f << roleName();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  switch (relationKind()) {
+	  case anAssociation:
+	  case anAggregation:
+	  case anAggregationByValue:
+	    {
+	      UmlRelation * inverse = side(side(TRUE) != this);
+	      
+	      if (!inverse->isReadOnly())
+		f << "$";
+	      f << inverse->roleName();
+	    }
+	  default:
+	    break;
+	  }
 	}
 	else if (!strncmp(p, "${var}", 6)) {
 	  p += 6;

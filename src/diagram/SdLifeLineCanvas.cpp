@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,7 +77,7 @@ void SdLifeLineCanvas::update_pos() {
        obj->y() + LIFE_LINE_TOPOFFSET * the_canvas()->zoom() + 100000);
 }
 
-bool SdLifeLineCanvas::is_decenter(const QPoint &, bool &) const {
+bool SdLifeLineCanvas::is_decenter(const QPoint &, BooL &) const {
   return FALSE;
 }
 
@@ -90,6 +90,10 @@ void SdLifeLineCanvas::change_scale() {
 }
 
 void SdLifeLineCanvas::drawShape(QPainter & p) {
+  if (end == 0)
+    // masked by user
+    return;
+  
   p.setBackgroundMode(::Qt::OpaqueMode);
   
   p.setPen(::Qt::DashLine);
@@ -163,7 +167,7 @@ double SdLifeLineCanvas::instance_max_y() const {
 }
 
 DiagramItem::LineDirection SdLifeLineCanvas::allowed_direction(UmlCode) {
-  return DiagramItem::Vertical;
+  return DiagramItem::Horizontal;
 }
 
 QString SdLifeLineCanvas::may_start(UmlCode & l) const {
@@ -180,6 +184,18 @@ QString SdLifeLineCanvas::may_connect(UmlCode & l, const DiagramItem * dest) con
   }
 }
 
+bool SdLifeLineCanvas::may_connect(UmlCode l) const {
+  switch (l) {
+  case UmlFoundSyncMsg:
+  case UmlFoundAsyncMsg:
+  case UmlLostSyncMsg:
+  case UmlLostAsyncMsg:
+    return TRUE;
+  default:
+    return FALSE;
+  }
+}
+
 void SdLifeLineCanvas::connexion(UmlCode l, DiagramItem * dest,
 				 const QPoint & s, const QPoint & e) {
   switch (l) {
@@ -191,6 +207,21 @@ void SdLifeLineCanvas::connexion(UmlCode l, DiagramItem * dest,
   case UmlAsyncSelfMsg:
   case UmlSelfReturnMsg:
     (new SdDurationCanvas(the_canvas(), this, s.y(), FALSE))->connexion(l, dest, s, e);
+  }
+}
+
+bool SdLifeLineCanvas::connexion(UmlCode l, const QPoint & s, const QPoint & e) {
+  // for lost/found msg
+  // this starts or ends msg depending on l
+  switch (l) {
+  case UmlFoundSyncMsg:
+  case UmlFoundAsyncMsg:
+    return (new SdDurationCanvas(the_canvas(), this, s.y(), TRUE))->connexion(l, s, e);
+  case UmlLostSyncMsg:
+  case UmlLostAsyncMsg:
+    return (new SdDurationCanvas(the_canvas(), this, s.y(), FALSE))->connexion(l, s, e);
+  default:
+    return FALSE;
   }
 }
 
@@ -218,6 +249,12 @@ void SdLifeLineCanvas::toOverlapping() {
     it.current()->toOverlapping();
 }
 
+void SdLifeLineCanvas::set_masked(bool y) {
+  end = (y) ? 0 : LIFE_LINE_HEIGHT;
+  hide();
+  show();
+}
+
 void SdLifeLineCanvas::update_instance_dead() {
   if (obj->is_mortal() && !durations.isEmpty()) {
     QListIterator<SdDurationCanvas> it(durations);
@@ -236,7 +273,7 @@ void SdLifeLineCanvas::update_instance_dead() {
       show();
     }
   }
-  else if (end != LIFE_LINE_HEIGHT) {
+  else if ((end != 0) && (end != LIFE_LINE_HEIGHT)) {
     end = LIFE_LINE_HEIGHT;
     hide();
     show();
@@ -378,6 +415,7 @@ void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
 			    QList<FragmentCanvas> & fragments,
 			    QList<FragmentCanvas> & refs)
 {
+  int api_format = com->api_format();
   QPtrDict<SdLifeLineCanvas> used_refs; // the key is the fragment ref
   QList<SdLifeLineCanvas> lls;
   QCanvasItemList::ConstIterator cit;
@@ -392,17 +430,18 @@ void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
 	(*cit)->visible() &&
 	(it->type() == UmlLifeLine)) {
       SdLifeLineCanvas * ll = (SdLifeLineCanvas *) it;
+
       lls.append(ll);
       
       QListIterator<SdDurationCanvas> iter(ll->durations);
       
       // standard msgs
       for (; iter.current(); ++iter)
-	n += iter.current()->count_msg();
+	n += iter.current()->count_msg(api_format);
       
       if (com->api_format() >= 41) {
 	if (ll->end != LIFE_LINE_HEIGHT)
-	  // deletion message
+	  // deletion message, ll can't masked by user
 	  n += 1;
       
 	FragmentCanvas * f;
@@ -435,7 +474,7 @@ void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
       iter.current()->send(com, id);
     
     if ((ll->end != LIFE_LINE_HEIGHT) && (com->api_format() >= 41)) {
-      // deletion message
+      // deletion message, lf can't masked by user
       int m = ll->width()/2;
       
       SdMsgBaseCanvas::send(com, id, (unsigned) ll->x() + m,

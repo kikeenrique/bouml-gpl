@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -140,7 +140,7 @@ void BrowserDeploymentNode::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -158,7 +158,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>node</i> \
 through a relation"));
-    mark_menu(m, TR("node"), 90);
+    mark_menu(m, TR("the node"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -294,6 +294,10 @@ void BrowserDeploymentNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
 
 UmlCode BrowserDeploymentNode::get_type() const {
   return UmlDeploymentNode;
+}
+
+QString BrowserDeploymentNode::get_stype() const {
+  return TR("node");
 }
 
 int BrowserDeploymentNode::get_identifier() const {

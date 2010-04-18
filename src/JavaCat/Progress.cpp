@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,18 +27,38 @@
 
 
 
-#include "Progress.h"
-#include "Package.h"
+#include <qapplication.h>
 
-Progress::Progress(int n, const char * lbl)
-    : QProgressDialog(lbl, 0, n, 0, 0, FALSE, WDestructiveClose), n(0) {
+#include "Progress.h"
+
+Progress * Progress::it = 0;
+
+Progress::Progress(int n, const char * lbl, QApplication * a)
+    : QProgressDialog(0, 0, n, 0, 0, FALSE, WDestructiveClose), n(0), app(a) {
+  if (it != 0)
+    delete it;
+  
+  it = this;
+  setLabelText(lbl);
   setMinimumDuration(1000);
 }
 
 Progress::~Progress() {
-  Package::progress_closed();
+  it = 0;
 }
 
 void Progress::tic() {
   setProgress(++n);
+  raise();
+  app->processEvents();
+}
+
+void Progress::delete_it() {
+  if (it != 0)
+    delete it;
+}
+
+void Progress::tic_it() {
+  if (it != 0)
+    it->tic();
 }

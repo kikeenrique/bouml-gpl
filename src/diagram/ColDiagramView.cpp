@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -187,9 +187,9 @@ void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    DiagramItem * i = QCanvasItemToDiagramItem(ci);
 	    
 	    if (i != 0) {
-	      const char * err = i->may_start(c);
+	      QString err = i->may_start(c);
 	      
-	      if (err != 0)
+	      if (!err.isEmpty())
 		msg_critical("Bouml", err);
 	      else {
 		i->connexion(c, i, e->pos(), e->pos());

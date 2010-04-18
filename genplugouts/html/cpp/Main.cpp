@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Html generator</b> release 2.18 (C++ version)<br />");
+      UmlCom::trace("<b>Html generator</b> release 2.19 (C++ version)<br />");
 
       UmlItem * target = UmlCom::targetItem();
 
@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
     }
 
     // must be called to cleanly inform that all is done
-    UmlCom::bye();
+    UmlCom::bye(0);
   }
   
   UmlCom::close();

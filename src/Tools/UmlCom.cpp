@@ -69,9 +69,9 @@ void UmlCom::message(const char * s)
   send_cmd(miscGlobalCmd, messageCmd, s);
 }
 
-void UmlCom::bye()
+void UmlCom::bye(int v)
 {
-  send_cmd(miscGlobalCmd, byeCmd);
+  send_cmd(miscGlobalCmd, byeCmd, v, "");
 }
 
 void UmlCom::close()

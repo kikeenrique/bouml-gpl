@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QCString(argv[1]).toUInt())) {
     try {
       //UmlCom::with_ack(FALSE);
-      UmlCom::trace("<b>C++ reverse</b> release 2.12<br>");
+      UmlCom::trace("<b>C++ reverse</b> release 2.13<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -56,14 +56,18 @@ int main(int argc, char ** argv)
 	
 	QCString f;
 	
-	if (((UmlPackage *) item)->propertyValue("#file", f))
+	if (UmlPackage::getProject()->propertyValue("#file", f))
 	  Lex::defines(f);
 	
 	// add c++ catalog like java ?
 	
-	if (Package::scan_dirs()) {
+	int n;
+	
+	Package::scan_dirs(n);
+	
+	if (n != 0) {
 	  CppSettings::set_UseDefaults(TRUE);
-	  Package::send_dirs(TRUE);
+	  Package::send_dirs(n, TRUE);
 	  Statistic::produce();
 	}
       }
@@ -75,7 +79,7 @@ int main(int argc, char ** argv)
       // socket may be already closed
       UmlCom::message("");
       UmlCom::showTrace();
-      UmlCom::bye();	// application must not be deleted
+      UmlCom::bye(0);	// application must not be deleted
     }
     catch (...) {
     }

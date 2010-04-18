@@ -156,7 +156,7 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
 	       (token.xmiType() == "uml:Property"))
 	assocclass->import(in, token);
       else if (s == "ownedrule")
-	cl->set_Constraint(UmlClassMember::readConstraint(in, token));
+	cl->set_Constraint(UmlItem::readConstraint(in, token));
       else if (stereotype &&
 	       (s == "icon") &&
 	       (token.xmiType() == "uml:Image")) {
@@ -185,7 +185,7 @@ void UmlClass::importPrimitiveType(FileIn & in, Token & token, UmlItem *)
     
   if (FromBouml) {
     if (! token.closed()) {
-      bool dummy;
+      BooL dummy;
       
       in.read(); 	// <xmi:Extension extender="Bouml">
       in.readWord(FALSE, dummy);	// <

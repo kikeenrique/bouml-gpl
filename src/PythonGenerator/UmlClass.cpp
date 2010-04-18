@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,6 +60,50 @@ void UmlClass::generate_imports(QTextOStream & f, QCString & made) {
     }
   }
 }
+  
+void UmlClass::generate_import(QTextOStream & f, UmlArtifact * using_art,
+			       bool from, QCString & made) {
+  QCString s;
+  
+  if (isPythonExternal()) {
+    // get def after first line
+    int index;
+    
+    s = pythonDecl();
+    if ((index = s.find('\n')) == -1)
+      return;
+    s = s.mid(index + 1).stripWhiteSpace();
+    if (s.isEmpty())
+      return;
+  }
+  else {
+    UmlArtifact * art = associatedArtifact();
+    
+    if ((art == 0) || (art == using_art))
+      return;
+    
+    QCString s_art =
+      ((UmlPackage *) art->parent()->parent())->pythonPackage();
+    QCString art_name = art->name();
+    
+    if (s_art.isEmpty())
+      s_art = art_name;
+    else if (art_name != "__init__")
+      s_art += "." + art_name;
+    
+    if (from)
+      s = "from " + s_art + " import " + name();
+    else
+      s = "import " + s_art;
+  }
+  
+  s += "\n";
+  
+  if (made.find(s) == -1) {
+    made += s;
+    f << s;
+  }
+}
 
 void UmlClass::generate() {
   if (! managed) {
@@ -76,7 +120,7 @@ void UmlClass::generate() {
 }
 
 void UmlClass::generate(QTextOStream & f, QCString indent,
-			bool & indent_needed) {
+			BooL & indent_needed) {
   const QCString & stereotype = python_stereotype();
   
   if (stereotype == "ignored")
@@ -208,13 +252,13 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
 }
 
 void UmlClass::generate(QTextOStream & f, const QCString &,
-			QCString indent, bool & indent_needed,
+			QCString indent, BooL & indent_needed,
 			int &, const QCString &) {
   generate(f, indent, indent_needed);
 }
 
 void UmlClass::generate_instance_att_rel(QTextOStream & f, QCString indent,
-					 bool & indent_needed, QCString self) {
+					 BooL & indent_needed, QCString self) {
   const QCString & stereotype = python_stereotype();
   int enum_item_rank = 0;
   
@@ -263,7 +307,16 @@ void UmlClass::write(QTextOStream & f) {
     f << s;
   }
   else {
-    UmlArtifact * cl_art = associatedArtifact();
+    UmlClass * toplevel = this;
+    UmlItem * p;
+    QCString s2 = name();
+    
+    while ((p = toplevel->parent())->kind() == aClass) {
+      toplevel = (UmlClass *) p;
+      s2 = p->name() + "." + s2;
+    }
+    
+    UmlArtifact * cl_art = toplevel->associatedArtifact();
     UmlArtifact * gen_art = UmlArtifact::generated_one();
     
     if ((cl_art != gen_art) && (cl_art != 0)) {
@@ -284,11 +337,11 @@ void UmlClass::write(QTextOStream & f) {
 	    (gen_art->pythonSource().find(importit) != -1) ||
 	    (gen_art->pythonSource().find(importstar) != -1))
 	  // imported
-	  f << name();
+	  f << s2;
 	else if (is__init__)
-	  f << cl_pack << "." << name();
+	  f << cl_pack << "." << s2;
 	else
-	  f << cl_pack << "." << cl_art->name() << "." << name();
+	  f << cl_pack << "." << cl_art->name() << "." << s2;
       }
       else {
 	QCString s = "from " + cl_art->name() + " import ";
@@ -300,15 +353,15 @@ void UmlClass::write(QTextOStream & f) {
 	    (imports.find(importstar) == -1) &&
 	    (gen_art->pythonSource().find(importit) == -1) &&
 	    (gen_art->pythonSource().find(importstar) == -1))
-	  f << cl_art->name() << "." << name();
+	  f << cl_art->name() << "." << s2;
 	else
 	  // imported
-	  f << name();
+	  f << s2;
       }
     }
     else
       // same artifact
-      f << name();
+      f << s2;
   }
 }
 

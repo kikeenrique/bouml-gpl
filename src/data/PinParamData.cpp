@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 //
 // This program is free software; you can redistribute it and/or modify
@@ -53,7 +53,7 @@ void PinParamData::send_uml_def(ToolCom * com) {
   com->write_char(effect);
 }
 
-bool PinParamData::tool_cmd(ToolCom * com, const char * args, bool & ack) {
+bool PinParamData::tool_cmd(ToolCom * com, const char * args, BooL & ack) {
   // note : write access already check
   ack = TRUE;
 

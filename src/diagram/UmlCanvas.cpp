@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -129,6 +129,14 @@ void UmlCanvas::resize(CanvasFormat f) {
   update();
 }
 
+// to know if ths element is covered by arrow bounding
+static bool small_element(const QRect & r)
+{
+  int l = ARROW_LENGTH * 3;
+  
+  return (r.width() < l) && (r.height() < l);
+}
+
 QCanvasItem * UmlCanvas::collision(const QPoint & p) const {
   QCanvasItemList l = collisions(p);
   QCanvasItemList::ConstIterator it;
@@ -149,7 +157,7 @@ QCanvasItem * UmlCanvas::collision(const QPoint & p) const {
     default:
       // isa DiagramCanvas
       return ((arrow == 0) || 
-	      ((((DiagramCanvas *) *it)->type() == UmlArrowPoint) &&
+	      (small_element(((DiagramCanvas *) *it)->rect()) &&
 	       ((DiagramCanvas *) *it)->attached_to(arrow)))
 	? *it : arrow;
     }
@@ -179,11 +187,11 @@ QCanvasItem * UmlCanvas::collision(const QPoint & p, int except) const {
       case RTTI_LABEL:
 	return (arrow == 0) ? *it : arrow;
       default:
-	// isa DiagramCanvas
-	return ((arrow == 0) ||
-		((((DiagramCanvas *) *it)->type() == UmlArrowPoint) &&
-		 ((DiagramCanvas *) *it)->attached_to(arrow)))
-	  ? *it : arrow;
+      // isa DiagramCanvas
+      return ((arrow == 0) || 
+	      (small_element(((DiagramCanvas *) *it)->rect()) &&
+	       ((DiagramCanvas *) *it)->attached_to(arrow)))
+	? *it : arrow;
       }
     }
   }

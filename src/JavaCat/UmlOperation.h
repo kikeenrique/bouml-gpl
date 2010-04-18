@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,6 +60,7 @@ class UmlOperation : public UmlBaseOperation {
     static char skip_expr(int level = 0);
 
 #ifdef ROUNDTRIP
+  private:
     static UmlOperation * already_exist_from_id(Class * container, QCString & body);
     static UmlOperation * already_exist(Class * container, const QCString & name,
 					QValueList<UmlParameter> & params);

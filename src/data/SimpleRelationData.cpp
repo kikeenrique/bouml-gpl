@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -78,12 +78,17 @@ BrowserNode * SimpleRelationData::get_start_node() const {
   return (BrowserNode *) browser_node->parent();
 }
 
-QString SimpleRelationData::definition(bool) const {
+QString SimpleRelationData::definition(bool, bool with_kind) const {
+  QString r;
+  
+  if (with_kind)
+    r = "[" + browser_node->get_stype() + "] ";
+
   switch (type) {
   case UmlDependOn:
-    return "<dependency>";
+    return r + "<dependency>";
   case UmlInherit:
-    return "<generalization>";
+    return r + "<generalization>";
   default:
     return "SimpleRelationData::definition error !";
   }

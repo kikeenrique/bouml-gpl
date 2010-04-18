@@ -91,6 +91,6 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseView.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 TARGET	      = java_generator
-DEFINES	      = WITHJAVA
+DEFINES	      = WITHJAVA BooL=bool
 INCLUDEPATH   = ../Tools ../JavaGenerator
 

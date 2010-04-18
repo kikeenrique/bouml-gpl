@@ -1,7 +1,8 @@
 #ifndef _UMLCOM_H
 #define _UMLCOM_H
 
-#define APIVERSION 49
+// added by 53 : constraint added on activity and activity action
+#define APIVERSION 52
 
 #include <qsocketdevice.h>
 #include "CmdFamily.h"
@@ -41,7 +42,7 @@ class UmlClass;
 //
 // - message()
 //
-// - bye()
+// - bye(exit value)
 //
 // - close()
 // 
@@ -72,7 +73,7 @@ class UmlCom {
     // does not use Qt rich text
     static void message(const char * s);
     // must be called just before the disconnexion
-    static void bye();
+    static void bye(int);
     // disconnexion
     static void close();
 

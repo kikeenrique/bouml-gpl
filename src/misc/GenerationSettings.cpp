@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -174,6 +174,10 @@ QString GenerationSettings::idl_extension;
 bool GenerationSettings::cpp_include_with_path;
 bool GenerationSettings::cpp_relative_path;
 bool GenerationSettings::cpp_root_relative_path;
+
+bool GenerationSettings::php_include_with_path;
+bool GenerationSettings::php_relative_path;
+bool GenerationSettings::php_root_relative_path;
 
 bool GenerationSettings::cpp_force_namespace_gen;
 bool GenerationSettings::cpp_inline_force_incl_in_h;
@@ -443,6 +447,9 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_set_name = "set${Name}";
   php_set_final = FALSE;
   php_javadoc_comment = FALSE;
+  php_include_with_path = FALSE;
+  php_relative_path = FALSE;
+  php_root_relative_path = FALSE;
 
   python_2_2 = TRUE;
   python_3_operation = FALSE;
@@ -2345,6 +2352,19 @@ void GenerationSettings::save()
     nl_indent(st);
     st << "cpp_javadoc_comment";
   }
+  
+  if (php_include_with_path) {
+    nl_indent(st);
+    st << "php_include_with_path";
+  }
+  if (php_relative_path) {
+    nl_indent(st);
+    st << "php_relative_path";
+  }
+  if (php_root_relative_path) {
+    nl_indent(st);
+    st << "php_root_relative_path";
+  }
 
   st << '\n';
   nl_indent(st);
@@ -3037,6 +3057,7 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     idl_extension = "idl";
+  
   if (!strcmp(k, "cpp_include_with_path")) {
     cpp_include_with_path = TRUE;
     k = read_keyword(st);
@@ -3073,6 +3094,25 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     cpp_javadoc_comment = FALSE;
+  
+  if (!strcmp(k, "php_include_with_path")) {
+    php_include_with_path = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_include_with_path = FALSE;
+  if (!strcmp(k, "php_relative_path")) {
+    php_relative_path = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_relative_path = FALSE;
+  if (!strcmp(k, "php_root_relative_path")) {
+    php_root_relative_path = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_root_relative_path = FALSE;
 
   bool old_types = !strcmp(k, "types");
   bool new_types = !strcmp(k, "type_forms");

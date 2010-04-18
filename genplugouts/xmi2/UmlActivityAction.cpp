@@ -2,6 +2,7 @@
 #include "UmlActivityAction.h"
 #include "FileOut.h"
 
+#include "UmlActivityObject.h"
 void UmlActivityAction::write_begin(FileOut & out, QCString k) {
   out.indent();
   out << ((parent()->kind() == anActivity) ? "<node" : "<containedNode")
@@ -18,17 +19,43 @@ void UmlActivityAction::write_end(FileOut & out, bool dontclose) {
   out << ">\n";
   out.indent(+1);
   
+  QCString s = constraint();
+  
+  if (! s.isEmpty()) {
+    out.indent();
+    out << "<ownedRule xmi:type=\"uml:Constraint\"";
+    out.id_prefix(this, "CONSTRAINT_");
+    out.ref(this, "constrainedElement");
+    out << ">\n";
+    out.indent();
+    out << "\t<specification xmi:type=\"uml:OpaqueExpression\"";
+    out.id_prefix(this, "CSPEC_");
+    out << ">\n";
+    out.indent();
+    out << "\t\t<body>";
+    out.quote(s);
+    out << "</body>\n";
+    out.indent();
+    out << "\t</specification>\n";
+    out.indent();
+    out << "</ownedRule>\n";
+  }
+  
   write_description_properties(out);
 
   switch (_lang) {
   case Uml:
-    write_condition(out, preCondition(), postCondition());
+    write_condition(out, preCondition(), TRUE);
+    write_condition(out, postCondition(), FALSE);
     break;
   case Cpp:
-    write_condition(out, cppPreCondition(), cppPostCondition());
+    write_condition(out, cppPreCondition(), TRUE);
+    write_condition(out, cppPostCondition(), FALSE);
+    break;
   default:
     // java
-    write_condition(out, javaPreCondition(), javaPostCondition());
+    write_condition(out, javaPreCondition(), TRUE);
+    write_condition(out, javaPostCondition(), FALSE);
   }
 
   const QVector<UmlItem> ch = children();
@@ -81,5 +108,21 @@ void UmlActivityAction::write_condition(FileOut & out, QCString cond, bool pre) 
     out.indent();
     out << "</" << k << "condition>\n";
   }
+}
+
+void UmlActivityAction::solve_output_flows() {
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1) {
+    UmlFlow * f = dynamic_cast<UmlFlow *>(ch[i]);
+
+    if ((f != 0) && (f->control_or_data() == Unset)) {
+      UmlActivityObject * o = dynamic_cast<UmlActivityObject *>(f->target());
+
+      f->set_control_or_data(((o == 0) || o->isControlType()) ? IsControl : IsData);
+    }
+  }
+
 }
 

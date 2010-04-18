@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,10 +42,10 @@ class UmlItem : public UmlBaseItem {
     virtual UmlPackage * package();
     void manage_comment(const char *& p, const char *& pp);
     void manage_description(const char *& p, const char *& pp);  
-    void manage_docstring(const char *& p, const char *& pp, bool & indent_needed,
+    void manage_docstring(const char *& p, const char *& pp, BooL & indent_needed,
 			  QCString & indent, QCString & saved_indent);  
     void manage_alias(const char *& p, QTextOStream & ts,
-		      QCString indent, bool & indent_needed);
+		      QCString indent, BooL & indent_needed);
 };
 
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,13 +46,20 @@ class ClassContainer {
 			      bool declaration) = 0;
     virtual bool find_type(QCString type, UmlTypeSpec & typespec) = 0;
     virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl) = 0;
+			     const QCString & decl
+#ifdef ROUNDTRIP
+			     , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			     ) = 0;
     
     void compute_type(QCString type, UmlTypeSpec & typespec,
 		      QCString & typeform, bool get_first_template_actual = FALSE,
 		      const QValueList<FormalParameterList> & tmplts = empty);
     bool find_type(QCString type, UmlTypeSpec & typespec,
 		   NDict<Class> & defined);
+#ifdef ROUNDTRIP
+    virtual Class * upload_define(UmlClass *) = 0;
+#endif
     
     static bool get_template(FormalParameterList & tmplt);
     

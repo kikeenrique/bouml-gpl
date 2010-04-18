@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -257,7 +257,7 @@ void ColMsgTable::save_list(ColMsgList & l, QPtrDict<ColMsgList> & saved) {
 void ColMsgTable::change_ranks(int row, int col) {
   ColMsg * msg = flat_msg_list[row];
   HierarchicalRankValidator validator(view, msg->hierarchical_rank);
-  bool ok;
+  BooL ok;
   QString new_hr = MyInputDialog::getText(TR("Enter new hierarchical rank"), TR("Hierarchical rank : "),
 					  msg->hierarchical_rank, ok,
 					  &validator);

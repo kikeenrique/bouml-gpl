@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,7 +46,11 @@ class UmlOperation : public UmlBaseOperation {
 			bool inlinep, bool virtualp, bool staticp, bool constp,
 			bool volatilep, bool typenamep,	bool explicitp,
 			bool friendp, QCString friend_template,
-			QCString comment, QCString description, bool pfunc);
+			QCString comment, QCString description, bool pfunc
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
     static void reverse_definition(Package * pack, QCString name, QCString type,
 				   QValueList<FormalParameterList> & tmplt,
 				   bool inlinep, const QCString & comment,
@@ -54,13 +58,19 @@ class UmlOperation : public UmlBaseOperation {
 
 #ifdef REVERSE
     virtual bool need_source();
+#ifdef ROUNDTRIP
+    static void force_defs();
+# endif
 #endif
   
     static void skip_body(int level = 0);
     static void skip_expr(QCString end, bool allow_templ = FALSE);
-    static bool pfunc(bool & func, QCString & name, QCString & type,
+    static bool pfunc(BooL & func, QCString & name, QCString & type,
 		      const char * namespec);
   private:
+#ifdef ROUNDTRIP
+    static QPtrDict<QCString> DefNotYetSet;
+#endif
     static NDict< QList<UmlOperation> > friends;
     FormalParameterList * formals;
     QCString def0;	// for template operations
@@ -68,7 +78,7 @@ class UmlOperation : public UmlBaseOperation {
     static bool read_param(ClassContainer * container, unsigned rank, 
 			   UmlParameter & param, QCString & decl,
 			   const QValueList<FormalParameterList> & tmplt,
-			   bool & on_error, bool add_defaultvalue);
+			   BooL & on_error, bool add_defaultvalue);
     static void friend_operations(QList<UmlOperation> & candidates,
 				  const QValueList<FormalParameterList> & tmplt,
 				  const QCString & name);
@@ -83,8 +93,19 @@ class UmlOperation : public UmlBaseOperation {
 			QValueList<FormalParameterList> & tmplts,
 			const FormalParameterList * oper_tmplt,
 			bool inlinep, bool pfct, const QCString & comment,
-			const QCString & description, bool & on_error,
+			const QCString & description, BooL & on_error,
 			unsigned & nargs, QCString oper_name);
+
+    void update_param_names(QValueList<UmlParameter> & params);
+#ifdef ROUNDTRIP
+    void update_params(Class * cl, QValueList<UmlParameter> & params);
+    void update_exceptions(Class * cl, const QValueList<UmlTypeSpec> & exceptions);
+    
+    static void clean_body(QCString & body);
+    static UmlOperation * already_exist(Class * container, const QCString & name,
+					QValueList<UmlParameter> & params,
+					bool empty_decl);
+#endif
 };
 
 #endif

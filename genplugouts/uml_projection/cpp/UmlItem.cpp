@@ -6,7 +6,7 @@
 }
 
 void UmlItem::projection() {
-  bool rec = (children().size() != 0);
+  BooL rec = (children().size() != 0);
   char lang;
   Dialog d(rec, lang);
   

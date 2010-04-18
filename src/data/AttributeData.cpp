@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 #include "myio.h"
 #include "ToolCom.h"
 #include "mu.h"
+#include "translate.h"
 
 AttributeData::AttributeData()
     : is_deleted(FALSE),
@@ -155,12 +156,19 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
   }
 }
 
-QString AttributeData::definition(bool full) const {
+QString AttributeData::definition(bool full, bool with_kind) const {
+  QString r;
+
+  if (with_kind)
+    r = "[" + browser_node->get_stype() + "] ";
+
   if (! full)
-    return browser_node->get_name();
+    r += browser_node->get_name();
   else
-    return ((const char *) browser_node->get_name())
+    r += ((const char *) browser_node->get_name())
       + QString(" : ") + ((const char *) type.get_type());
+
+  return r;
 }
 
 QString AttributeData::definition(bool full, bool mult, bool init,
@@ -216,7 +224,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
       return AttributeDialog::cpp_decl((BrowserAttribute *) browser_node,
 				       init);
     else if (!cpp_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case JavaView:
@@ -224,7 +232,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
       return AttributeDialog::java_decl((BrowserAttribute *) browser_node,
 					init);
     else if (!java_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case PhpView:
@@ -232,7 +240,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
       return AttributeDialog::php_decl((BrowserAttribute *) browser_node,
 				       init);
     else if (!php_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case PythonView:
@@ -240,14 +248,14 @@ QString AttributeData::definition(bool full, bool mult, bool init,
       return AttributeDialog::python_decl((BrowserAttribute *) browser_node,
 					  init);
     else if (!python_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   default:
     if (full)
       return AttributeDialog::idl_decl((BrowserAttribute *) browser_node);
     else if (!idl_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   }	

@@ -1,7 +1,7 @@
 // *************************************************************************cr();
 
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -413,7 +413,7 @@ void BrowserClass::menu() {
 						 : "<i>class</i>");
   int index;
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   if (!deletedp()) {
     if (!is_read_only) {
       if (edition_number == 0) {
@@ -446,12 +446,12 @@ void BrowserClass::menu() {
 		   oper = l.next(), index += 1) {
 		if (((OperationData *) oper->get_data())->get_is_abstract())
 		  inhopersubm.insertItem(new MenuItalic(((BrowserNode *) oper->parent())->get_name() +
-							QString("::") + oper->get_data()->definition(TRUE),
+							QString("::") + oper->get_data()->definition(TRUE, FALSE),
 							inhopersubm.font()),
 					 index);
 		else
 		  inhopersubm.insertItem(((BrowserNode *) oper->parent())->get_name() +
-					 QString("::") + oper->get_data()->definition(TRUE),
+					 QString("::") + oper->get_data()->definition(TRUE, FALSE),
 					 index);
 	      }
 	      
@@ -556,7 +556,7 @@ a double click with the left mouse button does the same thing"));
     m.insertSeparator();
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 15),
 		   TR("to know who reference the " + what));
-    mark_menu(m, TR("class"), 90);
+    mark_menu(m, TR("the class"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     if (!isstereotype && !ismetaclass) {
@@ -569,8 +569,11 @@ a double click with the left mouse button does the same thing"));
       if (! nestedp() && (cpp || java || php || python || idl)) {
 	m.insertSeparator();
 	m.insertItem(TR("Generate"), &gensubm);    
-	if (cpp)
+	if (cpp) {
 	  gensubm.insertItem("C++", 10);
+	  if ((edition_number == 0) && !is_read_only)
+	    roundtripm.insertItem("C++", 31);
+	}
 	if (java) {
 	  gensubm.insertItem("Java", 11);
 	  if ((edition_number == 0) && !is_read_only)
@@ -723,6 +726,10 @@ void BrowserClass::exec_menu_choice(int rank,
   case 12:
     if (! isstereotypemetaclass) 
       ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    return;
+  case 31:
+    if (! isstereotypemetaclass) 
+      ToolCom::run("cpp_roundtrip", this);
     return;
   case 32:
     if (! isstereotypemetaclass) 
@@ -1160,6 +1167,10 @@ UmlCode BrowserClass::get_type() const {
   return UmlClass;
 }
 
+QString BrowserClass::get_stype() const {
+  return TR("class");
+}
+
 int BrowserClass::get_identifier() const {
   return get_ident();
 }
@@ -1250,7 +1261,7 @@ void BrowserClass::get_opers(QValueList<const OperationData *> & opers,
 	!((BrowserNode *) child)->deletedp()) {
       OperationData * od =
 	(OperationData *) ((BrowserNode *) child)->get_data();
-      QString msg = od->definition(TRUE);
+      QString msg = od->definition(TRUE, FALSE);
 	
       opers.append(od);
       list.append(msg);
@@ -1269,7 +1280,7 @@ void BrowserClass::get_opers(QValueList<const OperationData *> & opers,
 	  (((BrowserNode *) child)->get_name()[0] != '~')) {// not a destructor
 	OperationData * data = (OperationData *)
 	  ((BrowserOperation *) child)->get_data();
-	QString profile = data->definition(TRUE);
+	QString profile = data->definition(TRUE, FALSE);
 	
 	if (already.find(profile) == 0) {
 	  // not yet added
@@ -1462,7 +1473,7 @@ void BrowserClass::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserClass::may_contains_them(const QList<BrowserNode> & l,
-				     bool & duplicable) const {
+				     BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -1783,7 +1794,7 @@ QList<BrowserOperation> BrowserClass::inherited_operations(unsigned limit) const
   for (child = firstChild(); child; child = child->nextSibling())
     if ((((BrowserNode *) child)->get_type() == UmlOperation) &&
 	!((BrowserNode *) child)->deletedp())
-      already.insert(((BrowserOperation *) child)->get_data()->definition(TRUE),
+      already.insert(((BrowserOperation *) child)->get_data()->definition(TRUE, FALSE),
 		     (BrowserOperation *) child);
 	
   // computes undefined inherited operations list
@@ -1803,7 +1814,7 @@ QList<BrowserOperation> BrowserClass::inherited_operations(unsigned limit) const
 	    !data->get_isa_class_operation() &&
 	    !data->get_or_set()) {
 	  // may be refined
-	  QString profile = data->definition(TRUE);
+	  QString profile = data->definition(TRUE, FALSE);
 	  BrowserOperation * other = already.find(profile);
 	  
 	  if (other == 0) {
@@ -2064,6 +2075,8 @@ void BrowserClass::init()
 }
 
 bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
+  ClassData::ToolCmd dummy;
+	
   switch ((unsigned char) args[-1]) {
   case createCmd:
     {
@@ -2097,8 +2110,18 @@ bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserClass * end = (BrowserClass *) com->get_id(args);
 
-	      if (may_start(c).isEmpty() && may_connect(c, end).isEmpty())
+	      if (may_start(c).isEmpty() && may_connect(c, end).isEmpty()) {
+		switch (c) {
+		case UmlGeneralisation:
+		case UmlRealize:
+		  ClassData::setDontUpdateActuals(FALSE);
+		  break;
+		default:
+		  break;
+		}
+		
 		((RelationData *) add_relation(c, end))->get_start()->write_id(com);
+	      }
 	      else
 		ok = FALSE;
 	    }

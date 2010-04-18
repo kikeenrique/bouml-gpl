@@ -162,7 +162,7 @@ void UmlPackage::importHeader(FileIn & in) {
       updateProfiles();
   }
   else
-    in.error("uml:model or xmi:xmi expected, nothing imported");
+    in.error("uml:model or uml:profile or xmi:xmi expected, nothing imported");
 }
 
 UmlItem * UmlPackage::container(anItemKind kind, Token & token, FileIn & in) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,9 @@
 #endif
 #include <qdatastream.h> 
 #include <qdir.h>
+#ifdef ROUNDTRIP
+#include <qmessagebox.h>
+#endif
 
 #include "Package.h"
 #include "Class.h"
@@ -97,14 +100,43 @@ QStack<QStringList> Package::stack;
 // current template forms
 QValueList<FormalParameterList> Package::Formals;
 
-// to show a progress bar
-Progress * Package::progress;
 QApplication * Package::app;
 
+static QString RootSDir;	// empty or finish by a /
+static QCString RootCDir;	// empty or finish by a /
+
+static QDict<bool> FileManaged;
+
 #ifdef ROUNDTRIP
-static QString RootDir;
-QDict<bool> managed;
+static QDict<bool> DirManaged;
 #endif
+
+static QCString force_final_slash(QCString p)
+{
+  int ln = p.length();
+  
+  if (ln < 2)
+    return p;
+  
+  return (p[ln - 1] != '/')
+    ? p + '/'
+    : p;
+}
+
+static inline QCString force_final_slash(QString p)
+{
+  return force_final_slash(QCString(p));
+}
+
+static QCString root_relative_if_possible(QCString p)
+{
+  int pln = p.length();
+  int rln = RootCDir.length();
+  
+  return ((pln >= rln) && (p.left(rln) == rln))
+    ? p.mid(rln)
+    : p;
+}
 
 #ifndef REVERSE
 Package::Package(BrowserView * parent, UmlPackage * u)
@@ -116,6 +148,8 @@ Package::Package(BrowserView * parent, UmlPackage * u)
 Package::Package(Package * parent, const char * p, const char * n)
     : BrowserNode(parent, n) {
   path = p;
+  if (path != "<unknown>")
+    path = force_final_slash(path);
   uml = 0;
 }
 
@@ -126,14 +160,22 @@ Package::Package(Package * parent, UmlPackage * pk)
     unknown = this;
   
   uml = pk;
-  path = pk->javaDir();
 
-  QDir d_root(RootDir);
+  QDir d_root(RootSDir);
   
+  path = force_final_slash(pk->javaDir());
   if (path.isEmpty())
-    path = RootDir;
-  else if (QDir::isRelativePath(path))
-    path = d_root.filePath(path);
+    path = RootCDir;
+  else if (QDir::isRelativePath(path)) {
+    if (RootCDir.isEmpty()) {
+      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+	"don't know where is <i>" + path + "<i></b></font><br>";
+      
+      UmlCom::trace(err);
+    }
+    else
+      path = force_final_slash(d_root.filePath(path));
+  }
   
   package = pk->javaPackage();
   
@@ -159,22 +201,19 @@ QString Package::get_path() const {
 void Package::init(UmlPackage * r, QApplication * a)
 {
   app = a;
-#ifdef ROUNDTRIP
-  RootDir = JavaSettings::rootDir();
   
-  if (RootDir.isEmpty()) {
-    UmlCom::trace("<font face=helvetica><b>root path not set in <i>generation settings</i></b><br><br>"
-		  "probably you want to do a <i>reverse</i> rather than a <i>roundtrip</i></font><br>");
-    throw 0;
-  }
-  else if (QDir::isRelativePath(RootDir)) {
-    // r is project
-    QFileInfo f(r->supportFile());
+  RootCDir = force_final_slash(JavaSettings::rootDir());
+  RootSDir = RootCDir;
+  
+  if (!RootSDir.isEmpty() && QDir::isRelativePath(RootSDir)) {
+    QFileInfo f(UmlPackage::getProject()->supportFile());
     QDir d(f.dirPath());
     
-    RootDir = d.filePath(RootDir);
+    RootSDir = force_final_slash(d.filePath(RootSDir));
+    RootCDir = RootSDir;
   }
   
+#ifdef ROUNDTRIP
   root = new Package(0, r);
   r->init(root);
 #elif defined(REVERSE)
@@ -194,8 +233,7 @@ void Package::set_step(int s, int n)
 {
   if (n == -1) {
     scan = FALSE;
-    if (progress != 0)
-      delete progress;
+    Progress::delete_it();
   }
   else {
     switch (s) {
@@ -203,22 +241,25 @@ void Package::set_step(int s, int n)
     case 0:
       scan = FALSE;
       if (n > 1)
-	progress = new Progress(n, "Preparation, please wait ...");
+	new Progress(n, "Preparation, please wait ...", app);
       break;
 #endif
     case 1:
       scan = TRUE;
+      FileManaged.resize(101);
       if (n > 1)
-	progress = new Progress(n, "Scanning in progress, please wait ...");
+	new Progress(n, "Scanning in progress, please wait ...", app);
       break;
     default:
       // 2
       scan = FALSE;
+      FileManaged.clear();
+      FileManaged.resize(101);
       if (n > 1)
 #ifdef ROUNDTRIP
-	progress = new Progress(n, "Roundtrip in progress, please wait ...");
+	new Progress(n, "Roundtrip in progress, please wait ...", app);
 #else
-	progress = new Progress(n, "Reverse in progress, please wait ...");
+	new Progress(n, "Reverse in progress, please wait ...", app);
 #endif
     }
   }
@@ -229,16 +270,11 @@ void Package::own(UmlArtifact * art) {
   roundtriped.insert(art->name(), art);
 }
 
-void Package::tic()
-{
-  if (progress) {
-    progress->tic();
-    app->processEvents();
-  }
-}
-
 int Package::count_file_number()
 {
+  if (path.isEmpty())
+    return 0;
+  
   QDir d(path);
   int result = file_number(d, TRUE);
   TreeItem * child;
@@ -252,11 +288,11 @@ int Package::count_file_number()
 
 void Package::scan_dir(int & n) {
   n = count_file_number();
-  managed.clear();
+  DirManaged.clear();
 
   set_step(1, n);
   scan_dir();
-  managed.clear();
+  DirManaged.clear();
   set_step(1, -1);
 }
 
@@ -307,50 +343,45 @@ Package * Package::scan_dir(int & n)
 }
 #endif
 
-void Package::progress_closed()
-{
-  progress = 0;
-}
-
 int Package::file_number(QDir & d, bool rec)
 {
 #ifdef ROUNDTRIP
-  if (managed[d.path()] != 0)
+  if (DirManaged[d.path()] != 0)
     return 0;
-  managed.insert(d.path(), (bool *) 1);
+  DirManaged.insert(d.path(), (bool *) 1);
 #endif
 
   int result = 0;
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
   
-#ifdef ROUNDTRIP
-  if (list == 0)
-    return 0;
-#endif
-
-  QFileInfoListIterator it(*list);
-  QFileInfo * fi;
-  
-  while ((fi = it.current()) != 0) {
-    if (fi->extension(FALSE) == "java")
-      result += 1;
-
-    ++it;
+  if (list != 0) {
+    QFileInfoListIterator it(*list);
+    QFileInfo * fi;
+    
+    while ((fi = it.current()) != 0) {
+      if (fi->extension(FALSE) == "java")
+	result += 1;
+      
+      ++it;
+    }
   }
-
+  
   if (rec) {
     // sub directories
     list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	
-	result += file_number(sd, rec);
+    if (list != 0) {
+      QFileInfoListIterator itd(*list);
+      QFileInfo * di;
+      
+      while ((di = itd.current()) != 0) {
+	if (((const char *) di->fileName())[0] != '.') {
+	  QDir sd(di->filePath());
+	  
+	  result += file_number(sd, rec);
+	}
+	++itd;
       }
-      ++itd;
     }
   }
   
@@ -358,6 +389,38 @@ int Package::file_number(QDir & d, bool rec)
 }
 
 #ifdef ROUNDTRIP
+enum ReverseRootCases { DontKnow, ReverseRoot, DontReverseRoot };
+
+void Package::accept_roundtrip_root()
+{
+  static ReverseRootCases reverseRoot = DontKnow;
+  
+  switch (reverseRoot) {
+  case DontKnow:
+    switch (QMessageBox::warning(0, "Java Roundtrip",
+				 "directory not specified at package level, "
+				 "do you want to reverse all files under <i>"
+				 + RootSDir + "</i> and its sub directories ?",
+				 "yes", "no", "cancel", 0, 2)) {
+    case 0:
+      reverseRoot = ReverseRoot;
+      break;
+    case 1:
+      reverseRoot = DontReverseRoot;
+      path = 0;
+      break;
+    default: // 2
+      throw 0;
+    }
+    break;
+  case ReverseRoot:
+    break;
+  default: // DontReverseRoot
+    path = 0;
+    break;
+  }
+}
+
 void Package::send_dir(int n) {
   // reverse phase
   UmlPackage::getProject()->set_childrenVisible(FALSE);
@@ -366,7 +429,7 @@ void Package::send_dir(int n) {
   
   set_step(2, n);
   send_dir();
-  managed.clear();
+  DirManaged.clear();
   set_step(2, -1);
   
   ((uml) ? uml : root->uml)->set_childrenVisible(TRUE);
@@ -400,52 +463,50 @@ void Package::send_dir(int n) {
 
 void Package::reverse_directory(QDir & d, bool rec) {
 #ifdef ROUNDTRIP
-  if (managed.find(d.path()) != 0)
+  if (d.path().isEmpty() || DirManaged.find(d.path()) != 0)
     return;
   
-  managed.insert(d.path(), (bool *) 1);
+  DirManaged.insert(d.path(), (bool *) 1);
 #endif
 
   // reads files
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
 
+  if (list != 0) {
+    QFileInfoListIterator it(*list);
+    QFileInfo * fi;
+    
+    while ((fi = it.current()) != 0) {
+      if (fi->extension() == "java") {
+	reverse_file(QCString(fi->filePath())
 #ifdef ROUNDTRIP
-  if (list == 0)
-    return;
+		     , roundtriped.find(fi->baseName())
 #endif
-
-  QFileInfoListIterator it(*list);
-  QFileInfo * fi;
-  
-  while ((fi = it.current()) != 0) {
-    if (fi->extension() == "java") {
-      reverse_file(QCString(fi->filePath())
-#ifdef ROUNDTRIP
-		   , roundtriped.find(fi->baseName())
-#endif
-		   );
-      if (progress)
-	progress->tic();
-      app->processEvents();
+		     );
+	Progress::tic_it();
+      }
+      ++it;
     }
-    ++it;
   }
-
+      
   if (rec) {
     // sub directories
     list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	Package * p = find(QCString(sd.dirName()), TRUE);
-	
-	if (p != 0)
-	  p->reverse_directory(sd, TRUE);
+    if (list != 0) {
+      QFileInfoListIterator itd(*list);
+      QFileInfo * di;
+      
+      while ((di = itd.current()) != 0) {
+	if (((const char *) di->fileName())[0] != '.') {
+	  QDir sd(di->filePath());
+	  Package * p = find(QCString(sd.dirName()), TRUE);
+	  
+	  if (p != 0)
+	    p->reverse_directory(sd, TRUE);
+	}
+	++itd;
       }
-      ++itd;
     }
   }
 }
@@ -461,11 +522,10 @@ void Package::reverse_file(QCString f
 			   , UmlArtifact * art
 #endif
 			   ) {
-#ifdef ROUNDTRIP
-  if ((art != 0) && art->considered(scan))
+  if (FileManaged[f])
     return;
-#endif
-
+  FileManaged.insert(f, (bool *) 1);
+  
   if (! Lex::open(f)) {
 #ifdef ROUNDTRIP
     if (art != 0) {
@@ -559,12 +619,12 @@ void Package::reverse_file(QCString f
       QCString annotation;
       
       while (!s.isEmpty()) {
-#ifdef ROUNDTRIP
-	QList<UmlItem> dummy;
-	
-#endif
 	if ((s == "class") || (s == "enum") ||
 	    (s == "interface") || (s == "@interface")) {
+#ifdef ROUNDTRIP
+	  QList<UmlItem> dummy;
+#endif
+	  
 	  if (!Class::reverse(this, s, annotation, abstractp, 
 			      finalp, visibility, f, Formals
 #ifdef ROUNDTRIP
@@ -985,7 +1045,7 @@ Package * Package::find(QCString s, bool nohack) {
   }
   
   if (p == 0)
-    p = new Package(this, path + "/" + name, name);
+    p = new Package(this, path + name, name);
   
   return (index == -1) ? p : p->find(s.mid(index + 1), nohack);
 }
@@ -1015,17 +1075,8 @@ void Package::set_package(QCString s) {
     known_packages.replace(s, pack);
     pack->package = s;
     
-    if (pack->uml != 0) {
+    if (pack->uml != 0)
       pack->uml->set_JavaPackage(s);
-      
-      int index = 0;
-      QCString d = s;
-      
-      while ((index = d.find('.', index)) != -1)
-	d.replace(index++, 1, "/");
-      
-      pack->uml->set_JavaDir(d);
-    }
     
     int index = s.findRev('.');
     
@@ -1079,17 +1130,11 @@ UmlPackage * Package::get_uml(bool mandatory) {
       QApplication::exit(1);
 #endif
     }
-    else if (! package.isEmpty()) {
+    
+    if (! package.isEmpty())
       uml->set_JavaPackage(package);
       
-      int index = 0;
-      QCString d = package;
-      
-      while ((index = d.find('.', index)) != -1)
-	d.replace(index++, 1, "/");
-    
-      uml->set_JavaDir(d);
-    }
+    uml->set_JavaDir(root_relative_if_possible(path));
   }
   
   return uml;
@@ -1173,12 +1218,11 @@ void Package::menu() {
       
       if (d.exists()) {
 	QApplication::setOverrideCursor(Qt::waitCursor);
-	progress = new Progress(file_number(d, choice == 1), "Reverse in progress, please wait ...");
+	new Progress(file_number(d, choice == 1), "Reverse in progress, please wait ...", app);
 	JavaCatWindow::clear_trace();
 	JavaSettings::set_UseDefaults(TRUE);
 	reverse_directory(d, choice == 1);
-	if (progress != 0)
-	  delete progress;
+	Progress::delete_it();
 	UmlCom::message("");
 	QApplication::restoreOverrideCursor();
       }

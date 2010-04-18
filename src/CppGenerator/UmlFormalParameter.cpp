@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,15 +29,14 @@
 #include "UmlClass.h"
 
 void UmlFormalParameter::generate(QTextOStream & f_h, const char *& sep1,
-				  const char *& sep2, bool & need_space) const {
+				  const char *& sep2, BooL & need_space) const {
   f_h << sep1 << type() << ' ' << name();
   
   QCString s = defaultValue().toString();
   
   if (! s.isEmpty()) {
     f_h << " = ";
-    UmlClass::write(f_h, defaultValue());
-    need_space = (s.at(s.length() - 1) == '>');
+    UmlClass::write(f_h, defaultValue(), TRUE, &need_space);
   }
   else
     need_space = FALSE;

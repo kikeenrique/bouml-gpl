@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -104,6 +104,10 @@ class Lex {
     static QCString normalize(const QCString & s);
     static QCString read_list_elt();
     static bool finish_template(QCString &);
+    static QCString simplify_comment(QCString &);
 };
+
+bool neq(const QCString & s1, const QCString & s2);
+bool nequal(const QCString & s1, const QCString & s2);
 
 #endif

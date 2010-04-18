@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -505,7 +505,7 @@ UmlCode ArtifactCanvas::type() const {
   return UmlArtifact;
 }
 
-void ArtifactCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ArtifactCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -528,7 +528,7 @@ void ArtifactCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

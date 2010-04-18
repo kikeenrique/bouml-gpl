@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,10 @@ using namespace std;
 #include "UmlOperation.h"
 #include "UmlBaseRelation.h"
 #include "Package.h"
+
+#ifdef ROUNDTRIP
+#include "UmlArtifact.h"
+#endif
 
 QValueList<FormalParameterList> ClassContainer::empty;
 
@@ -103,6 +107,20 @@ Class * ClassContainer::define(const QCString & name,
       return cl;
     
     if (cl != 0) {
+#ifdef ROUNDTRIP
+      if (cl->is_roundtrip_expected()) {
+	// first step, was never declared, set stereotype
+	if (! cl->set_stereotype(stereotype))
+	  return 0;
+	
+	return cl;
+      }
+      else if ((cl->get_uml() != 0) &&
+	       (cl->get_uml()->associatedArtifact() != 0) &&
+	       !cl->get_uml()->associatedArtifact()->is_fully_updated())
+	// class not roundtriped but defined in the same file of a reverse file
+	return cl;
+#endif
       Lex::warn("<font color =\"red\"> " + Lex::quote(name) +
 		"</font> multiply defined");  
       return 0;    
@@ -216,9 +234,11 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
       }
     }
   }
-
+  
+  QCString normalized;
+  
   if (typespec.type == 0) {
-    QCString normalized = Lex::normalize(type);
+    normalized = Lex::normalize(type);
     
     if (!find_type(normalized, typespec) &&
 	(Namespace::current().isEmpty() ||
@@ -279,7 +299,9 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
   if ((typespec.type != 0) &&
       !typespec.type->formals().isEmpty() &&
       (type.at(type.length() - 1) == '>') &&
-      !typespec.type->inside_its_definition()) {
+      (!typespec.type->inside_its_definition() ||
+       !typespec.type->is_itself((normalized.isEmpty()) ? Lex::normalize(type)
+							: normalized))) {
     typespec.type = 0;
     typespec.explicit_type = type;
   }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "UmlDeploymentView.h"
 # ifdef ROUNDTRIP
 # include "Package.h"
+# include "Progress.h"
 # endif
 #endif
 
@@ -159,7 +160,10 @@ int UmlPackage::count_roundtriped() {
 }
 
 bool UmlPackage::set_roundtrip_expected() {
-  Package::tic();
+  if (javaDir().isEmpty())
+    package->accept_roundtrip_root();
+      
+  Progress::tic_it();
   
   const QVector<UmlItem> & ch = UmlItem::children();
   UmlItem ** v = ch.data();

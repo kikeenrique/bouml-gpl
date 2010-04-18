@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,7 +52,7 @@ class PackageCanvas : public QObject, public DiagramCanvas {
     virtual void draw(QPainter & p);
   
     virtual UmlCode type() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual void remove(bool from_model);
@@ -63,6 +63,7 @@ class PackageCanvas : public QObject, public DiagramCanvas {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual void prepare_for_move(bool on_resize);
     virtual bool move_with_its_package() const;
     virtual void change_scale();

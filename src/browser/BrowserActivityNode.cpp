@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -235,7 +235,6 @@ QString BrowserActivityNode::may_connect(const BrowserNode * dest) const {
       return TR("parameter can't accept control flow (not 'is_control')");
     else
       return 0;
-  case UmlActivityObject:
   case UmlExpansionNode:
     return (!((ActivityObjectData *) data)->get_is_control())
       ? TR("can't accept control flow (not 'is_control')")
@@ -244,6 +243,7 @@ QString BrowserActivityNode::may_connect(const BrowserNode * dest) const {
     return (!((PinData *) data)->get_is_control())
       ? TR("pin can't accept control flow (not 'is_control')")
       : 0;
+  case UmlActivityObject:
   case UmlActivityAction:
   case FlowFinalAN:
   case ActivityFinalAN:
@@ -307,10 +307,10 @@ void BrowserActivityNode::menu() {
   if (index != -1)
     s.replace(index, 1, " ");
   
-  QPopupMenu m(0, TR("Activity node"));
+  QPopupMenu m(0, "Activity node");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Edit"), 1),
@@ -328,7 +328,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 5),
 		   TR("to know who reference the <i>" + s + "</i> \
 through a flow"));
-    mark_menu(m, s, 90);
+    mark_menu(m, TR("the " + s), 90);
     ProfiledStereotypes::menu(m, this, 99990);;
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -423,6 +423,16 @@ void BrowserActivityNode::modified() {
 
 UmlCode BrowserActivityNode::get_type() const {
   return kind;
+}
+
+QString BrowserActivityNode::get_stype() const {
+  QString s = stringify(kind);
+  int index = s.find("_");
+  
+  if (index != -1)
+    s.replace(index, 1, " ");
+
+  return TR(s);
 }
 
 int BrowserActivityNode::get_identifier() const {

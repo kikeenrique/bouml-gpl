@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -157,29 +157,35 @@ int Package::file_number(QDir & d, bool rec)
 {
   int result = 0;
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
-  QFileInfoListIterator it(*list);
-  QFileInfo * fi;
   
-  while ((fi = it.current()) != 0) {
-    if (fi->extension(FALSE) == "php")
-      result += 1;
-    ++it;
+  if (list != 0) {
+    QFileInfoListIterator it(*list);
+    QFileInfo * fi;
+    
+    while ((fi = it.current()) != 0) {
+      if (fi->extension(FALSE) == "php")
+	result += 1;
+      ++it;
+    }
   }
-
+      
   if (rec) {
     // sub directories
     list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	
-	result += file_number(sd, rec);
+    if (list != 0) {
+      QFileInfoListIterator itd(*list);
+      QFileInfo * di;
+      
+      while ((di = itd.current()) != 0) {
+	if (((const char *) di->fileName())[0] != '.') {
+	  QDir sd(di->filePath());
+	  
+	  result += file_number(sd, rec);
+	}
+	++itd;
       }
-      ++itd;
-    }
+    } 
   }
   
   return result;
@@ -223,34 +229,40 @@ QString my_baseName(QFileInfo * fi)
 void Package::reverse_directory(QDir & d, bool rec) {
   // reads files
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
-  QFileInfoListIterator it(*list);
-  QFileInfo * fi;
   
-  while ((fi = it.current()) != 0) {
-    if (fi->extension(FALSE) == "php") {
-      reverse_file(QCString(fi->filePath()), QCString(my_baseName(fi)));
-      if (progress)
-	progress->tic();
-      app->processEvents();
+  if (list != 0) {
+    QFileInfoListIterator it(*list);
+    QFileInfo * fi;
+    
+    while ((fi = it.current()) != 0) {
+      if (fi->extension(FALSE) == "php") {
+	reverse_file(QCString(fi->filePath()), QCString(my_baseName(fi)));
+	if (progress)
+	  progress->tic();
+	app->processEvents();
+      }
+      ++it;
     }
-    ++it;
   }
 
   if (rec) {
     // sub directories
     list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	Package * p = find(QCString(sd.dirName()), TRUE);
-	
-	if (p != 0)
-	  p->reverse_directory(sd, TRUE);
+    if (list != 0) {
+      QFileInfoListIterator itd(*list);
+      QFileInfo * di;
+      
+      while ((di = itd.current()) != 0) {
+	if (((const char *) di->fileName())[0] != '.') {
+	  QDir sd(di->filePath());
+	  Package * p = find(QCString(sd.dirName()), TRUE);
+	  
+	  if (p != 0)
+	    p->reverse_directory(sd, TRUE);
+	}
+	++itd;
       }
-      ++itd;
     }
   }
 }

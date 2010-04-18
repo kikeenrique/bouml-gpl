@@ -93,6 +93,6 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 
 
 TARGET	      = idl_generator
-DEFINES	      = WITHIDL
+DEFINES	      = WITHIDL BooL=bool
 INCLUDEPATH   = ../Tools ../IdlGenerator
 

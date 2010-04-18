@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -198,7 +198,7 @@ void BrowserClassView::menu() {
 			   "profile")
 		    == 0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
@@ -240,7 +240,7 @@ Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, TR("class view"), 90);
+    mark_menu(m, TR("the class view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     if (! isprofile) {
@@ -253,8 +253,11 @@ Note that you can undelete them after"));
       if (cpp || java || php || python || idl) {
 	m.insertSeparator();
 	m.insertItem(TR("Generate"), &subm);
-	if (cpp)
+	if (cpp) {
 	  subm.insertItem("C++", 11);
+	  if ((edition_number == 0) && !is_read_only)
+	    roundtripm.insertItem("C++", 31);
+	}
 	if (java) {
 	  subm.insertItem("Java", 12);
 	  if ((edition_number == 0) && !is_read_only)
@@ -448,6 +451,10 @@ void BrowserClassView::exec_menu_choice(int rank) {
     if (! isprofile) 
       ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
+  case 31:
+    if (! isprofile)
+      ToolCom::run("cpp_roundtrip", this);
+    return;
   case 32:
     if (! isprofile)
       ToolCom::run("java_roundtrip", this);
@@ -577,6 +584,10 @@ void BrowserClassView::open(bool) {
 
 UmlCode BrowserClassView::get_type() const {
   return UmlClassView;
+}
+
+QString BrowserClassView::get_stype() const {
+  return TR("class view");
 }
 
 int BrowserClassView::get_identifier() const {
@@ -837,7 +848,7 @@ void BrowserClassView::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserClassView::may_contains_them(const QList<BrowserNode> & l,
-					 bool & duplicable) const {
+					 BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -1007,7 +1018,7 @@ void BrowserClassView::save(QTextStream & st, bool ref, QString & warning) {
     st << "//activity diagram settings";
     activitydiagram_settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "class_color", class_color, nl);
     save_color(st, "note_color", note_color, nl);

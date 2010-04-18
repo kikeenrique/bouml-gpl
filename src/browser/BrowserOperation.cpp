@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@
 #include "BrowserSeqDiagram.h"
 #include "BrowserColDiagram.h"
 #include "OperationData.h"
+#include "ClassData.h"
 #include "ActivityData.h"
 #include "StateData.h"
 #include "GenerationSettings.h"
@@ -238,13 +239,13 @@ bool BrowserOperation::undelete(bool rec, QString & warning, QString & renamed) 
   if (deletedp()) {
     if (get_of != 0) {
       if (get_of->deletedp()) {
-	warning += QString("<li><b>") + quote(def->definition(TRUE)) + "</b>\n";
+	warning += QString("<li><b>") + quote(def->definition(TRUE, FALSE)) + "</b>\n";
 	return FALSE;
       }
     }
     else if (set_of != 0) {
       if (set_of->deletedp()) {
-	warning += QString("<li><b>") + quote(def->definition(TRUE)) + "</b>\n";
+	warning += QString("<li><b>") + quote(def->definition(TRUE, FALSE)) + "</b>\n";
 	return FALSE;
       }
     }
@@ -493,7 +494,7 @@ void BrowserOperation::menu() {
   QPopupMenu implbym(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -718,6 +719,10 @@ UmlCode BrowserOperation::get_type() const {
   return UmlOperation;
 }
 
+QString BrowserOperation::get_stype() const {
+  return TR("operation");
+}
+
 int BrowserOperation::get_identifier() const {
   return get_ident();
 }
@@ -801,6 +806,8 @@ QString BrowserOperation::python_init_self(BrowserNode * cl)
 }
 
 bool BrowserOperation::tool_cmd(ToolCom * com, const char * args) {
+  ClassData::ToolCmd dummy;
+	
   switch ((unsigned char) args[-1]) {
   case supportFileCmd:
     com->write_string(((BrowserClass *) parent())->bodies_file());
@@ -968,6 +975,7 @@ BrowserOperation * BrowserOperation::read(char * & st, char * k,
       result = new BrowserOperation(s, parent, new OperationData(id), id);
 
       already_exist->must_change_id(all);
+      result->def->set_browser_node(result, FALSE); // because full name called to trace problem
       already_exist->unconsistent_fixed("operation", result);
     }
     else {

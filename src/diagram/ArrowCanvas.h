@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,7 +51,11 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
   protected:
     DiagramItem * begin;
     DiagramItem * end;
+
+
+
     UmlCode itstype : 8;
+
     // HV : start and point aligned horiz, true end and point aligned vert
     // HVr : true end and point aligned horiz, start and point aligned vert
     // HVH = start and point1 aligned horiz,
@@ -88,14 +92,16 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     
     virtual void setVisible( bool yes);
     virtual void moveBy(double dx, double dy);
+    void move_self_points(double dx, double dy);
     virtual void select_associated();
     virtual bool isSelected() const;
+    virtual void prepare_for_move(bool on_resize);
     
     virtual void update_pos();
     void move_outside(QRect r);
     bool cut_on_move(ArrowPointCanvas *&) const;
     virtual bool is_decenter(QPoint mousepresspos,
-			     bool & start, bool & horiz) const;
+			     BooL & start, BooL & horiz) const;
     void decenter(QPoint, bool start, bool horiz);
     void cut_self();
     virtual ArrowPointCanvas * brk(const QPoint &);
@@ -110,7 +116,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual BasicData * get_data() const;
     
     virtual UmlCode type() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void remove(bool);
     virtual int rtti() const;
     virtual QPoint center() const;
@@ -127,6 +133,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual double get_z() const;
     virtual void set_z(double z);	// only called by upper() & lower()
+    void go_up(double nz);	// only called by upper(TRUE)
     virtual bool copyable() const;
     virtual UmlCanvas * the_canvas() const;
     ArrowCanvas * next_geometry();

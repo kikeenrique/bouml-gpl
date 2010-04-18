@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -110,7 +110,7 @@ UmlCode SdContinuationCanvas::type() const {
   return UmlContinuation;
 }
 
-void SdContinuationCanvas::delete_available(bool &, bool & out_model) const {
+void SdContinuationCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -303,6 +303,10 @@ aCorner SdContinuationCanvas::on_resize_point(const QPoint & p) {
 
 void SdContinuationCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o, min_width, min_height);
+}
+
+void SdContinuationCanvas::resize(const QSize & sz, bool w, bool h) {
+  DiagramCanvas::resize(sz, w, h, min_width, min_height);
 }
 
 void SdContinuationCanvas::save(QTextStream & st, bool ref, QString &) const {

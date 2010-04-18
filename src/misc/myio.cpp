@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -296,7 +296,7 @@ const char * stringify(UmlCode c) {
     return "join";
     
   case InitialAN:
-    return "initial";
+    return "initial_node";
   case FlowFinalAN:
     return "flow_final";
   case ActivityFinalAN:
@@ -451,6 +451,8 @@ const char * stringify(ClassDrawingMode v)
   switch (v) {
   case asClass:
     return "class";
+  case asInterface:
+    return "interface";
   case asControl:
     return "control";
   case asBoundary:
@@ -811,6 +813,8 @@ ClassDrawingMode drawing_mode(const char * s)
 {
   if (!strcmp(s, "class"))
     return asClass;
+  if (!strcmp(s, "interface"))
+    return asInterface;
   if (!strcmp(s, "control"))
     return asControl;
   if (!strcmp(s, "boundary"))
@@ -1080,6 +1084,9 @@ UmlCode pseudo_state_kind(const char * s)
 UmlCode activity_node_kind(const char * s)
 {
   if (! strcmp(s, "initial"))
+    // old releases
+    return InitialAN;
+  if (! strcmp(s, "initial_node"))
     return InitialAN;
   if (! strcmp(s, "flow_final"))
     return FlowFinalAN;
@@ -1256,7 +1263,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
 void save_if_needed(const char * filename, const char * newdef)
 {
   QDir d = BrowserView::get_dir();
-  QString path = BrowserView::get_dir().absFilePath(filename);
+  QString path = d.absFilePath(filename);
   FILE * fp = fopen((const char *) path, "rb");
   bool needed;
    
@@ -1424,7 +1431,7 @@ char * read_definition(int id, const char * ext, int offset, int len)
 }
 
 void save_definition(int id, const char * ext, const char * def,
-		     bool & is_new)
+		     BooL & is_new)
 {
   QString s;
   FILE * fp;
@@ -2077,7 +2084,7 @@ void read_zwh(char * & st, QCanvasRectangle * c)
   c->setSize((int) w, (int) read_double(st));
 }
 
-void save_color(QTextStream & st, const char * s, UmlColor c, bool & nl)
+void save_color(QTextStream & st, const char * s, UmlColor c, BooL & nl)
 {
   if (c != UmlDefaultColor) {
     if (!nl) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -164,7 +164,7 @@ void BrowserComponentView::menu() {
   QPopupMenu subm(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
@@ -191,7 +191,7 @@ Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, TR("component view"), 90);
+    mark_menu(m, TR("the component view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     
     if ((edition_number == 0) &&
@@ -326,6 +326,10 @@ UmlCode BrowserComponentView::get_type() const {
   return UmlComponentView;
 }
 
+QString BrowserComponentView::get_stype() const {
+  return TR("component view");
+}
+
 int BrowserComponentView::get_identifier() const {
   return get_ident();
 }
@@ -443,7 +447,7 @@ void BrowserComponentView::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserComponentView::may_contains_them(const QList<BrowserNode> & l,
-					     bool & duplicable) const {
+					     BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -533,7 +537,7 @@ void BrowserComponentView::save(QTextStream & st, bool ref, QString & warning) {
     //st << "//component settings";
     //component_settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "component_color", component_color, nl);
     save_color(st, "note_color", note_color, nl);

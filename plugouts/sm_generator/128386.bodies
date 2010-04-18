@@ -161,8 +161,26 @@ class UmlState
       upper->defaultDef();
       upper->setComment("return the upper state");
       upper->setType(anystate, "${type} *");
-      upper->addParam(0, InputOutputDirection, "stm", machine);
+      if (upper->params().isEmpty())
+	upper->addParam(0, InputOutputDirection, "stm", machine);
       upper->setParams("${t0} &");
+      
+      // add virtual operation _do
+      UmlOperation * da;
+      
+      if (((da = (UmlOperation *) anystate->getChild(anOperation, "_do")) == 0) &&
+	  ((da = UmlBaseOperation::create(anystate, "_do")) == 0)) {
+	UmlCom::trace("Error : cannot create operation _do in class '"
+		      + anystate->name() + "'<br>");
+	throw 0;
+      }
+      da->defaultDef();
+      da->setComment("perform the 'do activity'");
+      da->setType("void", "${type}");
+      if (da->params().isEmpty())
+	da->addParam(0, InputOutputDirection, "stm", machine);
+      da->setParams("${t0} &");
+      da->set_isCppVirtual(TRUE);
       
       // add if needed classes associated to each state, and set flags
       init(machine, "", "", this);
@@ -203,6 +221,25 @@ class UmlState
 if (_current_state == 0)\n\
 (_current_state = &(*this)" + path() + ")->create(*this);\n\
 return (_current_state != 0);\n");
+      
+      // add operation doActivity
+      UmlOperation * doAct = (UmlOperation *)
+	machine->getChild(anOperation, "doActivity");
+      
+      if (doAct == 0) {
+	if ((doAct =
+	     UmlBaseOperation::create(machine, "doActivity"))
+	    == 0) {
+	  UmlCom::trace("Error : can't create operation 'doActivity' in class '"
+			+ machine->name() + "'<br>");
+	  return;
+	}
+      }
+      doAct->defaultDef();
+      doAct->setComment("to execute the current state 'do activity'");
+      doAct->setType("void", "${type}");
+      doAct->set_CppBody("  _current_state->_do(*this);\n");
+      doAct->set_Visibility(PublicVisibility);
       
       // add if needed operation _set_currentState
       UmlOperation * set_currentState = (UmlOperation *)
@@ -397,6 +434,7 @@ return (_current_state != 0);\n");
 	     "\tputs(\"DEBUG : execute do behavior of " + _pretty_path + "\");\n"
 	     "#endif\n");
     da->set_CppBody(s);
+    da->set_isCppVirtual(TRUE);
   }
 
   // adds operation _upper()

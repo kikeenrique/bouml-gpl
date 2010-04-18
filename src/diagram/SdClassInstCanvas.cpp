@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "BrowserDiagram.h"
 #include "BrowserClass.h"
 #include "BrowserClassInstance.h"
+#include "SdLifeLineCanvas.h"
 #include "ClassInstanceData.h"
 #include "UmlCanvas.h"
 #include "ClassData.h"
@@ -116,6 +117,8 @@ void SdClassInstCanvas::compute_size() {
       used_drawing_mode = asBoundary;
     else if (!strcmp(st, "actor"))
       used_drawing_mode = asActor;
+    else if (!strcmp(st, "interface"))
+      used_drawing_mode = asInterface;
     else
       used_drawing_mode = asClass;
   }
@@ -135,13 +138,17 @@ void SdClassInstCanvas::compute_size() {
     h = fm.height() + delta;
     
     switch (used_drawing_mode) {
-    case asEntity:
-      minw = (int) (ENTITY_SIZE * zoom);
+    case asInterface:
+      minw = (int) (INTERFACE_SIZE * zoom);
       h += minw;
       break;
     case asControl:
       minw = (int) (CONTROL_WIDTH * zoom);
       h += (int) (CONTROL_HEIGHT * zoom);
+      break;
+    case asEntity:
+      minw = (int) (ENTITY_SIZE * zoom);
+      h += minw;
       break;
     case asBoundary:
       minw = (int) (BOUNDARY_WIDTH * zoom);
@@ -198,13 +205,17 @@ void SdClassInstCanvas::draw(QPainter & p) {
       double zoom = the_canvas()->zoom();
       
       switch (used_drawing_mode) {
-      case asEntity:
-	DiagramCanvas::draw_entity_icon(p, r, used_color, zoom);
-	r.setTop(r.top() + (int) (ENTITY_SIZE * zoom));
+      case asInterface:
+	DiagramCanvas::draw_interface_icon(p, r, used_color, zoom);
+	r.setTop(r.top() + (int) (INTERFACE_SIZE * zoom));
 	break;
       case asControl:
 	DiagramCanvas::draw_control_icon(p, r, used_color, zoom);
 	r.setTop(r.top() + (int) (CONTROL_HEIGHT * zoom));
+	break;
+      case asEntity:
+	DiagramCanvas::draw_entity_icon(p, r, used_color, zoom);
+	r.setTop(r.top() + (int) (ENTITY_SIZE * zoom));
 	break;
       case asBoundary:
 	DiagramCanvas::draw_boundary_icon(p, r, used_color, zoom);
@@ -292,7 +303,7 @@ BrowserClass* SdClassInstCanvas::get_class() const {
   return (BrowserClass*) get_type();
 }
 
-void SdClassInstCanvas::delete_available(bool & in_model, bool & out_model) const {
+void SdClassInstCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   if (browser_node->get_type() == UmlClass)
     in_model |= browser_node->is_writable();
@@ -326,6 +337,12 @@ void SdClassInstCanvas::menu(const QPoint&) {
     m.insertItem(TR("Become immortal"), 3);
   else
     m.insertItem(TR("Become mortal"), 4);
+  if (life_line) {
+    if (life_line->is_masked())
+      m.insertItem(TR("Show life line"), 15);
+    else if (life_line->can_be_masked())
+      m.insertItem(TR("Hide life line"), 15);
+  }
   m.insertSeparator();
   m.insertItem(TR("Edit drawing settings"), 5);
   m.insertSeparator();
@@ -437,6 +454,10 @@ void SdClassInstCanvas::menu(const QPoint&) {
       modified();	// call package_modified
       return;
     }
+  case 15:
+    life_line->set_masked(!life_line->is_masked());
+    modified();	// call package_modified()
+    return;
   default:
     return;
   }
@@ -581,6 +602,11 @@ SdClassInstCanvas * SdClassInstCanvas::read(char * & st, UmlCanvas * canvas, cha
     
     result->iname = read_string(st);
     result->compute_size();
+    if ((read_file_format() < 72) &&
+	(result->used_drawing_mode == asInterface)) {
+      result->drawing_mode = asClass;
+      result->compute_size();
+    }
     result->SdObjCanvas::read(st, read_keyword(st));
     result->show();
     
@@ -612,7 +638,14 @@ SdClassInstCanvas * SdClassInstCanvas::read(char * & st, UmlCanvas * canvas, cha
     if (result->get_type() != 0) {
       // not a deleted instance
       result->compute_size();
+      if ((read_file_format() < 72) &&
+	  (result->used_drawing_mode == asInterface)) {
+	result->drawing_mode = asClass;
+	result->compute_size();
+      }
       result->set_center100();
+      if (result->life_line)
+	result->life_line->update_pos();
       result->show();
       result->check_stereotypeproperties();
     }

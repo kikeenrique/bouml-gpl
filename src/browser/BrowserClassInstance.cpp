@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -251,15 +251,10 @@ void BrowserClassInstance::compute_referenced_by(QList<BrowserNode> & l,
 }
 
 void BrowserClassInstance::menu() {
-  QString t = name;
-  
-  if (t.isEmpty())
-    t = TR("Class instance");
-  
-  QPopupMenu m(0, t);
+  QPopupMenu m(0, "class instance");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(t, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -279,7 +274,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>class instance</i> \
 through a relation"));
-    mark_menu(m, TR("class instance"), 90);
+    mark_menu(m, TR("the class instance"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -365,6 +360,10 @@ void BrowserClassInstance::open(bool force_edit) {
 
 UmlCode BrowserClassInstance::get_type() const {
   return UmlClassInstance;
+}
+
+QString BrowserClassInstance::get_stype() const {
+  return TR("class instance");
 }
 
 int BrowserClassInstance::get_identifier() const {

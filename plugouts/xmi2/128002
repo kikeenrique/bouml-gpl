@@ -1,6 +1,6 @@
-format 70
+format 73
 "Aux" // Aux
-  revision 55
+  revision 58
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -43,6 +43,46 @@ format 70
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 128002 // Aux
+    class 160387 "ControlOrData"
+      visibility protected stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 135299 "Unset"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135427 "IsControl"
+	public type class_ref 160387 // ControlOrData
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135555 "IsData"
+	public type class_ref 160387 // ControlOrData
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
     class 132738 "FileOut"
       visibility package 
       cpp_decl "${comment}${template}class ${name} : public QTextStream {
@@ -1034,6 +1074,29 @@ ${module_end}
 "
       associated_classes
 	class_ref 133122 // Language
+      end
+    end
+
+    artifact 128008 "ControlOrData"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 160387 // ControlOrData
       end
     end
   end

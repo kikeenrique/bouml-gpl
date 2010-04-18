@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -314,14 +314,16 @@ void ActivityObjectDialog::menu_type() {
 	
 	if ((index = list.findIndex(s)) == -1) {
 	  // new class, may be created through an other dialog
-	  index = 0;
 	  QStringList::Iterator iter = list.begin();
 	  QStringList::Iterator iter_end = list.end();
+	  
+	  index = 0;
 	  
 	  while ((iter != iter_end) && (*iter < s)) {
 	    ++iter;
 	    index += 1;
 	  }
+	  
 	  nodes.insert((unsigned) index, bn);
 	  list.insert(iter, s);
 	  edtype->insertItem(s, index + offset);

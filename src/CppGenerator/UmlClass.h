@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,7 +63,7 @@ class UmlClass : public UmlBaseClass {
 			       QTextOStream & f_h,
 			       const QCString & cl_stereotype,
 			       QCString indent,
-			       bool & first, bool last);
+			       BooL & first, bool last);
     void generate_def(QTextOStream & f, QCString indent, bool h);
     virtual void generate_def(QTextOStream & f, QCString indent, bool h,
 			      QCString templates, QCString cl_names,
@@ -78,10 +78,12 @@ class UmlClass : public UmlBaseClass {
 	      QCString & templates_tmplop, QCString & names_tmplop);
     QCString decl();
     
-    void write(QTextOStream &, bool with_formals = TRUE, 
+    void write(QTextOStream &, bool with_formals = TRUE,
+	       BooL * is_template = 0,
 	       const QValueList<UmlActualParameter> & actuals = noactuals);
     static void write(QTextOStream &, const UmlTypeSpec &,
-		      bool with_formals = TRUE);
+		      bool with_formals = TRUE,
+		      BooL * is_template = 0);
 };
 
 #endif

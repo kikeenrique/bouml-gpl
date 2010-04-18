@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -213,7 +213,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 	
 	if ((cl != 0) && !actuals.isEmpty()) {
 	  QValueList<UmlActualParameter>::ConstIterator ita;
-	  bool need_space = FALSE;
+	  BooL need_space = FALSE;
     
 	  for (ita = actuals.begin(); ita != actuals.end(); ++ita)
 	    if ((*ita).superClass() == cl)
@@ -239,7 +239,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 	
 	aVisibility current_visibility = DefaultVisibility;
 	unsigned max = sup - 1;
-	bool first = TRUE;
+	BooL first = TRUE;
 	
 	for (index = 0; index < sup; index += 1) {
 	  UmlItem * it = ch[index];
@@ -271,7 +271,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
       if (!formals.isEmpty()) {
 	sep = "template<";
 	const char * sep2 = "<";
-	bool need_space = FALSE;
+	BooL need_space = FALSE;
 	
 	QValueList<UmlFormalParameter>::ConstIterator itf;
 	
@@ -313,7 +313,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
       current_visibility = ((stereotype == "struct") || (stereotype == "union"))
 	? PublicVisibility : DefaultVisibility;
       unsigned last = sup - 1;
-      bool first = TRUE;
+      BooL first = TRUE;
       
       for (index = 0; index != sup; index += 1) {
 	UmlItem * it = ch[index];
@@ -365,7 +365,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 
 void UmlClass::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 			     const QCString &, QCString indent,
-			     bool & first, bool) {
+			     BooL & first, bool) {
   generate_visibility(current_visibility, f_h, first, indent);
   first = FALSE;
   
@@ -503,21 +503,28 @@ QCString UmlClass::decl() {
 }
 
 void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t,
-		     bool with_formals)
+		     bool with_formals, BooL * is_template)
 {
   if (t.type != 0)
-    t.type->write(f, with_formals);
-  else
-    f << CppSettings::type(t.explicit_type);
+    t.type->write(f, with_formals, is_template);
+  else {
+    QCString s = CppSettings::type(t.explicit_type);
+    
+    f << s;
+    
+    if (is_template != 0)
+      *is_template = (!s.isEmpty() && (s.at(s.length() - 1) == '>'));
+  }
+	
 }
 
-void UmlClass::write(QTextOStream & f, bool with_formals, 
+void UmlClass::write(QTextOStream & f, bool with_formals, BooL * is_template,
 		     const QValueList<UmlActualParameter> & actuals) {
   if (context.findRef(this) == -1) {
     if (parent()->kind() == aClass) {
       if (context.findRef((UmlClass *) parent()) == -1) {
 	// parent cannot have formals, but may have actuals
-	((UmlClass *) parent())->write(f, FALSE, actuals);
+	((UmlClass *) parent())->write(f, FALSE, 0, actuals);
 	f << "::";
       }
     }
@@ -533,8 +540,11 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
     }
   }
   
+  QCString s;
+  
   if (isCppExternal()) {
-    QCString s = cppDecl();
+    s = cppDecl();
+    
     int index = s.find('\n');
     
     s = (index == -1) ? s.stripWhiteSpace()
@@ -548,11 +558,18 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
       s.replace(index, 7, name().upper());
     else if ((index = s.find("${nAME}")) != -1)
       s.replace(index, 7, name().lower());
-    
-    f << s;
   }
   else 
-    f << name();	// true_name
+    s = name();	// true_name
+  
+  if (! s.isEmpty()){
+    f << s;
+    
+    if (is_template != 0)
+      *is_template = (s.at(s.length() - 1) == '>');
+  }
+  else if (is_template != 0)
+    *is_template = FALSE;
     
   if (with_formals) {
     QValueList<UmlFormalParameter> formals = this->formals();
@@ -567,11 +584,14 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
       }
       
       f << '>';
+      
+      if (is_template != 0)
+	*is_template = TRUE;
     }
   }
   else if (!actuals.isEmpty()) {
     QValueList<UmlActualParameter>::ConstIterator ita;
-    bool need_space = FALSE;
+    BooL need_space = FALSE;
     bool used = FALSE;
     
     for (ita = actuals.begin(); ita != actuals.end(); ++ita) {
@@ -586,6 +606,9 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
 	f << " >";
       else
 	f << '>';
+      
+      if (is_template != 0)
+	*is_template = TRUE;
     }
   }
 }

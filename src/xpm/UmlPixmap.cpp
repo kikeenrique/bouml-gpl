@@ -31,6 +31,10 @@ QPixmap * realizeButton;
 QPixmap * syncmsgButton;
 QPixmap * syncselfmsgButton;
 QPixmap * asyncselfmsgButton;
+QPixmap * lostsyncmsgButton;
+QPixmap * foundsyncmsgButton;
+QPixmap * lostasyncmsgButton;
+QPixmap * foundasyncmsgButton;
 QPixmap * returnmsgButton;
 QPixmap * selfreturnmsgButton;
 QPixmap * selflinkButton;
@@ -336,6 +340,10 @@ void init_pixmaps()
 #include "syncmsg_button.xpm"
 #include "syncselfmsg_button.xpm"
 #include "asyncselfmsg_button.xpm"
+#include "lostsyncmsg_button.xpm"
+#include "foundsyncmsg_button.xpm"
+#include "lostasyncmsg_button.xpm"
+#include "foundasyncmsg_button.xpm"
 #include "returnmsg_button.xpm"
 #include "selfreturnmsg_button.xpm"
 #include "selflink_button.xpm"
@@ -399,6 +407,10 @@ void init_pixmaps()
   syncmsgButton = new QPixmap((const char **) syncmsg_button);
   syncselfmsgButton = new QPixmap((const char **) syncselfmsg_button);
   asyncselfmsgButton = new QPixmap((const char **) asyncselfmsg_button);
+  lostsyncmsgButton = new QPixmap((const char **) lostsyncmsg_button);
+  foundsyncmsgButton = new QPixmap((const char **) foundsyncmsg_button);
+  lostasyncmsgButton = new QPixmap((const char **) lostasyncmsg_button);
+  foundasyncmsgButton = new QPixmap((const char **) foundasyncmsg_button);
   returnmsgButton = new QPixmap((const char **) returnmsg_button);
   selfreturnmsgButton = new QPixmap((const char **) selfreturnmsg_button);
   selflinkButton = new QPixmap((const char **) selflink_button);

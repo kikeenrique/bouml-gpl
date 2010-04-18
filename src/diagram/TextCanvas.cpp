@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -96,11 +96,13 @@ UmlCode TextCanvas::type() const {
 }
 
 void TextCanvas::open() {
+  static QSize sz;
+  
   // warning : 'note' is already unicode
   QString s = fromUnicode(text);
   bool created = s.isEmpty();
   
-  MLEDialog::get(s, QCursor::pos());
+  MLEDialog::get(s, QCursor::pos(), sz);
   
   if (s.isEmpty())
     delete_it();
@@ -123,7 +125,7 @@ void TextCanvas::open() {
   package_modified();
 }
 
-void TextCanvas::delete_available(bool &, bool & out_model) const {
+void TextCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -280,6 +282,12 @@ void TextCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   int min = (int) (TEXT_CANVAS_MIN_SIZE * the_canvas()->zoom());
   
   DiagramCanvas::resize(c, dx, dy, o, min, min);
+}
+
+void TextCanvas::resize(const QSize & sz, bool w, bool h) {
+  int min = (int) (TEXT_CANVAS_MIN_SIZE * the_canvas()->zoom());
+  
+  DiagramCanvas::resize(sz, w, h, min, min);
 }
 
 void TextCanvas::save(QTextStream & st, bool ref, QString &) const {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -204,7 +204,7 @@ void ActivityPartitionCanvas::modified() {
   update_show_lines();
   check_stereotypeproperties();
   canvas()->update();
-  force_sub_inside();
+  force_sub_inside(FALSE);
   package_modified();
 }
 
@@ -219,48 +219,35 @@ void ActivityPartitionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
 			(int) (ACTIVITY_PARTITION_CANVAS_MIN_SIZE * zoom),
 			(int) (ACTIVITY_PARTITION_CANVAS_MIN_SIZE * zoom));
   
-  force_sub_inside();
+  force_sub_inside(FALSE);
+}
+
+void ActivityPartitionCanvas::resize(const QSize & sz, bool w, bool h) {
+  double zoom = the_canvas()->zoom();
+  
+  if (DiagramCanvas::resize(sz, w, h,
+			    (int) (ACTIVITY_PARTITION_CANVAS_MIN_SIZE * zoom),
+			    (int) (ACTIVITY_PARTITION_CANVAS_MIN_SIZE * zoom)))
+    force_sub_inside(FALSE);
 }
 
 bool ActivityPartitionCanvas::move_with_its_package() const {
   return TRUE;
 }
 
-void ActivityPartitionCanvas::force_sub_inside() {
+void ActivityPartitionCanvas::force_sub_inside(bool resize_it) {
   // update sub nodes position to be inside of the activity region
+  // or resize it to contains sub elts if resize_it
   QCanvasItemList all = canvas()->allItems();
-  QCanvasItemList::Iterator cit;
+  BooL need_sub_upper = FALSE;
   
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible() && !(*cit)->selected()) {
-      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
-      
-      if ((di != 0) &&
-	  (di->get_bn() != 0) &&
-	  (((BrowserNode *) di->get_bn())->parent() == browser_node))
-	ActivityContainerCanvas::force_inside(di, *cit);
-    }
-  }
-}
-
-void ActivityPartitionCanvas::force_inside() {
-  // if its parent is present, force inside it  
-  QCanvasItemList all = the_canvas()->allItems();
-  QCanvasItemList::Iterator cit;
-  BrowserNode * parent = (BrowserNode *) browser_node->parent();
-
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible()) {
-      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
-      
-      if ((di != 0) &&
-	  IsaActivityContainer(di->type(), TRUE) &&
-	  (((ActivityContainerCanvas *) di)->get_bn() == parent)) {
-	((ActivityContainerCanvas *) di)->force_inside(this, this);
-	break;
-      }
-    }
-  }
+  if (resize_it)
+    resize_to_contain(all, need_sub_upper);
+  else
+    ActivityContainerCanvas::force_sub_inside(all, need_sub_upper);
+  
+  if (need_sub_upper)
+    force_sub_upper(all);
 }
 
 void ActivityPartitionCanvas::draw(QPainter & p) {
@@ -361,7 +348,7 @@ UmlCode ActivityPartitionCanvas::type() const {
   return UmlActivityPartition;
 }
 
-void ActivityPartitionCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ActivityPartitionCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -383,7 +370,7 @@ void ActivityPartitionCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

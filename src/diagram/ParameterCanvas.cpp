@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -195,6 +195,16 @@ void ParameterCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   check_position();	// theorically useless
 }
 
+void ParameterCanvas::resize(const QSize & sz, bool w, bool h) {
+  double zoom = the_canvas()->zoom();
+  
+  if (DiagramCanvas::resize(sz, w, h,
+			    (int) (PARAMETER_CANVAS_MIN_WIDTH * zoom),
+			    (int) (PARAMETER_CANVAS_MIN_HEIGHT * zoom),
+			    TRUE, TRUE))
+    check_position();	// theorically useless
+}
+
 void ParameterCanvas::change_scale() {
   // does nothing, made by do_change_scale called by 
   // ActivityCanvas::change_scale()
@@ -308,7 +318,7 @@ void ParameterCanvas::menu(const QPoint &) {
   BrowserClass * cl =
     ((ParameterData *) browser_node->get_data())->get_type().type;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

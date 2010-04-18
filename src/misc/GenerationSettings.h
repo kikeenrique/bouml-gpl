@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -208,6 +208,9 @@ class GenerationSettings {
     static IncludesSpec java_imports;
     static IncludesSpec python_imports;
     static QString php_extension;
+    static bool php_include_with_path;
+    static bool php_relative_path;
+    static bool php_root_relative_path;
     static QString python_extension;
     static QString idl_extension;
     static IncludesSpec idl_includes;

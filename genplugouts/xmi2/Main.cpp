@@ -15,14 +15,14 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
       // warning : update release number in UmlPackage::xmi !
-      UmlCom::trace("<b>Xmi 2.1 generator</b> release 1.12<br>");
+      UmlCom::trace("<b>Xmi 2.1 generator</b> release 1.13<br>");
       UmlCom::targetItem()->xmi(argc - 2, argv + 1);
     }
     catch (...) {
     }
 
     // must be called to cleanly inform that all is done
-    UmlCom::bye();
+    UmlCom::bye(0);
   }
   
   UmlCom::close();

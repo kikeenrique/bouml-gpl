@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,6 +63,7 @@ class ActivityDialog : public QTabDialog {
     QComboBox * edstereotype;
     QComboBox * edspecification;
     MultiLineEdit * comment;
+    MultiLineEdit * constraint;
     QList<BodyDialog> edits;
     QCheckBox * readonly_cb;
     QCheckBox * singlexec_cb;
@@ -77,6 +78,7 @@ class ActivityDialog : public QTabDialog {
     static QSize previous_size;
   
     static void post_edit_description(ActivityDialog * d, QString s);
+    static void post_edit_constraint(ActivityDialog * d, QString s);
   
   public:
     ActivityDialog(ActivityData * r);
@@ -91,6 +93,7 @@ class ActivityDialog : public QTabDialog {
   
     void menu_specification();
     void edit_description();
+    void edit_constraint();
 
     void change_tabs(QWidget *);
 };

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -76,7 +76,7 @@ void UmlItem::manage_description(const char *& p, const char *& pp) {
   p = the_comment;
 }
 
-void UmlItem::manage_docstring(const char *& p, const char *& pp, bool & indent_needed,
+void UmlItem::manage_docstring(const char *& p, const char *& pp, BooL & indent_needed,
 			       QCString & indent, QCString & saved_indent)
 {
   static QCString the_comment;
@@ -121,7 +121,7 @@ void UmlItem::manage_docstring(const char *& p, const char *& pp, bool & indent_
 }
 
 void UmlItem::manage_alias(const char *& p, QTextOStream & ts,
-			   QCString indent, bool & indent_needed) {
+			   QCString indent, BooL & indent_needed) {
   if (indent_needed) {
     indent_needed = FALSE;
     ts << indent;

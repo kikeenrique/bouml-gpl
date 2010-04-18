@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@ PackageData::PackageData(PackageData * model)
 
   cpp_namespace = model->cpp_namespace;
   java_package = model->java_package;
+  php_namespace = model->php_namespace;
   python_package = model->python_package;
   idl_module = model->idl_module;
 }
@@ -78,6 +79,7 @@ void PackageData::send_java_def(ToolCom * com) {
 
 void PackageData::send_php_def(ToolCom * com) {
   com->write_string(php_dir);
+  //com->write_string(php_namespace);
 }
 
 void PackageData::send_python_def(ToolCom * com) {
@@ -118,6 +120,9 @@ bool PackageData::tool_cmd(ToolCom * com, const char * args,
       case setPhpDirCmd:
 	php_dir = args;
 	break;
+      //case setPhpNamespaceCmd:
+	//php_namespace = args;
+	//break;
       case setPythonDirCmd:
 	python_dir = args;
 	break;
@@ -181,6 +186,11 @@ void PackageData::save(QTextStream & st, QString & warning) const {
     st << "php_dir ";
     save_string(php_dir, st);
   }
+  if (!php_namespace.isEmpty()) {
+    nl_indent(st);
+    st << "php_namespace ";
+    save_string(php_namespace, st);
+  }
   if (!python_dir.isEmpty()) {
     nl_indent(st);
     st << "python_dir ";
@@ -228,6 +238,10 @@ void PackageData::read(char * & st, char * & k) {
   }
   if (!strcmp(k, "php_dir")) {
     php_dir = read_string(st);
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "php_namespace")) {
+    php_namespace = read_string(st);
     k = read_keyword(st);
   }
   if (!strcmp(k, "python_dir")) {

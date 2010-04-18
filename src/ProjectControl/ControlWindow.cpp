@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -228,34 +228,37 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
 			  : "Can't create directory 'all.lock'");
   else {
     const QFileInfoList * l = dir.entryInfoList("*.lock");
-    QListIterator<QFileInfo> it(*l);
-    QFileInfo * fi;
-    QString ids;
     
-    while ((fi = it.current()) != 0) {
-      if (fi->isDir() && (my_baseName(*fi) != "all"))
-	ids += " " + my_baseName(*fi);
-      ++it;
-    }
+    if (l != 0)  {
+      QListIterator<QFileInfo> it(*l);
+      QFileInfo * fi;
+      QString ids;
+      
+      while ((fi = it.current()) != 0) {
+	if (fi->isDir() && (my_baseName(*fi) != "all"))
+	  ids += " " + my_baseName(*fi);
+	++it;
+      }
     
-    if (! ids.isEmpty()) {
-      QMessageBox::critical(0, "Control project", 
-			    "The project is edited by the users having these IDs :" + ids);
-      dir.rmdir("all.lock");
+      if (! ids.isEmpty()) {
+	QMessageBox::critical(0, "Control project", 
+			      "The project is edited by the users having these IDs :" + ids);
+	dir.rmdir("all.lock");
+	return;
+      }
     }
-    else {
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      browser->set_project(dir);
-      browser->get_project()->setOpen(TRUE);
-      
-      bool r = browser->get_project()->load(dir);
-      
-      QApplication::restoreOverrideCursor();
-      
-      if (! r)
-	browser->close();
-      // note : all.lock will be deleted by BrowserView
-    }
+
+    QApplication::setOverrideCursor(Qt::waitCursor);
+    browser->set_project(dir);
+    browser->get_project()->setOpen(TRUE);
+    
+    bool r = browser->get_project()->load(dir);
+    
+    QApplication::restoreOverrideCursor();
+    
+    if (! r)
+      browser->close();
+    // note : all.lock will be deleted by BrowserView
   }
 }
 
@@ -296,7 +299,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.3</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.4</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

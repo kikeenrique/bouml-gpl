@@ -26,6 +26,28 @@ void UmlActivity::write(FileOut & out) {
   out << ">\n";
   out.indent(+1); 
   
+  QCString s = constraint();
+  
+  if (! s.isEmpty()) {
+    out.indent();
+    out << "<ownedRule xmi:type=\"uml:Constraint\"";
+    out.id_prefix(this, "CONSTRAINT_");
+    out.ref(this, "constrainedElement");
+    out << ">\n";
+    out.indent();
+    out << "\t<specification xmi:type=\"uml:OpaqueExpression\"";
+    out.id_prefix(this, "CSPEC_");
+    out << ">\n";
+    out.indent();
+    out << "\t\t<body>";
+    out.quote(s);
+    out << "</body>\n";
+    out.indent();
+    out << "\t</specification>\n";
+    out.indent();
+    out << "</ownedRule>\n";
+  }
+  
   write_description_properties(out); 
   
   switch  (_lang) {

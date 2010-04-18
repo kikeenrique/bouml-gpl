@@ -7,7 +7,7 @@
 #include <qhbox.h>
 #include <qcheckbox.h>
 
-Dialog::Dialog(bool & rec, char & lang) : QDialog(0, 0, TRUE), _rec(rec), _lang(lang) {
+Dialog::Dialog(BooL & rec, char & lang) : QDialog(0, 0, TRUE), _rec(rec), _lang(lang) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBox * htab;
   

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -68,6 +68,7 @@ ActivityActionData::ActivityActionData(ActivityActionData * model, BrowserNode *
   uml_condition = model->uml_condition;
   cpp_condition = model->cpp_condition;
   java_condition = model->java_condition;
+  constraint = model->constraint;
 }
 
 ActivityActionData::ActivityActionData(UmlActionKind k) {
@@ -132,6 +133,8 @@ void ActivityActionData::send_uml_def(ToolCom * com, BrowserNode * bn,
 				      const QString & comment) {
   SimpleData::send_uml_def(com, bn, comment);
   uml_condition.send_def(com);
+  if (com->api_format() >= 53)
+    com->write_string(constraint);
   action->send_def(com, UmlView);
 }
 
@@ -170,6 +173,9 @@ bool ActivityActionData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setJavaExitBehaviorCmd:
 	java_condition.second = args;
+	break;
+      case setConstraintCmd:
+	constraint = args;
 	break;
       default:
 	if (! action->tool_cmd(com, args))
@@ -275,6 +281,11 @@ void ActivityActionData::save(QTextStream & st, QString & warning) const {
   cpp_condition.save(st, "pre_cpp", "post_cpp");
   java_condition.save(st, "pre_java", "post_java");
   nl_indent(st);
+  if (!constraint.isEmpty()) {
+    st << "constraint ";
+    save_string(constraint, st);
+    nl_indent(st);
+  }
   st << stringify(action->kind());
   action->save(st, warning);
 }
@@ -284,6 +295,13 @@ void ActivityActionData::read(char * & st, char * & k) {
   uml_condition.read(st, k, "pre_uml", "post_uml");	// updates k
   cpp_condition.read(st, k, "pre_cpp", "post_cpp");	// updates k
   java_condition.read(st, k, "pre_java", "post_java");	// updates k
+  
+  if (!strcmp(k, "constraint")) {
+    constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    constraint = "";
   
   UmlActionKind kind = activity_action_kind(k);
   
@@ -440,13 +458,13 @@ QString OpaqueAction::str(DrawingLanguage lang, QString name) const {
   
   switch (lang) {
   case UmlView:
-    s = (const char *) uml_behavior;
+    s = uml_behavior.MyStr::operator QString();
     break;
   case CppView:
-    s = (const char *) cpp_behavior;
+    s = cpp_behavior.MyStr::operator QString();
     break;
   case JavaView:
-    s = (const char *) java_behavior;
+    s = java_behavior.MyStr::operator QString();
     break;
   default:
     // means : don t write definition

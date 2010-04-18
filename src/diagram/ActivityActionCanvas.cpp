@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,6 +63,7 @@ ActivityActionCanvas::ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
   browser_node = bn;
   pre = 0;
   post = 0;
+  constraint = 0;
   show_opaque_action_definition = UmlDefaultState;
   itscolor = UmlDefaultColor;
 
@@ -70,7 +71,7 @@ ActivityActionCanvas::ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
   
   check_pins();
   check_parametersets();
-  check_conditions();
+  check_conditions_constraint();
   check_stereotypeproperties();
 
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -89,6 +90,7 @@ ActivityActionCanvas::ActivityActionCanvas(UmlCanvas * canvas, int id)
   browser_node = 0;
   pre = 0;
   post = 0;
+  constraint = 0;
   itscolor = UmlDefaultColor;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -120,6 +122,8 @@ void ActivityActionCanvas::delete_it() {
     pre->delete_it();
   if (post != 0)
     post->delete_it();
+  if (constraint != 0)
+    constraint->delete_it();
 }
 
 void ActivityActionCanvas::deleted() {
@@ -180,7 +184,7 @@ void ActivityActionCanvas::update() {
   check_parameter_sets_position();
 }
 
-void ActivityActionCanvas::force_inside() {
+bool ActivityActionCanvas::force_inside() {
   // if its parent is present, force inside it
   
   QCanvasItemList all = the_canvas()->allItems();
@@ -195,10 +199,12 @@ void ActivityActionCanvas::force_inside() {
 	  IsaActivityContainer(di->type()) &&
 	  (((ActivityContainerCanvas *) di)->get_bn() == parent)) {
 	((ActivityContainerCanvas *) di)->force_inside(this, this);
-	break;
+	return TRUE;
       }
     }
   }
+  
+  return FALSE;
 }
 
 void ActivityActionCanvas::moveBy(double dx, double dy) {
@@ -221,6 +227,8 @@ void ActivityActionCanvas::moveBy(double dx, double dy) {
     pre->moveBy(dx, dy);
   if ((post != 0) && !post->selected())
     post->moveBy(dx, dy);
+  if ((constraint != 0) && !constraint->selected())
+    constraint->moveBy(dx, dy);
 }
 
 void ActivityActionCanvas::check_parameter_sets_position() {
@@ -262,7 +270,7 @@ void ActivityActionCanvas::modified() {
     draw_all_flows();
     draw_all_simple_relations();
   }
-  check_conditions();
+  check_conditions_constraint();
   check_stereotypeproperties();
   canvas()->update();
   package_modified();
@@ -288,6 +296,15 @@ void ActivityActionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
 			(int) (ACTIVITYACTION_MIN_SIZE * zoom));
   
   force_pins_arround();
+}
+
+void ActivityActionCanvas::resize(const QSize & sz, bool w, bool h) {
+  double zoom = the_canvas()->zoom();
+  
+  if (DiagramCanvas::resize(sz, w, h,
+			    (int) (ACTIVITYACTION_MIN_SIZE * zoom),
+			    (int) (ACTIVITYACTION_MIN_SIZE * zoom)))
+    force_pins_arround();
 }
 
 bool ActivityActionCanvas::move_with_its_package() const {
@@ -391,7 +408,7 @@ void ActivityActionCanvas::check_pins() {
   }
 }
 
-void ActivityActionCanvas::check_conditions() {
+void ActivityActionCanvas::check_conditions_constraint() {
   // update must be called before
   if (used_settings.show_infonote == UmlYes) {
     ActivityActionData * data = (ActivityActionData *) browser_node->get_data();
@@ -447,6 +464,27 @@ void ActivityActionCanvas::check_conditions() {
       else
 	post->set(s);
     }
+
+    s = data->get_constraint();
+
+    if (s.isEmpty()) {
+      if (constraint != 0) {
+	constraint->delete_it();
+	constraint = 0;
+      }
+    }
+    else {
+      if (constraint == 0) {
+	constraint = new InfoCanvas(the_canvas(), this, s);
+	constraint->upper();
+	constraint->move(x() + width() + margin, y());
+	constraint->show();
+	(new ArrowCanvas(the_canvas(), this, constraint, UmlAnchor, 0, FALSE, -1.0, -1.0))
+	  ->show();
+      }
+      else
+	constraint->set(s);
+    }
   }
   else {
     if (pre != 0) {
@@ -456,6 +494,10 @@ void ActivityActionCanvas::check_conditions() {
     if (post != 0) {
       post->delete_it();
       post = 0;
+    }
+    if (constraint != 0) {
+      constraint->delete_it();
+      constraint = 0;
     }
   }
 }
@@ -720,7 +762,7 @@ UmlCode ActivityActionCanvas::type() const {
   return UmlActivityAction;
 }
 
-void ActivityActionCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ActivityActionCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -739,23 +781,10 @@ void ActivityActionCanvas::open() {
 
 void ActivityActionCanvas::menu(const QPoint&) {
   ActivityActionData * data = (ActivityActionData *) browser_node->get_data();
-  QString s = browser_node->get_name();
-  int index;
-  
-  if (s.isEmpty()) {
-    s = stringify(data->get_action_kind());
-    index = 0;
-    
-    while ((index = s.find("_")) != -1)
-      s.replace(index, 1, " ");
-    
-    s = TR(s);
-  }
-
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(data->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable() && data->may_add_pin()) {
     m.insertItem(TR("Add pin"), 7);
@@ -808,6 +837,8 @@ void ActivityActionCanvas::menu(const QPoint&) {
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivityAction, 20))
     m.insertItem(TR("Tool"), &toolm);
+
+  int index;
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -1049,6 +1080,11 @@ void ActivityActionCanvas::save(QTextStream & st, bool ref, QString & warning) c
       st << "post ";
       post->save(st, FALSE, warning);
     }
+    if (constraint != 0) {
+      nl_indent(st);
+      st << "constraint ";
+      constraint->save(st, FALSE, warning);
+    }
     
     save_stereotype_property(st, warning);
 
@@ -1116,6 +1152,11 @@ ActivityActionCanvas * ActivityActionCanvas::read(char * & st, UmlCanvas * canva
       result->post = InfoCanvas::read(st, canvas, k, result);
       k = read_keyword(st);
     }
+    if (! strcmp(k, "constraint")) {
+      k = read_keyword(st);
+      result->constraint = InfoCanvas::read(st, canvas, k, result);
+      k = read_keyword(st);
+    }
 
     result->read_stereotype_property(st, k);	// updates k
     
@@ -1124,7 +1165,7 @@ ActivityActionCanvas * ActivityActionCanvas::read(char * & st, UmlCanvas * canva
 
     result->check_pins();
     result->check_parametersets();
-    result->check_conditions();
+    result->check_conditions_constraint();
     result->check_stereotypeproperties();
     
     if (canvas->paste())

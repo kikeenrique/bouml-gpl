@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,13 +31,29 @@
 #include "UmlBaseClassItem.h"
 
 class UmlClassItem : public UmlBaseClassItem {
+#ifdef ROUNDTRIP
+  private:
+    bool roundtrip_expected;
+    bool useless;
+#endif
   public:
     UmlClassItem(void * id, const QCString & n)
-      : UmlBaseClassItem(id, n) {
-    };
+      : UmlBaseClassItem(id, n)
+#ifdef ROUNDTRIP
+	, roundtrip_expected(FALSE), useless(FALSE)
+#endif
+	  {}
 
 #ifdef REVERSE
     virtual bool need_source() = 0;
+  
+# ifdef ROUNDTRIP
+    bool is_roundtrip_expected() const { return roundtrip_expected; }
+    bool is_useless() const { return useless; }
+    void set_usefull(bool y = TRUE) { useless = !y; }
+    virtual bool set_roundtrip_expected();
+    virtual void mark_useless(QList<UmlItem> & l);
+# endif
 #endif
 };
 

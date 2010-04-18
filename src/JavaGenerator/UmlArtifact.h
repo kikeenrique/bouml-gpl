@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,7 +53,8 @@ class UmlArtifact : public UmlBaseArtifact {
     
     virtual void generate();
     
-    void imported(QCString s);
+    void imported(const QCString & s);
+    bool is_imported(const QCString & s);
     bool is_imported(QCString path, QCString class_name);
     
     static UmlArtifact * generated_one();

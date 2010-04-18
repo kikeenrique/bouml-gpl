@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,8 @@
 
 class Namespace {
   public:
+    static void set(const QCString & s);
+    static void unset();
     static void enter(const QCString & s);
     static void exit();
     static void enter_anonymous() { AnonymousLevel += 1; }

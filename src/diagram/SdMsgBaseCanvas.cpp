@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,7 +48,7 @@
 #include "ToolCom.h"
 #include "translate.h"
 
-SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
+SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdMsgSupport * d,
 				 UmlCode l, int v, int id)
     : DiagramCanvas(0, canvas, 0, v, 0, 0, id),
       dest(d), msg(0), stereotype(0), itsType(l),
@@ -75,7 +75,7 @@ UmlCode SdMsgBaseCanvas::type() const {
   return itsType;
 }
 
-void SdMsgBaseCanvas::delete_available(bool &, bool & out_model) const {
+void SdMsgBaseCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -166,6 +166,22 @@ void SdMsgBaseCanvas::set_synchronous(bool yes) {
     if (yes)
       itsType = UmlSyncMsg;
     break;
+  case UmlFoundSyncMsg:
+    if (! yes)
+      itsType = UmlFoundAsyncMsg;
+    break;
+  case UmlFoundAsyncMsg:
+    if (yes)
+      itsType = UmlFoundSyncMsg;
+    break;
+  case UmlLostSyncMsg:
+    if (! yes)
+      itsType = UmlLostAsyncMsg;
+    break;
+  case UmlLostAsyncMsg:
+    if (yes)
+      itsType = UmlLostSyncMsg;
+    break;
   case UmlSyncSelfMsg:
     if (! yes)
       itsType = UmlAsyncSelfMsg;
@@ -188,7 +204,7 @@ QString SdMsgBaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) cons
   return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
-bool SdMsgBaseCanvas::is_decenter(const QPoint &, bool &) const {
+bool SdMsgBaseCanvas::is_decenter(const QPoint &, BooL &) const {
   return FALSE;
 }
 
@@ -319,7 +335,7 @@ void SdMsgBaseCanvas::moveBy(double dx, double dy) {
   }
 }
 
-void SdMsgBaseCanvas::update_after_move(SdDurationCanvas * p) {
+void SdMsgBaseCanvas::update_after_move(SdMsgSupport * p) {
   already_moved = FALSE;
 
   p->update_v_to_contain(rect());
@@ -360,11 +376,12 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
   st << "yz " << sy.setNum(y()) << ' ' << sz.setNum(z());
 #endif
   if (msg != 0) {
+    // not a lost, dest is duration
     if (msg->deletedp()) {
       warning += QString("<b>") + the_canvas()->browser_diagram()->full_name() +
 	"</b> reference the class <b>" +
-	  dest->get_line()->get_obj()->get_class()->full_name() +
-	    "</b> deleted operation <b>" + msg->definition(TRUE) + "</b><br>\n<br>\n";
+	  ((SdDurationCanvas *) dest)->get_line()->get_obj()->get_class()->full_name() +
+	    "</b> deleted operation <b>" + msg->definition(TRUE, FALSE) + "</b><br>\n<br>\n";
       if (warning[0] == '!') {
 	st << " msg ";
 	msg->save(st, TRUE, warning);
@@ -518,6 +535,30 @@ void SdMsgBaseCanvas::send(ToolCom * com, int fromid,
 }
 
 void SdMsgBaseCanvas::send(ToolCom * com, int fromid) const {
+  char k;
+  
+  switch (itsType) {
+  case UmlFoundSyncMsg:
+    fromid = 0;
+    // no break
+  case UmlLostSyncMsg:
+  case UmlSyncMsg:
+  case UmlSyncSelfMsg:
+    k = aSynchronousCall;
+    break;
+  case UmlFoundAsyncMsg:
+    fromid = 0;
+    // no break
+  case UmlLostAsyncMsg:
+  case UmlAsyncMsg:
+  case UmlAsyncSelfMsg:
+    k = anAsynchronousCall;
+    break;
+  default:
+    k = anExplicitReturn;
+    break;
+  }
+  
   if (msg == 0) {
     com->write_id(0);
     com->write_string(explicit_msg);
@@ -529,22 +570,10 @@ void SdMsgBaseCanvas::send(ToolCom * com, int fromid) const {
   else 
     msg->get_browser_node()->write_id(com);
   com->write_unsigned((unsigned) fromid);
-  com->write_unsigned((unsigned) dest->get_line()->get_obj()->get_ident());
-  
-  switch (itsType) {
-  case UmlSyncMsg:
-  case UmlSyncSelfMsg:
-    com->write_char(aSynchronousCall);
-    break;
-  case UmlAsyncMsg:
-  case UmlAsyncSelfMsg:
-    com->write_char(anAsynchronousCall);
-    break;
-  default:
-    com->write_char(anExplicitReturn);
-    break;
-  }
-
+  com->write_unsigned((dest->isaDuration())
+		      ? (unsigned) ((SdDurationCanvas *) dest)->get_line()->get_obj()->get_ident()
+		      : (unsigned) 0);  
+  com->write_char(k);
   com->write_string((const char *) args);
   if (com->api_format() >= 50) {
     if (stereotype == 0)

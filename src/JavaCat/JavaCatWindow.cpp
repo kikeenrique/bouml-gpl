@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -324,7 +324,7 @@ void JavaCatWindow::windows_style() {
 }
 
 void JavaCatWindow::about() {
-  QMessageBox::about(this, "Java Catalog", "<p>release <b>2.12</b></p>" );
+  QMessageBox::about(this, "Java Catalog", "<p>release <b>2.14.1</b></p>" );
 }
 
 void JavaCatWindow::aboutQt() {

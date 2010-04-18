@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,7 +77,7 @@ void ActivityDiagramView::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(TR("Activity diagram menu"), m.font()), -1);
  
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserActivityDiagram *) the_canvas()->browser_diagram())->edit_settings();
     break;
@@ -128,9 +128,9 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    new ActivityCanvas(b, the_canvas(), e->x(), e->y());
 	  
 	  c->show();
-	  c->upper();
+	  c->upper();  
 	  history_protected = TRUE;
-	  c->force_sub_inside();
+	  c->force_sub_inside(TRUE);
 	  window()->package_modified();
 	}
       }
@@ -155,13 +155,13 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  InterruptibleActivityRegionCanvas * c =
 	    new InterruptibleActivityRegionCanvas(b, the_canvas(), e->x(), e->y());
+	  bool rz;
 	  
 	  c->show();
-	  c->upper();
+	  history_protected = TRUE;  
+	  rz = !ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
-	  c->force_inside();
-	  history_protected = TRUE;
-	  c->force_sub_inside();
+	  c->force_sub_inside(rz);
 	  window()->package_modified();
 	}
       }
@@ -186,13 +186,13 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  ExpansionRegionCanvas * c =
 	    new ExpansionRegionCanvas(b, the_canvas(), e->x(), e->y());
+	  bool rz;
 	  
 	  c->show();
-	  c->upper();
 	  history_protected = TRUE;
-	  c->force_inside();
+	  rz = !ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
-	  c->force_sub_inside();
+	  c->force_sub_inside(rz);
 	  window()->package_modified();
 	}
       }
@@ -219,9 +219,8 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    new ActivityNodeCanvas(b, the_canvas(), e->x(), e->y());
 	  
 	  c->show();
-	  c->force_inside();
+	  (void) ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
-	  c->upper();
 	  window()->package_modified();
 	}
       }
@@ -249,7 +248,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    new ActivityActionCanvas(b, the_canvas(), e->x(), e->y());
 	  
 	  c->show();
-	  c->force_inside();
+	  (void) ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
 	  c->upper();
 	  window()->package_modified();
@@ -279,7 +278,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    new ActivityObjectCanvas(b, the_canvas(), e->x(), e->y());
 	  
 	  c->show();
-	  c->force_inside();
+	  (void) ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
 	  c->upper();
 	  window()->package_modified();
@@ -306,13 +305,13 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  ActivityPartitionCanvas * c =
 	    new ActivityPartitionCanvas(b, the_canvas(), e->x(), e->y());
+	  bool rz;
 	  
 	  c->show();
-	  c->upper();
 	  history_protected = TRUE;
-	  c->force_inside();
+	  rz = !ActivityContainerCanvas::force_inside(c, TRUE);
 	  history_protected = TRUE;
-	  c->force_sub_inside();
+	  c->force_sub_inside(rz);
 	  window()->package_modified();
 	}
       }
@@ -388,7 +387,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
 	c->show();
 	c->upper();
 	history_protected = TRUE;
-	c->force_sub_inside();
+	c->force_sub_inside(TRUE);
 	
 	canvas()->update();
 	history_protected = FALSE;
@@ -408,9 +407,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
 	  
 	  history_protected = TRUE;
 	  c->show();
-	  c->force_inside();
+	  (void) ActivityContainerCanvas::force_inside(c, FALSE);
 	  history_protected = TRUE;
-	  c->upper();
     
 	  canvas()->update();
 	  history_protected = FALSE;
@@ -446,9 +444,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -465,14 +462,14 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       InterruptibleActivityRegionCanvas * c = 
 	new InterruptibleActivityRegionCanvas(bn, the_canvas(), p.x(), p.y());
+      bool sz;
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      sz = !ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->force_sub_inside();
+      c->force_sub_inside(sz);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -489,14 +486,14 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       ExpansionRegionCanvas * c = 
 	new ExpansionRegionCanvas(bn, the_canvas(), p.x(), p.y());
+      bool sz;
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      sz = !ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->force_sub_inside();
+      c->force_sub_inside(sz);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -513,14 +510,14 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       ActivityPartitionCanvas * c = 
 	new ActivityPartitionCanvas(bn, the_canvas(), p.x(), p.y());
+      bool sz;
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      sz = !ActivityContainerCanvas::force_inside(c, TRUE);
       history_protected = TRUE;
-      c->force_sub_inside();
+      c->force_sub_inside(sz);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -539,9 +536,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -560,9 +556,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
       
       canvas()->update();
       history_protected = FALSE;
@@ -619,9 +614,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
     
       canvas()->update();
       history_protected = FALSE;
@@ -669,9 +663,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
     
       canvas()->update();
       history_protected = FALSE;
@@ -695,9 +688,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
     
       canvas()->update();
       history_protected = FALSE;
@@ -722,9 +714,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
       history_protected = TRUE;
-      c->upper();
     
       canvas()->update();
       history_protected = FALSE;
@@ -745,10 +736,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->force_inside();
-      history_protected = TRUE;
-      c->upper();
-    
+      (void) ActivityContainerCanvas::force_inside(c, FALSE);
+      history_protected = TRUE;    
       canvas()->update();
       history_protected = FALSE;
       window()->package_modified();

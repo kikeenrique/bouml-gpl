@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 #include "SimpleRelationCanvas.h"
 #include "BrowserParameter.h"
 #include "ParameterCanvas.h"
+#include "InfoCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "SettingsDialog.h"
@@ -57,9 +58,11 @@ ActivityCanvas::ActivityCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			      ACTIVITY_CANVAS_MIN_SIZE * 10, 0) {
   browser_node = bn;
   itscolor = UmlDefaultColor;
+  constraint = 0;
 
   compute_size();
   check_params();
+  check_constraint();
   check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -71,6 +74,7 @@ ActivityCanvas::ActivityCanvas(UmlCanvas * canvas, int id)
     : ActivityContainerCanvas(canvas, id) {
   // for read operation
   browser_node = 0;
+  constraint = 0;
   itscolor = UmlDefaultColor;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -90,6 +94,9 @@ void ActivityCanvas::delete_it() {
   for (iter = params.begin();  iter != params.end(); ++iter)
     // don't empty params to manage undo
     (*iter)->delete_it();
+  
+  if (constraint != 0)
+    constraint->delete_it();
 }
 
 void ActivityCanvas::deleted() {
@@ -142,7 +149,9 @@ void ActivityCanvas::compute_size() {
   else
     readonly_offset.setX(0);
 
-  if (st.show_infonote == UmlYes) {
+  show_info_note = (st.show_infonote == UmlYes);
+  
+  if (show_info_note) {
     post_width = fm.width("<<postcondition>>##");
     
     pre = data->get_precond(st.drawing_language);
@@ -205,6 +214,9 @@ void ActivityCanvas::moveBy(double dx, double dy) {
   
   for (iter = params.begin(); iter != params.end(); ++iter)
     (*iter)->do_moveBy(dx, dy);
+  
+  if ((constraint != 0) && !constraint->selected())
+    constraint->moveBy(dx, dy);
 }
 
 void ActivityCanvas::change_scale() {
@@ -231,8 +243,9 @@ void ActivityCanvas::modified() {
   update_show_lines();
   check_params();
   check_stereotypeproperties();
+  check_constraint();
   canvas()->update();
-  force_sub_inside();
+  force_sub_inside(FALSE);
   package_modified();
 }
 
@@ -243,7 +256,12 @@ aCorner ActivityCanvas::on_resize_point(const QPoint & p) {
 void ActivityCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
   
-  force_sub_inside();
+  force_sub_inside(FALSE);
+}
+
+void ActivityCanvas::resize(const QSize & sz, bool w, bool h) {
+  if (DiagramCanvas::resize(sz, w, h, min_width, min_height, TRUE))
+    force_sub_inside(FALSE);
 }
 
 bool ActivityCanvas::move_with_its_package() const {
@@ -261,45 +279,36 @@ void ActivityCanvas::set_z(double z) {
     (*iter)->set_z(z);
 }
 
-void ActivityCanvas::force_sub_inside() {
+void ActivityCanvas::force_sub_inside(bool resize_it) {
   // update sub nodes position to be inside of the activity
   // except the parameters whose are in the border
   // and the diagram icon
+  // or resize it to contains sub elts if resize_it
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator cit;
-  
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible() && !(*cit)->selected()) {
-      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
-      
-      if ((di != 0) &&
-	  (di->get_bn() != 0) &&
-	  (((BrowserNode *) di->get_bn())->parent() == browser_node)) {
-	// must look at the type because some canvas items have browser_node
-	// attr equals to the diagram and the parent of the diagram is the activity
-	switch (di->type()) {
-	case UmlParameter:
+  BooL need_sub_upper = FALSE;
+
+  if (resize_it) {
+    resize_to_contain(all, need_sub_upper);
+    
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      if ((*cit)->visible()/* && !(*cit)->selected()*/) {
+	DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+	
+	if ((di != 0) &&
+	    (di->type() == UmlParameter) &&
+	    (di->get_bn() != 0) &&
+	    (((BrowserNode *) di->get_bn())->parent() == browser_node)) {
 	  ((ParameterCanvas *) di)->check_position();
-	  break;
-	case UmlActivityObject:
-	case UmlActivityAction:
-	case UmlActivityPartition:
-	case UmlExpansionRegion:
-	case UmlInterruptibleActivityRegion:
-	case InitialAN:
-	case FlowFinalAN:
-	case ActivityFinalAN:
-	case DecisionAN:
-	case MergeAN:
-	case ForkAN:
-	case JoinAN:
-	  force_inside(di, *cit);
-	default:
-	  break;
 	}
       }
     }
   }
+  else
+    ActivityContainerCanvas::force_sub_inside(all, need_sub_upper);
+  
+  if (need_sub_upper)
+    force_sub_upper(all);
 }
 
 void ActivityCanvas::check_params() {
@@ -366,6 +375,39 @@ void ActivityCanvas::check_params() {
   }
 }
 
+void ActivityCanvas::check_constraint() {
+  // compute_size() must be called before
+  if (show_info_note) {
+    ActivityData * data = (ActivityData *) browser_node->get_data();
+    int margin = (int) (the_canvas()->zoom() * 15);
+    QString s = data->get_constraint();
+
+    if (s.isEmpty()) {
+      if (constraint != 0) {
+	constraint->delete_it();
+	constraint = 0;
+      }
+    }
+    else {
+      if (constraint == 0) {
+	constraint = new InfoCanvas(the_canvas(), this, s);
+	constraint->upper();
+	constraint->move(x() + width() + margin, y());
+	constraint->show();
+	(new ArrowCanvas(the_canvas(), this, constraint, UmlAnchor, 0, FALSE, -1.0, -1.0))
+	  ->show();
+      }
+      else
+	constraint->set(s);
+    }
+  }
+  else {
+    if (constraint != 0) {
+      constraint->delete_it();
+      constraint = 0;
+    }
+  }
+}
 void ActivityCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
@@ -495,7 +537,7 @@ UmlCode ActivityCanvas::type() const {
   return UmlActivity;
 }
 
-void ActivityCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ActivityCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -517,7 +559,7 @@ void ActivityCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     m.insertItem(TR("Add parameter"), 9);
@@ -757,6 +799,12 @@ void ActivityCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       st << "end";
     }
     
+    if (constraint != 0) {
+      nl_indent(st);
+      st << "constraint ";
+      constraint->save(st, FALSE, warning);
+    }
+    
     save_stereotype_property(st, warning);
 
     indent(-1);
@@ -800,12 +848,19 @@ ActivityCanvas * ActivityCanvas::read(char * & st, UmlCanvas * canvas,
       k = read_keyword(st);
     }
     
+    if (! strcmp(k, "constraint")) {
+      k = read_keyword(st);
+      result->constraint = InfoCanvas::read(st, canvas, k, result);
+      k = read_keyword(st);
+    }
+    
     result->read_stereotype_property(st, k);	// updates k
 
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
     
     result->check_params();
+    result->check_constraint();
     result->check_stereotypeproperties();
     
     // result->force_sub_inside() useless : may only grow

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 class Socket;
 class AType;
 class QRect;
+class QTimer;
 
 class ToolCom  :public QObject {
   Q_OBJECT
@@ -42,6 +43,7 @@ class ToolCom  :public QObject {
   protected:
     static QList<ToolCom> used;
     static QList<ToolCom> unused;
+    static int exitvalue;
   
     bool start;
     //bool with_ack;
@@ -50,6 +52,8 @@ class ToolCom  :public QObject {
     void (*cont)();
     Socket * listen_sock;
     Socket * sock;
+    QTimer * timer;
+    char * cmd;
     unsigned api_version;
     int id;		// for UmlBaseItem::isToolRunning
     unsigned wanted;
@@ -76,6 +80,7 @@ class ToolCom  :public QObject {
     static int run(const char * cmd, BrowserNode *,
 		   bool exit = FALSE, bool clr = TRUE,
 		   void (*pf)() = 0);
+    friend int exit_value();
   
     void data_received(Socket * who);
     
@@ -105,6 +110,9 @@ class ToolCom  :public QObject {
     
   signals:
     void closed();
+  
+  public slots:
+    void connexion_timeout();
 };
 
 #endif

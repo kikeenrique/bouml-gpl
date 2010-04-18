@@ -1,6 +1,6 @@
-format 70
+format 73
 "Com" // API BASE::Com
-  revision 23
+  revision 24
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -206,12 +206,13 @@ ${body}}
 
       operation 71680 "bye"
 	class_operation public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};"
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	nparams 1
+	  param in name "v" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
 	

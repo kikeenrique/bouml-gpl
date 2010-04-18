@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,7 +28,7 @@
 #include "UmlExtraClassMember.h"
 
 void UmlExtraClassMember::generate(QTextOStream & f, const QCString &,
-				   QCString indent, bool & indent_needed,
+				   QCString indent, BooL & indent_needed,
 				   int &, const QCString &) {
   const QCString & d = pythonDecl();
   

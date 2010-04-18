@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -211,7 +211,7 @@ void BrowserSeqDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Show"), 0), 
@@ -365,6 +365,10 @@ void BrowserSeqDiagram::read_session(char * & st) {
 
 UmlCode BrowserSeqDiagram::get_type() const {
   return UmlSeqDiagram;
+}
+
+QString BrowserSeqDiagram::get_stype() const {
+  return TR("Sequence diagram");
 }
 
 int BrowserSeqDiagram::get_identifier() const {
@@ -547,7 +551,7 @@ void BrowserSeqDiagram::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "duration_color", duration_color, nl);
     save_color(st, "continuation_color", continuation_color, nl);

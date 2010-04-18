@@ -92,7 +92,7 @@ SOURCES	      = UmlClassItem.cpp CppRefType.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 		
 TARGET	      = cpp_generator
-DEFINES	      = WITHCPP
+DEFINES	      = WITHCPP BooL=bool
 INCLUDEPATH   = ../Tools ../CppGenerator
 
 

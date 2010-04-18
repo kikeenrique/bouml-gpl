@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -290,7 +290,7 @@ void BrowserArtifact::menu() {
   QString python_path;
   QString idl_path;
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -343,31 +343,27 @@ Note that you can undelete it after"));
       get_paths(cpp_h_path, cpp_src_path, java_path, php_path, python_path, idl_path);
 
       if (cpp && !a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
-	//if (! cpp_src_path.isEmpty())
-	  //roundtripsubm.insertItem("C++ header & source files", 13);
 	editsubm.insertItem(TR("C++ header file"), 14);
-	//roundtripsubm.insertItem("C++ header file", 15);
+	if (! is_read_only) roundtripsubm.insertItem("C++", 15);
       }
       if (cpp && !cpp_src_edited && !cpp_src_path.isEmpty()) {
 	editsubm.insertItem(TR("C++ source file"), 16);
-	//roundtripsubm.insertItem("C++ source file", 17);
       }
       if (java && !java_edited && !java_path.isEmpty()) {
 	editsubm.insertItem(TR("Java source file"), 18);
-	if (! is_read_only)
-	  roundtripsubm.insertItem("Java", 19);
+	if (! is_read_only) roundtripsubm.insertItem("Java", 19);
       }
       if (php && !php_edited && !php_path.isEmpty()) {
 	editsubm.insertItem(TR("Php source file"), 23);
-	//roundtripsubm.insertItem("Php source file", 24);
+	//if (! is_read_only) roundtripsubm.insertItem("Php", 24);
       }
       if (python && !python_edited && !python_path.isEmpty()) {
 	editsubm.insertItem(TR("Python source file"), 26);
-	//roundtripsubm.insertItem("Python source file", 27);
+	//if (! is_read_only) roundtripsubm.insertItem("Python", 27);
       }
       if (idl && !idl_edited && !idl_path.isEmpty()) {
 	editsubm.insertItem(TR("Idl source file"), 20);
-	//roundtripsubm.insertItem("Idl source file", 21);
+	//if (! is_read_only) roundtripsubm.insertItem("Idl", 21);
       }
       if (roundtripsubm.count() != 0)
 	m.insertItem(TR("Roundtrip"), &roundtripsubm);
@@ -378,7 +374,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>artifact</i> \
 through a relation"));
-    mark_menu(m, TR("artifact"), 90);
+    mark_menu(m, TR("the artifact"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -496,13 +492,10 @@ void BrowserArtifact::exec_menu_choice(int rank,
     (new SourceDialog(cpp_h_path, cpp_h_edited, edition_number))->show();
     return;
   case 15:
-    //roundtrip C++ header file
+    ToolCom::run("cpp_roundtrip", this);
     return;
   case 16:
     (new SourceDialog(cpp_src_path, cpp_src_edited, edition_number))->show();
-    return;
-  case 17:
-    //roundtrip C++ source file
     return;
   case 18:
     (new SourceDialog(java_path, java_edited, edition_number))->show();
@@ -691,6 +684,10 @@ void BrowserArtifact::modified() {
 
 UmlCode BrowserArtifact::get_type() const {
   return UmlArtifact;
+}
+
+QString BrowserArtifact::get_stype() const {
+  return TR("artifact");
 }
 
 int BrowserArtifact::get_identifier() const {

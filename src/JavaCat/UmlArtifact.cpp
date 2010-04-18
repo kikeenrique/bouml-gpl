@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -83,23 +83,6 @@ void UmlArtifact::mark_useless(QList<UmlItem> & l) {
     l.append(this);
   }
 }
-
-bool UmlArtifact::considered(bool scan) {
-  if (scan) {
-    if (scanned)
-      return TRUE;
-    scanned = TRUE;
-  }
-  else {
-    if (reversed)
-      return TRUE;
-    else
-      reversed = TRUE;
-  }
-
-  return FALSE;
-}
-
 
 void UmlArtifact::scan_it(int &) {
   if (roundtrip_expected) {

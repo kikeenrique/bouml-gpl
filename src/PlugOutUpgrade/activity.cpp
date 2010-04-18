@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -3203,7 +3203,7 @@ void add_additionalactions(UmlClass * base_item, UmlClass * user_item)
   // replace friends rels
   
   const QVector<UmlItem> ch = base_item->children();
-  UmlExtraClassMember * ex;
+  UmlExtraClassMember * ex = 0;
   
   i = ch.size();
 
@@ -3213,22 +3213,24 @@ void add_additionalactions(UmlClass * base_item, UmlClass * user_item)
       break;
     }
   }
-
-  s = "";
-  i = ch.size();
   
-  while (i--) {
-    if ((ch[i]->kind() == aRelation) &&
-	(((UmlRelation *) ch[i])->relationKind() == aDependency) &&
-	(ch[i]->stereotype() == "friend")) {
-      s += "  friend class " + ((UmlRelation *) ch[i])->roleType()->name()
-	+ ";\n";
-      ch[i]->deleteIt();
+  if (ex != 0) {
+    // theo mandatory
+    s = "";
+    i = ch.size();
+    
+    while (i--) {
+      if ((ch[i]->kind() == aRelation) &&
+	  (((UmlRelation *) ch[i])->relationKind() == aDependency) &&
+	  (ch[i]->stereotype() == "friend")) {
+	s += "  friend class " + ((UmlRelation *) ch[i])->roleType()->name()
+	  + ";\n";
+	ch[i]->deleteIt();
+      }
     }
+    
+    ex->set_CppDecl(ex->cppDecl() + s);
   }
-  
-  ex->set_CppDecl(ex->cppDecl() + s);
-
   
   UmlCom::set_user_id(uid);
 }

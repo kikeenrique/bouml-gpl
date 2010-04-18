@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,7 +55,7 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     virtual ~BrowserExpansionRegion();
   
     virtual bool may_contains_them(const QList<BrowserNode> & l,
-				   bool & duplicable) const;
+				   BooL & duplicable) const;
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
     static BrowserExpansionRegion * add_expansionregion(BrowserNode * future_parent);
@@ -70,6 +70,7 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual void modified();

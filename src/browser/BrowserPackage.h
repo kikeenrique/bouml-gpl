@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -104,10 +104,11 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
-				   bool & duplicable) const;
+				   BooL & duplicable) const;
     virtual BasicData * get_data() const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void get_classdiagramsettings(ClassDiagramSettings &) const;

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@ class PackageData : public SimpleData {
     
     MyStr cpp_namespace;
     MyStr java_package;
+    MyStr php_namespace;
     MyStr python_package;
     MyStr idl_module;
     
@@ -71,6 +72,7 @@ class PackageData : public SimpleData {
     
     const MyStr & get_cpp_namespace() const { return cpp_namespace; };
     const MyStr & get_java_package() const { return java_package; };
+    const MyStr & get_php_namespace() const { return php_namespace; };
     const MyStr & get_python_package() const { return python_package; };
     const MyStr & get_idl_module() const { return idl_module; };
     

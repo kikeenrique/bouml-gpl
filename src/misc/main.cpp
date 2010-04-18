@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -93,9 +93,22 @@ int main(int argc, char **argv)
   init_font();
   Shortcut::init(conv_env);
   
-  UmlWindow * uw = new UmlWindow((argc > 3) && !strcmp(argv[2], "-exec"));
+  bool exec = FALSE;
+  bool no_gui = FALSE;
   
-  uw->show();
+  if (argc > 3) {
+    if (!strcmp(argv[2], "-execnogui"))
+      exec = no_gui = TRUE;
+    else
+      exec = !strcmp(argv[2], "-exec");
+  }
+    
+  UmlWindow * uw = new UmlWindow(exec);
+
+  if (no_gui)
+    UmlDesktop::set_nogui();
+  else
+    uw->show();
   
   if (argc > 1) {
     try {
@@ -117,7 +130,7 @@ int main(int argc, char **argv)
     }
     catch (...) {
       // cannot read a file
-      return 0;
+      return -1;
     }
   }
   
@@ -125,7 +138,7 @@ int main(int argc, char **argv)
     
   try {
     if (argc > 2) {
-      if ((argc > 3) && !strcmp(argv[2], "-exec")) {
+      if (exec) {
 	bool with_exit = FALSE;
 	
 	if (!strcmp(argv[argc - 1], "-exit")) {
@@ -154,5 +167,5 @@ int main(int argc, char **argv)
     ;
   }
   
-  return 0;
+  return exit_value();
 }

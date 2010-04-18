@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -180,7 +180,7 @@ QString BrowserComponent::check_inherit(const BrowserNode * new_parent) const {
 
 static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
 			QValueList<BrowserClass *> & l, int bias,
-			bool & need_sep, QString s)
+			BooL & need_sep, QString s)
 {
   int n = 0;
   QValueList<BrowserClass *>::ConstIterator it;
@@ -258,7 +258,7 @@ void BrowserComponent::menu() {
   QPopupMenu rzsubm(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -280,7 +280,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>component</i> \
 through a relation"));
-    mark_menu(m, TR("component"), 90);
+    mark_menu(m, TR("the component"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -305,7 +305,7 @@ nested <i>components</i> and <i>relations</i> \
     }
   }
 
-  bool need_sep = TRUE;
+  BooL need_sep = TRUE;
   
   make_clsubm(m, rqsubm, required_classes, 9999, need_sep, "required");
   make_clsubm(m, prsubm, provided_classes, 19999, need_sep, "provided");
@@ -415,6 +415,10 @@ void BrowserComponent::modified() {
 
 UmlCode BrowserComponent::get_type() const {
   return UmlComponent;
+}
+
+QString BrowserComponent::get_stype() const {
+  return TR("component");
 }
 
 int BrowserComponent::get_identifier() const {

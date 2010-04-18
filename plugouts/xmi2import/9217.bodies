@@ -126,7 +126,7 @@ class UmlPackage
       updateProfiles();
   }
   else
-    in.error("uml:model or xmi:xmi expected, nothing imported");
+    in.error("uml:model or uml:profile or xmi:xmi expected, nothing imported");
 !!!193538.cpp!!!	container(in kind : anItemKind, in token : Token, inout in : FileIn) : UmlItem
   switch (kind) {
   case aClass:

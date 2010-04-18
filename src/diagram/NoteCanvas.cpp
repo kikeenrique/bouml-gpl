@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -147,7 +147,7 @@ UmlCode NoteCanvas::type() const {
   return UmlNote;
 }
 
-void NoteCanvas::delete_available(bool &, bool & out_model) const {
+void NoteCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -160,10 +160,12 @@ bool NoteCanvas::copyable() const {
 }
 
 void NoteCanvas::open() {
+  static QSize sz;
+  
   // warning : 'note' is already unicode
   QString s = fromUnicode(note);
   
-  MLEDialog::get(s, QCursor::pos());
+  MLEDialog::get(s, QCursor::pos(), sz);
   note = toUnicode(s);
   
   modified();
@@ -342,6 +344,12 @@ void NoteCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   int min = (int) (NOTE_CANVAS_MIN_SIZE * the_canvas()->zoom());
   
   DiagramCanvas::resize(c, dx, dy, o, min, min, TRUE);
+}
+
+void NoteCanvas::resize(const QSize & sz, bool w, bool h) {
+  int min = (int) (NOTE_CANVAS_MIN_SIZE * the_canvas()->zoom());
+  
+  DiagramCanvas::resize(sz, w, h, min, min, TRUE);
 }
 
 void NoteCanvas::save_internal(QTextStream & st) const {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -347,7 +347,7 @@ QCString UmlOperation::compute_name() {
 
 void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 				 const QCString & cl_stereotype, QCString indent,
-				 bool & first, bool) {
+				 BooL & first, bool) {
   if (!cppDecl().isEmpty()) {
     if (cl_stereotype == "enum") {
       write_trace_header();
@@ -828,14 +828,14 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       if (body != (p2 + 8)) {
 	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
 		      " : invalid preserve body identifier</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 1");
       }
       
       if (bodies.find(id) != 0) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 	  " : preserve body identifier used twice</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 2");
       }
       
@@ -846,7 +846,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       else {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, end of line expected</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 3");
       }
       
@@ -854,7 +854,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, wrong balanced</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 4");
       }
 

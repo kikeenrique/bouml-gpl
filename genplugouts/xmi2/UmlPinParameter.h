@@ -8,6 +8,10 @@
 class FileOut;
 
 class UmlPinParameter : public UmlBasePinParameter {
+  public:
+    virtual void solve_output_flows();
+
+
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlPinParameter(void * id, const QCString & s) : UmlBasePinParameter(id, s) {

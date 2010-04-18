@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -489,10 +489,10 @@ void BrowserActivityAction::menu() {
   while ((index = kind.find("_")) != -1)
     kind.replace(index, 1, " ");
 
-  QPopupMenu m(0, TR("Activity action"));
+  QPopupMenu m(0, "Activity action");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle((s.isEmpty()) ? TR(kind) : s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -667,6 +667,16 @@ void BrowserActivityAction::modified() {
 
 UmlCode BrowserActivityAction::get_type() const {
   return UmlActivityAction;
+}
+
+QString BrowserActivityAction::get_stype() const {
+  QString s = stringify(def->get_action_kind());
+  int index = 0;
+  
+  while ((index = s.find("_")) != -1)
+    s.replace(index, 1, " ");
+  
+  return TR(s);
 }
 
 int BrowserActivityAction::get_identifier() const {
@@ -870,7 +880,7 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 }
 
 bool BrowserActivityAction::may_contains_them(const QList<BrowserNode> & l,
-					      bool & duplicable) const {
+					      BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {

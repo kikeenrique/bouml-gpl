@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -26,17 +26,25 @@
 #ifndef PROGRESS_H
 #define PROGRESS_H
 
+class QApplication;
+
 #include <qprogressdialog.h> 
 
 class Progress : public QProgressDialog {
   public:
-    Progress(int, const char *);
-    virtual ~Progress();
+    Progress(int, const char *, QApplication *);
     
-    void tic();
+    static void delete_it();
+    static void tic_it();
     
   private:
+    virtual ~Progress();
+    void tic();
+      
     int n;
+    QApplication * app;
+    
+    static Progress * it;
 };
 
 #endif

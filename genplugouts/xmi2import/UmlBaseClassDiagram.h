@@ -7,7 +7,7 @@
 #include <qcstring.h>
 
 class UmlClassDiagram;
-class UmlClassView;
+class UmlItem;
 
 // Manage the class diagrams
 class UmlBaseClassDiagram : public UmlDiagram {
@@ -17,7 +17,7 @@ class UmlBaseClassDiagram : public UmlDiagram {
     // In case it cannot be created (the name is already used or
     // invalid, 'parent' cannot contain it etc ...) return 0 in C++
     // and produce a RuntimeException in Java
-    static UmlClassDiagram * create(UmlClassView * parent, const char * s);
+    static UmlClassDiagram * create(UmlItem * parent, const char * s);
 
     // returns the kind of the item
     virtual anItemKind kind();

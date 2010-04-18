@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -272,14 +272,18 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   }
 }
 
-static void setCoord(int & v, bool & ok, QLineEdit * ed)
+static void setCoord(int & v, BooL & ok, QLineEdit * ed)
 {
   if (ed->text().isEmpty()) {
     v = 0;
     ok = TRUE;
   }
-  else
-    v = ed->text().toInt(&ok);
+  else {
+    bool yes = ok;
+    
+    v = ed->text().toInt(&yes);
+    ok = yes;
+  }
 }
 
 void EnvDialog::accept() {
@@ -294,7 +298,7 @@ void EnvDialog::accept() {
   }
   
   int l, t, r, b;
-  bool ok_l, ok_t, ok_r, ok_b;
+  BooL ok_l, ok_t, ok_r, ok_b;
   
   setCoord(l, ok_l, ed_xmin);
   setCoord(t, ok_t, ed_ymin);
@@ -468,9 +472,21 @@ static QString lang_file()
 
 
 
+
+
+
+
+
+
+
+
   lang = getenv("LANG");
-  if ((lang.length() > 3) && (lang[2] == '_'))
-    lang = lang.left(2);
+  if ((lang.length() > 3) && (lang[2] == '_')) {
+    if (lang.lower() == "pt_br")
+      lang = "pt_br";
+    else
+      lang = lang.left(2);
+  }
   else {
     lang = "";
     
@@ -488,11 +504,17 @@ static QString lang_file()
 	  else if ((p = strchr(l+3, '=')) != 0)
 	    lang = p + 1;
 	}
-	if ((lang.length() > 3) && (lang[2] == '_')) {
-	  lang = lang.mid(2, 2);
+	
+	if ((lang.length() > 4) && (lang.left(5).lower() == "pt_br")) {
+	  lang = lang.left(5);
 	  break;
 	}
-	lang = "";
+	else if ((lang.length() > 3) && (lang[2] == '_')) {
+	  lang = lang.left(2);
+	  break;
+	}
+	else
+	  lang = "";
       }
       
       pclose(fp);
@@ -501,7 +523,7 @@ static QString lang_file()
 
   
   if (! lang.isEmpty()) {
-    lang += ".lang";
+    lang = lang.lower() + ".lang";
 
     QString p = getenv("BOUML_LIB_DIR");
     

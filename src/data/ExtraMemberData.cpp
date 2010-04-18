@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,10 +60,15 @@ void ExtraMemberData::set_deletedp(bool y) {
   is_deleted = y;
 }
 
-QString ExtraMemberData::definition(bool) const {
-  const char * name = browser_node->get_name();
-  
-  return ((name == 0) || (*name == 0)) ? "extra member" : name;
+QString ExtraMemberData::definition(bool, bool with_kind) const {
+  QString name = browser_node->get_name();
+
+  if (with_kind)
+    return "[" + browser_node->get_stype() + "] " + name;
+  else if (! name.isEmpty())
+    return name;
+  else
+    return browser_node->get_stype();
 }
 
 void ExtraMemberData::edit() {

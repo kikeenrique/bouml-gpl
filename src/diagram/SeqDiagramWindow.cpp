@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,10 @@ QString syncmsgText() { return TR("Click this button to send a <i>synchronous me
 QString asyncmsgText() { return TR("Click this button to send an <i>asynchronous message</i>"); }
 QString syncselfmsgText() { return TR("Click this button to send a <i>reflexive synchronous message</i>"); }
 QString asyncselfmsgText() { return TR("Click this button to send a <i>reflexive asynchronous message</i>"); }
+QString lostsyncmsgText() { return TR("Click this button to send a <i>synchronous lost message</i>"); }
+QString lostasyncmsgText() { return TR("Click this button to send a <i>asynchronous lost message</i>"); }
+QString foundsyncmsgText() { return TR("Click this button to add a <i>synchronous found message</i>"); }
+QString foundasyncmsgText() { return TR("Click this button to add a <i>asynchronous found message</i>"); }
 QString returnmsgText() { return TR("Click this button to add an <i>explicitly return</i>"); }
 QString selfreturnmsgText() { return TR("Click this button to add an <i>explicit reflexive return</i>"); }
 QString textText() { return TR("Click this button to add a <i>text</i>"); }
@@ -131,6 +135,34 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
   asyncSelfMsg->setToggleButton(TRUE);
   QWhatsThis::add(asyncSelfMsg, asyncselfmsgText());
   
+  foundsyncMsg =
+    new QToolButton(*foundsyncmsgButton, TR("Synchronous found message"), QString::null,
+		    this, SLOT(hit_foundsyncmsg()), toolbar,
+		    "synchronous found message");
+  foundsyncMsg->setToggleButton(TRUE);
+  QWhatsThis::add(foundsyncMsg, foundsyncmsgText());
+  
+  foundasyncMsg =
+    new QToolButton(*foundasyncmsgButton, TR("Asynchronous found message"), QString::null,
+		    this, SLOT(hit_foundasyncmsg()), toolbar,
+		    "asynchronous found message");
+  foundasyncMsg->setToggleButton(TRUE);
+  QWhatsThis::add(foundasyncMsg, foundasyncmsgText());
+  
+  lostsyncMsg =
+    new QToolButton(*lostsyncmsgButton, TR("Synchronous lost message"), QString::null,
+		    this, SLOT(hit_lostsyncmsg()), toolbar,
+		    "synchronous lost message");
+  lostsyncMsg->setToggleButton(TRUE);
+  QWhatsThis::add(lostsyncMsg, lostsyncmsgText());
+  
+  lostasyncMsg =
+    new QToolButton(*lostasyncmsgButton, TR("Asynchronous lost message"), QString::null,
+		    this, SLOT(hit_lostasyncmsg()), toolbar,
+		    "asynchronous lost message");
+  lostasyncMsg->setToggleButton(TRUE);
+  QWhatsThis::add(lostasyncMsg, lostasyncmsgText());
+  
   returnMsg =
     new QToolButton(*returnmsgButton, TR("Explicit return"), QString::null,
 		    this, SLOT(hit_returnmsg()), toolbar,
@@ -195,7 +227,7 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
 SeqDiagramWindow::~SeqDiagramWindow() {
   if (! no_save) {
     QString warning = "!";
-    bool is_new = FALSE;
+    BooL is_new = FALSE;
     
     save("d", warning, is_new);
     warning.remove(0, 1);	// removes !
@@ -222,6 +254,10 @@ void SeqDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   addContinuation->setOn(FALSE);
   syncMsg->setOn(FALSE);
   asyncMsg->setOn(FALSE);
+  foundsyncMsg->setOn(FALSE);
+  foundasyncMsg->setOn(FALSE);
+  lostsyncMsg->setOn(FALSE);
+  lostasyncMsg->setOn(FALSE);
   syncSelfMsg->setOn(FALSE);
   asyncSelfMsg->setOn(FALSE);
   selfreturnMsg->setOn(FALSE);
@@ -256,6 +292,22 @@ void SeqDiagramWindow::hit_syncmsg() {
 
 void SeqDiagramWindow::hit_asyncmsg() {
   hit_button(UmlAsyncMsg, asyncMsg);
+}
+
+void SeqDiagramWindow::hit_lostsyncmsg() {
+  hit_button(UmlLostSyncMsg, lostsyncMsg);
+}
+
+void SeqDiagramWindow::hit_lostasyncmsg() {
+  hit_button(UmlLostAsyncMsg, lostasyncMsg);
+}
+
+void SeqDiagramWindow::hit_foundsyncmsg() {
+  hit_button(UmlFoundSyncMsg, foundsyncMsg);
+}
+
+void SeqDiagramWindow::hit_foundasyncmsg() {
+  hit_button(UmlFoundAsyncMsg, foundasyncMsg);
 }
 
 void SeqDiagramWindow::hit_syncselfmsg() {

@@ -29,6 +29,8 @@ void UmlActivityAction::import(FileIn & in, Token & token) {
   if ((s == "precondition") || (s == "postcondition") ||
       (s == "localprecondition") || (s == "localpostcondition"))
     readCondition(in, token);
+  else if (s == "ownedrule")
+    set_Constraint(UmlItem::readConstraint(in, token));
   else
     UmlItem::import(in, token);
 

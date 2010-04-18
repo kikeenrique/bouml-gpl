@@ -87,7 +87,7 @@ void Association::import(FileIn & in, Token & token) {
 	continue;
       }
       else if (s == "ownedrule") {
-	r.constraint = UmlClassMember::readConstraint(in, token);
+	r.constraint = UmlItem::readConstraint(in, token);
 	continue;
       }
       else if (s == "defaultvalue")
@@ -186,8 +186,14 @@ void Association::solve(QCString id) {
 	UmlRelation * rb = ra->side(FALSE);
 	QCString s;
 	
-	if (!name.isEmpty())
+	if (!name.isEmpty()) {
+	  int index = 0;
+	  
+	  while ((index = name.find('\n', index)) != -1)
+	    name.replace(index++, 1, " ");
+	  
 	  ra->set_Name(name);
+	}
 	
 	UmlItem::All.insert(a.id, ra);
 	if (!a.name.isEmpty())

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -70,7 +70,7 @@ CodChangeMsgDialog::CodChangeMsgDialog(QWidget * parent, ColMsg * m)
   if (msg->operation == 0)
     edoper->insertItem(msg->explicit_operation);
   else
-    edoper->insertItem(msg->operation->definition(TRUE));
+    edoper->insertItem(msg->operation->definition(TRUE, FALSE));
   
   CodObjCanvas * from;
   CodObjCanvas * to;
@@ -166,7 +166,7 @@ void CodChangeMsgDialog::menu_op() {
 	  index = opers.count();
 	  opers.append(od);
 	  
-	  QString s = od->definition(TRUE);
+	  QString s = od->definition(TRUE, FALSE);
 	  
 	  list.append(s);
 	  edoper->insertItem(s);

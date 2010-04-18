@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -84,6 +84,8 @@ class ClassData : public BasicData {
     AType switch_type;			// union
     SharedStr idl_decl;
     
+    static bool DontUpdateActuals;
+
     //
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
@@ -185,6 +187,14 @@ class ClassData : public BasicData {
     bool get_bodies_modified() { return bodies_modified; }
     void set_bodies_modified(bool y) { bodies_modified = y; }
     void manage_deleted();
+    
+    static void setDontUpdateActuals(bool y) { DontUpdateActuals = y; }
+    
+    class ToolCmd {
+      public:
+	ToolCmd() { ClassData::setDontUpdateActuals(TRUE); }
+	~ToolCmd() { ClassData::setDontUpdateActuals(FALSE); }
+    };
     
   private slots:
     void update_actuals();

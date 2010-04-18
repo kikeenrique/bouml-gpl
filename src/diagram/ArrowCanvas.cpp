@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -144,6 +144,7 @@ void ArrowCanvas::update_pos() {
   QPoint old_beginp = beginp;
   QPoint old_endp = endp;
   QPoint end_computed;
+  bool need_update_geometry = FALSE;
   
   // calcul beginp & endp pour ne plus etre dans b_rct & e_rct
     
@@ -174,17 +175,18 @@ void ArrowCanvas::update_pos() {
       }
     }
     
-    if ((geometry == NoGeometry) && (decenter_begin >= 0)) {
-      
+    if (decenter_begin >= 0) {
       if ((iabs(beginp.y() - r.top()) < 2) ||
 	  (iabs(beginp.y() - r.bottom()) < 2)) {
 	// on top or botton
 	beginp.setX((int) (r.left() + r.width()*decenter_begin));
+	need_update_geometry = TRUE;
       }
       else if ((iabs(beginp.x() - r.left()) < 2) ||
 	       (iabs(beginp.x() - r.right()) < 2)) {
 	// on left or right
 	beginp.setY((int) (r.top() + r.height()*decenter_begin));
+	need_update_geometry = TRUE;
       }
       // else end point inside 'start'
     }
@@ -203,22 +205,24 @@ void ArrowCanvas::update_pos() {
 	end->shift(endp, beginp, r.contains(begin->rect()));
       else
 	endp = end_computed;
-      if ((geometry == NoGeometry) && (decenter_end >= 0)) {
+      if (decenter_end >= 0) {
 	if ((iabs(endp.y() - r.top()) < 2) ||
 	    (iabs(endp.y() - r.bottom()) < 2)) {
 	  // on top or botton
 	  endp.setX((int) (r.left() + r.width()*decenter_end));
+	  need_update_geometry = TRUE;
 	}
 	else if ((iabs(endp.x() - r.left()) < 2) ||
 		 (iabs(endp.x() - r.right()) < 2)) {
 	  // on left or right
 	  endp.setY((int) (r.top() + r.height()*decenter_end));
+	  need_update_geometry = TRUE;
 	}
 	// else start point inside 'end'
       }
     }
   }
-    
+
   // calcul rectangle englobant
   
   const int dx = endp.x() - beginp.x();
@@ -233,7 +237,7 @@ void ArrowCanvas::update_pos() {
     return;
   }
   
-  const double m = ARROW_LENGTH/sqrt(dx*dx + dy*dy);
+  const double m = ARROW_LENGTH/sqrt(double(dx*dx + dy*dy));
   
   double deltax = dy*m;
   double deltay = dx*m;
@@ -342,29 +346,53 @@ void ArrowCanvas::update_pos() {
   }
   
   update_show_lines();
+  
+  if (need_update_geometry)
+    update_geometry();
 }
 
 // force all the arrow points to be ouside r
 void ArrowCanvas::move_outside(QRect r) {
-  QPoint c = r.center();
-  ArrowCanvas * ar = this;
-  
-  while (ar->end->type() == UmlArrowPoint) {
-    ArrowPointCanvas * p = (ArrowPointCanvas *) ar->end;
-    double px = p->x();
-    double py = p->y();
+  // check it is the first segment
+  if ((begin != 0) && (begin->type() != UmlArrowPoint)) {
+    QPoint c = r.center();
+    ArrowCanvas * ar = this;
     
-    double dx = (px < c.x()) ? -10.0 : 10.0;
-    double dy = (py < c.y()) ? -10.0 : 10.0;
-    
-    while (r.contains((int) px, (int) py)) {
-      px += dx;
-      py += dy;
+    while ((ar->end != 0) && (ar->end->type() == UmlArrowPoint)) {
+      ArrowPointCanvas * p = (ArrowPointCanvas *) ar->end;
+      double px = p->x();
+      double py = p->y();
+      
+      double dx = (px < c.x()) ? -10.0 : 10.0;
+      double dy = (py < c.y()) ? -10.0 : 10.0;
+      
+      while (r.contains((int) px, (int) py)) {
+	px += dx;
+	py += dy;
+      }
+      
+      p->move(px, py);
+      
+      ar = p->get_other(ar);
+      if (ar == 0)
+	// something wrong
+	return;
     }
+  }
+}
+
+void ArrowCanvas::move_self_points(double dx, double dy) {
+  // check it is the first segment
+  if ((begin != 0) && (begin->type() != UmlArrowPoint)) {
+    ArrowCanvas * a = this;
     
-    p->move(px, py);
-    
-    ar = p->get_other(ar);
+    while ((a->end != 0) && (a->end->type() == UmlArrowPoint)) {
+      ((ArrowPointCanvas *) a->end)->moveBy(dx, dy);
+      a = ((ArrowPointCanvas *) a->end)->get_other(a);
+      if (a == 0)
+	// something wrong
+	return;
+    }
   }
 }
 
@@ -409,12 +437,52 @@ void ArrowCanvas::set_z(double z) {
     label->setZ(z);
   if ((begin != 0) &&
       (begin->type() == UmlArrowPoint) &&
-      (((ArrowPointCanvas *) begin)->z() <= z))
+      (((ArrowPointCanvas *) begin)->z() < (z + 1)))
     ((ArrowPointCanvas *) begin)->setZ(z + 1);
   if ((end != 0) &&
       (end->type() == UmlArrowPoint) &&
-      (((ArrowPointCanvas *) end)->z() <= z))
+      (((ArrowPointCanvas *) end)->z() < (z + 1)))
     ((ArrowPointCanvas *) end)->setZ(z + 1);
+}
+
+void ArrowCanvas::go_up(double nz) {
+  ArrowCanvas * a = this;
+  
+  while ((a->begin != 0) && (a->begin->type() == UmlArrowPoint)) {
+    a = ((ArrowPointCanvas *) a->begin)->get_other(a);
+    if (a == 0)
+      // something wrong
+      return;
+  }
+  
+  for (;;) {
+    if (a->z() < nz) {
+      a->setZ(nz);
+      if (a->stereotype != 0)
+	a->stereotype->setZ(nz);
+      if (a->label != 0)
+	a->label->setZ(nz);
+    }
+    
+    QListIterator<ArrowCanvas> it(a->lines);
+    
+    while (it.current()) {
+      it.current()->go_up(nz);
+      ++it;
+    }
+    
+    if ((a->end != 0) && (a->end->type() == UmlArrowPoint)) {
+      if (((ArrowPointCanvas *) a->end)->z() < (nz + 1))
+	((ArrowPointCanvas *) a->end)->set_z(nz + 1);
+      
+      a = ((ArrowPointCanvas *) a->end)->get_other(a);
+      if (a == 0)
+	// something wrong
+	return;
+    }
+    else
+      return;
+  }
 }
 
 bool ArrowCanvas::copyable() const {
@@ -686,7 +754,7 @@ BasicData * ArrowCanvas::get_data() const {
   return 0;
 }
 
-void ArrowCanvas::delete_available(bool &, bool & out_model) const {
+void ArrowCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -1073,7 +1141,7 @@ ArrowPointCanvas * ArrowCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z());
+  ap->setZ(z() + 1);
   
   DiagramItem * e = end;
   
@@ -1097,14 +1165,15 @@ ArrowPointCanvas * ArrowCanvas::brk(const QPoint & p) {
     }
   }
   
+  // no geometry, must be set before calling update_pos()
+  // whose may call update_geometry
+  propag_geometry(NoGeometry, FALSE);
+  
   ap->show();
   other->show();
   
   modified();
   other->modified();
-  
-  // no geometry
-  propag_geometry(NoGeometry, FALSE);
   
   return ap;
 }
@@ -1138,6 +1207,10 @@ ArrowCanvas * ArrowCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
   // has already check is join is possible (self relation must have two points)
   // ap is the removed arrow point
   if (end == ap) {
+    // no geometry, must be set before calling update_pos()
+    // whose may call update_geometry
+    propag_geometry(NoGeometry, FALSE);
+    
     end = other->end;
     end->add_line(this);	// add before remove in case end is
     end->remove_line(other, TRUE);	// an arrow junction and not del it
@@ -1192,9 +1265,6 @@ ArrowCanvas * ArrowCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
       stereotype->move(c.x() - fm.width(stereotype->get_name())/2, c.y());
     }
     
-    // no geometry
-    propag_geometry(NoGeometry, FALSE);
-    
     return this;
   }
   else 
@@ -1226,7 +1296,7 @@ bool ArrowCanvas::cut_on_move(ArrowPointCanvas *& ap) const {
 }
 
 bool ArrowCanvas::is_decenter(QPoint mousePressPos,
-			      bool & start, bool & horiz) const {
+			      BooL & start, BooL & horiz) const {
   switch (end->type()) {
   case UmlArrowPoint:
   case UmlArrowJunction:
@@ -1335,8 +1405,27 @@ void ArrowCanvas::set_decenter(float db, float de) {
   propag_decenter(db, de);
   
   QCanvasPolygon::setVisible(FALSE);
+  
+  ArrowCanvas * a = this;
+  
+  while (a->begin->type() == UmlArrowPoint) {
+    a = ((ArrowPointCanvas *) a->begin)->get_other(a);
+    a->update_pos();
+  }
+  
+  a = this;
+  
+  while (a->end->type() == UmlArrowPoint) {
+    a = ((ArrowPointCanvas *) a->end)->get_other(a);
+    a->update_pos();
+  }
+  
   update_pos();
-  QCanvasPolygon::setVisible(TRUE);  
+  update_geometry();
+  
+  QCanvasPolygon::setVisible(TRUE);
+  
+  canvas()->update();
 }
 
 void ArrowCanvas::propag_geometry(LineGeometry geo, bool fixed) {
@@ -1399,7 +1488,7 @@ ArrowCanvas * ArrowCanvas::set_geometry(LineGeometry geo, bool fixed) {
   default:
     break;
   }
-  
+
   ar->propag_decenter(-1.0, -1.0);
   
   switch (geo) {
@@ -1477,46 +1566,49 @@ void ArrowCanvas::update_geometry() {
   if (geometry == NoGeometry)
     return;
   
-  DiagramItem * a = get_start();
-  DiagramItem * b = get_end();
+  static int done = 0;
+
+  if (done == 3)
+    // to avoid infinite loop in decenter case
+    return;
+  
+  done += 1;
+  
+  const int half_arrow_size = ARROW_POINT_SIZE/2;
+  ArrowCanvas * first_segment = this;
+  ArrowCanvas * last_segment = this;
+  
+  while (first_segment->begin->type() == UmlArrowPoint)
+    first_segment = ((ArrowPointCanvas *) first_segment->begin)->get_other(first_segment);
+  while (last_segment->end->type() == UmlArrowPoint)
+    last_segment = ((ArrowPointCanvas *) last_segment->end)->get_other(last_segment);
+
+  DiagramItem * a = first_segment->begin;
+  DiagramItem * b = last_segment->end;
   
   if (a == b)
     return;
   
-  const int half_arrow_size = ARROW_POINT_SIZE/2;
-
-  QPoint ca = a->center();
-  QPoint cb = b->center();
+  QPoint ca = first_segment->beginp;
+  QPoint cb = last_segment->endp;
     
   switch (geometry) {
   case HVGeometry:
   case VHrGeometry:
-    {
-      ArrowPointCanvas * ap = (ArrowPointCanvas *)
-	((begin == a) ? end : begin);
-      
-      move_to(ap, cb.x() - half_arrow_size, ca.y() - half_arrow_size);
-    }
+    move_to((ArrowPointCanvas *) first_segment->end,
+	    cb.x() - half_arrow_size,
+	    ca.y() - half_arrow_size);
     break;
   case HVrGeometry:
   case VHGeometry:
-    {
-      ArrowPointCanvas * ap = (ArrowPointCanvas *)
-	((begin == a) ? end : begin);
-
-      move_to(ap, ca.x() - half_arrow_size, cb.y() - half_arrow_size);
-    }
+    move_to((ArrowPointCanvas *) first_segment->end,
+	    ca.x() - half_arrow_size,
+	    cb.y() - half_arrow_size);
     break;
   case HVHGeometry:
     {
-      const ArrowCanvas * ar = this;
-  
-      while (ar->begin->type() == UmlArrowPoint)
-	ar = ((ArrowPointCanvas *) ar->begin)->get_other(ar);
-  
-      ArrowPointCanvas * ap1 = (ArrowPointCanvas *) ar->end;
-      ArrowPointCanvas * ap2 =
-	(ArrowPointCanvas *) ap1->get_other(ar)->end;
+      ArrowPointCanvas * ap1 = (ArrowPointCanvas *) first_segment->end;
+      ArrowPointCanvas * ap2 = (ArrowPointCanvas *) last_segment->begin;
       
       if (fixed_geometry &&
 	  !a->isSelected() &&
@@ -1548,14 +1640,8 @@ void ArrowCanvas::update_geometry() {
   default:
     // VHVGeometry
     {
-      const ArrowCanvas * ar = this;
-  
-      while (ar->begin->type() == UmlArrowPoint)
-	ar = ((ArrowPointCanvas *) ar->begin)->get_other(ar);
-  
-      ArrowPointCanvas * ap1 = (ArrowPointCanvas *) ar->end;
-      ArrowPointCanvas * ap2 = 
-	(ArrowPointCanvas *) ap1->get_other(ar)->end;
+      ArrowPointCanvas * ap1 = (ArrowPointCanvas *) first_segment->end;
+      ArrowPointCanvas * ap2 = (ArrowPointCanvas *) last_segment->begin;
       
       if (fixed_geometry &&
 	  !a->isSelected() &&
@@ -1584,7 +1670,9 @@ void ArrowCanvas::update_geometry() {
       move_to(ap2, cb.x() - half_arrow_size, ap1->y());
     }
     break;
-  }  
+  }
+  
+  done -= 1;
 }
 
 ArrowCanvas * ArrowCanvas::next_geometry() {
@@ -1618,6 +1706,15 @@ void ArrowCanvas::select_associated() {
     begin->select_associated();
     end->select_associated();
   }
+}
+
+void ArrowCanvas::prepare_for_move(bool) {
+  // the arrow is selected, select its labels to not
+  // move them twice
+  if ((label != 0) && !label->selected())
+    the_canvas()->select(label);
+  if ((stereotype != 0) && !stereotype->selected())
+    the_canvas()->select(stereotype);
 }
 
 void ArrowCanvas::modified() {

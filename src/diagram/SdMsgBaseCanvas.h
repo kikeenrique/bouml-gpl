@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include "mystr.h"
 #include "../Tools/aMessageKind.h"
 
+class SdMsgSupport;
 class SdDurationCanvas;
 class OperationData;
 class LabelCanvas;
@@ -42,7 +43,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
   friend class SdMsgDialog;
     
   protected:
-    SdDurationCanvas * dest;
+    SdMsgSupport * dest;
     MyStr explicit_msg;
     const OperationData * msg;
     MyStr args;
@@ -53,7 +54,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     DrawingLanguage drawing_language;
   
   protected:
-    SdMsgBaseCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
+    SdMsgBaseCanvas(UmlCanvas * canvas, SdMsgSupport * d,
 		    UmlCode l, int v, int id);
   
     void update_label();
@@ -64,13 +65,13 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
   
     virtual void delete_it();
   
-    SdDurationCanvas * get_dest()  const { return dest; };
+    SdMsgSupport * get_dest()  const { return dest; };
     QString get_msg(bool with_args) const;
     QString get_args() const { return args; };
     void set_msg(const OperationData * m, const QString & e, const QString & a);
     bool is_synchronous() const;
     void set_synchronous(bool yes);
-    void update_after_move(SdDurationCanvas * p);
+    void update_after_move(SdMsgSupport * p);
     void default_label_position() const;
     void default_stereotype_position() const;
     virtual void update_hpos() = 0;
@@ -80,13 +81,13 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
 				 SdDurationCanvas * newone) = 0;
     virtual int overlap_dir(SdDurationCanvas *) const = 0;
     
-    virtual bool is_decenter(const QPoint &, bool &) const;
+    virtual bool is_decenter(const QPoint &, BooL &) const;
     virtual void setVisible(bool yes);
 
     virtual UmlCode type() const;
     virtual QString may_start(UmlCode &) const;
     virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void open();
     virtual void select_associated() = 0;
     virtual void change_scale();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -204,13 +204,8 @@ QString BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode * dest
   }
 }
 
-QString BrowserActivityObject::connexion_from(bool control) const {
-  if (control != def->get_is_control())
-    return (control)
-      ? TR("activity object can't accept control flow (not 'is_control')")
-      : TR("activity object can't accept data flow (is 'is_control')");
-  else
-    return 0;
+QString BrowserActivityObject::connexion_from(bool) const {
+  return 0;
 }
 
 BrowserActivityObject *
@@ -270,14 +265,10 @@ BrowserActivityObject * BrowserActivityObject::get_activityobject(BrowserNode * 
 }
 
 void BrowserActivityObject::menu() {
-  QPopupMenu m(0, TR("Activity object"));
+  QPopupMenu m(0, "Activity object");
   QPopupMenu toolm(0);
-  QString s = name;
-
-  if (s.isEmpty())
-    s = TR("activity object");
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Edit"), 1),
@@ -295,7 +286,7 @@ Note that you can undelete it after"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
 		   TR("to know who reference the <i>activity object</i> \
 through a flow or dependency"));
-    mark_menu(m, s, 90);
+    mark_menu(m, TR("the activity object"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -416,6 +407,10 @@ void BrowserActivityObject::modified() {
 
 UmlCode BrowserActivityObject::get_type() const {
   return UmlActivityObject;
+}
+
+QString BrowserActivityObject::get_stype() const {
+  return TR("activity object");
 }
 
 int BrowserActivityObject::get_identifier() const {
@@ -551,7 +546,7 @@ bool BrowserActivityObject::tool_cmd(ToolCom * com, const char * args) {
 }
 
 bool BrowserActivityObject::may_contains_them(const QList<BrowserNode> & l,
-					      bool & duplicable) const {
+					      BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {

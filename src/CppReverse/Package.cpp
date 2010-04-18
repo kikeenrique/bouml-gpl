@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,10 @@ using namespace std;
 #include "Statistic.h"
 #include "Progress.h"
 
+#ifdef ROUNDTRIP
+#include "UmlArtifact.h"
+#endif
+
 // create all packages under it
 Package * Package::Root;
 
@@ -68,16 +72,51 @@ bool Package::Scan;
 // current template forms
 QValueList<FormalParameterList> Package::Formals;
 
-// to show a progress bar
-Progress * Package::ProgressBar;
 QApplication * Package::app;
-int Package::Nfiles;
 
 // memorise the name of the header currently reversed
 // to create artifact having the right name and respect
 // the classes defined in a same header file
 QCString Package::fname;
 
+#ifdef ROUNDTRIP
+// currently roundtriped artifact
+UmlArtifact * Package::artfct;
+
+static QDict<bool> H_Managed(97);
+static QDict<bool> Src_Managed(97);
+static QDict<Package> Pack_From_Path(97);
+static QDict<UmlArtifact> Roundtriped(199);
+#endif
+
+static QString RootSDir;	// empty or finish by a /
+static QCString RootCDir;	// empty or finish by a /
+
+static QCString force_final_slash(QCString p)
+{
+  int ln = p.length();
+  
+  if (ln < 2)
+    return p;
+  
+  return (p[ln - 1] != '/')
+    ? p + '/'
+    : p;
+}
+
+static inline QCString force_final_slash(QString p)
+{
+  return force_final_slash(QCString(p));
+}
+
+static QCString root_relative_if_possible(QCString p)
+{
+  unsigned rln = RootCDir.length();
+  
+  return ((p.length() >= rln) && (p.left(rln) == RootCDir))
+    ? p.mid(rln)
+    : p;
+}
 
 #ifndef REVERSE
 Package::Package(BrowserView * parent, UmlPackage * u)
@@ -88,9 +127,57 @@ Package::Package(BrowserView * parent, UmlPackage * u)
 
 Package::Package(Package * parent, QString p, QString n)
     : BrowserNode(parent, n) {
-  path = p;
+  h_path = src_path = force_final_slash(p);
   uml = 0;
 }
+
+#ifdef ROUNDTRIP
+Package::Package(Package * parent, UmlPackage * pk)
+    : BrowserNode(parent, pk->name()) {
+  //if (text(0) == "unknown")
+  //  unknown = this;
+  
+  uml = pk;
+  
+  QDir d_root(RootSDir);
+  
+  h_path = force_final_slash(pk->cppHDir());
+  if (h_path.isEmpty())
+    h_path = RootCDir;
+  else if (QDir::isRelativePath(h_path)) {
+    if (RootCDir.isEmpty()) {
+      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+	"don't know where is <i>" + h_path + "<i></b></font><br>";
+      
+      UmlCom::trace(err);
+    }
+    else
+      h_path = force_final_slash(d_root.filePath(h_path));
+  }
+  
+  src_path = force_final_slash(pk->cppSrcDir());
+  if (src_path.isEmpty())
+    src_path = RootCDir;
+  else if (QDir::isRelativePath(src_path)) {
+    if (RootCDir.isEmpty()) {
+      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+	"don't know where is <i>" + src_path + "<i></b></font><br>";
+      
+      UmlCom::trace(err);
+    }
+    else
+      src_path = force_final_slash(d_root.filePath(src_path));
+  }
+  
+  namespace_ = pk->cppNamespace();
+  
+  if (!h_path.isEmpty())
+    Pack_From_Path.replace(h_path, this);
+  
+  if ((h_path != src_path) && !src_path.isEmpty())
+    Pack_From_Path.replace(src_path, this);
+}
+#endif
 
 // to not have warning
 Package::~Package() {
@@ -101,23 +188,166 @@ bool Package::isa_package() const {
 }
 
 #ifndef REVERSE
-QString Package::get_path() const {
-  return path;
+QString Package::get_h_path() const {
+  return h_path;
+}
+
+QString Package::get_src_path() const {
+  return src_path;
 }
 #endif
 
 void Package::init(UmlPackage * r, QApplication * a)
 {
-#ifdef REVERSE
+  app = a;
+  
+  RootCDir = force_final_slash(CppSettings::rootDir());
+  RootSDir = RootCDir;
+  
+  if (!RootSDir.isEmpty() && QDir::isRelativePath(RootSDir)) {
+    QFileInfo f(UmlPackage::getProject()->supportFile());
+    QDir d(f.dirPath());
+    
+    RootSDir = force_final_slash(d.filePath(RootSDir));
+    RootCDir = RootSDir;
+  }
+  
+#ifdef ROUNDTRIP
+  Root = new Package(0, r);
+  r->init(Root);
+#elif defined(REVERSE)
   Root = new Package(0, 0, r->name());
   Root->uml = r;
 #else
   root = new Package(BrowserView::instance(), r);
 #endif
-  app = a;
 }
 
-bool Package::scan_dirs() {
+void Package::set_step(int s, int n)
+{
+  if (n == -1) {
+    Scan = FALSE;
+    Progress::delete_it();
+  }
+  else {
+    switch (s) {
+#ifdef ROUNDTRIP
+    case 0:
+      Scan = FALSE;
+      if (n > 1)
+	new Progress(n, "Preparation, please wait ...", app);
+      break;
+#endif
+    case 1:
+      Scan = TRUE;
+      if (n > 1)
+	new Progress(n, "Scanning in progress, please wait ...", app);
+      break;
+    default:
+      // 2
+      Scan = FALSE;
+      if (n > 1) {
+#ifdef ROUNDTRIP
+	new Progress(n, "Roundtrip in progress, please wait ...", app);
+#else
+	new Progress(n, "Reverse in progress, please wait ...", app);
+#endif
+      }
+    }
+  }
+}
+
+#ifdef ROUNDTRIP
+enum ReverseRootCases { DontKnow, ReverseRoot, DontReverseRoot };
+
+void Package::accept_roundtrip_root(bool h)
+{
+  static ReverseRootCases reverseRoot = DontKnow;
+  
+  switch (reverseRoot) {
+  case DontKnow:
+    switch (QMessageBox::warning(0, "C++ Roundtrip",
+				 "directory not specified at package level, "
+				 "do you want to reverse all files under <i>"
+				 + RootSDir + "</i> and its sub directories ?",
+				 "yes", "no", "cancel", 0, 2)) {
+    case 0:
+      reverseRoot = ReverseRoot;
+      break;
+    case 1:
+      reverseRoot = DontReverseRoot;
+      if (h)
+	h_path = 0;
+      else
+	src_path = 0;
+      break;
+    default: // 2
+      throw 0;
+    }
+    break;
+  case ReverseRoot:
+    break;
+  default: // DontReverseRoot
+    if (h)
+      h_path = 0;
+    else
+      src_path = 0;
+    break;
+  }
+}
+
+void Package::own(UmlArtifact * art) {
+  QDir hd(h_path);
+  QDir sd(src_path);
+  
+  Roundtriped.insert(hd.absFilePath(art->name() + "." + CppSettings::headerExtension()), art);
+  Roundtriped.insert(sd.absFilePath(art->name() + "." + CppSettings::sourceExtension()), art);
+}
+
+int Package::count_file_number()
+{
+  int result =
+    file_number(h_path, TRUE, CppSettings::headerExtension())
+      + file_number(src_path, TRUE, CppSettings::sourceExtension());
+  
+  TreeItem * child;
+    
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      result += ((Package *) child)->count_file_number();
+  
+  return result;
+}
+
+void Package::scan_dir(int & n) {
+  // count files
+  UmlCom::message("count files ...");
+  
+  n = count_file_number();
+  H_Managed.clear();
+  Src_Managed.clear();
+
+  set_step(1, n);
+  scan_dir();
+  H_Managed.clear();
+  Src_Managed.clear();
+  set_step(1, -1);
+}
+
+void Package::scan_dir() {
+  reverse_directory(h_path, TRUE, CppSettings::headerExtension(), TRUE);
+  reverse_directory(src_path, TRUE, CppSettings::sourceExtension(), FALSE);
+  
+  TreeItem * child;
+  
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      ((Package *) child)->scan_dir();
+}
+#else
+void Package::scan_dirs(int & n) {
+  n = 0;
+  
   QStringList dirs;
   QString path = QDir::currentDirPath();
 
@@ -172,7 +402,7 @@ bool Package::scan_dirs() {
   }
   
   if (dirs.isEmpty())
-    return FALSE;
+    return;
 
   UmlCom::trace("<hr>\n");
   
@@ -184,107 +414,116 @@ bool Package::scan_dirs() {
 #endif
 
   // count files
+  UmlCom::message("count files ...");
+  
   Package * p;
 
-  Nfiles = 0;
-
   for (p = Choozen.first(); p != 0; p = Choozen.next()) {
-    QDir d(p->path);
-
-    Nfiles += file_number(d, TRUE, 
-			  CppSettings::headerExtension(),
-			  CppSettings::sourceExtension());
+    n += file_number(p->h_path, TRUE, 
+		     CppSettings::headerExtension())
+      + file_number(p->src_path, TRUE, 
+		    CppSettings::sourceExtension());
   }
     
   // scanning phase
-  ProgressBar = new Progress(Nfiles, "Scanning in progress, please wait ...");
-  Scan = TRUE;
+  set_step(1, n);
 
   for (p = Choozen.first(); p != 0; p = Choozen.next()) {
-    QDir d(p->path);
-
-    p->reverse_directory(d, TRUE, CppSettings::headerExtension(), TRUE);
-    p->reverse_directory(d, TRUE, CppSettings::sourceExtension(), FALSE);
+    p->reverse_directory(p->h_path, TRUE, CppSettings::headerExtension(), TRUE);
+    p->reverse_directory(p->src_path, TRUE, CppSettings::sourceExtension(), FALSE);
   }
-  Scan = FALSE;
-
-  if (ProgressBar != 0)
-    delete ProgressBar;
+  
+  set_step(1, -1);
 #ifndef REVERSE
   QApplication::restoreOverrideCursor();
     
   Root->setOpen(TRUE);
 #endif
-    
-  return TRUE;
 }
+#endif
     
-void Package::progress_closed()
-{
-  ProgressBar = 0;
-}
-
-int Package::file_number(QDir & d, bool rec, const char * h, const char * cpp)
+int Package::file_number(QString path, bool rec, const char * ext)
 {
   int result = 0;
-  const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
-  QFileInfoListIterator it(*list);
-  QFileInfo * fi;
   
-  while ((fi = it.current()) != 0) {
-    if ((fi->extension(FALSE) == h) || (fi->extension(FALSE) == cpp))
-      result += 1;
-    ++it;
-  }
-
-  if (rec) {
-    // sub directories
-    list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
+  if (! path.isEmpty()) {
+    QDir d(path);
+    const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	
-	result += file_number(sd, rec, h, cpp);
+    if (list != 0) {
+      QFileInfoListIterator it(*list);
+      QFileInfo * fi;
+      
+      while ((fi = it.current()) != 0) {
+	if (fi->extension(FALSE) == ext)
+	  result += 1;
+	++it;
       }
-      ++itd;
+    }
+    
+    if (rec) {
+      // sub directories
+      list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
+      
+      if (list != 0) {
+	QFileInfoListIterator itd(*list);
+	QFileInfo * di;
+	
+	while ((di = itd.current()) != 0) {
+	  if (((const char *) di->fileName())[0] != '.')
+	    result += file_number(di->filePath(), rec, ext);
+	  ++itd;
+	}
+      }
     }
   }
   
   return result;
 }
 
-void Package::send_dirs(bool rec) {
+#ifdef ROUNDTRIP
+void Package::send_dir(int n) {
   // reverse phase
-#ifdef REVERSE
-  UmlItem * prj = Root->uml;
-#else
-  UmlItem * prj = root;
-#endif
-
-  while (prj->parent() != 0)
-    prj = prj->parent();
+  UmlPackage::getProject()->set_childrenVisible(FALSE);
   
-  prj->set_childrenVisible(FALSE);
+  set_step(2, n);
+  send_dir();
+  H_Managed.clear();
+  Src_Managed.clear();
+  set_step(2, -1);
+  
+  ((uml) ? uml : Root->uml)->set_childrenVisible(TRUE);
+}
+
+void Package::send_dir() {
+  reverse_directory(h_path, TRUE, CppSettings::headerExtension(), TRUE);
+  reverse_directory(src_path, TRUE, CppSettings::sourceExtension(), FALSE);
+  
+  TreeItem * child;
+  
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      ((Package *) child)->send_dir();
+}
+#else
+void Package::send_dirs(int n, bool rec) {
+  // reverse phase
+  UmlPackage::getProject()->set_childrenVisible(FALSE);
   
 #ifndef REVERSE
   QApplication::setOverrideCursor(Qt::waitCursor);
 #endif
-  ProgressBar = new Progress(Nfiles, "Reverse in progress, please wait ...");
-
+  
+  set_step(2, n);
+  
   Package * p;
 
   for (p = Choozen.first(); p != 0; p = Choozen.next()) {
-    QDir d(p->path);
-  
-    p->reverse_directory(d, rec, CppSettings::headerExtension(), TRUE);
-    p->reverse_directory(d, rec, CppSettings::sourceExtension(), FALSE);
+    p->reverse_directory(p->h_path, rec, CppSettings::headerExtension(), TRUE);
+    p->reverse_directory(p->src_path, rec, CppSettings::sourceExtension(), FALSE);
   }
 
-  if (ProgressBar != 0)
-    delete ProgressBar;
+  set_step(2, -1);
 
 #ifndef REVERSE
   QApplication::restoreOverrideCursor();
@@ -296,6 +535,7 @@ void Package::send_dirs(bool rec) {
   root->set_childrenVisible(TRUE);
 #endif
 }
+#endif
 
 QString my_baseName(QFileInfo * fi)
 {
@@ -307,52 +547,140 @@ QString my_baseName(QFileInfo * fi)
     : fn.left(index);
 }
 
-void Package::reverse_directory(QDir & d, bool rec, QString ext, bool h) {
+void Package::reverse_directory(QString path, bool rec,
+				QString ext, bool h) {
+#ifdef ROUNDTRIP
+  if (path.isEmpty())
+    return;
+  
+  if (h) {
+    if (H_Managed.find(path) != 0)
+      return;
+    H_Managed.insert(path, (bool *) 1);
+  }
+  else {
+    if (Src_Managed.find(path) != 0)
+      return;
+    Src_Managed.insert(path, (bool *) 1);
+  }
+#endif
+
   // reads files
+  QDir d(path);
   const QFileInfoList * list =
     d.entryInfoList("*." + ext, QDir::Files | QDir::Readable);
-  QFileInfoListIterator it(*list);
   
-  while (it.current() != 0) {
-    if (h)
-      fname = my_baseName(it.current());
-    reverse_file(QCString(it.current()->filePath()));
-    if (ProgressBar)
-      ProgressBar->tic();
-    app->processEvents();
-    ++it;
+  if (list != 0) {
+    QFileInfoListIterator it(*list);
+    
+    while (it.current() != 0) {
+#ifdef ROUNDTRIP
+      QString fn = it.current()->absFilePath();
+      UmlArtifact * art = Roundtriped.find(fn);
+      
+      if (h)
+	fname = my_baseName(it.current());
+      
+      if ((art != 0) && (art->parent()->parent() != uml))
+	// own by an other package
+	((UmlPackage *) art->parent()->parent())->get_package()->reverse_file(QCString(fn), art, h);
+      else
+	reverse_file(QCString(fn), art, h);
+#else
+      if (h)
+	fname = my_baseName(it.current());
+      reverse_file(QCString(it.current()->filePath()));
+#endif
+      Progress::tic_it();
+      ++it;
+    }
   }
 
   if (rec) {
     // sub directories
     list = d.entryInfoList(QDir::Dirs | QDir::NoSymLinks);
-    QFileInfoListIterator itd(*list);
-    QFileInfo * di;
     
-    while ((di = itd.current()) != 0) {
-      if (((const char *) di->fileName())[0] != '.') {
-	QDir sd(di->filePath());
-	Package * p = find(QCString(sd.dirName()));
-	
-	if (p != 0)
-	  p->reverse_directory(sd, TRUE, ext, h);
+    if (list != 0) {
+      QFileInfoListIterator itd(*list);
+      QFileInfo * di;
+      
+      while ((di = itd.current()) != 0) {
+	if (((const char *) di->fileName())[0] != '.')
+	  find(di)->reverse_directory(di->filePath(), TRUE, ext, h);
+	++itd;
       }
-      ++itd;
     }
   }
   
   fname = "";
 }
 
-void Package::reverse_file(QCString f) {
-  if (! Lex::open(f))
+#ifdef ROUNDTRIP
+void Package::reverse(UmlArtifact * art) {
+  QCString f;
+  
+  f = h_path + art->name() + "." + CppSettings::headerExtension();
+  if (QFile::exists(f))
+    reverse_file(f, art, TRUE);
+  
+  f = src_path + art->name() + "." + CppSettings::sourceExtension();
+  if (QFile::exists(f))
+    reverse_file(f, art, FALSE);
+}
+#endif
+
+void Package::reverse_file(QCString f
+#ifdef ROUNDTRIP
+			   , UmlArtifact * art, bool h
+#endif
+			   ) {
+#ifdef ROUNDTRIP
+  if (art != 0) {
+    if (art->is_considered(h, Scan))
+      return;
+    art->set_considered(h, Scan);
+  }
+#endif
+
+  if (! Lex::open(f)) {
+#ifdef ROUNDTRIP
+    if (art != 0) {
+      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+		    + f + "</i></b></font><br>");
+      throw 0;
+    }
+    else
+#endif
     // very strange !
     CppCatWindow::trace(QCString("<font face=helvetica><b>cannot open <i>")
-			+ f + "</i></b></font><br><hr><br>");  
+			+ f + "</i></b></font><br><hr><br>"); 
+  }
   else {    
+#ifdef ROUNDTRIP
+    if (!Scan) {
+      if ((art != 0) && art->is_fully_updated() && !art->is_usefull()) {
+	// don't change the artifact header and source definition to not removed
+	// #include or decl added by hand
+	art->set_usefull();
+	  
+	QVector<UmlClass> empty;
+	
+	art->set_AssociatedClasses(empty);
+      }
+    }
+    
+    UmlArtifact * a = artfct;
+    
+    artfct = art;
+#endif
+    
     UmlCom::message(((Scan) ? "scan " : "reverse ") + f);
     
     reverse_toplevel_forms(f, FALSE);
+    
+#ifdef ROUNDTRIP
+    artfct = a;
+#endif
     
     Formals.clear();
     UmlClass::clear_usings();
@@ -393,7 +721,13 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
 	else {
 	  Lex::come_back();
 	  // do not manage 'struct {..} var;' or 'struct {..} f()' ...
-	  Class::reverse(this, s, Formals, f);
+#ifdef ROUNDTRIP
+	  QList<UmlItem> dummy;
+	  
+	  Class::reverse(this, s, Formals, f, 0, FALSE, dummy);
+#else
+	  Class::reverse(this, s, Formals, f, 0);
+#endif
 	}
       }
       else if (s == "enum") {
@@ -409,11 +743,24 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
 	else {
 	  Lex::come_back();
 	  // do not manage 'enum {..} var;' or 'enum {..} f()' ...
-	  Class::reverse_enum(this, f);
+#ifdef ROUNDTRIP
+	  QList<UmlItem> dummy;
+	  
+	  Class::reverse_enum(this, f, 0, FALSE, dummy);
+#else
+	  Class::reverse_enum(this, f, 0);
+#endif
 	}
       }
-      else if (s == "typedef")
+      else if (s == "typedef") {
+#ifdef ROUNDTRIP
+	QList<UmlItem> dummy;
+	
+	Class::reverse_typedef(this, f, Formals, FALSE, dummy);
+#else
 	Class::reverse_typedef(this, f, Formals);
+#endif
+      }
       else if (s == "namespace") {
 	s = Lex::read_word();
 	
@@ -703,15 +1050,30 @@ void Package::reverse_variable(const QCString & name) {
     switch (it->kind()) {
     case anAttribute:
       if (it->name() == varname) {
-	if (((UmlClassMember *) it)->isClassMember()) {
-	  ((UmlAttribute *) it)->set_DefaultValue(init);
+	UmlAttribute * at = (UmlAttribute *) it;
+	
+	if (at->isClassMember()) {
+#ifdef ROUNDTRIP
+	  if (at->is_roundtrip_expected()) {
+	    QCString v = at->defaultValue();
+	    
+	    if (!v.isEmpty() && (((const char *) v)[0] == '='))
+	      v = v.mid(1);
+	    
+	    if (nequal(v, init))
+	      at->set_DefaultValue(init);
+	  }
+	  else
+#endif
+	    at->set_DefaultValue(init);
 	  
-	  QCString decl = ((UmlAttribute *) it)->cppDecl();
+	  QCString decl = at->cppDecl();
 	  int index = decl.find("${h_value}");
 	  
 	  if (index != -1) {
 	    decl.remove(index + 2,  2);
-	    ((UmlAttribute *) it)->set_CppDecl(decl);
+	    // have to update decl even in roundtrip case
+	    at->set_CppDecl(decl);
 	  }
 	}
 	return;
@@ -719,15 +1081,30 @@ void Package::reverse_variable(const QCString & name) {
       break;
     case aRelation:
       if (((UmlRelation *) it)->roleName() == varname) {
-	if (((UmlRelation *) it)->isClassMember()) {
-	  ((UmlRelation *) it)->set_DefaultValue(init);
+	UmlRelation * rel = (UmlRelation *) it;
+	
+	if (rel->isClassMember()) {
+#ifdef ROUNDTRIP
+	  if (rel->is_roundtrip_expected()) {
+	    QCString v = rel->defaultValue();
+	    
+	    if (!v.isEmpty() && (((const char *) v)[0] == '='))
+	      v = v.mid(1);
+	    
+	    if (nequal(v, init))
+	      rel->set_DefaultValue(init);
+	  }
+	  else
+#endif
+	    rel->set_DefaultValue(init);
 	  
 	  QCString decl = ((UmlRelation *) it)->cppDecl();
 	  int index = decl.find("${h_value}");
 	  
 	  if (index != -1) {
 	    decl.remove(index + 2,  2);
-	    ((UmlRelation *) it)->set_CppDecl(decl);
+	    // have to update decl even in roundtrip case
+	    rel->set_CppDecl(decl);
 	  }
 	}
 	return;
@@ -788,9 +1165,25 @@ void Package::define(QCString name, Class * cl) {
 }
 
 void Package::declaration(const QCString &, const QCString &,
-			  const QCString &) {
+			  const QCString &
+#ifdef ROUNDTRIP
+			  , bool, QList<UmlItem> &
+#endif
+			  ) {
   // lost it
 }
+
+#ifdef ROUNDTRIP
+Class * Package::upload_define(UmlClass * ucl) {
+  Class * cl = new Class(this, ucl);
+  QCString s = ucl->name();	// not defined inside an other class
+  
+  Defined.insert(s, cl);
+  
+  return cl;
+}
+#endif
+
 
 UmlPackage * Package::get_uml(bool mandatory) {
   if (uml == 0) {
@@ -823,31 +1216,37 @@ UmlPackage * Package::get_uml(bool mandatory) {
 			    + name + "</i> under package <i>"
 			    + ((const char *) uml_pa->name()) + "</b></font><br>");
       QApplication::exit(1);
+      throw 0;
 #endif
     }
 
     if (! namespace_.isEmpty())
       uml->set_CppNamespace(namespace_);
     
-#ifdef DEBUG_BOUML
-#warning A FAIRE
-#endif
-    /*uml->set_CppSrcDir(?);
-    uml->set_CppHDir(?);*/
+    uml->set_CppSrcDir(root_relative_if_possible(h_path));
+    uml->set_CppHDir(root_relative_if_possible(src_path));
   }
   
   return uml;
 }
 
-Package * Package::find(QCString s) {
+Package * Package::find(QFileInfo * di) {
+#ifdef ROUNDTRIP
+  Package * p = Pack_From_Path[di->filePath()];
+  
+  if (p != 0)
+    return p;
+#endif
+  
+  QString s = di->fileName();
   TreeItem * child;
     
   for (child = firstChild(); child != 0; child = child->nextSibling())
     if (((BrowserNode *) child)->isa_package() &&
-	(child->text(0) == (const char *) s))
+	(child->text(0) == s))
       return (Package *) child;
   
-  return new Package(this, path + "/" + s, s);
+  return new Package(this, QCString(di->filePath()), QCString(s));
 }
 
 /*

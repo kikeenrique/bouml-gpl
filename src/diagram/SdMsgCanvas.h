@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,19 +28,23 @@
 
 #include "SdMsgBaseCanvas.h"
 
+#define MSG_HEIGHT 11
+
 class SdMsgCanvas : public SdMsgBaseCanvas {
   protected:
-    SdDurationCanvas * start;
+    SdMsgSupport * start;
   
   public:
-    SdMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * s,
-		SdDurationCanvas * d, UmlCode l, int v, int id);
+    SdMsgCanvas(UmlCanvas * canvas, SdMsgSupport * s,
+		SdMsgSupport * d, UmlCode l, int v, int id);
     virtual ~SdMsgCanvas();
     
     virtual void delete_it();
   
+    SdMsgSupport * get_start()  const { return start; };
+  
     virtual void draw(QPainter & p);
-
+    virtual void set_z(double);
     virtual void update_hpos();
     virtual void check_vpos(const QRect &);
     virtual double min_y() const;

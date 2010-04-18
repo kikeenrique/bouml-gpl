@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,7 +66,7 @@ class ObjectLinkCanvas : public ArrowCanvas {
     virtual void save(QTextStream & st, bool ref, QString & warning) const;
     static ObjectLinkCanvas * read(char * & st, UmlCanvas * canvas, char *);
     
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);

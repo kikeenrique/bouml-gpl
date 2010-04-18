@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,6 +66,8 @@ void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
       decl.remove((unsigned) index, 15);
     if ((index = decl.find("${name}")) != -1)
       decl.remove((unsigned) index, 7);
+    if ((index = decl.find("${inverse_name}")) != -1)
+      decl.remove((unsigned) index, 15);
     if ((index = decl.find("${value}")) != -1)
       decl.remove((unsigned) index, 8);
     if ((index = decl.find("${h_value}")) != -1)
@@ -145,7 +147,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
     
     while (*p) {
       if (!strncmp(p, "${type}", 7)) {
-	role_type->write(f_h, FALSE, actuals);
+	role_type->write(f_h, FALSE, 0, actuals);
 	p += 7;
       }
       else if (*p == '@')
@@ -158,7 +160,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
 
 void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 				const QCString & cl_stereotype, QCString indent,
-				bool & first, bool) {
+				BooL & first, bool) {
   switch (relationKind()) {
   case aDependency:
     if (stereotype() == "friend") {
@@ -268,6 +270,17 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
 	  f_h << roleName();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  switch (relationKind()) {
+	  case anAssociation:
+	  case anAggregation:
+	  case anAggregationByValue:
+	    f_h << side(side(TRUE) != this)->roleName();
+	  default:
+	    break;
+	  }
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
@@ -394,6 +407,17 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	  if (*pname == '$')
 	    f << cl_names << "::";
 	  f << roleName();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  switch (relationKind()) {
+	  case anAssociation:
+	  case anAggregation:
+	  case anAggregationByValue:
+	    f << side(side(TRUE) != this)->roleName();
+	  default:
+	    break;
+	  }
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;

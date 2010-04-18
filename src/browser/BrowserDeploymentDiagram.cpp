@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -204,7 +204,7 @@ void BrowserDeploymentDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Show"), 0),
@@ -226,7 +226,7 @@ Note that you can undelete it after"));
 	}
       }
     }
-    mark_menu(m, TR("deployment diagram"), 90);
+    mark_menu(m, TR("the deployment diagram"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -359,6 +359,10 @@ UmlCode BrowserDeploymentDiagram::get_type() const {
   return UmlDeploymentDiagram;
 }
 
+QString BrowserDeploymentDiagram::get_stype() const {
+  return TR("deployment diagram");
+}
+
 int BrowserDeploymentDiagram::get_identifier() const {
   return get_ident();
 }
@@ -382,7 +386,7 @@ void BrowserDeploymentDiagram::get_componentdrawingsettings(ComponentDrawingSett
   r.assign(used_settings->componentdrawingsettings);
 }
 
-void BrowserDeploymentDiagram::package_settings(bool & name_in_tab,
+void BrowserDeploymentDiagram::package_settings(BooL & name_in_tab,
 						ShowContextMode & show_context) const {
   name_in_tab = used_settings->package_name_in_tab == UmlYes;
   show_context = used_settings->show_context_mode;
@@ -520,7 +524,7 @@ void BrowserDeploymentDiagram::save(QTextStream & st, bool ref, QString & warnin
     def->save(st, warning);
     settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "deploymentnode_color", deploymentnode_color, nl);
     save_color(st, "component_color", component_color, nl);

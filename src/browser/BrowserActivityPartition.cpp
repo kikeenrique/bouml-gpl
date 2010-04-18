@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -192,15 +192,10 @@ BrowserActivityPartition *
 }
 
 void BrowserActivityPartition::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("activity partition");
-  
-  QPopupMenu m(0, s);
+  QPopupMenu m(0, "activity partition");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -223,7 +218,7 @@ Note that you can undelete it after"));
     }
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>partition</i>"));
-    mark_menu(m, TR("activity partition"), 90);
+    mark_menu(m, TR("the activity partition"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -354,6 +349,10 @@ UmlCode BrowserActivityPartition::get_type() const {
   return UmlActivityPartition;
 }
 
+QString BrowserActivityPartition::get_stype() const {
+  return TR("activity partition");
+}
+
 int BrowserActivityPartition::get_identifier() const {
   return get_ident();
 }
@@ -456,7 +455,7 @@ bool BrowserActivityPartition::tool_cmd(ToolCom * com, const char * args) {
 }
 
 bool BrowserActivityPartition::may_contains_them(const QList<BrowserNode> & l,
-						 bool & duplicable) const {
+						 BooL & duplicable) const {
   BrowserNode * activity = get_container(UmlActivity);
   QListIterator<BrowserNode> it(l);
   

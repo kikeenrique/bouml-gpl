@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,13 +72,14 @@ class BrowserColDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void update_drawing_settings();
     virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
-    virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
+    virtual void package_settings(BooL & name_in_tab, ShowContextMode & show_context) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;

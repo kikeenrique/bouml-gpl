@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -137,7 +137,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body identifier</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 1");
       }
       
@@ -149,7 +149,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, end of line expected</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 2");
       }
 
@@ -163,7 +163,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid operation id " + n + "</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 3");
 	return;
       }
@@ -173,7 +173,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, wrong balanced</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 4");
       }
 

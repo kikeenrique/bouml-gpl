@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,10 @@ using namespace std;
 #include "UmlCom.h"
 #ifdef REVERSE
 #include "CppCatWindow.h"
+# ifdef ROUNDTRIP
+#include "UmlExtraClassMember.h"
+#include "Class.h"
+# endif
 #endif
 
 // contains the classes whose definition in currently read
@@ -56,13 +60,20 @@ QDict<UmlClass> UmlClass::Usings;
 QValueList<QDict<UmlClass> > UmlClass::UsingScope;
 
 UmlClass::UmlClass(void * id, const QCString & n) 
-    : UmlBaseClass(id, n) {
-}
+    : UmlBaseClass(id, n)
+#ifdef ROUNDTRIP
+    , created(FALSE), the_class(0)
+#endif
+{}
 
 bool UmlClass::manage_inherit(ClassContainer * container, 
 			      const QValueList<FormalParameterList> & tmplts
 #ifdef REVERSE
 			      , bool libp
+# ifdef ROUNDTRIP
+			      , bool roundtrip, QList<UmlItem> & expected_order
+			      , bool container_roundtrip, QList<UmlItem> & container_expected_order
+# endif
 #endif
 			      ) {
 #ifdef DEBUG_BOUML
@@ -115,6 +126,9 @@ bool UmlClass::manage_inherit(ClassContainer * container,
     UmlTypeSpec mother;
     QCString typeform;
     UmlRelation * rel = 0;
+#ifdef ROUNDTRIP
+    bool is_new = TRUE;
+#endif
     
     container->compute_type(s, mother, typeform);
     
@@ -144,10 +158,18 @@ bool UmlClass::manage_inherit(ClassContainer * container,
       }
       else {
 	// inherits T<...>
+#ifdef ROUNDTRIP
+	is_new = !roundtrip || ((rel = search_for_inherit(mother.type)) == 0);
+#endif	
 	mother_name += "<" + after_gt;
 	Lex::come_back();
+	
 	// must add inheritance before setting actuals
-	if ((rel = UmlBaseRelation::create(aRealization, this, mother.type)) == 0) {
+	if (
+#ifdef ROUNDTRIP
+	    is_new &&
+#endif
+	    ((rel = UmlBaseRelation::create(aRealization, this, mother.type)) == 0)) {
 	  Lex::warn("cannot inherit <font color =\"red\">" +
 		    Lex::quote(mother_name) +" </font>");
 #ifdef DEBUG_BOUML
@@ -155,10 +177,23 @@ bool UmlClass::manage_inherit(ClassContainer * container,
 #endif
 	  return FALSE;
 	}
-	else if (!get_actuals(mother.type, container, tmplts))
+	else if (!get_actuals(mother.type, container, tmplts
+#ifdef ROUNDTRIP
+			      , !is_new
+#endif
+			      ))
 	  return FALSE;
 	
-	rel->set_Stereotype("bind");
+#ifdef ROUNDTRIP
+	if (! is_new) {
+	  if (neq(rel->stereotype(), "bind")) {
+	    rel->set_Stereotype("bind");
+	    the_class->set_updated();
+	  }
+	}
+	else
+#endif
+	  rel->set_Stereotype("bind");
 	
         s = Lex::read_word();
       }
@@ -168,11 +203,20 @@ bool UmlClass::manage_inherit(ClassContainer * container,
       mother.type = auxilarily_typedef(mother_name
 #ifdef REVERSE
 				       , libp
+# ifdef ROUNDTRIP
+				       , container_roundtrip
+				       , container_expected_order
+# endif
 #endif
 				       );
       if (mother.type == 0)
 	return FALSE;
     }
+    
+#ifdef ROUNDTRIP
+    if (rel == 0)
+      is_new = !roundtrip || ((rel = search_for_inherit(mother.type)) == 0);
+#endif
     
     if ((rel == 0) &&
         ((rel = UmlBaseRelation::create(aGeneralisation, this, mother.type)) == 0)) {
@@ -184,14 +228,38 @@ bool UmlClass::manage_inherit(ClassContainer * container,
       return FALSE;
     }
     
-#ifdef REVERSE
-    Statistic::one_relation_more();
-#endif
+#ifdef ROUNDTRIP
+    expected_order.append(rel);
     
-    rel->set_CppDecl("${type}");
-    rel->set_Visibility(v);
-    if (is_virtual)
-      rel->set_CppVirtualInheritance(TRUE);
+    if (!is_new) {
+      rel->set_usefull();
+      
+      if (neq(rel->cppDecl(), "${type}")) {
+	rel->set_CppDecl("${type}");
+	the_class->set_updated();
+      }
+    
+      if (rel->visibility() != v) {
+	rel->set_Visibility(v);
+	the_class->set_updated();
+      }
+      
+      if (is_virtual != rel->cppVirtualInheritance()) {
+	rel->set_CppVirtualInheritance(is_virtual);
+	the_class->set_updated();
+      }
+    }
+    else {
+#elif defined(REVERSE)
+      Statistic::one_relation_more();
+#endif
+      rel->set_CppDecl("${type}");
+      rel->set_Visibility(v);
+      if (is_virtual)
+	rel->set_CppVirtualInheritance(TRUE);
+#ifdef ROUNDTRIP
+    }
+#endif
     
     if (s == ",")
       s = Lex::read_word();
@@ -204,7 +272,11 @@ bool UmlClass::manage_inherit(ClassContainer * container,
 
 UmlClass * UmlClass::auxilarily_typedef(const QCString & base
 #ifdef REVERSE
-					,bool libp
+					, bool libp
+# ifdef ROUNDTRIP
+					, bool container_roundtrip
+					, QList<UmlItem> & container_expected_order
+# endif
 #endif
 					) {
   QCString typedef_decl = CppSettings::typedefDecl();
@@ -219,8 +291,14 @@ UmlClass * UmlClass::auxilarily_typedef(const QCString & base
 
       if ((cl->stereotype() == "typedef") &&
 	  (cl->cppDecl() == typedef_decl) &&
-	  (cl->baseType().explicit_type == base))
+	  (cl->baseType().explicit_type == base)) {
+#ifdef ROUNDTRIP
+	cl->set_usefull();
+	if (container_roundtrip)
+	  container_expected_order.append(cl);
+#endif
 	return cl;
+      }
     }
   }
 
@@ -264,6 +342,10 @@ UmlClass * UmlClass::auxilarily_typedef(const QCString & base
 #ifdef REVERSE
       if (!libp)
 	cl->need_artifact(Namespace::current());
+# ifdef ROUNDTRIP
+      if (container_roundtrip)
+	container_expected_order.append(cl);
+# endif
 #endif      
 
       return cl;
@@ -272,7 +354,11 @@ UmlClass * UmlClass::auxilarily_typedef(const QCString & base
 }
 
 bool UmlClass::get_actuals(UmlClass * mother, ClassContainer * container, 
-			   const QValueList<FormalParameterList> & tmplts) {
+			   const QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+			   , bool roundtrip
+#endif
+			   ) {
   // < read  
   const QValueList<UmlActualParameter> actuals = this->actuals();
   QValueList<UmlActualParameter>::ConstIterator it;
@@ -310,7 +396,16 @@ bool UmlClass::get_actuals(UmlClass * mother, ClassContainer * container,
       container->compute_type(s, typespec, typeform, FALSE, tmplts);
       if (typespec.explicit_type == "<complex type>")
 	typespec.explicit_type = typeform;
-      replaceActual(rank, typespec);
+#ifdef ROUNDTRIP
+      if (roundtrip) {
+	if (!(*it).value().equal(typespec)) {
+	  the_class->set_updated();
+	  replaceActual(rank, typespec);
+	}
+      }
+      else
+#endif
+	replaceActual(rank, typespec);
       ++it;
       rank += 1;
       
@@ -348,6 +443,24 @@ bool UmlClass::inside_its_definition() {
   return UnderConstruction.findRef(this) != -1;
 }
 
+bool UmlClass::is_itself(QCString t) {
+  // class is a template class and t is x<...> where x is the class,
+  // t is normalized
+  // return true if t is the class with its formals
+  int index = t.find('<');
+  
+  t = t.mid(index + 1, t.length() - index - 2);
+  
+  QValueList<UmlFormalParameter> l = formals();
+  QValueList<UmlFormalParameter>::ConstIterator it = l.begin();
+  QCString t2 = (*it).name();
+  
+  while ((++it) != l.end())
+    t2 += ',' + (*it).name();
+
+  return (t == t2);
+}
+
 void UmlClass::restore_using_scope()
 { 
   Usings = UsingScope.first();
@@ -358,11 +471,17 @@ void UmlClass::restore_using_scope()
 
 void UmlClass::need_artifact(const QCString & nmsp) {
   if (parent()->kind() == aClassView) {
-    UmlPackage * pack = (UmlPackage *) parent()->parent();
     UmlArtifact * cp;
     
     if ((cp = associatedArtifact()) == 0) {
       // search artifact
+#ifdef ROUNDTRIP
+      if ((cp = Package::get_artifact()) != 0) {
+	cp->addAssociatedClass(this);
+	return;
+      }
+#endif
+      
       QCString name = Package::get_fname();
       int index;
 	
@@ -376,7 +495,8 @@ void UmlClass::need_artifact(const QCString & nmsp) {
 	  name = name.left(index);
       }
       
-      UmlDeploymentView * cpv = pack->get_deploymentview(nmsp);
+      UmlDeploymentView * cpv =
+	((UmlPackage *) parent()->parent())->get_deploymentview(nmsp);
       const QVector<UmlItem> & children = cpv->children();
       int n = (int) children.count();
       
@@ -437,5 +557,171 @@ bool UmlClass::need_source() {
   
   return FALSE;
 }
+
+# ifdef ROUNDTRIP
+
+void UmlClass::upload(ClassContainer * cnt)
+{
+  UmlArtifact * art = associatedArtifact();
+  QCString na;
+  
+  if (art != 0) {
+    na = ((UmlPackage *) art->parent()->parent())->cppNamespace();
+    if (! na.isEmpty())
+      Namespace::set(na);
+  }
+    
+  the_class = cnt->upload_define(this);
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  
+  for (;v != vsup; v += 1)
+    (*v)->upload(the_class);
+  
+  if (! na.isEmpty())
+    Namespace::unset();
+}
+
+bool UmlClass::set_roundtrip_expected() {
+  if (is_roundtrip_expected() ||
+      ((parent()->kind() != aClass) &&
+       ((associatedArtifact() == 0) ||
+	!associatedArtifact()->set_roundtrip_expected_for_class())))
+    return TRUE;
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlClassItem ** v = (UmlClassItem **) ch.data();
+  UmlClassItem ** const vsup = v + ch.size();
+  bool result = UmlClassItem::set_roundtrip_expected();
+  
+  for (;v != vsup; v += 1)
+    result &= (*v)->set_roundtrip_expected();
+  
+  return result;
+  
+}
+
+void UmlClass::mark_useless(QList<UmlItem> & l) {
+  UmlClassItem::mark_useless(l);
+
+  QVector<UmlItem> ch = UmlItem::children();
+  UmlClassItem ** v = (UmlClassItem **) ch.data();
+  UmlClassItem ** const vsup = v + ch.size();
+    
+  for (;v != vsup; v += 1)
+    (*v)->mark_useless(l);
+}
+
+void UmlClass::scan_it(int & n) {
+  if (is_roundtrip_expected())
+    associatedArtifact()->scan_it(n);
+}
+
+void UmlClass::send_it(int n) {
+  if (is_roundtrip_expected())
+    associatedArtifact()->send_it(n);
+}
+
+UmlItem * UmlClass::search_for_att_rel(const QCString & name) {
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  
+  for (;v != vsup; v += 1) {
+    switch ((*v)->kind()) {
+    case anAttribute:
+      if ((*v)->name() == name)
+	return *v;
+      break;
+    case aRelation:
+      if (((UmlRelation *) *v)->roleName() == name)
+	return *v;
+      break;
+    default:
+      break;
+    }
+  }
+
+  return 0;
+}
+
+UmlExtraClassMember *
+  UmlClass::search_for_extra(const QCString & name, const QCString & decl) {
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  
+  for (;v != vsup; v += 1) {
+    if (((*v)->kind() == anExtraClassMember) &&
+	((*v)->name() == name) &&
+	!neq(((UmlExtraClassMember *) *v)->cppDecl(), decl))
+      return (UmlExtraClassMember *) *v;
+  }
+
+  return 0;
+}
+
+UmlRelation * UmlClass::search_for_inherit(UmlClass * mother) {
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  
+  for (;v != vsup; v += 1) {
+    if (((*v)->kind() == aRelation) &&
+	(((UmlRelation *) *v)->roleType() == mother)) {
+      switch (((UmlRelation *) *v)->relationKind()) {
+      case aGeneralisation:
+      case aRealization:
+	return (UmlRelation *) *v;
+      default:
+	break;
+      }
+    }
+  }
+
+  return 0;
+}
+
+void UmlClass::reorder(QList<UmlItem> & expected_order) {
+  if (expected_order.isEmpty())
+    return;
+  
+  QVector<UmlItem> ch = UmlItem::children(); // copy
+  UmlItem ** v = ch.data();
+  
+  unload(); // to not reload children each time
+
+  //bool updated = FALSE;
+  UmlItem * expected_previous = 0;
+  QListIterator<UmlItem> expected_it(expected_order);
+  UmlItem * expected;
+  
+  while ((expected = expected_it.current()) != 0) {
+    if (*v != expected) {
+      //updated = TRUE;
+      expected->moveAfter(expected_previous);
+      
+      UmlItem * x1 = expected;
+      
+      do {
+	UmlItem * x2 = *v;
+	
+	*v = x1;
+	x1 = x2;
+      } while (x1 != expected);
+    }
+    
+    expected_previous = expected;
+    ++expected_it;
+    v += 1;
+  }
+  
+  //if (updated)
+  //  get_class()->set_updated();
+}
+
+# endif
 
 #endif

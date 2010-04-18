@@ -150,6 +150,8 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
 	  if (! token.closed())
 	    in.finish(s);
 	}
+	else if (s == "ownedrule")
+	  a->set_Constraint(UmlItem::readConstraint(in, token));
 	else
 	  a->UmlItem::import(in, token);
       }

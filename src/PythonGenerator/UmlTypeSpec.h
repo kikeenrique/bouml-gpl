@@ -1,6 +1,8 @@
 #ifndef _UMLTYPESPEC_H
 #define _UMLTYPESPEC_H
 
+class QTextOStream;
+class UmlArtifact;
 
 #include "UmlBaseTypeSpec.h"
 
@@ -10,6 +12,8 @@
 //
 // - an explicit type
 class UmlTypeSpec : public UmlBaseTypeSpec {
+  public:
+    void generate_import(QTextOStream & f, UmlArtifact * using_art, bool from, QCString & made) const;
 };
 
 #endif

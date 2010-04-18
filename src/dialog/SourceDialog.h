@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,13 +52,13 @@ class SourceDialog : public QDialog {
     NumberedMultiLineEdit * e;
     QLabel * lineColumn;
     QString path;
-    bool & edited;
+    BooL & edited;
     unsigned & edition_number;
     
     static QSize previous_size;
       
   public:
-    SourceDialog(QString p, bool & flg, unsigned & edn);
+    SourceDialog(QString p, BooL & flg, unsigned & edn);
     virtual ~SourceDialog();
     
   protected slots:

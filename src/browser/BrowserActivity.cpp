@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -238,7 +238,7 @@ void BrowserActivity::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(def->definition(FALSE), m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -273,7 +273,7 @@ Note that you can undelete it after"));
     m.insertSeparator();
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 12),
 		   TR("to know who reference the <i>activity</i>"));
-    mark_menu(m, TR("activity"), 90);
+    mark_menu(m, TR("the activity"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -449,6 +449,10 @@ void BrowserActivity::modified() {
 
 UmlCode BrowserActivity::get_type() const {
   return UmlActivity;
+}
+
+QString BrowserActivity::get_stype() const {
+  return TR("activity");
 }
 
 int BrowserActivity::get_identifier() const {
@@ -632,7 +636,7 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 }
 
 bool BrowserActivity::may_contains_them(const QList<BrowserNode> & l,
-					bool & duplicable) const {
+					BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {

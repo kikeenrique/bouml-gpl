@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,7 +69,7 @@ class ExtraMemberData : public BasicData {
     virtual bool deletedp() const;
     virtual void set_deletedp(bool y);
         
-    virtual QString definition(bool full) const;
+    virtual QString definition(bool full, bool with_kind) const;
     
     const char * get_cpp_decl() const { return cpp_decl; };
     const char * get_cpp_def() const { return cpp_def; };

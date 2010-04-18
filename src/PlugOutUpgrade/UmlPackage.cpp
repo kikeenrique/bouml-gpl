@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -4990,6 +4990,51 @@ void add_cpp_inline_oper_force_incl_in_h(UmlClass * cppsetting)
 }
 
 
+
+//
+//
+//
+
+void add_constraint2(UmlClass * basecl, const char *afterop, const char * afterat)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  QCString s = "<b>Add constraint on " + basecl->name() + "</b><br>\n";
+  
+  UmlCom::trace(s);
+  
+  //
+  
+  basecl->add_attribute("_constraint", PrivateVisibility, "string",
+			0, 0)
+    ->moveAfter(basecl->get_attribute(afterat));
+  
+  UmlOperation * op;
+  UmlOperation * op1;
+  
+  defGet(basecl, _constraint, constraint, "string", 0, 0,
+         "constraint");
+  op->moveAfter(basecl->get_operation(afterop));
+  op1 = op;
+  defSet(basecl, _constraint, set_Constraint, "str", setConstraintCmd, 0, 0,
+         "constraint");
+  op->moveAfter(op1);
+  
+  op = basecl->get_operation("read_uml_");
+  op->set_CppBody(op->cppBody() + "  _constraint = UmlCom::read_string();\n");
+  op->set_JavaBody(op->javaBody() + "  _constraint = UmlCom.read_string();\n");
+  
+  op = basecl->get_operation("unload");
+  op->set_CppBody(op->cppBody() + "  _constraint = 0;\n");
+  op->set_JavaBody(op->javaBody() + "  _constraint = null;\n");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
 //
 
 bool ask_for_upgrade()
@@ -5520,13 +5565,81 @@ bool UmlPackage::upgrade() {
 
       work = TRUE;
     }
+    
+    op = UmlClass::get("UmlBaseClassDiagram", 0)->get_operation("create");
+    UmlParameter pa = op->params()[0];
+
+    if (pa.type.type != UmlClass::get("UmlItem", 0)) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
       
+      UmlCom::trace("update UmlBaseClassDiagram::create<br>\n");
+      pa.type.type = UmlClass::get("UmlItem", 0);
+      op->replaceParameter(0, pa);
+      work = TRUE;
+    }
+    
+    op = uml_com->get_operation("bye");
+    if (op->params().isEmpty()) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      UmlCom::trace("update UmlCom::bye()<br>\n");
+
+      pa.name = "v";
+      pa.default_value = "";
+      pa.type.explicit_type = "int";
+      pa.type.type = 0;
+      pa.dir = InputDirection;
+      op->addParameter(0, pa);
+      s = op->cppDecl();
+      op->set_CppDecl(s.insert(s.find("${)}"), "${t0} ${p0}"));
+      s = op->cppDef();
+      op->set_CppDef(s.insert(s.find("${)}"), "${t0} ${p0}"));
+      op->set_CppBody("  send_cmd(miscGlobalCmd, byeCmd, v, \"\");");
+      s = op->javaDecl();
+      op->set_JavaDecl(s.insert(s.find("${)}"), "${t0} ${p0}"));
+      op->set_JavaBody("  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._byeCmd, v, \"\");");
+      work = TRUE;
+    }
+    
+    op = uml_base_item->get_operation("read_");
+    s = op->cppBody();
+    
+    if (s.find("UmlCom::bye();") != -1) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      UmlCom::trace("fixe UmlBaseItem::read_()<br>\n");
+      
+      s = s.insert(s.find("UmlCom::bye();") + 12, "-1");
+      op->set_CppBody(s);
+      
+      s = op->javaBody();
+      s = s.insert(s.find("UmlCom.bye();") + 11, "-1");
+      op->set_JavaBody(s);
+      work = TRUE;
+    }
+    
+    UmlClass * umlbaseactivity = UmlClass::get("UmlBaseActivity", 0);
+    
+    if (umlbaseactivity->get_attribute("_constraint") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_constraint2(umlbaseactivity, 
+		      "set_JavaPostCondition", "_java_post_condition");
+      add_constraint2(UmlClass::get("UmlBaseActivityAction", 0), 
+		      "set_JavaPostCondition", "_java_post_condition");
+
+      work = TRUE;
+    }    
+    
     if (work) {
       CppSettings::set_UseDefaults(cpp_default);
       JavaSettings::set_UseDefaults(java_default);
 
       UmlCom::trace("update api version<br>\n");
-      update_api_version("50");
+      update_api_version("53");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

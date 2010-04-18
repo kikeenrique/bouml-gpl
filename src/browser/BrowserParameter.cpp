@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -169,15 +169,10 @@ QString BrowserParameter::connexion_from(bool control) const {
 }
 
 void BrowserParameter::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("interruptible activity region");
-  
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
@@ -278,6 +273,10 @@ void BrowserParameter::modified() {
 
 UmlCode BrowserParameter::get_type() const {
   return UmlParameter;
+}
+
+QString BrowserParameter::get_stype() const {
+  return TR("parameter");
 }
 
 int BrowserParameter::get_identifier() const {

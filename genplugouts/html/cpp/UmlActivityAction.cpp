@@ -70,5 +70,11 @@ void UmlActivityAction::html() {
   }
 
   fw.write("</ul>");
+
+  if (! constraint().isEmpty()) {
+    fw.write("<p> Constraint :<ul>");
+    writeq(constraint());
+    fw.write("</ul>");
+  }
 }
 

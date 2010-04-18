@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,7 +48,7 @@ class UmlClassItem : public UmlBaseClassItem {
 			       QTextOStream & f_h,
 			       const QCString & cl_stereotype,
 			       QCString indent,
-			       bool & first, bool last) = 0;
+			       BooL & first, bool last) = 0;
     
     virtual void generate_def(QTextOStream & f, QCString indent, bool h,
 			      QCString templates, QCString cl_names,

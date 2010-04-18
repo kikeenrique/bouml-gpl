@@ -1,9 +1,9 @@
 
 #include "UmlBaseClassDiagram.h"
 #include "UmlClassDiagram.h"
-#include "UmlClassView.h"
+#include "UmlItem.h"
 
-UmlClassDiagram * UmlBaseClassDiagram::create(UmlClassView * parent, const char * s)
+UmlClassDiagram * UmlBaseClassDiagram::create(UmlItem * parent, const char * s)
 {
   return (UmlClassDiagram *) parent->create_(aClassDiagram, s);
 }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,7 @@ extern bool manage_python_comment(QString comment, const char *& p,
 extern bool manage_python_description(QString comment, const char *& p,
 				      const char *& pp);
 extern void manage_python_docstring(QString comment, const char *& p, const char *& pp,
-				    bool & indent_needed, QString & indent,
+				    BooL & indent_needed, QString & indent,
 				    QString & saved_indent);
 extern QString capitalize(const QString & s);
 extern QString true_name(const QString & name, const QString & decl);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,8 +62,8 @@ void ArrowPointCanvas::delete_it() {
     lines.first()->delete_it();	// will apply del on this
 }
 
-void ArrowPointCanvas::delete_available(bool &,
-					bool & out_model) const {
+void ArrowPointCanvas::delete_available(BooL &,
+					BooL & out_model) const {
   out_model |= lines.getFirst()->may_join();
 }
 

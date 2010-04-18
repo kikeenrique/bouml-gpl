@@ -11,7 +11,7 @@ class QCheckBox;
 
 class Dialog : public QDialog {
   public:
-    Dialog(bool ci, QCString & cmd, bool & rec, bool & reload);
+    Dialog(bool ci, QCString & cmd, BooL & rec, BooL & reload);
 
     virtual void accept();
 
@@ -19,9 +19,9 @@ class Dialog : public QDialog {
   protected:
     QCString & _cmd;
 
-    bool & _rec;
+    BooL & _rec;
 
-    bool & _reload;
+    BooL & _reload;
 
     QCheckBox * rec_cb;
 

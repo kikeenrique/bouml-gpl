@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -242,6 +242,8 @@ void CdClassCanvas::check_size() {
 	used_view_mode = asBoundary;
       else if (!strcmp(st, "actor"))
 	used_view_mode = asActor;
+      else if (!strcmp(st, "interface"))
+	used_view_mode = asInterface;
       else
 	used_view_mode = asClass;
     }
@@ -429,6 +431,10 @@ void CdClassCanvas::check_size() {
   int min_w;
   
   switch (used_view_mode) {
+  case asInterface:
+    min_w = (int) (INTERFACE_SIZE * zoom);
+    he += min_w;
+    break;
   case asControl:
     min_w = (int) (CONTROL_WIDTH * zoom);
     he += (int) (CONTROL_HEIGHT * zoom);
@@ -544,7 +550,6 @@ void CdClassCanvas::check_inner() {
       ++it;
   }  
 }
-
 bool CdClassCanvas::has_relation(BasicData * def) const {
   QListIterator<ArrowCanvas> it(lines);
 	
@@ -884,6 +889,10 @@ void CdClassCanvas::draw(QPainter & p) {
     r.setTop(r.top() + fbm.height());
   
   switch (used_view_mode) {
+  case asInterface:
+    draw_interface_icon(p, r, used_color, zoom);
+    r.setTop(r.top() + (int) (INTERFACE_SIZE * zoom) + two);
+    break;
   case asControl:
     draw_control_icon(p, r, used_color, zoom);
     r.setTop(r.top() + (int) (CONTROL_HEIGHT * zoom) + two);
@@ -1149,7 +1158,7 @@ UmlCode CdClassCanvas::type() const {
   return UmlClass;
 }
 
-void CdClassCanvas::delete_available(bool & in_model, bool & out_model) const {
+void CdClassCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -1166,6 +1175,31 @@ void CdClassCanvas::open() {
   browser_node->open(FALSE);
 }
 
+static CdClassCanvas * container_class_without_inner(CdClassCanvas * cln)
+{
+  if (cln->the_canvas()->must_draw_all_relations())
+    return 0;
+  
+  BrowserNode * p = (BrowserNode *) cln->get_bn()->parent();
+  
+  if (p->get_type() != UmlClass)
+    return 0;
+
+  QCanvasItemList all = cln->canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    if ((*cit)->visible()) {
+      CdClassCanvas * cn = dynamic_cast<CdClassCanvas *>(*cit);
+      
+      if ((cn != 0) && (cn->get_bn() == p))
+	return (cln->has_inner(cn)) ? 0 : cn;
+    }
+  }
+  
+  return 0;
+}
+
 void CdClassCanvas::menu(const QPoint&) {
   QList<BrowserOperation> l = 
     ((BrowserClass *) browser_node)->inherited_operations(21);
@@ -1176,6 +1210,7 @@ void CdClassCanvas::menu(const QPoint&) {
   QPopupMenu inhopersubm(0);
   QPopupMenu toolm(0);
   const char * stereotype = browser_node->get_data()->get_stereotype();
+  CdClassCanvas * nesting_cl = container_class_without_inner(this);
   BrowserNodeList attributes;
   BrowserNodeList operations;
   QStringList attributes_def;
@@ -1185,7 +1220,7 @@ void CdClassCanvas::menu(const QPoint&) {
   browser_node->children(attributes, UmlAttribute);
   browser_node->children(operations, UmlOperation);
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);
@@ -1193,6 +1228,8 @@ void CdClassCanvas::menu(const QPoint&) {
   m.insertItem(TR("Go down"), 22);
   m.insertSeparator();
   m.insertItem(TR("Add related elements"), 5);
+  if (nesting_cl != 0)
+    m.insertItem(TR("Show nesting relation"), 23);
   m.insertSeparator();
   m.insertItem(TR("Edit drawing settings"), 2);
   if (attributes.count() != 0)
@@ -1241,12 +1278,12 @@ void CdClassCanvas::menu(const QPoint&) {
 	     oper = l.next(), index += 1) {
 	  if (((OperationData *) oper->get_data())->get_is_abstract())
 	    inhopersubm.insertItem(new MenuItalic(((BrowserNode *) oper->parent())->get_name() +
-						  QString("::") + oper->get_data()->definition(TRUE),
+						  QString("::") + oper->get_data()->definition(TRUE, FALSE),
 						  inhopersubm.font()),
 				   index);
 	  else
 	    inhopersubm.insertItem(((BrowserNode *) oper->parent())->get_name() +
-				   QString("::") + oper->get_data()->definition(TRUE),
+				   QString("::") + oper->get_data()->definition(TRUE, FALSE),
 				   index);
 	}
 	
@@ -1338,7 +1375,7 @@ void CdClassCanvas::menu(const QPoint&) {
     return;
   case 3:
     {
-      bool visible = indicate_visible_attr;
+      BooL visible = indicate_visible_attr;
       HideShowDialog dialog(attributes, hidden_visible_attributes, visible);
       
       dialog.raise();
@@ -1349,7 +1386,7 @@ void CdClassCanvas::menu(const QPoint&) {
     break;
   case 4:
     {
-      bool visible = indicate_visible_oper;
+      BooL visible = indicate_visible_oper;
       HideShowDialog dialog(operations, hidden_visible_operations, visible);
       
       dialog.raise();
@@ -1412,6 +1449,10 @@ void CdClassCanvas::menu(const QPoint&) {
   case 20:
     browser_node->apply_shortcut("Generate Python");
     return;
+  case 23:
+    (new ArrowCanvas(the_canvas(), this, nesting_cl, UmlInner, 0, FALSE, -1.0, -1.0))
+      ->show();
+    break;
   case 1999:
     {
       OperationListDialog dialog(TR("Choose operation to edit"), 
@@ -1608,6 +1649,21 @@ void CdClassCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
     manual_size |= ((nw != ow) || (nh != oh));
 }
 
+void CdClassCanvas::resize(const QSize & sz, bool w, bool h) {
+  int ow = width();
+  int oh = height();
+  
+  if (DiagramCanvas::resize(sz, w, h, width_min, height_min, TRUE)) {
+    int nw = width();
+    int nh = height();
+    
+    if ((nw = width_min) && (nh == height_min))
+      manual_size = FALSE;
+    else
+      manual_size |= ((nw != ow) || (nh != oh));
+  }
+}
+
 //
 
 static void save_hidden_list(BrowserNode * bn, UmlCode c, QTextStream & st,
@@ -1766,6 +1822,11 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     }
     
     result->check_size();
+    if ((read_file_format() < 72) &&
+	(result->used_view_mode == asInterface)) {
+      result->settings.class_drawing_mode = asClass;
+      result->check_size();
+    }
     result->set_center100();
     result->show();
     result->check_constraint();

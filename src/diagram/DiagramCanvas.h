@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -75,6 +75,7 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     virtual void prepare_for_move(bool on_resize);
     virtual bool move_with(UmlCode) const;
     void force_self_rel_visible();
+    void moveSelfRelsBy(double dx, double dy);
     
     virtual void change_scale();
     virtual QPoint center() const;
@@ -84,6 +85,9 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     virtual bool contains(int, int) const;
     
     void resize(aCorner c, int dx, int dy, QPoint &, int min_width, int min_height,
+		bool odd = FALSE, bool stay_centered = FALSE);
+    bool resize(const QSize & sz, bool w, bool h,
+		int min_width, int min_height,
 		bool odd = FALSE, bool stay_centered = FALSE);
     virtual void resize(int w, int h);
     virtual UmlCanvas * the_canvas() const;
@@ -108,6 +112,8 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     void read_stereotype_property(char * & st, char *& k);
     
     static void draw_actor(QPainter * p, QRect r);
+    static void draw_interface_icon(QPainter & p, QRect & r,
+				    UmlColor used_color, double zoom);
     static void draw_entity_icon(QPainter & p, QRect & r,
 				 UmlColor used_color, double zoom);
     static void draw_boundary_icon(QPainter & p, QRect & r,
@@ -119,6 +125,7 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
 
 #define CLASS_ICON_SIZE 20
 #define CLASS_CANVAS_MIN_SIZE 40
+#define INTERFACE_SIZE CLASS_ICON_SIZE
 #define CONTROL_WIDTH CLASS_ICON_SIZE
 #define CONTROL_HEIGHT (CLASS_ICON_SIZE + 5)
 #define ENTITY_SIZE CLASS_ICON_SIZE

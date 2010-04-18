@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -204,7 +204,7 @@ ArrowPointCanvas * CodLinkCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z());
+  ap->setZ(z() + 1);
   
   CodLinkCanvas * other =
     new CodLinkCanvas(the_canvas(), ap, end, 0, decenter_begin, decenter_end);

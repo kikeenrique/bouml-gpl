@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "ClassData.h"
 #include "UmlCanvas.h"
 #include "myio.h"
+#include "translate.h"
 
 TemplateCanvas::TemplateCanvas(DiagramCanvas * c)
     : DiagramCanvas(c->the_canvas(), -1), cl(c) {
@@ -151,11 +152,11 @@ void TemplateCanvas::menu(const QPoint & p) {
 }
 
 QString TemplateCanvas::may_start(UmlCode &) const {
-  return "illegal";
+  return TR("illegal");
 }
 
 QString TemplateCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+  return TR("illegal");
 }
 
 void TemplateCanvas::save(QTextStream &, bool, QString &) const {

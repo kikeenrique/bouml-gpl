@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -241,7 +241,7 @@ void ActivityObjectCanvas::compute_size() {
     ->get_activitydrawingsettings(used_settings);
 }
 
-void ActivityObjectCanvas::force_inside() {
+bool ActivityObjectCanvas::force_inside() {
   // if its parent is present, force inside it
   
   QCanvasItemList all = the_canvas()->allItems();
@@ -256,10 +256,12 @@ void ActivityObjectCanvas::force_inside() {
 	  IsaActivityContainer(di->type()) &&
 	  (((ActivityContainerCanvas *) di)->get_bn() == parent)) {
 	((ActivityContainerCanvas *) di)->force_inside(this, this);
-	break;
+	return TRUE;
       }
     }
   }
+  
+  return FALSE;
 }
 
 void ActivityObjectCanvas::check_selection() {
@@ -454,17 +456,13 @@ void ActivityObjectCanvas::open() {
 }
 
 void ActivityObjectCanvas::menu(const QPoint&) {
-  QString s = browser_node->get_name();
   BrowserClass * cl = 
     ((ActivityObjectData *) browser_node->get_data())->get_type().type;
-
-  if (s.isEmpty())
-    s = TR("activity object");
 
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);
@@ -644,7 +642,7 @@ bool ActivityObjectCanvas::get_show_stereotype_properties() const {
   }
 }
 
-void ActivityObjectCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ActivityObjectCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= TRUE;
 }

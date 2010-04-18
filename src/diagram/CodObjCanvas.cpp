@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,7 +50,7 @@ void CodObjCanvas::delete_it() {
   DiagramCanvas::delete_it();
 }
 
-void CodObjCanvas::delete_available(bool &, bool & out_model) const {
+void CodObjCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 

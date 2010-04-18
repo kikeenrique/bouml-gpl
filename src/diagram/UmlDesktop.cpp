@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@ int UmlDesktop::w;
 int UmlDesktop::h;
 QPoint UmlDesktop::c;
 bool UmlDesktop::fixedp;
+bool UmlDesktop::noguip;
 
 int UmlDesktop::width()
 {
@@ -172,10 +173,21 @@ void UmlDesktop::set_limits(int l, int t, int r, int b)
   }
 }
 
+bool UmlDesktop::nogui()
+{
+  return noguip;
+}
 
+void UmlDesktop::set_nogui()
+{
+  noguip = TRUE;
+}
+
+    
 void UmlDesktop::init()
 {
   fixedp = FALSE;
+  noguip = FALSE;
   w = QApplication::desktop()->width();
   h = QApplication::desktop()->height();
   c.setX(w / 2);

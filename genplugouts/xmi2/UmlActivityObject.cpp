@@ -53,6 +53,28 @@ void UmlActivityObject::write(FileOut & out) {
   unload();
 }
 
+void UmlActivityObject::solve_output_flows() {
+  ControlOrData v = (isControlType()) ? IsControl : IsData;
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1) {
+    UmlFlow * f = dynamic_cast<UmlFlow *>(ch[i]);
+
+    if ((f != 0) && (f->control_or_data() == Unset))
+      f->set_control_or_data(v);
+  }
+
+  QListIterator<UmlFlow> it(_incoming_flows);
+  
+  while (it.current() != 0) {
+    if (it.current()->control_or_data() == Unset)
+      it.current()->set_control_or_data(v);
+
+    ++it;
+  }
+}
+
 void UmlActivityObject::write_ordering(FileOut & out) {
   out << " ordering=\"";
   switch (ordering()) {

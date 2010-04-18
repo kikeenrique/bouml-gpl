@@ -25,6 +25,10 @@ class UmlActivityAction : public UmlBaseActivityAction {
 
     void write_condition(FileOut & out, QCString cond, bool pre);
 
+
+  public:
+    virtual void solve_output_flows();
+
 };
 
 #endif

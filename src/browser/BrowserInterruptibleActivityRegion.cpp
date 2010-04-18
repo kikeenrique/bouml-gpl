@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -191,15 +191,10 @@ BrowserInterruptibleActivityRegion *
 }
 
 void BrowserInterruptibleActivityRegion::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("interruptible activity region");
-  
-  QPopupMenu m(0, s);
+  QPopupMenu m(0, "interruptible activity region");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -229,7 +224,7 @@ Note that you can undelete it after"));
     }
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>region</i>"));
-    mark_menu(m, TR("interruptible activity region"), 90);
+    mark_menu(m, TR("the interruptible activity region"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -391,6 +386,10 @@ UmlCode BrowserInterruptibleActivityRegion::get_type() const {
   return UmlInterruptibleActivityRegion;
 }
 
+QString BrowserInterruptibleActivityRegion::get_stype() const {
+  return TR("interruptible activity region");
+}
+
 int BrowserInterruptibleActivityRegion::get_identifier() const {
   return get_ident();
 }
@@ -504,7 +503,7 @@ bool BrowserInterruptibleActivityRegion::tool_cmd(ToolCom * com, const char * ar
 }
 
 bool BrowserInterruptibleActivityRegion::may_contains_them(const QList<BrowserNode> & l,
-							   bool & duplicable) const {
+							   BooL & duplicable) const {
   BrowserNode * activity = get_container(UmlActivity);
   QListIterator<BrowserNode> it(l);
   

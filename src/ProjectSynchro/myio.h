@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,7 +30,7 @@
 
 class QDir;
 
-char * read_file(QDir & dir, QString fn, bool & ro);
+char * read_file(QDir & dir, QString fn, BooL & ro);
 char * read_token(char *&);
 char * read_string(char *&);
 bool is_readonly(QDir & dir, QString fn);

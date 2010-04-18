@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -2013,7 +2013,7 @@ void ClassDialog::python_generate_decl(QString & s, ClassData * cl, QString def,
     return;
   
   const char * pp = 0;
-  bool indent_needed = FALSE;
+  BooL indent_needed = FALSE;
   QString indent;
   QString saved_indent = indent;
   QString indent_step =
@@ -2969,28 +2969,56 @@ void ActualParamsTable::generate(QString & s, ClassData * cl,
   int n = ((ClassData *) parent->get_data())->get_n_formalparams();
   int nth = 0;
   const char * sep = "<";
+  bool need_space = FALSE;
   
   // progress on still present formals
   while (actual && (nth < n) && (actual->get_class() == parent)) {
-    QString t = type(text(index, 1).stripWhiteSpace(), node_names, nodes);
+    AType t = the_type(text(index, 1).stripWhiteSpace(), node_names, nodes);
     
-    if (t.isEmpty()) {
+    if (t.type != 0) {
+      s += sep;
+      s += t.type->get_name();
+      
+      if (cpp && (((ClassData *) t.type->get_data())->get_n_formalparams() != 0)) {
+	ClassData * cl2 = (ClassData *) t.type->get_data();
+	int n2 = cl2->get_n_formalparams();
+	const char * sep2 = "<";
+	int index2;
+	
+	for (index2 = 0; index2 != n2; index2 += 1) {
+	  s += sep2;
+	  s += cl2->get_formalparam_name(index2);
+	  sep = ", ";
+	}
+	
+	s += ">";
+	need_space = TRUE;
+      }
+    }
+    else if (!t.explicit_type.isEmpty()) {
+      s += sep;
+      s += (cpp) ? GenerationSettings::cpp_type(t.explicit_type) 
+		 : GenerationSettings::java_type(t.explicit_type);
+      need_space = FALSE;
+    }
+    else {
       if (nth == 0)
 	s += "<>";
       break;
     }
     
-    s += sep;
-    s += (cpp) ? GenerationSettings::cpp_type(t) 
-	       : GenerationSettings::java_type(t);
     sep = ", ";
     actual = cl->actuals.next();
     nth += 1;
     index += 1;
   }
   
-  if (nth != 0)
-    s += '>';
+  if (nth != 0) {
+    if (need_space)
+      s += " >";
+    else
+      s += '>';
+  }
 }
 
 //

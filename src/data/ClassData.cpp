@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,8 @@
 #include "strutil.h"
 #include "mu.h"
 
+bool ClassData::DontUpdateActuals = FALSE;
+  
 ClassData::ClassData()
     : formals(0), nformals(0), 
       is_deleted(FALSE), is_abstract(FALSE), is_active(FALSE),
@@ -210,6 +212,9 @@ void ClassData::update_actuals(BrowserClass * parent,
 }
 
 void ClassData::update_actuals() {
+  if (DontUpdateActuals)
+    return;
+  
   // an inherited parent was modified/deleted, updates all actuals
   QList<BrowserNode> parents = browser_node->parents();
   QList<ActualParamData> new_actuals;
@@ -647,6 +652,7 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	      while (++rank != nformals)
 		formals[rank - 1] = formals[rank];
 	    nformals -= 1;
+	    DontUpdateActuals = FALSE;
 	  }
 	  else {
 	    com->write_ack(FALSE);
@@ -672,6 +678,7 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	    
 	    delete [] formals;
 	    formals = new_formals;
+	    DontUpdateActuals = FALSE;
 	  }
 	  else {
 	    FormalParamData::skip(com, args);
@@ -684,8 +691,10 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	{
 	  unsigned rank = com->get_unsigned(args);
 	  
-	  if (rank < nformals)
+	  if (rank < nformals) {
 	    formals[rank].read(com, args);
+	    DontUpdateActuals = FALSE;
+	  }
 	  else {
 	    FormalParamData::skip(com, args);
 	    com->write_ack(FALSE);
@@ -714,9 +723,8 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
       }
   
       // ok case
-      bn->modified();
+      bn->modified();	// call modified
       bn->package_modified();
-      modified();
       com->write_ack(TRUE);
     }
   }

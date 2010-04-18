@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -285,9 +285,14 @@ BrowserPseudoState::add_pseudostate(BrowserNode * future_parent,
 				    UmlCode c)
 {
   QString name;
+  QString s = stringify(c);
+  int index = s.find("_");
+  
+  if (index != -1)
+    s.replace(index, 1, " ");
   
   if (!allow_empty(c) &&
-      !future_parent->enter_child_name(name, TR(QString("enter ") + stringify(c) + "'s name : "),
+      !future_parent->enter_child_name(name, TR("enter " + s + "'s name : "),
 				       UmlState, TRUE, FALSE))
     
     return 0;
@@ -313,9 +318,14 @@ BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_pa
   
   BrowserNode * old = 0;
   QString name;
+  QString s = stringify(c);
+  int index = s.find("_");
   
+  if (index != -1)
+    s.replace(index, 1, " ");
+    
   if (!allow_empty(c) &&
-      !future_parent->enter_child_name(name, TR(QString("enter ") + stringify(c) + "'s name : "),
+      !future_parent->enter_child_name(name, TR("enter " + s + "'s name : "),
 				       UmlState, l, &old, TRUE, FALSE))
     return 0;
     
@@ -356,10 +366,10 @@ void BrowserPseudoState::menu() {
   if (index != -1)
     s.replace(index, 1, " ");
   
-  QPopupMenu m(0, TR("pseudo state"));
+  QPopupMenu m(0, "pseudo state");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Edit"), 1),
@@ -487,6 +497,16 @@ void BrowserPseudoState::modified() {
 
 UmlCode BrowserPseudoState::get_type() const {
   return kind;
+}
+
+QString BrowserPseudoState::get_stype() const {
+  QString s = stringify(kind);
+  int index = s.find("_");
+  
+  if (index != -1)
+    s.replace(index, 1, " ");
+
+  return TR(s);
 }
 
 int BrowserPseudoState::get_identifier() const {

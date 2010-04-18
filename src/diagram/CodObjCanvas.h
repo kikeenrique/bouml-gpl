@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,7 +44,7 @@ class CodObjCanvas : public DiagramCanvas {
     
     virtual void delete_it();
     
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     
     virtual void moveBy(double dx, double dy);
     virtual void set_z(double z);

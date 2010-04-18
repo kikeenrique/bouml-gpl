@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -80,7 +80,7 @@ UmlCode InfoCanvas::type() const {
   return UmlInfo;
 }
 
-void InfoCanvas::delete_available(bool & in_model, bool & out_model) const {
+void InfoCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   if (who->isSelected())
     who->delete_available(in_model, out_model);
 }

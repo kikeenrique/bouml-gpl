@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -352,6 +352,7 @@ class ActivityActionDialog : public QTabDialog {
     QComboBox * edtype;
     UmlActionKind current_type;
     MultiLineEdit * comment;
+    MultiLineEdit * constraint;
     BrowserNodeList classes;
     QStringList class_names;
     BrowserNodeList behaviors;
@@ -387,6 +388,7 @@ class ActivityActionDialog : public QTabDialog {
   
   protected:
     static void post_edit_description(ActivityActionDialog * d, QString s);
+    static void post_edit_constraint(ActivityActionDialog * d, QString s);
     AnyActionDialog & get_dialog(int);
   
   public:
@@ -402,6 +404,7 @@ class ActivityActionDialog : public QTabDialog {
   
     void edTypeActivated(int);  
     void edit_description();
+    void edit_constraint();
 
     void change_tabs(QWidget *);
 };

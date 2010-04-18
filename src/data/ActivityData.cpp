@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@ ActivityData::ActivityData(ActivityData * model, BrowserNode * bn)
   uml_condition = model->uml_condition;
   cpp_condition = model->cpp_condition;
   java_condition = model->java_condition;
+  constraint = model->constraint;
   read_only = model->read_only;
   single_execution = model->single_execution;
   is_active = model->is_active;
@@ -120,8 +121,12 @@ void ActivityData::send_uml_def(ToolCom * com, BrowserNode * bn,
     else
       specification->write_id(com);
   
-    if (api >= 48)
+    if (api >= 48) {
       com->write_bool(is_active);
+      
+      if (api >= 53)
+	com->write_string(constraint);
+    }
   }
 }
 
@@ -171,6 +176,9 @@ bool ActivityData::tool_cmd(ToolCom * com, const char * args,
       case setActiveCmd:
 	is_active = (*args != 0);
 	break;
+      case setConstraintCmd:
+	constraint = args;
+	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -194,6 +202,12 @@ void ActivityData::save(QTextStream & st, QString & warning) const {
   uml_condition.save(st, "pre_uml", "post_uml");
   cpp_condition.save(st, "pre_cpp", "post_cpp");
   java_condition.save(st, "pre_java", "post_java");
+    
+  if (!constraint.isEmpty()) {
+    st << "constraint ";
+    save_string(constraint, st);
+    nl_indent(st);
+  }
 
   bool nl = FALSE;
 
@@ -238,6 +252,14 @@ void ActivityData::read(char * & st, char * & k) {
   uml_condition.read(st, k, "pre_uml", "post_uml");	// updates k
   cpp_condition.read(st, k, "pre_cpp", "post_cpp");	// updates k
   java_condition.read(st, k, "pre_java", "post_java");	// updates k
+  
+  if (!strcmp(k, "constraint")) {
+    constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    constraint = "";
+  
   if (! strcmp(k, "read_only")) {
     read_only = TRUE;
     k = read_keyword(st);

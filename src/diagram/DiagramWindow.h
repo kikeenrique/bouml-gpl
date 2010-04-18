@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,12 +79,13 @@ class DiagramWindow : public QMainWindow {
     
     void add_edit_button(QToolBar *);
     void add_scale_cmd(QToolBar *);
+    void change_zoom(int);
     
     BrowserDiagram * browser_diagram() const { return browser_node; };
     void package_modified() const;
     bool frozen() const;
 
-    void save(const char * ext, QString & warning, bool & is_new) const;
+    void save(const char * ext, QString & warning, BooL & is_new) const;
     void duplicate(int dest_id, const char * ext) const;
     QString copy_selected() const;
 
@@ -95,15 +96,13 @@ class DiagramWindow : public QMainWindow {
         
   public slots:
     void new_scale(int);
-    
-  protected slots:
-    void hit_select();
-  
-  public slots:
     void fit_scale();
     void optimal_window_size();
     void session_window_size();
     virtual void call_menu();
+    
+  protected slots:
+    void hit_select();
 };
 
 #endif

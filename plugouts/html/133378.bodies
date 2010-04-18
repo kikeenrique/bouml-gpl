@@ -91,6 +91,12 @@ class UmlActivity
   }
 
   fw.write("</ul>");
+
+  if (! constraint().isEmpty()) {
+    fw.write("<p> Constraint :<ul>");
+    writeq(constraint());
+    fw.write("</ul>");
+  }
  
   UmlActivityDiagram * d = associatedDiagram();
   
@@ -193,6 +199,14 @@ class UmlActivity
   }
 
   fw.write("</ul>");
+
+  s = constraint();
+  
+  if (s.length() != 0) {
+    fw.write("<p> Constraint :<ul>");
+    writeq(s);
+    fw.write("</ul>");
+  }
  
   UmlActivityDiagram d = associatedDiagram();
   

@@ -1017,8 +1017,18 @@ void ProfiledStereotypes::modified(BrowserNode * bn, bool newst)
     const char * s =
       st->cl->get_value((newst) ? "stereotypeSet" : "stereotypeCheck");
     
-    if ((s != 0) && ((s = Tool::command(s)) != 0))
-      ToolCom::run(s, bn, FALSE, FALSE);
+    if ((s != 0) && ((s = Tool::command(s)) != 0)) {
+      const char * args = st->cl->get_value((newst) ? "stereotypeSetParameters" 
+						    : "stereotypeCheckParameters");
+      
+      if (args == 0)
+	ToolCom::run(s, bn, FALSE, FALSE);
+      else {
+	QCString cmd = QCString(s) + " " + args;
+	
+	ToolCom::run((const char *) cmd, bn, FALSE, FALSE);
+      }
+    }
   }
   else if (newst)
     recompute(bn);

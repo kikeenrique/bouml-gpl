@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 70
+#define FILEFORMAT 73
 
 class QDir;
 class QFile;
@@ -89,7 +89,7 @@ extern unsigned read_file_format();
 extern QString abs_file_path(int id, const char * ext);
 extern char * read_definition(int id, const char * ext);
 char * read_definition(int id, const char * ext, int offset, int len);
-extern void save_definition(int id, const char * ext, const char * def, bool & is_new);
+extern void save_definition(int id, const char * ext, const char * def, BooL & is_new);
 extern void delete_definition(int id, const char * ext);
 
 extern void save_string(const char *, QTextStream & st);
@@ -128,7 +128,7 @@ extern void read_xyz(char * & st, QCanvasItem * c);
 extern void read_xyzwh(char * & st, QCanvasRectangle * c);
 extern void read_zwh(char * & st, QCanvasRectangle * c);
 extern void bypass_xy(char * & st);
-extern void save_color(QTextStream & st, const char *, UmlColor, bool &);
+extern void save_color(QTextStream & st, const char *, UmlColor, BooL &);
 extern void read_color(char *& st, const char *, UmlColor &, char * &);
 
 extern void read_font(char *& st, const char *, UmlFont &, char * &);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -244,7 +244,7 @@ void BrowserState::menu() {
     what = (!strcmp(get_stereotype(), "submachine"))
       ? "state submachine" : "state";
   
-  m.insertItem(new MenuTitle(def->definition(FALSE), m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -445,6 +445,10 @@ UmlCode BrowserState::get_type() const {
   return UmlState;
 }
 
+QString BrowserState::get_stype() const {
+  return TR("state");
+}
+
 int BrowserState::get_identifier() const {
   return get_ident();
 }
@@ -618,7 +622,7 @@ BrowserState * BrowserState::get_machine(const BrowserNode * bn)
 }
 
 bool BrowserState::may_contains_them(const QList<BrowserNode> & l,
-				     bool & duplicable) const {
+				     BooL & duplicable) const {
   BrowserNode * machine = get_machine(this);
   QListIterator<BrowserNode> it(l);
   

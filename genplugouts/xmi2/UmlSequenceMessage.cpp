@@ -51,38 +51,42 @@ void UmlSequenceMessage::write_fragment(FileOut & out, UmlItem * diagram, QList<
   case anAsynchronousCall:
     used = TRUE;
     
-    out.indent();
-    out << "<fragment xmi:type=\"uml:MessageOccurrenceSpecification\"";
-    out.id_prefix(diagram, SEND);
-    out.ref(diagram, "covered", from()->lifeline());
-    out.ref(prj, "event", 
-	    (operation() != 0) ? operation()->event(FALSE)
-			       : UmlOperation::event("SEND", form()));
-    out.ref(diagram, "message", MSG);
-    out << "/>\n";
-    
-    out.indent();
-    out << "<fragment xmi:type=\"uml:MessageOccurrenceSpecification\"";
-    out.id_prefix(diagram, REC);
-    out.ref(diagram, "covered", to()->lifeline());
-    out.ref(prj, "event", 
-	    (operation() != 0) ? operation()->event(TRUE)
-			       : UmlOperation::event("REC", form()));
-    out.ref(diagram, "message", MSG);
-    out << "/>\n";
-    
-    out.indent();
-    out << "<fragment xmi:type=\"uml:BehaviorExecutionSpecification\"";
-    out.id_prefix(diagram, BEH);
-    out.ref(diagram, "covered", to()->lifeline());
-    out.ref(diagram, "start", REC);
-    if (reverse != 0) {
-      if (reverse->kind() == anExplicitReturn)
-	out.ref(diagram, "finish", REF_SEND);
-      else
-	out.ref(diagram, "finish", REF_EXEC);
+    if (from() != 0) {
+      out.indent();
+      out << "<fragment xmi:type=\"uml:MessageOccurrenceSpecification\"";
+      out.id_prefix(diagram, SEND);
+      out.ref(diagram, "covered", from()->lifeline());
+      out.ref(prj, "event", 
+	      (operation() != 0) ? operation()->event(FALSE)
+				 : UmlOperation::event("SEND", form()));
+      out.ref(diagram, "message", MSG);
+      out << "/>\n";
     }
-    out << "/>\n";
+    
+    if (to() != 0) {
+      out.indent();
+      out << "<fragment xmi:type=\"uml:MessageOccurrenceSpecification\"";
+      out.id_prefix(diagram, REC);
+      out.ref(diagram, "covered", to()->lifeline());
+      out.ref(prj, "event", 
+	      (operation() != 0) ? operation()->event(TRUE)
+				 : UmlOperation::event("REC", form()));
+      out.ref(diagram, "message", MSG);
+      out << "/>\n";
+      
+      out.indent();
+      out << "<fragment xmi:type=\"uml:BehaviorExecutionSpecification\"";
+      out.id_prefix(diagram, BEH);
+      out.ref(diagram, "covered", to()->lifeline());
+      out.ref(diagram, "start", REC);
+      if (reverse != 0) {
+	if (reverse->kind() == anExplicitReturn)
+	  out.ref(diagram, "finish", REF_SEND);
+	else
+	  out.ref(diagram, "finish", REF_EXEC);
+      }
+      out << "/>\n";
+    }
     break;
   case anExplicitReturn:
     used = TRUE;
@@ -161,9 +165,22 @@ void UmlSequenceMessage::write_them(FileOut & out, UmlItem * diagram, const QVec
 	out << ((msg->kind() == anAsynchronousCall)
 		? "\" messageSort=\"asynchCall\""
 		: "\" messageSort=\"synchCall\"");
-	out.ref(diagram, "sendEvent", SEND);
-	out.ref(diagram, "receiveEvent", REC);
-	out.ref(diagram, "connector", msg->from()->connector(msg->to()));
+	
+	if (msg->from() == 0) {
+	  out << " messageKind=\"found\"";
+	  out.ref(diagram, "receiveEvent", REC);
+	}
+	else if (msg->to() == 0) {
+	  out << " messageKind=\"lost\"";
+	  out.ref(diagram, "sendEvent", SEND);
+	}
+	else {
+	  out << " messageKind=\"complete\"";
+	  out.ref(diagram, "sendEvent", SEND);
+	  out.ref(diagram, "receiveEvent", REC);
+	  out.ref(diagram, "connector", msg->from()->connector(msg->to()));
+	}
+	
 	if (!msg->stereotype().isEmpty() && UmlItem::gen_extension()) {
 	  out << ">\n";
 	  out.indent();
@@ -216,7 +233,8 @@ void UmlSequenceMessage::set_reverses(const QVector<UmlSequenceMessage> & msgs)
   
   for (int i = 0; i != n; i += 1) {
     UmlSequenceMessage * m = msgs[i];
-    QStack<UmlSequenceMessage> * stack = sent[m->from()];
+    QStack<UmlSequenceMessage> * stack = 
+      (m->from() != 0) ? sent[m->from()] : 0;
     
     switch (m->kind()) {
     case aDestruction:
@@ -224,12 +242,14 @@ void UmlSequenceMessage::set_reverses(const QVector<UmlSequenceMessage> & msgs)
       break;
     case aSynchronousCall:
     case anAsynchronousCall:
-      stack = sent[m->to()];      
-      if (stack == 0) {
-	stack = new QStack<UmlSequenceMessage>();
-	sent.insert(m->to(), stack);
+      if ((m->from() != 0) && (m->to() != 0)) {
+	stack = sent[m->to()];
+	if (stack == 0) {
+	  stack = new QStack<UmlSequenceMessage>();
+	  sent.insert(m->to(), stack);
+	}
+	stack->push(m);
       }
-      stack->push(m);
       
       if (m->fragment() != 0)
 	m->fragment()->fragment()->cover(m);

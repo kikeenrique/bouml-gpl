@@ -6,5 +6,5 @@ SOURCES	      = main.cpp BrowserNode.cpp SynchroWindow.cpp \
 
 
 TARGET	      = projectSynchro
-DEFINES	      = 
+DEFINES	      = BooL=bool
 INCLUDEPATH   = 

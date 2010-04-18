@@ -8,33 +8,3 @@ class UmlClassMember
     set_Visibility(PrivateVisibility);
   else if ((v == "package") || (v == "vis_package"))
     set_Visibility(PackageVisibility);
-!!!260866.cpp!!!	readConstraint(inout in : FileIn, inout token : Token) : QCString
-  QCString constraint;
-  
-  if (! token.closed()) {
-    QCString k = token.what();
-    const char * kstr = k;
-    
-    while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
-      
-      if ((s == "specification") && (token.xmiType() == "uml:OpaqueExpression")) {
-	constraint = token.valueOf("body");
-	
-	if (! token.closed()) {
-	  while (in.read(), !token.close("specification")) {
-	    s = token.what();
-	    
-	    if (s == "body")
-	      constraint = in.body("body");
-	    else if (! token.closed())
-	      in.finish(s);
-	  }
-	}
-      }
-      else
-	in.bypass(token);
-    }
-  }
-
-  return constraint;

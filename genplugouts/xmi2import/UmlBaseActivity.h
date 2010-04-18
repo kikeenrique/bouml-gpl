@@ -83,6 +83,14 @@ class UmlBaseActivity : public UmlItem {
     bool set_JavaPostCondition(const char * v);
 #endif
 
+    // return the constraint
+    const QCString & constraint();
+
+    // set the constraint
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Constraint(const char * v);
+
     // return the isReadOnly attribute, if TRUE the activity must not made any changes to variables ouside the activity or to objects.
     bool isReadOnly();
 
@@ -148,6 +156,8 @@ class UmlBaseActivity : public UmlItem {
 
     QCString _java_post_condition;
 #endif
+
+    QCString _constraint;
 
     bool _read_only;
 

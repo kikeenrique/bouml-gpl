@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 
 
 
-#include <errno.h>
+# include <errno.h>
 
 
 #ifdef DEBUGCOM
@@ -37,6 +37,8 @@
 
 using namespace std;
 #endif
+
+#include <qtimer.h>
 
 #include "ToolCom.h"
 #include "Socket.h"
@@ -52,7 +54,6 @@ using namespace std;
 #include "DialogUtil.h"
 #include "mu.h"
 #include "err.h"
-
 
 Socket::Socket(ToolCom * c)
     : QSocketDevice(QSocketDevice::Stream), com(c) {
@@ -113,10 +114,12 @@ void Socket::data_received() {
 
 QList<ToolCom> ToolCom::used;
 QList<ToolCom> ToolCom::unused;
+int ToolCom::exitvalue;
 
 ToolCom::ToolCom() {
   listen_sock = 0;
   sock = 0;
+  timer = 0;
   buffer_in_size = 0;
   buffer_in = 0;
   buffer_out_size = 0;
@@ -129,6 +132,9 @@ ToolCom::ToolCom() {
 int ToolCom::run(const char * cmd, BrowserNode * bn,
 		 bool exit, bool clr, void (*pf)())
 {
+  if (exit)
+    exitvalue = -1;
+  
   TraceDialog::trace_auto_raise(TRUE);
   if (clr)
     TraceDialog::clear();
@@ -169,6 +175,14 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
 
 
 
+
+
+
+
+
+
+
+
   QString s = cmd;
   
   s += ' ';
@@ -183,7 +197,15 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
 		 "error while executing '" + QString(cmd) +"'\n"
 		 "perhaps you must specify its absolute path"
 		 "or set the environment variable PATH ?");
-    return -1;
+    com->close();
+    if (exit) {
+      BrowserView::remove_temporary_files();
+      set_user_id(-1);    // delete lock
+
+      THROW_ERROR 0;
+    }
+    else
+      return -1;
   }
 
   
@@ -192,8 +214,17 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
   com->start = TRUE;
   //com->with_ack = TRUE;
   com->exit_bouml = exit;
+  com->cmd = strdup(cmd);
+  com->timer = new QTimer(com);
+  connect(com->timer, SIGNAL(timeout()), com, SLOT(connexion_timeout()));
+  com->timer->start(30*1000, TRUE );
 
   return com->id;
+}
+
+int exit_value()
+{
+  return ToolCom::exitvalue;
 }
 
 bool ToolCom::is_running(int id)
@@ -240,6 +271,15 @@ unsigned ToolCom::bind(unsigned port)
 void ToolCom::close()
 {
   if (listen_sock) {
+    if (timer != 0) {
+      delete timer;
+      timer = 0;
+    }
+    if (cmd != 0) {
+      free(cmd);
+      cmd = 0;
+    }
+    
     delete listen_sock;
     listen_sock = 0;
     
@@ -536,6 +576,19 @@ void ToolCom::fatal_error(const char *
   THROW_ERROR 0;
 }
 
+void ToolCom::connexion_timeout() {
+  msg_critical("Bouml", 
+	       QString("connexion timeout for '") + cmd +"'");
+  close();
+  
+  if (exit_bouml) {
+    BrowserView::remove_temporary_files();
+    set_user_id(-1);    // delete lock
+
+    THROW_ERROR 0;
+  }  
+}
+
 void ToolCom::data_received(Socket * who) {
   bool do_exit = FALSE;
   void (*pf)() = 0;
@@ -549,6 +602,10 @@ void ToolCom::data_received(Socket * who) {
 #endif
       
       if (s != -1) {
+	if (timer != 0) {
+	  delete timer;
+	  timer = 0;
+	}
 	sock = new Socket(this, s);
 	return;
       }
@@ -584,7 +641,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 50) {
+	else if (api_version > 53) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();
@@ -648,8 +705,11 @@ void ToolCom::data_received(Socket * who) {
 #ifdef DEBUGCOM
 	    cerr << "bye\n";
 #endif
-	    if (exit_bouml)
+	    if (exit_bouml) {
 	      do_exit = true;
+	      p += 1;
+	      exitvalue = (api_version > 51) ? (int) get_unsigned(p) : 0;
+	    }
 	    pf = cont;
 	    throw 0;
 	  case traceCmd:

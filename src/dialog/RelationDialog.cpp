@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1336,6 +1336,11 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	  p += 7;
 	  s += role.edrole->text();
 	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  if (! RelationData::uni_directional(current_type))
+	    s += ((&role == &a) ? b : a).edrole->text();
+	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
 	  
@@ -1538,6 +1543,11 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	  p += 7;
 	  s += role.edrole->text();
 	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  if (! RelationData::uni_directional(current_type))
+	    s += ((&role == &a) ? b : a).edrole->text();
+	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
 	  s += java_multiplicity(role.multiplicity->currentText().stripWhiteSpace());
@@ -1723,6 +1733,11 @@ void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	    s += "$";
 	  s += role.edrole->text();
 	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  if (! RelationData::uni_directional(current_type))
+	    s += ((&role == &a) ? b : a).edrole->text();
+	}
 	else if (!strncmp(p, "${const}", 8)) {
 	  p += 8;
 	  if (role.constrelation_cb->isChecked())
@@ -1873,6 +1888,11 @@ void RelationDialog::python_update(RoleDialog & role, BrowserClass * cl, Browser
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
 	  s += role.edrole->text();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  if (! RelationData::uni_directional(current_type))
+	    s += ((&role == &a) ? b : a).edrole->text();
 	}
 	else if (!strncmp(p, "${value}", 8)) {
           QString i = role.edinit->text().stripWhiteSpace();
@@ -2064,6 +2084,11 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
 	  s += role.edrole->text();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  if (! RelationData::uni_directional(current_type))
+	    s += ((&role == &a) ? b : a).edrole->text();
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;

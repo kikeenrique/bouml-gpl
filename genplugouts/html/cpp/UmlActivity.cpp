@@ -95,6 +95,12 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
   }
 
   fw.write("</ul>");
+
+  if (! constraint().isEmpty()) {
+    fw.write("<p> Constraint :<ul>");
+    writeq(constraint());
+    fw.write("</ul>");
+  }
  
   UmlActivityDiagram * d = associatedDiagram();
   

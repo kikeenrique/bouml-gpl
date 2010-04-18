@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,7 +42,7 @@
 UmlClass::UmlClass(void * id, const QCString & n) 
     : UmlBaseClass(id, n) 
 #ifdef ROUNDTRIP
-    , created(FALSE)
+    , created(FALSE), the_class(0)
 #endif
 {
 }
@@ -74,26 +74,26 @@ void UmlClass::need_artifact(const QStringList & imports,
       
       cp->set_Stereotype("source");
       
-      QString s = JavaSettings::sourceContent();
+      QCString s = JavaSettings::sourceContent();
       int index = s.find("${definition}");
       
       if (index != -1) {
 	QStringList::ConstIterator it;
 	
 	for (it = imports.begin(); *it; ++it) {
-	  QString import = *it;
+	  QCString import = QCString(*it);
 	  
 	  if (!remove_java_lang || (import != "java.lang.")) {
 	    import += (((const char *) import)[import.length() - 1] == '.')
 	      ? "*;\n" : ";\n";
 	    
-	    s.insert(index, QString("import ") + import);
+	    s.insert(index, "import " + import);
 	    index = s.find("${definition}", index);
 	  }
 	}
 	
 	for (it = static_imports.begin(); *it; ++it) {
-	  s.insert(index, QString("import static") + *it + "\n");
+	  s.insert(index, "import static" + QCString(*it) + '\n');
 	  index = s.find("${definition}", index);
 	}
       }
@@ -167,9 +167,11 @@ UmlItem * UmlClass::search_for_att_rel(const QCString & name) {
     case anAttribute:
       if ((*v)->name() == name)
 	return *v;
+      break;
     case aRelation:
       if (((UmlRelation *) *v)->roleName() == name)
 	return *v;
+      break;
     default:
       break;
     }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "BrowserSeqDiagram.h"
 #include "BrowserColDiagram.h"
 #include "BrowserUseCaseDiagram.h"
+#include "BrowserClassDiagram.h"
 #include "BrowserObjectDiagram.h"
 #include "BrowserClass.h"
 #include "BrowserClassInstance.h"
@@ -87,6 +88,7 @@ BrowserUseCaseView::BrowserUseCaseView(const BrowserUseCaseView * model,
   usecasediagram_settings = model->usecasediagram_settings;
   sequencediagram_settings = model->sequencediagram_settings;
   collaborationdiagram_settings = model->collaborationdiagram_settings;
+  classdiagram_settings = model->classdiagram_settings;
   objectdiagram_settings = model->objectdiagram_settings;
   note_color = model->note_color;
   fragment_color = model->fragment_color;
@@ -170,7 +172,7 @@ void BrowserUseCaseView::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
@@ -180,6 +182,8 @@ void BrowserUseCaseView::menu() {
 		     TR("to add a <i>sequence diagram</i>"));
       m.setWhatsThis(m.insertItem(TR("New communication diagram"), 2),
 		     TR("to add a <i>communication diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class diagram"), 17),
+		     TR("to add a <i>class diagram</i>"));
       m.setWhatsThis(m.insertItem(TR("New object diagram"), 13),
 		     TR("to add a <i>object diagram</i>"));
       m.setWhatsThis(m.insertItem(TR("New use case"), 3),
@@ -312,6 +316,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
       ColorSpecVector co(15);
       
       usecasediagram_settings.complete(st, FALSE);
+      classdiagram_settings.complete(st, UmlUseCaseView);
       objectdiagram_settings.complete(st, FALSE);
       sequencediagram_settings.complete(st, FALSE);
       collaborationdiagram_settings.complete(st, FALSE);
@@ -387,6 +392,16 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
 	a->select_in_browser();
     }
     return; // package_modified called
+  case 17:
+    {
+      BrowserClassDiagram * d = 
+	BrowserClassDiagram::add_class_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
+    break;
   default:
     if (rank >= 99990)
       ProfiledStereotypes::choiceManagement(this, rank - 99990);
@@ -411,6 +426,8 @@ void BrowserUseCaseView::apply_shortcut(QString s) {
 	choice = 1;
       else if (s == "New communication diagram")
 	choice = 2;
+      else if (s == "New class diagram")
+	choice = 17;
       else if (s == "New object diagram")
 	choice = 13;
       else if (s == "New use case")
@@ -463,6 +480,10 @@ UmlCode BrowserUseCaseView::get_type() const {
   return UmlUseCaseView;
 }
 
+QString BrowserUseCaseView::get_stype() const {
+  return TR("Use case view");
+}
+
 int BrowserUseCaseView::get_identifier() const {
   return get_ident();
 }
@@ -488,6 +509,11 @@ void BrowserUseCaseView::get_sequencediagramsettings(SequenceDiagramSettings & r
 void BrowserUseCaseView::get_collaborationdiagramsettings(CollaborationDiagramSettings & r) const {
   if (! collaborationdiagram_settings.complete(r))
     ((BrowserNode *) parent())->get_collaborationdiagramsettings(r);
+}
+
+void BrowserUseCaseView::get_classdiagramsettings(ClassDiagramSettings & r) const {
+  if (! classdiagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_classdiagramsettings(r);
 }
 
 void BrowserUseCaseView::get_objectdiagramsettings(ObjectDiagramSettings & r) const {
@@ -603,6 +629,12 @@ bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
 	  else
 	    (new BrowserColDiagram(args, this))->write_id(com);
 	  break;
+	case UmlClassDiagram:
+	  if (wrong_child_name(args, UmlClassDiagram, TRUE, FALSE))
+	    ok = FALSE;
+	  else
+	    (new BrowserClassDiagram(args, this))->write_id(com);
+	  break;
 	case UmlObjectDiagram:
 	  if (wrong_child_name(args, UmlObjectDiagram, TRUE, FALSE))
 	    ok = FALSE;
@@ -660,6 +692,7 @@ void BrowserUseCaseView::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
       UmlDrag::canDecode(e, UmlSeqDiagram) ||
       UmlDrag::canDecode(e, UmlColDiagram) ||
+      UmlDrag::canDecode(e, UmlClassDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlState) ||
       UmlDrag::canDecode(e, UmlActivity)) {
@@ -682,6 +715,7 @@ void BrowserUseCaseView::DragMoveInsideEvent(QDragMoveEvent * e) {
        UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
        UmlDrag::canDecode(e, UmlSeqDiagram) ||
        UmlDrag::canDecode(e, UmlColDiagram) ||
+       UmlDrag::canDecode(e, UmlClassDiagram) ||
        UmlDrag::canDecode(e, UmlObjectDiagram) ||
        UmlDrag::canDecode(e, UmlUseCaseView) ||
        UmlDrag::canDecode(e, UmlState) ||
@@ -692,7 +726,7 @@ void BrowserUseCaseView::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserUseCaseView::may_contains_them(const QList<BrowserNode> & l,
-					   bool & duplicable) const {
+					   BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -706,6 +740,7 @@ bool BrowserUseCaseView::may_contains_them(const QList<BrowserNode> & l,
     case UmlUseCaseDiagram:
     case UmlSeqDiagram:
     case UmlColDiagram:
+    case UmlClassDiagram:
     case UmlObjectDiagram:
     case UmlState:
     case UmlActivity:
@@ -741,6 +776,7 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, UmlUseCase)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlSeqDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlColDiagram)) != 0) ||
+       ((bn = UmlDrag::decode(e, UmlClassDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlUseCaseDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlUseCaseView)) != 0) ||
@@ -838,6 +874,9 @@ void BrowserUseCaseView::save(QTextStream & st, bool ref, QString & warning) {
     st << "//collaboration diagram settings";
     collaborationdiagram_settings.save(st);
     nl_indent(st);
+    st << "//class diagram settings";
+    classdiagram_settings.save(st);
+    nl_indent(st);
     st << "//object diagram settings";
     objectdiagram_settings.save(st);
     nl_indent(st);
@@ -847,7 +886,7 @@ void BrowserUseCaseView::save(QTextStream & st, bool ref, QString & warning) {
     st << "//activity diagram settings";
     activitydiagram_settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "duration_color", duration_color, nl);
     save_color(st, "continuation_color", continuation_color, nl);
@@ -920,15 +959,18 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
       
     k = read_keyword(st);
       
-    result->def->read(st, k);						// updates k
-    result->usecasediagram_settings.read(st, k);			// updates k
-    result->sequencediagram_settings.read(st, k);			// updates k
-    result->collaborationdiagram_settings.read(st, k);		// updates k
-    if (read_file_format() >= 25)
-      result->objectdiagram_settings.read(st, k);		// updates k
+    result->def->read(st, k);				// updates k
+    result->usecasediagram_settings.read(st, k);	// updates k
+    result->sequencediagram_settings.read(st, k);	// updates k
+    result->collaborationdiagram_settings.read(st, k);	// updates k
+    if (read_file_format() >= 25) {
+      if (read_file_format() >= 71)
+	result->classdiagram_settings.read(st, k);	// updates k
+      result->objectdiagram_settings.read(st, k);	// updates k
+    }
     if (read_file_format() >= 43) {
-      result->statediagram_settings.read(st, k);		// updates k
-      result->activitydiagram_settings.read(st, k);		// updates k
+      result->statediagram_settings.read(st, k);	// updates k
+      result->activitydiagram_settings.read(st, k);	// updates k
     }
     read_color(st, "duration", result->duration_color, k);	// old, updates k
     read_color(st, "duration_color", result->duration_color, k);	// updates k
@@ -961,6 +1003,7 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
 	     BrowserClassInstance::read(st, k, result) ||
 	     BrowserSeqDiagram::read(st, k, result) ||
 	     BrowserColDiagram::read(st, k, result) ||
+	     BrowserClassDiagram::read(st, k, result) ||
 	     BrowserObjectDiagram::read(st, k, result) ||
 	     BrowserState::read(st, k, result) ||
 	     BrowserActivity::read(st, k, result))

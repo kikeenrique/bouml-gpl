@@ -31,6 +31,7 @@ QMAKE=qmake
 SRC_DIRS = src \
 	src/CppGenerator \
 	src/CppReverse \
+	src/CppRoundtrip \
 	src/JavaGenerator \
 	src/JavaReverse \
 	src/JavaRoundtrip \
@@ -63,6 +64,7 @@ PLUGOUT_DIRS = genplugouts/html/cpp \
 PROGS = src/bouml \
 	src/CppGenerator/cpp_generator \
 	src/CppReverse/cpp_reverse \
+	src/CppRoundtrip/cpp_roundtrip \
 	src/JavaGenerator/java_generator \
 	src/JavaReverse/java_reverse \
 	src/JavaRoundtrip/java_roundtrip \

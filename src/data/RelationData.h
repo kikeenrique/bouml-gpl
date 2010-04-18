@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,7 +89,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     // Uml
     bool is_deleted : 8;	// 1 useless here, 8 faster than 1 ?
     bool is_unconsistent : 8;	// 1 useless here, 8 faster than 1 ?
-    UmlCode type: 8;		// 1 useless here, 8 faster than 1 ?
+    UmlCode type: 8;		// < UmlRelations
     MyStr name;
     RoleData a;
     RoleData b;
@@ -118,7 +118,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     virtual void delete_it();
     virtual void undelete(QString & warning, QString & renamed);
     bool undelete(QString & warning, QString & renamed,
-		  BrowserRelation * rel, bool & br_deleted);
+		  BrowserRelation * rel, BooL & br_deleted);
         
     BrowserRelation * set_start_end(BrowserRelation * s, BrowserClass * e);
     void edit();
@@ -136,7 +136,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     const char * get_name() const { return name; }
     QString get_name(BrowserRelation *) const;
     void set_name(const QString &);
-    virtual QString definition(bool full) const;
+    virtual QString definition(bool full, bool with_kind) const;
     virtual bool set_stereotype(const QString &);
     virtual bool set_stereotype(const QCString &);
     virtual bool set_stereotype(const char *);

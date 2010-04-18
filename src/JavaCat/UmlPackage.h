@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,12 +29,12 @@
 #include "UmlBasePackage.h"
 
 class UmlClassView;
+#ifdef REVERSE
 class UmlDeploymentView;
-
-#ifdef ROUNDTRIP
+# ifdef ROUNDTRIP
 class Package;
-class artifact;
 class ClassContainer;
+# endif
 #endif
 
 class UmlPackage : public UmlBasePackage {

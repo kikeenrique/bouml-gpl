@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -117,7 +117,7 @@ QString ColMsg::def(bool hierarchical, bool full, DrawingLanguage language) {
   if (operation == 0)
     op = explicit_operation;
   else if (!full)
-    op = operation->definition(FALSE);
+    op = operation->definition(FALSE, FALSE);
   else {
     op = operation->definition(TRUE, language, TRUE, TRUE);
     
@@ -375,7 +375,7 @@ void ColMsg::save(QTextStream & st, const ColMsgList & l, bool copy,
 	
 	warning += QString("<b>") + diag_name + "</b> reference the <b>" +
 	  ((BrowserClass *) br_op->parent())->full_name() +
-	    "</b> deleted operation <b>" + msg->operation->definition(TRUE) +
+	    "</b> deleted operation <b>" + msg->operation->definition(TRUE, FALSE) +
 	      "</b><br><br>\n";
 	if (warning[0] == '!') {
 	  st << "msg ";

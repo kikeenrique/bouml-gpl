@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -68,8 +68,8 @@ class BrowserNode : public QListViewItem,
     MyStr name;
     MyStr comment;
     int original_id;	// from project library
-    bool is_new;	// backup file useless
-    bool is_deleted;
+    BooL is_new;	// backup file useless
+    BooL is_deleted;
     bool is_modified : 1;
     bool is_read_only : 1;
     bool is_edited : 1;
@@ -139,7 +139,7 @@ class BrowserNode : public QListViewItem,
     virtual QString stereotypes_properties() const;
     bool may_contains(BrowserNode *, bool rec) const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
-				   bool & duplicable) const;
+				   BooL & duplicable) const;
     bool may_contains_it(BrowserNode * bn) const;
     virtual void move(BrowserNode *, BrowserNode * after);
     bool enter_child_name(QString & r, const QString & msg, UmlCode type,
@@ -166,6 +166,7 @@ class BrowserNode : public QListViewItem,
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const = 0;
+    virtual QString get_stype() const = 0;
     virtual int get_identifier() const = 0;
     virtual const char * help_topic() const;
     virtual void modified();
@@ -189,7 +190,7 @@ class BrowserNode : public QListViewItem,
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
-    virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
+    virtual void package_settings(BooL & name_in_tab, ShowContextMode & show_context) const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual BrowserNode * get_associated() const;
     virtual BasicData * add_relation(UmlCode, BrowserNode *);

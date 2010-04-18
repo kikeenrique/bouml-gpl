@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,7 +28,7 @@
 
 #include "UmlBaseRelation.h"
 
-class UmlClass;
+class Class;
 
 class UmlRelation : public UmlBaseRelation {
   public:
@@ -36,14 +36,24 @@ class UmlRelation : public UmlBaseRelation {
       : UmlBaseRelation(id, n) {
     };  
   
-    static bool new_one(UmlClass * cl, const QCString & name,
+    static bool new_one(Class * container, const QCString & name,
 			UmlClass * dest, const QCString & modifier,
 			const QCString & pretype, const QCString & array,
 			const QCString & typeform, aVisibility visibility,
 			bool staticp, bool constp, bool mutablep, bool volatilep,
 			const QCString & value,	QCString comment,
-			QCString description);
+			QCString description
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
     static bool new_friend(UmlClass * from, UmlClass * to);
+    
+#ifdef ROUNDTRIP
+    void set_unidir();
+    static bool new_friend(Class * from, UmlClass * to,
+			   QList<UmlItem> & expected_order);
+#endif
 };
 
 #endif

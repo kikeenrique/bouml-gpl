@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -26,7 +26,7 @@
 #ifndef SDDURATIONCANVAS_H
 #define SDDURATIONCANVAS_H
 
-#include "DiagramCanvas.h"
+#include "SdMsgSupport.h"
 #include "SdDurationSupport.h"
 
 #define DURATION_WIDTH 11
@@ -36,7 +36,7 @@ class SdLifeLineCanvas;
 class SdMsgBaseCanvas;
 class ToolCom;
 
-class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDurationSupport {
+class SdDurationCanvas : public QObject, public SdMsgSupport, public SdDurationSupport {
   Q_OBJECT
     
   protected:
@@ -69,6 +69,8 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     
     virtual void delete_it();
     
+    virtual void add(SdMsgBaseCanvas *);
+    virtual void remove(SdMsgBaseCanvas *);
     virtual void add(SdDurationCanvas *);
     virtual void remove(SdDurationCanvas *);
     virtual void update_instance_dead();
@@ -77,14 +79,12 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     virtual double min_y() const;
     virtual SdLifeLineCanvas * get_line() const;
     virtual bool isaDuration() const;
+    virtual bool isOverlappingDuration() const;
     virtual double getZ() const;
     void go_up(SdMsgBaseCanvas *, bool isdest);
     void go_down(SdMsgBaseCanvas *);
     void update_hpos();
-    void update_v_to_contain(const QRect re);
-    void add(SdMsgBaseCanvas *);
-    void remove(SdMsgBaseCanvas *);
-    bool isOverlappingDuration() const;
+    virtual void update_v_to_contain(const QRect re);
     void toFlat();
     void toOverlapping();
     
@@ -97,12 +97,15 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     virtual void menu(const QPoint&);
     virtual QString may_start(UmlCode &) const;
     virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual bool may_connect(UmlCode l) const;
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(int w, int h);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual void change_scale();
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual bool connexion(UmlCode, const QPoint &, const QPoint &);
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual LineDirection allowed_direction(UmlCode);
     virtual void select_associated();
     virtual bool copyable() const;
@@ -120,7 +123,7 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, char *);
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, bool ref);
     
-    unsigned count_msg() const;
+    unsigned count_msg(int api_format) const;
     void send(ToolCom * com, int id) const;
     
     static void propag_visible(QList<SdDurationCanvas> &, bool y);

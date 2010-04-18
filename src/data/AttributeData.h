@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -91,7 +91,7 @@ class AttributeData : public ClassMemberData {
         
     void set_browser_node(BrowserAttribute *, bool update, bool enum_item);
   
-    virtual QString definition(bool full) const;
+    virtual QString definition(bool full, bool with_kind) const;
     QString definition(bool full, bool mult, bool init, bool modif, DrawingLanguage language) const;
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);

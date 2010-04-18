@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -304,7 +304,7 @@ void ObjectLinkCanvas::open() {
   }
 }
 
-void ObjectLinkCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ObjectLinkCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   if (data != 0) {
     const ObjectLinkCanvas * first = this;
@@ -432,8 +432,8 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   m.insertSeparator();
   m.insertItem(TR("Remove from view"),7);
   
-  bool in_model = FALSE;
-  bool out_model = FALSE;
+  BooL in_model = FALSE;
+  BooL out_model = FALSE;
   
   delete_available(in_model, out_model);
   if (in_model)
@@ -526,7 +526,7 @@ ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z());
+  ap->setZ(z() + 1);
   
   ObjectLinkCanvas * other =
     // do not give data to not call update()

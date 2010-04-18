@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,7 +60,7 @@ bool NumberedMultiLineEdit::event(QEvent * e) {
 
 QSize SourceDialog::previous_size;
 
-SourceDialog::SourceDialog(QString p, bool & flg, unsigned & edn)
+SourceDialog::SourceDialog(QString p, BooL & flg, unsigned & edn)
     : QDialog(0, 0, FALSE, WDestructiveClose), 
       path(p), edited(flg), edition_number(edn) {
   QFileInfo fi(p);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,8 +44,12 @@ class ActivityContainerCanvas : public DiagramCanvas {
       : DiagramCanvas(bn, canvas, x, y, w, h, id) {
     }
 
-    void force_inside(DiagramItem * di, QCanvasItem * ci);
+    void force_inside(DiagramItem * di, QCanvasItem * ci, BooL & need_sub_upper);
+    void force_sub_inside(QCanvasItemList & all, BooL & need_sub_upper);
+    void resize_to_contain(QCanvasItemList & all, BooL & need_sub_upper);
+    void force_sub_upper(QCanvasItemList & all);
     virtual void prepare_for_move(bool on_resize);
+    static bool force_inside(DiagramCanvas * elt, bool part);
 };
 
 #endif

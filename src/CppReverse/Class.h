@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,9 @@ class Class : public BrowserNode, public ClassContainer {
     bool stereotype_declared;
 #ifdef REVERSE
     bool from_lib;
+# ifdef ROUNDTRIP
+    bool updated;
+# endif
     FormalParameterList formals;
 #else
     bool have_formals;
@@ -49,10 +52,17 @@ class Class : public BrowserNode, public ClassContainer {
     NDict<Class> defined;
     
     void manage_member(QCString s, aVisibility visibility,
-		       ClassContainer * container, const QCString & path);
+		       ClassContainer * container, const QCString & path
+#ifdef ROUNDTRIP
+		       , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+		       );
     
   public:
     Class(BrowserNode * parent, const char * name, const QCString & st);
+#ifdef ROUNDTRIP
+    Class(BrowserNode * parent, UmlClass * ucl);
+#endif
     virtual ~Class();	// just to not have warning
   
     bool set_stereotype(const QCString & st);
@@ -67,7 +77,11 @@ class Class : public BrowserNode, public ClassContainer {
 			      const QCString & stereotype,
 			      bool declaration);
     virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl);
+			     const QCString & decl
+#ifdef ROUNDTRIP
+			     , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			     );
     
     virtual bool isa_package() const;
     const QCString & get_namespace() const { return its_namespace; }
@@ -76,6 +90,12 @@ class Class : public BrowserNode, public ClassContainer {
     bool reversed() const { return reversedp; };
     bool already_in_bouml();
     virtual QString get_path() const;
+#ifdef ROUNDTRIP
+    virtual Class * upload_define(UmlClass *);
+    void set_updated() { updated = TRUE; }
+    bool is_roundtrip_expected() const;
+#endif
+
 #ifdef REVERSE
     bool from_libp() { return from_lib; };
 #else
@@ -97,11 +117,23 @@ class Class : public BrowserNode, public ClassContainer {
     static Class * reverse(ClassContainer * container,
 			   QCString stereotype, 
 			   const QValueList<FormalParameterList> & tmplt,
-			   const QCString & path, QCString name = 0);
+			   const QCString & path, QCString name
+#ifdef ROUNDTRIP
+			   , bool rndtrp, QList<UmlItem> & expectedorder
+#endif
+			   );
     static Class * reverse_enum(ClassContainer * container,
-				const QCString & path, QCString name = 0);
+				const QCString & path, QCString name
+#ifdef ROUNDTRIP
+				, bool rndtrp, QList<UmlItem> & expectedorder
+#endif
+			   );
     static bool reverse_typedef(ClassContainer * container, const QCString & path,
-				QValueList<FormalParameterList> & tmplts);
+				QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+				, bool rndtrp, QList<UmlItem> & expectedorder
+#endif
+				);
 };
 
 #endif

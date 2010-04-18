@@ -24,6 +24,7 @@ void UmlFlow::write(FileOut & out) {
 
 void UmlFlow::memo_incoming_flow() {
   target()->add_incoming_flow(this);
+
 }
 
 void UmlFlow::write_it(FileOut & out) {
@@ -123,9 +124,13 @@ void UmlFlow::write_it(FileOut & out) {
 }
 
 bool UmlFlow::is_control_flow() {
-  UmlActivityObject * o = dynamic_cast<UmlActivityObject *>(parent());
+  if (_control_or_data == Unset)
+    ((UmlActivityNode *) parent())->solve_output_flows(); // update _control_or_data
   
-  return ((o == 0) || o->isControlType());
+  return (_control_or_data == IsControl);
+}
 
+void UmlFlow::set_control_or_data(ControlOrData k) {
+  _control_or_data = k;
 }
 

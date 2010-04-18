@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -241,8 +241,7 @@ void BrowserPin::menu() {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle((name.isEmpty()) ? TR("pin") : QString((const char *) name),
-			     m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
@@ -350,6 +349,10 @@ void BrowserPin::modified() {
 
 UmlCode BrowserPin::get_type() const {
   return UmlActivityPin;
+}
+
+QString BrowserPin::get_stype() const {
+  return TR("pin");
 }
 
 int BrowserPin::get_identifier() const {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -291,7 +291,7 @@ void UmlAttribute::generate_enum_pattern_case(QTextOStream & f,
 
 void UmlAttribute::generate_enum_item(QTextOStream & f,
 				      QCString indent,
-				      bool & first) {
+				      BooL & first) {
   if (stereotype() != "attribute") {
     if (first)
       first = FALSE;

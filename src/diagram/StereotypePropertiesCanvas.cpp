@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -88,8 +88,8 @@ UmlCode StereotypePropertiesCanvas::type() const {
   return UmlStereotypeProperties;
 }
 
-void StereotypePropertiesCanvas::delete_available(bool & in_model,
-						  bool & out_model) const {
+void StereotypePropertiesCanvas::delete_available(BooL & in_model,
+						  BooL & out_model) const {
   if (di->isSelected())
     di->delete_available(in_model, out_model);
 }

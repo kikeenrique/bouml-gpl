@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -439,8 +439,10 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
   }
 }
 
-QString OperationData::definition(bool full) const {
-  return definition(full, TRUE, TRUE);
+QString OperationData::definition(bool full, bool with_kind) const {
+  return (with_kind)
+    ? "["+ browser_node->get_stype() +"] " + definition(full, TRUE, TRUE)
+    : definition(full, TRUE, TRUE);
 }
 
 QString OperationData::definition(bool full, bool withdir, bool withname) const {
@@ -479,35 +481,35 @@ QString OperationData::definition(bool full, DrawingLanguage language,
     if (full)
       return OperationDialog::cpp_decl((BrowserOperation *) browser_node, withname);
     else if (!cpp_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case JavaView:
     if (full)
       return OperationDialog::java_decl((BrowserOperation *) browser_node, withname);
     else if (!java_def.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case PhpView:
     if (full)
       return OperationDialog::php_decl((BrowserOperation *) browser_node, withname);
     else if (!php_def.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   case PythonView:
     if (full)
       return OperationDialog::python_decl((BrowserOperation *) browser_node, withname);
     else if (!python_def.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   default:
     if (full)
       return OperationDialog::idl_decl((BrowserOperation *) browser_node, withdir, withname);
     else if (!idl_decl.isEmpty())
-      return definition(FALSE);
+      return definition(FALSE, FALSE);
     else
       return QString::null;
   }
@@ -2048,6 +2050,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setIsClassMemberCmd:
 	isa_class_operation = (*args != 0);
 	break;
+      case setIsVolatileCmd:
+	is_volatile = (*args != 0);
+	break;
       case setVisibilityCmd:
 	{
 	  UmlVisibility v;
@@ -2606,7 +2611,7 @@ void OperationData::create_modified_body_file() {
       }
       else {
 	QString header =
-	  QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+	  QString("class ") + cl->get_data()->definition(TRUE, FALSE) + '\n';
 	
 	fp.writeBlock(header, header.length());
       }
@@ -2699,7 +2704,7 @@ void OperationData::new_body(QString s, int who) {
       }
       else {
 	QString header =
-	  QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+	  QString("class ") + cl->get_data()->definition(TRUE, FALSE) + '\n';
 	
 	fp.writeBlock(header, header.length());
       }
@@ -2710,7 +2715,7 @@ void OperationData::new_body(QString s, int who) {
 	s += '\n';
       
       QString op_header = QString("!!!") + QString::number(get_ident()) +
-	key + definition(TRUE) + "\n";
+	key + definition(TRUE, FALSE) + "\n";
       
       fp.writeBlock(op_header, op_header.length());
       
@@ -2774,13 +2779,13 @@ void OperationData::save_body(QFile & qf, QString & filename,
 			    QMessageBox::Retry);
       
       QString header =
-	QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+	QString("class ") + cl->get_data()->definition(TRUE, FALSE) + '\n';
       
       qf.writeBlock(header, header.length());
     }
     
     QString op_header = QString("!!!") + QString::number(get_ident()) +
-      key + definition(TRUE) + "\n";
+      key + definition(TRUE, FALSE) + "\n";
     
     qf.writeBlock(op_header, op_header.length());
     
@@ -2846,7 +2851,7 @@ void OperationData::import(BrowserClass * cl, int id)
 void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref) {
     st << "operation_ref " << get_ident() << " // ";
-    save_string(definition(TRUE), st);
+    save_string(definition(TRUE, FALSE), st);
   }
   else {
     BasicData::save(st, warning);

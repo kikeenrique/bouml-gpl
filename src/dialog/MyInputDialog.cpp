@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -157,7 +157,7 @@ void MyInputDialog::accept() {
 }
 			     
 QString MyInputDialog::getText(const char * title, const QString & msg,
-			       const QString & init, bool & ok,
+			       const QString & init, BooL & ok,
 			       const QValidator * v)
 {
   MyInputDialog d(title, msg, init);
@@ -174,7 +174,7 @@ QString MyInputDialog::getText(const char * title, const QString & msg,
 
 QString MyInputDialog::getText(const char * title, const QString & msg,
 			       const QStringList & list, const QString & init,
-			       bool existing, bool & ok)
+			       bool existing, BooL & ok)
 {
   MyInputDialog d(title, msg, list, init, existing);
   

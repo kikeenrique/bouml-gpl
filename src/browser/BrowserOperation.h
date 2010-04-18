@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,6 +85,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual void modified();

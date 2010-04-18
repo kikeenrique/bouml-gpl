@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -174,9 +174,9 @@ ShortcutTable::ShortcutTable(QWidget * parent, bool tool, int n)
     int tool_index = tools.findIndex(iter.data());
     
     if ((tool) ? (tool_index != -1) : (tool_index == -1)) {
-      bool shift;
-      bool ctrl;
-      bool alt;
+      BooL shift;
+      BooL ctrl;
+      BooL alt;
       QString key = Shortcut::extract(iter.key(), shift, ctrl, alt);
 
       if (shift) setText(row, 0, TR("yes"));
@@ -306,9 +306,9 @@ void ShortcutTable::insert_row_after(int row) {
     setItem(index, 4, it);
   }
   
-  setText(row, 0, QString::null);
-  setText(row, 1, QString::null);
-  setText(row, 2, QString::null);
+  setText(row + 1, 0, QString::null);
+  setText(row + 1, 1, QString::null);
+  setText(row + 1, 2, QString::null);
   setItem(row + 1, 3, new ComboItem(this, QString::null, Shortcut::keys(), FALSE));
   setItem(row + 1, 4, new ComboItem(this, QString::null, values, FALSE));
 }
@@ -385,12 +385,12 @@ bool ShortcutTable::check(QStringList & bindings) {
 	s = TR("Shift ");
       if (!text(row, 1).isEmpty())
 #ifdef __APPLE__
-	s = "Apple ";
+	s += "Apple ";
 #else
-	s = TR("Ctrl ");
+	s += TR("Ctrl ");
 #endif
       if (!text(row, 2).isEmpty())
-	s = TR("Alt ");
+	s += TR("Alt ");
       s += text(row, 3);
       
       if (bindings.findIndex(s) == -1)

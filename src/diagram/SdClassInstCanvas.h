@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -65,7 +65,7 @@ class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCa
     virtual BrowserNodeList& get_types(BrowserNodeList&) const;
     virtual BrowserNode * container(UmlCode) const;
     virtual BrowserClass* get_class() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);

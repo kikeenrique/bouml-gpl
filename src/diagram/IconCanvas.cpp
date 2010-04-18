@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,7 +69,7 @@ void IconCanvas::deleted() {
   canvas()->update();
 }
 
-void IconCanvas::delete_available(bool &, bool & out_model) const {
+void IconCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 

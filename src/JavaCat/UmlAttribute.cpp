@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -203,9 +203,12 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     }
     
     QCString stereotype;
+    bool force_ste = FALSE;
     
-    if (cl->stereotype() == "enum")
+    if (cl->stereotype() == "enum") {
       stereotype = "attribute";
+      force_ste = TRUE;
+    }
     else if (typespec.type == 0) {
       QCString t = typespec.explicit_type;
       int index2;
@@ -213,11 +216,12 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
       if (!t.isEmpty() &&
 	  (t.at(t.length() - 1) == '>') &&
 	  ((index2 = t.find('<')) > 0)) {
-	stereotype = at->set_Stereotype(t.left(index2));
+	stereotype = t.left(index2);
 	typespec.explicit_type =
 	  // may be a,b ...
 	  t.mid(index2 + 1, t.length() - 2 - index2);
 	decl.replace(index, 7, "${stereotype}<${type}>");
+	force_ste = TRUE;
       }
     }
     
@@ -227,8 +231,15 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     }
     
     if (neq(at->stereotype(), stereotype)) {
-      at->set_Stereotype(stereotype);
-      container->set_updated();
+      QCString jst;
+      
+      if (! at->stereotype().isEmpty())
+	jst = JavaSettings::relationAttributeStereotype(at->stereotype());
+      
+      if ((force_ste) ? (jst != stereotype) : (jst == "attribute")) {
+	at->set_Stereotype(stereotype);
+	container->set_updated();
+      }
     }
     
     if (neq(at->javaDecl(), decl)) {

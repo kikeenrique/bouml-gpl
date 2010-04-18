@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,7 +46,7 @@ class MLEDialog : public QDialog {
     QString text();
   
   public:
-    static void get(QString & t, const QPoint & p);
+    static void get(QString & t, const QPoint & p, QSize & sz);
 };
 
 #endif

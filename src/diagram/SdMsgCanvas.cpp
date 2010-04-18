@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 
 #include "SdMsgCanvas.h"
 #include "SdDurationCanvas.h"
+#include "SdLostFoundMsgSupportCanvas.h"
 #include "OperationData.h"
 #include "UmlCanvas.h"
 #include "LabelCanvas.h"
@@ -43,10 +44,8 @@
 #include "MenuTitle.h"
 #include "translate.h"
 
-#define MSG_HEIGHT 11
-
-SdMsgCanvas::SdMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * s,
-			 SdDurationCanvas * d, UmlCode l, int v, int id)
+SdMsgCanvas::SdMsgCanvas(UmlCanvas * canvas, SdMsgSupport * s,
+			 SdMsgSupport * d, UmlCode l, int v, int id)
     : SdMsgBaseCanvas(canvas, d, l, v, id), start(s) {
   start->add(this);
   dest->add(this);
@@ -105,6 +104,14 @@ double SdMsgCanvas::min_y() const {
     : dest->min_y();
 }
 
+void SdMsgCanvas::set_z(double newz) {
+  DiagramCanvas::set_z(newz);
+  if (! start->isaDuration())
+    start->set_z(newz);
+  else if (! dest->isaDuration())
+    dest->set_z(newz);
+}
+
 void SdMsgCanvas::draw(QPainter & p) {
   const QRect r = rect();
   const int v = r.center().y();
@@ -137,6 +144,8 @@ void SdMsgCanvas::draw(QPainter & p) {
     
   switch (itsType) {
   case UmlSyncMsg:
+  case UmlFoundSyncMsg:
+  case UmlLostSyncMsg:
     {
       QBrush brsh = p.brush();
       
@@ -226,12 +235,16 @@ void SdMsgCanvas::menu(const QPoint&) {
   if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
       ->is_overlapping_bars()) {
     m.insertSeparator();
-    m.insertItem(TR("Start from new overlapping bar"), 9);
-    if (start->isOverlappingDuration())
-      m.insertItem(TR("Start from parent bar"), 10);
-    m.insertItem(TR("Go to new overlapping bar"), 11);
-    if (dest->isOverlappingDuration())
-      m.insertItem(TR("Go to parent bar"), 12);
+    if (start->isaDuration()) {
+      m.insertItem(TR("Start from new overlapping bar"), 9);
+      if (start->isOverlappingDuration())
+	m.insertItem(TR("Start from parent bar"), 10);
+    }
+    if (dest->isaDuration()) {
+      m.insertItem(TR("Go to new overlapping bar"), 11);
+      if (dest->isOverlappingDuration())
+	m.insertItem(TR("Go to parent bar"), 12);
+    }
   }
   m.insertSeparator();
   m.insertItem(TR("Remove from view"), 7);
@@ -290,16 +303,16 @@ void SdMsgCanvas::menu(const QPoint&) {
     msg->get_browser_node()->select_in_browser();
     return;
   case 9:
-    start->go_up(this, FALSE);
+    ((SdDurationCanvas *) start)->go_up(this, FALSE);
     break;
   case 10:
-    start->go_down(this);
+    ((SdDurationCanvas *) start)->go_down(this);
     break;
   case 11:
-    dest->go_up(this, TRUE);
+    ((SdDurationCanvas *) dest)->go_up(this, TRUE);
     break;
   case 12:
-    dest->go_down(this);
+    ((SdDurationCanvas *) dest)->go_down(this);
     break;
   default:
     return;
@@ -401,14 +414,26 @@ void SdMsgCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     nl_indent(st);
     st << "msg " << get_ident();
     switch (itsType) {
-      case UmlSyncMsg:
-	st << " synchronous";
-	break;
-      case UmlAsyncMsg:
-	st << " asynchronous";
-	break;
+    case UmlSyncMsg:
+      st << " synchronous";
+      break;
+    case UmlAsyncMsg:
+      st << " asynchronous";
+      break;
+    case UmlFoundSyncMsg:
+      st << " found_synchronous";
+      break;
+    case UmlFoundAsyncMsg:
+      st << " found_asynchronous";
+      break;
+    case UmlLostSyncMsg:
+      st << " lost_synchronous";
+      break;
+    case UmlLostAsyncMsg:
+      st << " lost_asynchronous";
+      break;
     default:
-	st << " return";
+      st << " return";
     }
     indent(+1);
     nl_indent(st);
@@ -433,6 +458,14 @@ SdMsgCanvas * SdMsgCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       c = UmlSyncMsg;
     else if (!strcmp(k, "asynchronous"))
       c = UmlAsyncMsg;
+    else if (!strcmp(k, "found_synchronous"))
+      c = UmlFoundSyncMsg;
+    else if (!strcmp(k, "found_asynchronous"))
+      c = UmlFoundAsyncMsg;
+    else if (!strcmp(k, "lost_synchronous"))
+      c = UmlLostSyncMsg;
+    else if (!strcmp(k, "lost_asynchronous"))
+      c = UmlLostAsyncMsg;
     else if (!strcmp(k, "return"))
       c = UmlReturnMsg;
     else {
@@ -440,13 +473,28 @@ SdMsgCanvas * SdMsgCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       return 0; 	// to avoid warning
     }
     
+    SdMsgSupport * start;
+    SdMsgSupport * dest;
+    
     read_keyword(st, "from");
-
-    SdDurationCanvas * start = SdDurationCanvas::read(st, canvas, TRUE);
+    switch (c) {
+    case UmlFoundSyncMsg:
+    case UmlFoundAsyncMsg:
+      start = SdLostFoundMsgSupportCanvas::read(st, canvas, read_keyword(st));
+      break;
+    default:
+      start = SdDurationCanvas::read(st, canvas, TRUE);
+    }
     
     read_keyword(st, "to");
-
-    SdDurationCanvas * dest = SdDurationCanvas::read(st, canvas, TRUE);
+    switch (c) {
+    case UmlLostSyncMsg:
+    case UmlLostAsyncMsg:
+      dest = SdLostFoundMsgSupportCanvas::read(st, canvas, read_keyword(st));
+      break;
+    default:
+      dest = SdDurationCanvas::read(st, canvas, TRUE);
+    }
     
     k = read_keyword(st);
 

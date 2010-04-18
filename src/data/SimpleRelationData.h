@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ class SimpleRelationData : public SimpleData {
     UmlCode get_type() const { return type; }
     void set_type(UmlCode e);
     
-    virtual QString definition(bool full) const;    
+    virtual QString definition(bool full, bool with_kind) const;    
     
     void save(QTextStream &, QString & warning) const;
     static SimpleRelationData * read(char * &);

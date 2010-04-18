@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 #include "SdDurationCanvas.h"
 #include "SdMsgCanvas.h"
 #include "SdSelfMsgCanvas.h"
+#include "SdLostFoundMsgSupportCanvas.h"
 #include "ArrowCanvas.h"
 #include "IconCanvas.h"
 #include "FragmentCanvas.h"
@@ -197,9 +198,9 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    DiagramItem * i = QCanvasItemToDiagramItem(ci);
 	    
 	    if (i != 0) {
-	      const char * err = i->may_start(c);
+	      QString err = i->may_start(c);
 	      
-	      if (err != 0)
+	      if (!err.isEmpty())
 		msg_critical("Bouml" , err);
 	      else {
 		i->connexion(c, i, e->pos(), e->pos());
@@ -392,12 +393,23 @@ void SeqDiagramView::save(QTextStream & st, QString & warning,
 	(di->type() == UmlActivityDuration))
       di->save(st, FALSE, warning);
   
+  // then save lost/found start/end
+  
+  for (di = items.first(); di != 0; di = items.next())
+    if ((!copy || di->copyable()) &&
+	(di->type() == UmlLostFoundMsgSupport))
+      di->save(st, FALSE, warning);
+  
   // then save messages
   
   for (di = items.first(); di != 0; di = items.next()) {
     switch (di->type()) {
     case UmlSyncMsg:
     case UmlAsyncMsg:
+    case UmlFoundSyncMsg:
+    case UmlFoundAsyncMsg:
+    case UmlLostSyncMsg:
+    case UmlLostAsyncMsg:
     case UmlSyncSelfMsg:
     case UmlAsyncSelfMsg:
     case UmlReturnMsg:
@@ -439,6 +451,10 @@ void SeqDiagramView::read(char * st, char * k) {
   
   // then reads durations
   while (SdDurationCanvas::read(st, canvas, k))
+    k = read_keyword(st);
+  
+  // then reads lost/found start/end
+  while (SdLostFoundMsgSupportCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads msgs

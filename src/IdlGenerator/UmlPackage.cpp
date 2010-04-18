@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,6 +28,7 @@
 #include "UmlPackage.h"
 #include "UmlCom.h"
 #include "IdlSettings.h"
+#include "util.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -57,7 +58,7 @@ static void create_directory(QCString s)
       if (!sd.mkdir(s2)) {
 	UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
 		      + s2 + "</i></b></font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("UmlPackage::file_path");
       }
     }
@@ -97,7 +98,7 @@ QCString UmlPackage::path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Idl')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::file_path");
     }
     
@@ -106,7 +107,7 @@ QCString UmlPackage::path(const QCString & f) {
 		    + name() + "</i>'s source path <i>(" + dir
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'Idl')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::file_path");
     }
 

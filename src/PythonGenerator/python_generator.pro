@@ -90,6 +90,6 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseView.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 TARGET	      = python_generator
-DEFINES	      = WITHPYTHON
+DEFINES	      = WITHPYTHON BooL=bool
 INCLUDEPATH   = ../Tools ../PythonGenerator
 

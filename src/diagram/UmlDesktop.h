@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,8 @@ class UmlDesktop {
     static void setsize_center(QWidget * who, QSize & previous, 
 			       double pw, double ph);
     static bool fixed();
+    static bool nogui();
+    static void set_nogui();
         
   private:
     static int left;
@@ -49,4 +51,5 @@ class UmlDesktop {
     static int h;
     static QPoint c;
     static bool fixedp;
+    static bool noguip;
 };

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -134,12 +134,8 @@ const QPixmap* BrowserParameterSet::pixmap(int) const {
 void BrowserParameterSet::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
-  QString s = name;
   
-  if (s.isEmpty())
-    s = TR("Parameter Set");
-  
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
@@ -238,6 +234,10 @@ void BrowserParameterSet::modified() {
 
 UmlCode BrowserParameterSet::get_type() const {
   return UmlParameterSet;
+}
+
+QString BrowserParameterSet::get_stype() const {
+  return TR("parameter set");
 }
 
 int BrowserParameterSet::get_identifier() const {

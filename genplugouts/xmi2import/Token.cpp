@@ -6,7 +6,7 @@ void Token::read(FileIn & in, bool any) {
   _couples.clear();
   
   const char * k;
-  bool str;
+  BooL str;
   
   // bypass comment
   for (;;) {

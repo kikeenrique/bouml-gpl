@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -338,7 +338,7 @@ void ArtifactData::convert_add_include_artifact() {
     int index = cpp_src.find("#include \"UmlComponent.h\"");
     
     if (index != -1) {
-      QCString s = (const char *) cpp_src;
+      QCString s = cpp_src.SharedStr::operator QCString();
       
       s.insert(index, "#include \"UmlArtifact.h\"\n");
       cpp_src = s;

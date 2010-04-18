@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     UseCaseDiagramSettings usecasediagram_settings;
     SequenceDiagramSettings sequencediagram_settings;
     CollaborationDiagramSettings collaborationdiagram_settings;
+    ClassDiagramSettings classdiagram_settings;
     ObjectDiagramSettings objectdiagram_settings;
     StateDiagramSettings statediagram_settings;
     ActivityDiagramSettings activitydiagram_settings;
@@ -83,15 +84,17 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
-				   bool & duplicable) const;
+				   BooL & duplicable) const;
     virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
     virtual BasicData * get_data() const;
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings &) const;
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
     virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
+    virtual void get_classdiagramsettings(ClassDiagramSettings &) const;
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;

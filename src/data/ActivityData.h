@@ -1,6 +1,6 @@
 // *************************************************************************cr();
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@ class ActivityData : public SimpleData {
     InfoData uml_condition;
     InfoData cpp_condition;
     InfoData java_condition;
+    MyStr constraint;
     bool read_only;
     bool single_execution;
     bool is_active;
@@ -62,6 +63,7 @@ class ActivityData : public SimpleData {
     
     QString get_precond(DrawingLanguage) const;
     QString get_postcond(DrawingLanguage) const;
+    const char * get_constraint() const { return constraint; } 
     bool get_is_read_only() const { return read_only; }
     bool get_is_single_execution() const { return single_execution; }
     bool get_is_active() const { return is_active; }

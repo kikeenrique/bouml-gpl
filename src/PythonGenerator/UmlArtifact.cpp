@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -115,7 +115,7 @@ void UmlArtifact::generate() {
     // generate file
     
     QCString indent;
-    bool indent_needed;
+    BooL indent_needed;
     unsigned n = cls.count();
     unsigned index;
     QByteArray file;

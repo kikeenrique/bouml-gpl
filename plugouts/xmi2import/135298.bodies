@@ -14,12 +14,14 @@ class UmlActivityAction
     while (in.read(), !token.close(kstr))
       import(in, token);
   }
-!!!221186.cpp!!!	import(inout in : FileIn, inout tk : Token) : void
+!!!221186.cpp!!!	import(inout in : FileIn, inout token : Token) : void
   QCString s = token.what();
   
   if ((s == "precondition") || (s == "postcondition") ||
       (s == "localprecondition") || (s == "localpostcondition"))
     readCondition(in, token);
+  else if (s == "ownedrule")
+    set_Constraint(UmlItem::readConstraint(in, token));
   else
     UmlItem::import(in, token);
 

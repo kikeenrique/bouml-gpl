@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -181,7 +181,7 @@ void UmlClass::generate(QTextOStream & f) {
       // inherit
       
       sep = " : ";
-      bool already = FALSE;
+      BooL already = FALSE;
       
       for (index = 0; index != ch.size(); index += 1) {
 	UmlItem * x = ch[index];

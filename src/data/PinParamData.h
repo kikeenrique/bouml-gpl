@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,7 +49,7 @@ struct PinParamData : public ObjectData {
   bool get_is_stream() const { return stream; }
   
   void send_uml_def(ToolCom * com);
-  bool tool_cmd(ToolCom * com, const char * args, bool & ack);
+  bool tool_cmd(ToolCom * com, const char * args, BooL & ack);
   
   void save(QTextStream &, QString & warning) const;
   void read(char * &, char * &);

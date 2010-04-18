@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,7 +85,7 @@ class BasicData : public QObject {
     virtual void set_browser_node(BrowserNode * bn);
     BrowserNode * get_browser_node() const { return browser_node; };
     
-    virtual QString definition(bool full) const;
+    virtual QString definition(bool full, bool with_kind) const;
     
     virtual bool decldefbody_contain(const QString & s, bool cs,
 				     BrowserNode *);

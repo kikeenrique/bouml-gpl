@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -242,14 +242,20 @@ UmlArtifact * UmlArtifact::generated_one()
   return current;
 }
 
-void UmlArtifact::imported(QCString s) {
-  if (!JavaSettings::isForcePackagePrefixGeneration()) {
-    if (imports == 0)
-      // init it
-      (void) is_imported("", "");
-    
-    imports->insert(s, this);
-  }
+void UmlArtifact::imported(const QCString & s) {
+  if (imports == 0)
+    // init it
+    (void) is_imported("", "");
+  
+  imports->insert(s, this);
+}
+
+bool UmlArtifact::is_imported(const QCString & s) {
+  if (imports == 0)
+    // init it
+    (void) is_imported("", "");
+
+  return (imports->find(s) != 0);
 }
 
 bool UmlArtifact::is_imported(QCString path, QCString class_name) {

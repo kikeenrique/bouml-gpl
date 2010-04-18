@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,45 @@ const char * BodyPrefix = "## Bouml preserved body begin ";
 const char * BodyPostfix = "## Bouml preserved body end ";
 const int BodyPrefixLength = 30;
 const int BodyPostfixLength = 28;
+
+void UmlOperation::generate_imports(QTextOStream & f, QCString & made) {
+  QCString s = pythonDecl();
+  
+  if (!s.isEmpty()) {
+    UmlArtifact * art = ((UmlClass *) parent())->associatedArtifact();
+			   
+    returnType().generate_import(f, art, FALSE, made);
+    
+    int index1 = s.find("${(}");
+    
+    if (index1 == -1)
+      return;
+    
+    index1 += 4;
+    
+    int index2 = s.find("${)}", index1);
+    
+    if(index2 == -1)
+      return;
+       
+    s = s.mid((unsigned) index1, (unsigned) (index2 - index1));
+    
+    const QValueList<UmlParameter> & params = this->params();
+    QValueListConstIterator<UmlParameter> it;
+    unsigned rank;
+    char ti[16];
+    
+    strcpy(ti, "${p");
+    
+    for (it = params.begin(), rank = 0;
+	 it != params.end();
+	 ++it, rank += 1) {
+      sprintf(ti + 3, "%u}", rank);
+      if (s.find(ti) != -1)
+	(*it).type.generate_import(f, art, FALSE, made);
+    }    
+  }
+}
 
 static bool generate_type(const QValueList<UmlParameter> & params,
 			  unsigned rank, QTextOStream & f, bool in_params)
@@ -122,7 +161,7 @@ QCString UmlOperation::compute_name() {
 // p point to ${body}
 const char * UmlOperation::generate_body(QTextOStream & f,
 					 QCString indent,
-					 bool & indent_needed,
+					 BooL & indent_needed,
 					 const char * p)
 {
   const char * body = 0;
@@ -195,7 +234,7 @@ const char * UmlOperation::generate_body(QTextOStream & f,
 
 
 static void manage_decorators(QTextOStream & f, const QCString & decorators,
-			      QString indent, bool & indent_needed)
+			      QString indent, BooL & indent_needed)
 {
   if (! decorators.isEmpty()) {
     int index = 0;
@@ -221,7 +260,7 @@ static void manage_decorators(QTextOStream & f, const QCString & decorators,
 }
 
 void UmlOperation::generate(QTextOStream & f, const QCString &,
-			    QCString indent, bool & indent_needed,
+			    QCString indent, BooL & indent_needed,
 			    int &, const QCString &) {
   const char * p = pythonDecl();
   
@@ -442,14 +481,14 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       if (body != (p2 + 8)) {
 	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
 		      " : invalid preserve body identifier</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 1");
       }
       
       if (bodies.find(id) != 0) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 	  " : preserve body identifier used twice</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 2");
       }
       
@@ -460,7 +499,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       else {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, end of line expected</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 3");
       }
       
@@ -468,7 +507,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, wrong balanced</font><br>");
-	UmlCom::bye();
+	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 4");
       }
 

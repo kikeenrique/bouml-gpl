@@ -77,6 +77,19 @@ class UmlBaseActivityAction
   UmlCom.check();
 
   _java_post_condition = v;
+!!!263424.cpp!!!	constraint() : string
+  read_if_needed_();
+  return _constraint;
+!!!263424.java!!!	constraint() : string
+  read_if_needed_();
+  return _constraint;
+!!!263552.cpp!!!	set_Constraint(in v : str) : bool
+  return set_it_(_constraint, v, setConstraintCmd);
+!!!263552.java!!!	set_Constraint(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setConstraintCmd, v);
+  UmlCom.check();
+
+  _constraint = v;
 !!!165376.cpp!!!	associatedDiagram() : UmlDiagram
   read_if_needed_();
 
@@ -109,6 +122,7 @@ class UmlBaseActivityAction
   _java_post_condition = 0;
 #endif
   UmlBaseItem::unload(rec, del);
+  _constraint = 0;
 !!!165632.java!!!	unload(in rec : bool, in del : bool) : void
   _pre_condition = null;
   _post_condition = null;
@@ -117,16 +131,19 @@ class UmlBaseActivityAction
   _java_pre_condition = null;
   _java_post_condition = null;
   super.unload(rec, del);
+  _constraint = null;
 !!!165760.cpp!!!	read_uml_() : void
   _assoc_diagram = (UmlDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
   _pre_condition = UmlCom::read_string();
   _post_condition = UmlCom::read_string();
+  _constraint = UmlCom::read_string();
 !!!165760.java!!!	read_uml_() : void
   _assoc_diagram = (UmlDiagram) UmlBaseItem.read_();
   super.read_uml_();
   _pre_condition = UmlCom.read_string();
   _post_condition = UmlCom.read_string();
+  _constraint = UmlCom.read_string();
 !!!165888.cpp!!!	read_cpp_() : void
   _cpp_pre_condition = UmlCom::read_string();
   _cpp_post_condition = UmlCom::read_string();

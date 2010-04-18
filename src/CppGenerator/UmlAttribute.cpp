@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,7 +73,7 @@ void UmlAttribute::compute_dependency(QList<CppRefType> & dependency,
 
 void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 				 const QCString & cl_stereotype, QCString indent,
-				 bool & first, bool last) {
+				 BooL & first, bool last) {
   if (cl_stereotype == "typedef") {
     write_trace_header();
     UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>a <i>typedef</i> cannot have attribute</b></font><br>");

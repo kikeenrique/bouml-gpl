@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -132,7 +132,7 @@ bool manage_python_description(QString comment, const char *& p, const char *& p
 }
 
 void manage_python_docstring(QString comment, const char *& p, const char *& pp,
-			     bool & indent_needed, QString & indent,
+			     BooL & indent_needed, QString & indent,
 			     QString & saved_indent)
 {
   static QString the_comment;

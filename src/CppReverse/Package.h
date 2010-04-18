@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,8 +33,8 @@
 #include "ClassContainer.h"
 
 class QDir;
+class QFileInfo;
 class UmlPackage;
-class Progress;
 class QApplication;
 
 class Package : public BrowserNode, public ClassContainer {
@@ -45,7 +45,16 @@ class Package : public BrowserNode, public ClassContainer {
     Package(Package * parent, QString p, QString n);
     virtual ~Package();	// just to not have warning
     
+#ifdef ROUNDTRIP
+    Package(Package * parent, UmlPackage * pk);
+    
+    virtual Class * upload_define(UmlClass *);
+    void own(UmlArtifact *);
+    void reverse(UmlArtifact *);
+    void reverse_file(QCString f, UmlArtifact * art, bool h);
+#else
     void reverse_file(QCString f);
+#endif
     void reverse_variable(const QCString & name);
     
     Class * declare_if_needed(const QCString & name,
@@ -55,10 +64,15 @@ class Package : public BrowserNode, public ClassContainer {
     virtual void define(QCString name, Class * cl);
     virtual bool find_type(QCString type, UmlTypeSpec & typespec);
     virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl);
+			     const QCString & decl
+#ifdef ROUNDTRIP
+			     , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			     );
 
     virtual bool isa_package() const;
-    const QCString & get_path() const { return path; };
+    const QCString & get_h_path() const { return h_path; };
+    const QCString & get_src_path() const { return src_path; };
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifndef REVERSE
     virtual void menu();
@@ -74,18 +88,31 @@ class Package : public BrowserNode, public ClassContainer {
     
     static void init(UmlPackage *, QApplication *);
     static bool scanning() { return Scan; };
-    static bool scan_dirs();
-    static void send_dirs(bool rec);
+    static void set_step(int s, int n);
+#ifdef ROUNDTRIP
+    void scan_dir(int & n);
+    void send_dir(int n);
+    void accept_roundtrip_root(bool h);
+#else
+    static void scan_dirs(int & n);
+    static void send_dirs(int n, bool rec);
+#endif
     
-    static void progress_closed();
     static const QCString & get_fname() { return fname; }
+#ifdef ROUNDTRIP
+    static UmlArtifact * get_artifact() { return artfct; }
+#endif
     
     //static Package * unknown();
     
   private:
+    UmlPackage * uml;
+    QCString namespace_;
+    QCString h_path;	// empty or finish by a /
+    QCString src_path;	// empty or finish by a /
+    
     static QApplication * app;
     static QList<Package> Choozen;
-    static Progress * ProgressBar;
     static int Nfiles;
     static bool Scan;
     static Package * Root;
@@ -96,12 +123,12 @@ class Package : public BrowserNode, public ClassContainer {
     static NDict<Class> Declared;
     static NDict<Class> Defined;
     
-    UmlPackage * uml;
-    QCString namespace_;
-    QCString path;
     static QCString fname;	// without extension, empty for non header file
+#ifdef ROUNDTRIP
+    static UmlArtifact * artfct; // currently roundtriped artifact
+#endif
     
-    void reverse_directory(QDir & dir, bool rec, QString ext, bool h);
+    void reverse_directory(QString path, bool rec, QString ext, bool h);
     void reverse_toplevel_forms(QCString f, bool sub_block);
     void reverse_toplevel_form(QCString f, QCString s);
         
@@ -109,9 +136,15 @@ class Package : public BrowserNode, public ClassContainer {
 		      bool declaration);
 
     void set_namespace(QCString s);
-    Package * find(QCString s);
+    Package * find(QFileInfo * di);
+
+#ifdef ROUNDTRIP
+    int count_file_number();
+    void scan_dir();
+    void send_dir();
+#endif
     
-    static int file_number(QDir & d, bool rec, const char * h, const char * cpp);
+    static int file_number(QString path, bool rec, const char * ext);
 };
 
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -188,6 +188,8 @@ void UcClassCanvas::compute_size() {
 	used_view_mode = asBoundary;
       else if (!strcmp(st, "actor"))
 	used_view_mode = asActor;
+      else if (!strcmp(st, "interface"))
+	used_view_mode = asInterface;
       else
 	used_view_mode = asClass;
     }
@@ -222,6 +224,10 @@ void UcClassCanvas::compute_size() {
   int min_w;
   
   switch (used_view_mode) {
+  case asInterface:
+    min_w = (int) (INTERFACE_SIZE * zoom);
+    he += min_w;
+    break;
   case asControl:
     min_w = (int) (CONTROL_WIDTH * zoom);
     he += (int) (CONTROL_HEIGHT * zoom);
@@ -352,6 +358,10 @@ void UcClassCanvas::draw(QPainter & p) {
     r.setTop(r.top() + fm.height());
   
   switch (used_view_mode) {
+  case asInterface:
+    draw_interface_icon(p, r, used_color, zoom);
+    r.setTop(r.top() + (int) (INTERFACE_SIZE * zoom) + two);
+    break;
   case asControl:
     draw_control_icon(p, r, used_color, zoom);
     r.setTop(r.top() + (int) (CONTROL_HEIGHT * zoom) + two);
@@ -506,7 +516,7 @@ UmlCode UcClassCanvas::type() const {
   return UmlClass;
 }
 
-void UcClassCanvas::delete_available(bool & in_model, bool & out_model) const {
+void UcClassCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -527,7 +537,7 @@ void UcClassCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);
@@ -892,6 +902,11 @@ UcClassCanvas * UcClassCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       read_xyz(st, result);
 
       result->compute_size();
+      if ((read_file_format() < 72) &&
+	  (result->used_view_mode == asInterface)) {
+	result->settings.class_drawing_mode = asClass;
+	result->compute_size();
+      }
       
       if (read_file_format() >= 58) {
 	k = read_keyword(st);

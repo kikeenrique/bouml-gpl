@@ -39,9 +39,13 @@ class UmlClass
 	ch[i]->uml2cpp(rec);
     }
     
-    if (parent()->kind() == aClassView)
+    if (parent()->kind() == aClassView) {
       // not nested
-      artifact()->set_CppSource(CppSettings::sourceContent());
+      UmlArtifact * art = artifact();
+			 
+      art->set_CppSource(CppSettings::sourceContent());
+      art->set_CppHeader(CppSettings::headerContent());
+    }
   }
 !!!199042.java!!!	uml2cpp(in rec : bool) : void
 

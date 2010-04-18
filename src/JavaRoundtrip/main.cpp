@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,8 +32,6 @@
 #include <qtextstream.h>
 #include <qmessagebox.h>
 
-#include "Class.h"
-#include "UmlClass.h"
 #include "UmlCom.h"
 #include "UmlItem.h"
 #include "UmlPackage.h"
@@ -64,7 +62,7 @@ int main(int argc, char ** argv)
     bool aborted = TRUE;
     
     try {
-      UmlCom::trace("<b>Java roundtrip</b> release 1.2<br><hr>");
+      UmlCom::trace("<b>Java roundtrip</b> release 1.3<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       char * argv = 0;
@@ -84,6 +82,7 @@ int main(int argc, char ** argv)
       case aClassView:
       case aDeploymentView:
       case anArtifact:
+	n = 1;
 	break;
       case aClass:
 	if (item->parent()->kind() != aClassView) {
@@ -91,6 +90,7 @@ int main(int argc, char ** argv)
 	  aborted = FALSE;
 	  throw 0;
 	}
+	n = 1;
 	break;
       }
 
@@ -210,6 +210,8 @@ int main(int argc, char ** argv)
       }
       
       UmlPackage::getProject()->set_childrenVisible(TRUE);
+      item->set_childrenVisible(TRUE); // re select it
+      aborted = FALSE;
     }
     catch (...) {
     }
@@ -221,7 +223,7 @@ int main(int argc, char ** argv)
       
       UmlCom::message("");
       UmlCom::showTrace();
-      UmlCom::bye();	// application must not be deleted
+      UmlCom::bye((aborted) ? 1 : 0);	// application must not be deleted
     }
     catch (...) {
     }

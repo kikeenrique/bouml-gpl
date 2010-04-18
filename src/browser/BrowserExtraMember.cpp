@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "BrowserExtraMember.h"
 #include "ExtraMemberData.h"
 #include "BrowserClass.h"
+#include "ClassData.h"
 #include "UmlPixmap.h"
 #include "myio.h"
 #include "ToolCom.h"
@@ -124,7 +125,7 @@ void BrowserExtraMember::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(def->definition(FALSE), m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
@@ -141,7 +142,7 @@ a double click with the left mouse button does the same thing"));
 Note that you can undelete it after"));
       }
     }
-    mark_menu(m, TR("extra member"), 90);
+    mark_menu(m, TR("the extra member"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -223,6 +224,10 @@ UmlCode BrowserExtraMember::get_type() const {
   return UmlExtraMember;
 }
 
+QString BrowserExtraMember::get_stype() const {
+  return TR("extra member");
+}
+
 int BrowserExtraMember::get_identifier() const {
   return get_ident();
 }
@@ -270,6 +275,8 @@ void BrowserExtraMember::member_cpp_def(const QString &, const QString &,
 }
 
 bool BrowserExtraMember::tool_cmd(ToolCom * com, const char * args) {
+  ClassData::ToolCmd dummy;
+	
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
 }

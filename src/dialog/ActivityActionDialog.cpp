@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -152,6 +152,16 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
   comment->setText(action->get_comment());
+  
+  vtab = new QVBox(grid);
+  new QLabel(TR("constraint :"), vtab);
+  if (! visit) {
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_constraint()));
+  }
+  constraint = new MultiLineEdit(grid);
+  constraint->setReadOnly(visit);
+  constraint->setText(act->constraint);
  
   addTab(grid, "Uml");
   
@@ -250,6 +260,16 @@ void ActivityActionDialog::post_edit_description(ActivityActionDialog * d,
 						 QString s)
 {
   d->comment->setText(s);
+}
+
+void ActivityActionDialog::edit_constraint() {
+  edit(constraint->text(), edname->text().stripWhiteSpace() + "_constraint",
+       act, TxtEdit, this, (post_edit) post_edit_constraint, edits);
+}
+
+void ActivityActionDialog::post_edit_constraint(ActivityActionDialog * d, QString s)
+{
+  d->constraint->setText(s);
 }
 
 AnyActionDialog & ActivityActionDialog::get_dialog(int k) {
@@ -383,6 +403,8 @@ void ActivityActionDialog::accept() {
 
     bn->set_comment(comment->text());
     UmlWindow::update_comment_if_needed(bn);
+  
+    act->constraint = constraint->stripWhiteSpaceText();
     
     kvtable->update(bn);
     
@@ -1215,7 +1237,7 @@ void CallOperationDialog::init(QTabDialog * t, ActivityActionData * act,
     
     if (visit) {
       class_co->insertItem(((BrowserNode *) d->operation->parent())->full_name(TRUE));
-      oper_co->insertItem(((OperationData *) d->operation->get_data())->definition(TRUE));
+      oper_co->insertItem(((OperationData *) d->operation->get_data())->definition(TRUE, FALSE));
       class_co->setCurrentItem(0);
       oper_co->setCurrentItem(0);
     }
@@ -1257,7 +1279,7 @@ void CallOperationDialog::insert_opers(BrowserClass * c) {
   for (child = c->firstChild(); child; child = child->nextSibling()) {
     if (!((BrowserNode *) child)->deletedp() &&
 	(((BrowserNode *) child)->get_type() == UmlOperation)) {
-      QString s = ((OperationData *) ((BrowserNode *) child)->get_data())->definition(TRUE);
+      QString s = ((OperationData *) ((BrowserNode *) child)->get_data())->definition(TRUE, FALSE);
       
       opers.append((BrowserNode *) child);      
       oper_names.append(s);
@@ -1290,7 +1312,7 @@ void CallOperationDialog::set(BrowserNode * bn) {
   insert_opers(cl);
   
   // the operation is in oper_names
-  oper_co->setCurrentItem(oper_names.findIndex(((OperationData *) bn->get_data())->definition(TRUE)) + 1);
+  oper_co->setCurrentItem(oper_names.findIndex(((OperationData *) bn->get_data())->definition(TRUE, FALSE)) + 1);
 }
 
 void CallOperationDialog::menu_oper() {

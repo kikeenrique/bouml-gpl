@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1075,4 +1075,62 @@ bool Lex::bypass_type(QCString s) {
     unread_word(s);
   
   return TRUE;
+}
+
+// to compare strings bypassing \r
+
+bool neq(const QCString & s1, const QCString & s2)
+{
+  const char * p1 = (s1.isNull()) ? "" : (const char *) s1;
+  const char * p2 = (s2.isNull()) ? "" : (const char *) s2;
+  
+  for (;;) {
+    while (*p1 == '\r') p1 += 1;
+    while (*p2 == '\r') p2 += 1;
+    
+    if (*p1 == 0)
+      return (*p2 != 0);
+    if (*p1 != *p2)
+      return TRUE;
+    
+    p1 += 1;
+    p2 += 1;
+  }
+}
+
+// White space means the decimal ASCII codes 9, 10, 11, 12, 13 and 32.
+inline bool is_white_space(char c)
+{
+  return ((c == ' ') || ((c >= '\t') && (c <= '\r')));
+}
+
+bool nequal(const QCString & s1, const QCString & s2)
+{
+  // don't take into account first and last white spaces (like a stripWhiteSpace())
+  const char * p1 = (s1.isNull()) ? "" : (const char *) s1;
+  const char * p2 = (s2.isNull()) ? "" : (const char *) s2;
+  const char * e1 = p1 + s1.length();
+  const char * e2 = p2 + s2.length();
+  
+  while ((p1 != e1) && is_white_space(p1[0]))
+    p1 += 1;
+  
+  while ((p2 != e2) && is_white_space(p2[0]))
+    p2 += 1;
+  
+  while ((e1 != p1) && is_white_space(e1[-1]))
+    e1 -= 1;
+  
+   while ((e2 != p2) && is_white_space(e2[-1]))
+    e2 -= 1;
+  
+  for (;;) {
+    if (p1 >= e1)
+      return (p2 < e2);
+    if (*p1 != *p2)
+      return TRUE;
+    
+    while (*++p1 == '\r') ;
+    while (*++p2 == '\r') ;
+  }
 }

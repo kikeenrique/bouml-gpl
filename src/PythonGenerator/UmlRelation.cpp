@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,66 +36,24 @@
 
 
 void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
-  switch (relationKind()) {
-  case aGeneralisation:
-  case aRealization:
-  case aDependency:
-    if (pythonDecl().isEmpty())
-      return;
-    break;
-  default:
-    return;
-  }
-    
-  QCString s;
-  UmlClass * other_cl = roleType();
-  
-  if (other_cl->isPythonExternal()) {
-    // get def after first line
-    int index;
-    
-    s = other_cl->pythonDecl();
-    if ((index = s.find('\n')) == -1)
-      return;
-    s = s.mid(index + 1).stripWhiteSpace();
-    if (s.isEmpty())
-      return;
-  }
-  else {
-    UmlArtifact * other_art = other_cl->associatedArtifact();
-    
-    if ((other_art == 0) ||
-	(other_art == ((UmlClass *) parent())->associatedArtifact()))
-      return;
-    
-    QCString s_art =
-      ((UmlPackage *) other_art->parent()->parent())->pythonPackage();
-    QCString other_art_name = other_art->name();
-    
-    if (s_art.isEmpty())
-      s_art = other_art_name;
-    else if (other_art_name != "__init__")
-      s_art += "." + other_art_name;
+  if (!pythonDecl().isEmpty()) {
+    bool from;
     
     if (relationKind() == aDependency) {
-      s = stereotype();
+      QCString s = stereotype();
       
       if (s == "import")
-	s = "import " + s_art;
+	from = FALSE;
       else if (s == "from")
-	s = "from " + s_art + " import " + other_cl->name();
+	from = TRUE;
       else
 	return;
     }
     else
-      s = "import " + s_art;
-  }
-  
-  s += "\n";
-  
-  if (made.find(s) == -1) {
-    made += s;
-    f << s;
+      from = FALSE;
+
+    roleType()->generate_import(f, ((UmlClass *) parent())->associatedArtifact(), 
+				from, made);
   }
 }
 
@@ -120,7 +78,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
       }
       else if (*p == '@') {
 	QCString indent;
-	bool indent_needed = FALSE;
+	BooL indent_needed = FALSE;
 	
 	manage_alias(p, f, indent, indent_needed);
       }
@@ -131,7 +89,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
 }
 
 void UmlRelation::generate(QTextOStream & f, const QCString &,
-			   QCString indent, bool & indent_needed,
+			   QCString indent, BooL & indent_needed,
 			   int &, const QCString & self) {
   switch (relationKind()) {
   case aDependency:
@@ -186,6 +144,21 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
       }
       p += 7;
       f << roleName();
+    }
+    else if (!strncmp(p, "${inverse_name}", 15)) {
+      switch (relationKind()) {
+      case anAssociation:
+      case anAggregation:
+      case anAggregationByValue:
+	if (indent_needed) {
+	  indent_needed = FALSE;
+	  f << indent;
+	}
+	f << side(side(TRUE) != this)->roleName();
+      default:
+	break;
+      }
+      p += 15;
     }
     else if (!strncmp(p, "${value}", 8)) {
       if (indent_needed) {

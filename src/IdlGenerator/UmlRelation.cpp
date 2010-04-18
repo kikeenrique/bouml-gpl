@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,7 +34,7 @@
 
 void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f, 
 				   const QCString & cl_stereotype,
-				   bool & already) {
+				   BooL & already) {
   if ((relationKind() == aGeneralisation) || (relationKind() == aRealization)) {
     UmlClass * role_type = roleType();
     QCString other_stereotype = role_type->idl_stereotype();
@@ -204,6 +204,17 @@ void UmlRelation::generate_decl(QTextOStream & f,
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
 	  f << roleName();
+	}
+	else if (!strncmp(p, "${inverse_name}", 15)) {
+	  p += 15;
+	  switch (relationKind()) {
+	  case anAssociation:
+	  case anAggregation:
+	  case anAggregationByValue:
+	    f << side(side(TRUE) != this)->roleName();
+	  default:
+	    break;
+	  }
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;

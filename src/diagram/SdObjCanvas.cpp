@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include "SdObjCanvas.h"
 #include "SdLifeLineCanvas.h"
 #include "myio.h"
+#include "translate.h"
 
 SdObjCanvas::SdObjCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			 int x, int we, int he, int id)
@@ -70,11 +71,11 @@ void SdObjCanvas::moveBy(double dx, double dy) {
 }
 
 QString SdObjCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
 QString SdObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 void SdObjCanvas::set_mortal(bool y) {
@@ -91,6 +92,8 @@ void SdObjCanvas::save(QTextStream & st) const {
   if (mortal)
     st << "  mortal";
   save_xyz(st, this, "  xyz");
+  if (life_line->is_masked())
+    st << " life_line_masked";
   st << " life_line_z " << life_line->z();
 }
 
@@ -103,7 +106,13 @@ void SdObjCanvas::read(char * & st, const char * k) {
   if (!strcmp(k, "xyz")) {
     // new version
     read_xyz(st, this);
-    read_keyword(st, "life_line_z");
+    k = read_keyword(st);
+    if (!strcmp(k, "life_line_masked")) {
+      life_line->set_masked(TRUE);
+      k = read_keyword(st);
+    }
+    if (strcmp(k, "life_line_z"))
+      wrong_keyword(k, "life_line_z");
     life_line->setZ(read_double(st));
   }
   else if (!strcmp(k, "xy"))

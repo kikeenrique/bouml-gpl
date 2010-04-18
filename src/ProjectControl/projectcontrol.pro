@@ -8,5 +8,5 @@ SOURCES	      = main.cpp BrowserNode.cpp ControlWindow.cpp \
 
 
 TARGET	      = projectControl
-DEFINES	      = 
+DEFINES	      = BooL=bool
 INCLUDEPATH   = 

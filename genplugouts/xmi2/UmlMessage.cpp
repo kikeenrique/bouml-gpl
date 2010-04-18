@@ -17,6 +17,11 @@ void UmlMessage::write_connectors(FileOut & out, UmlItem * diagram, const QVecto
   
   for (index = 0; index != sup; index += 1) {
     UmlMessage * msg = msgs.at(index);
+    
+    if ((msg->from() != 0) || (msg->to() != 0))
+      // lost or found
+      continue;
+    
     const char * k = msg->from()->connector(msg->to());
     
     if (connectors.find(k) == 0) {

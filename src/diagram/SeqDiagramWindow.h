@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,10 @@ class SeqDiagramWindow : public DiagramWindow {
     QToolButton * addFragment;
     QToolButton * syncMsg;
     QToolButton * asyncMsg;
+    QToolButton * lostsyncMsg;
+    QToolButton * lostasyncMsg;
+    QToolButton * foundsyncMsg;
+    QToolButton * foundasyncMsg;
     QToolButton * syncSelfMsg;
     QToolButton * asyncSelfMsg;
     QToolButton * returnMsg;
@@ -68,6 +72,10 @@ class SeqDiagramWindow : public DiagramWindow {
     void hit_fragment();
     void hit_syncmsg();
     void hit_asyncmsg();
+    void hit_foundsyncmsg();
+    void hit_foundasyncmsg();
+    void hit_lostsyncmsg();
+    void hit_lostasyncmsg();
     void hit_syncselfmsg();
     void hit_asyncselfmsg();
     void hit_returnmsg();

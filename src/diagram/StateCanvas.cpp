@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -183,6 +183,8 @@ void StateCanvas::compute_size() {
     
   DiagramCanvas::resize((width() > min_width) ? width() : min_width,
 			(height() > min_height) ? height() : min_height);
+  
+  compute_regions();
 }
 
 static bool sub_of(BrowserNode * br, BrowserState * st) {
@@ -298,7 +300,7 @@ void StateCanvas::modified() {
   }
   check_stereotypeproperties();
   canvas()->update();
-  force_sub_inside();
+  force_sub_inside(FALSE);
   package_modified();
 }
 
@@ -332,18 +334,339 @@ aCorner StateCanvas::on_resize_point(const QPoint & p) {
 void StateCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
   
-  force_sub_inside();
+  force_sub_inside(FALSE);
 }
 
-void StateCanvas::force_sub_inside() {
+void StateCanvas::resize(const QSize & sz, bool w, bool h) {
+  if (DiagramCanvas::resize(sz, w, h, min_width, min_height, TRUE))
+    force_sub_inside(FALSE);
+}
+
+void StateCanvas::force_sub_inside(bool resize_it) {
   // update sub states (even through region) position to be
   // inside of the state / region
+  // or resize state to contains sub elts if resize_it
   
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  int resize_left = 0;
+  int resize_right = 0;
+  int resize_top = 0;
+  int resize_bottom = 0;
+  bool need_sub_upper = FALSE;
+  int nr = 0;
+  
+  // a for just to place again elements if needed
+  for (;;) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      if ((*cit)->visible()/* && !(*cit)->selected()*/) {
+	DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+	
+	if (di != 0) {
+	  switch (di->type()) {
+	  case UmlState:
+	  case UmlStateAction:
+	  case InitialPS:
+	  case EntryPointPS:
+	  case FinalPS:
+	  case TerminatePS:      
+	  case ExitPointPS:
+	  case DeepHistoryPS:
+	  case ShallowHistoryPS:
+	  case JunctionPS:
+	  case ChoicePS:
+	  case ForkPS:
+	  case JoinPS:
+	    {
+	      BrowserNode * parent =
+		(BrowserNode *) di->get_bn()->parent();
+	      QRect r;
+	      
+	      if (parent == browser_node) {
+		nr = 1;
+		r = regions_rect[0];
+	      }
+	      else if ((parent->get_type() == UmlRegion) &&
+		       (parent->parent() == browser_node)) {
+		nr = regions.size();
+		
+		if (nr == 0) {
+		  // too small to show them
+		  if (resize_it)
+		    nr = resize_to_show_regions();
+		  else
+		    continue;
+		}
+		r = region_rect((BrowserRegion *) parent);
+	      }
+	      else
+		continue;
+	      
+	      need_sub_upper |= ((*cit)->z() <= z());
+	      
+	      QRect di_r = di->rect();
+	      int dx = 0;
+	      int dy = 0;
+	      
+	      if (resize_it) {
+		if (di_r.left() < r.left()) {
+		  dx = r.left() - di_r.left();
+		  if (dx > resize_left)
+		    resize_left = dx;
+		}
+		
+		if (di_r.right() > r.right()) {
+		  dx = di_r.right() - r.right();
+		  if (dx > resize_right)
+		    resize_right = dx;
+		}
+		
+		if (di_r.top() < r.top()) {
+		  dy = r.top() - di_r.top();
+		  if (dy > resize_top)
+		    resize_top = dy;
+		}
+		
+		if (di_r.bottom() > r.bottom()) {
+		  dy = di_r.bottom() - r.bottom();
+		  if (dy > resize_bottom)
+		    resize_bottom = dy;
+		}
+	      }
+	      else {
+		if (di_r.left() < r.left()) {
+		  if (di_r.right() <= r.right())
+		    dx = r.left() - di_r.left();
+		}
+		else if (di_r.right() > r.right())
+		  dx = r.right() - di_r.right();
+		
+		if (di_r.top() < r.top()) {
+		  if (di_r.bottom() <= r.bottom())
+		    dy = r.top() - di_r.top();
+		}
+		else if (di_r.bottom() > r.bottom())
+		  dy = r.bottom() - di_r.bottom();
+		
+		if ((dx != 0) || (dy != 0)) {
+		  (*cit)->moveBy(dx, dy);
+		  
+		  if (di->type() == UmlState) {
+		    ((StateCanvas *) di)->moveSelfRelsBy(dx, dy);
+		    ((StateCanvas *) di)->hide_lines();
+		    ((StateCanvas *) di)->update_show_lines();
+		    
+		    // to update regions position
+		    (*cit)->setVisible(FALSE);
+		    ((StateCanvas *) di)->was_drawn = FALSE;
+		    (*cit)->setVisible(TRUE);
+		    canvas()->update();
+		    if (! ((StateCanvas *) di)->was_drawn)
+		      ((StateCanvas *) di)->compute_regions();
+		    
+		    ((StateCanvas *) di)->force_sub_inside(FALSE);
+		  }
+		}
+	      }
+	    }
+	    break;
+	  default:
+	    break;
+	  }
+	}
+      }
+    }
+    
+    if (resize_it) {
+      int dx = 0;
+      int dy = 0;
+      int dw = 0;
+      int dh = 0;
+      
+      if (resize_top != 0) {
+	dy = -resize_top;
+	dh = resize_top;
+      }
+      
+      if (resize_bottom != 0)
+	dh += resize_bottom;
+      
+      if (resize_left != 0) {
+	dx = -resize_left;
+	dw = resize_left;
+      }
+      
+      if (resize_right != 0)
+	dw += resize_right;
+      
+      if ((dx != 0) || (dy != 0)) {
+	moveBy(dx, dy);
+	moveSelfRelsBy(dx, dy);
+      }
+      
+      if ((dw != 0) || (dh != 0)) {
+	DiagramCanvas::resize(width() + dw, height() + dh);
+	
+	if (nr > 1) {
+	  // too low probability to have element placed right in regions,
+	  // place them again
+	  resize_it = FALSE;
+	  
+	  // to update regions position
+	  setVisible(FALSE);
+	  was_drawn = FALSE;
+	  setVisible(TRUE);
+	  canvas()->update();
+	  if (! was_drawn)
+	    compute_regions();
+	  
+	  // no break !
+	}
+	else
+	  break;
+      }
+      else
+	break;
+    }
+    else
+      break;
+  }
+  
+  if (need_sub_upper)
+    force_sub_upper();
+  
+  hide_lines();
+  update_show_lines();
+}
+
+int StateCanvas::resize_to_show_regions() {
+  QListViewItem * child = browser_node->firstChild();
+  int nr = 0;
+  
+  while (child != 0) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlRegion))
+      nr += 1;
+    child = child->nextSibling();
+  }
+		  
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+  int d = fm.height() * nr;
+  
+  if (region_horizontally)
+    DiagramCanvas::resize(width(), height() + d);
+  else
+    DiagramCanvas::resize(width() + d, height());
+  
+  // to recompute regions rect
+  QCanvasRectangle::setVisible(FALSE);
+  QCanvasRectangle::setVisible(TRUE);
+  canvas()->update();	
+  if (! was_drawn)
+    compute_regions();
+  
+  return nr;
+}
+
+void StateCanvas::force_inside(DiagramCanvas * elt, bool resize_it)
+{
+  BrowserNode * parent = (BrowserNode *) elt->get_bn()->parent();
+  BrowserNode * container_state;
+  bool container_shown = FALSE;
+  
+  switch (parent->get_type()) {
+  case UmlState:
+    container_state = parent;
+    break;
+  case UmlRegion:
+    container_state = (BrowserNode *) parent->parent();
+    break;
+  default:
+    // machine
+    container_state = 0;
+  }
+
+  if (container_state != 0) {
+    QCanvasItemList all = elt->the_canvas()->allItems();
+    QCanvasItemList::Iterator cit;
+    
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      if ((*cit)->visible()) {
+	DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+	
+	if ((di != 0) && (di->get_bn() == container_state)) {
+	  StateCanvas * state = (StateCanvas *) di;
+	  
+	  QRect r;
+	  QRect elt_r = elt->rect();
+	  
+	  if (parent == container_state) {
+	    r = state->regions_rect[0];
+	    
+	    // to manage case where the state is too small to show legal areas
+	    if ((r.width() <= elt_r.width()) ||
+		(r.height() <= elt_r.height()))
+	      r = state->rect();
+	  }
+	  else if (state->regions.size() == 0) {
+	    // state too small to draw regions
+	    r = state->rect();
+	  }
+	  else {
+	    r = state->region_rect((BrowserRegion *) parent);
+	    // state too small to draw regions
+	    if (r.width() <= elt_r.width())
+	      r.setWidth(elt_r.width());
+	    if (r.height() <= elt_r.height())
+	      r.setHeight(elt_r.height());
+	  }
+	  
+	  int dx = 0;
+	  int dy = 0;
+	  
+	  if (elt_r.left() < r.left()) {
+	    if (elt_r.right() <= r.right())
+	      dx = r.left() - elt_r.left();
+	  }
+	  else if (elt_r.right() > r.right())
+	    dx = r.right() - elt_r.right();
+	  
+	  if (elt_r.top() < r.top()) {
+	    if (elt_r.bottom() <= r.bottom())
+	      dy = r.top() - elt_r.top();
+	  }
+	  else if (elt_r.bottom() > r.bottom())
+	    dy = r.bottom() - elt_r.bottom();
+	  
+	  if ((dx != 0) || (dy != 0)){
+	    elt->moveBy(dx, dy);
+	    elt->moveSelfRelsBy(dx, dy);
+	  }
+	  
+	  if (elt->z() <= state->z())
+	    elt->upper();
+	  
+	  container_shown = TRUE;
+	  
+	  break;
+	}
+      }
+    }
+  }
+  
+  if (elt->type() == UmlState) {
+    ((StateCanvas *) elt)->hide_lines();
+    ((StateCanvas *) elt)->update_show_lines();
+    ((StateCanvas *) elt)->force_sub_inside(resize_it && !container_shown);
+  }
+}
+
+void StateCanvas::force_sub_upper() {
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator cit;
   
   for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible() && !(*cit)->selected()) {
+    if ((*cit)->visible()) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       
       if (di != 0) {
@@ -362,43 +685,15 @@ void StateCanvas::force_sub_inside() {
 	case ForkPS:
 	case JoinPS:
 	  {
-	    BrowserNode * parent =
-	      (BrowserNode *) di->get_bn()->parent();
-	    QRect r;
+	    BrowserNode * parent = (BrowserNode *) di->get_bn()->parent();
 	    
-	    if (parent == browser_node)
-	      r = regions_rect[0];
-	    else if ((parent->get_type() == UmlRegion) &&
-		     (parent->parent() == browser_node)) {
-	      if (regions.size() == 0)
-		continue;
-	      r = region_rect((BrowserRegion *) parent);
-	    }
-	    else
-	      continue;
-	    
-	    QRect di_r = di->rect();
-	    int dx = 0;
-	    int dy = 0;
-	    
-	    if (di_r.left() < r.left()) {
-	      if (di_r.right() <= r.right())
-		dx = r.left() - di_r.left();
-	    }
-	    else if (di_r.right() > r.right())
-	      dx = r.right() - di_r.right();
-	    
-	    if (di_r.top() < r.top()) {
-	      if (di_r.bottom() <= r.bottom())
-		dy = r.top() - di_r.top();
-	    }
-	    else if (di_r.bottom() > r.bottom())
-	      dy = r.bottom() - di_r.bottom();
-	    
-	    if ((dx != 0) || (dy != 0)) {
-	      (*cit)->moveBy(dx, dy);
+	    if ((parent == browser_node) ||
+		((parent->get_type() == UmlRegion) &&
+		 (parent->parent() == browser_node))) {	    
+	      if ((*cit)->z() <= z())
+		((DiagramCanvas *) di)->upper();
 	      if (di->type() == UmlState)
-		((StateCanvas *) di)->force_sub_inside();
+		((StateCanvas *) di)->force_sub_upper();
 	    }
 	  }
 	  break;
@@ -411,6 +706,11 @@ void StateCanvas::force_sub_inside() {
 }
 
 void StateCanvas::draw(QPainter & p) {
+  // warning : must report any changes of region position & size
+  // computation in compute_regions() !
+  
+  was_drawn = TRUE; // to know compute_regions() will not have to be called
+  
   if (! visible()) return;
   
   QRect r = rect();
@@ -444,6 +744,8 @@ void StateCanvas::draw(QPainter & p) {
   
   QColor bckgrnd = p.backgroundColor();
   QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+  const int fnt_height = fm.height();
+  const int half_fnt_height = fnt_height / 2;
   const BasicData * data = browser_node->get_data();
   
   p.setBackgroundMode((used_color == UmlTransparent)
@@ -494,13 +796,13 @@ void StateCanvas::draw(QPainter & p) {
   }
 
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-  r.setTop(r.top() + fm.height() / 2);
+  r.setTop(r.top() + half_fnt_height);
   p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());  
   if (fp != 0)
     draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(),
 	      p.font(), fp);  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-  r.setTop(r.top() + fm.height());
+  r.setTop(r.top() + fnt_height);
   
   if (data->get_stereotype()[0] != 0) {
     p.drawText(r, ::Qt::AlignHCenter,
@@ -509,22 +811,22 @@ void StateCanvas::draw(QPainter & p) {
       draw_text(r, ::Qt::AlignHCenter,
 		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		p.font(), fp);
-    r.setTop(r.top() + fm.height());
+    r.setTop(r.top() + fnt_height);
   }
   
-  int sixteen = (int) (16 * the_canvas()->zoom());
+  const int sixteen = (int) (16 * the_canvas()->zoom());
   
   r.setLeft(r.left() + sixteen);
   r.setRight(r.right() - sixteen);
   
   if (! activities.isEmpty()) {
-    r.setTop(r.top() + fm.height()/2);
+    r.setTop(r.top() + half_fnt_height);
     p.drawLine(r.topLeft(), r.topRight());
     if (fp != 0)
       fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	      r.left(), r.top(), r.right(), r.top());
-    r.setTop(r.top() + fm.height()/2);
+    r.setTop(r.top() + half_fnt_height);
     p.drawText(r, 0, activities);
     if (fp != 0)
       draw_text(r, 0, activities,
@@ -535,7 +837,7 @@ void StateCanvas::draw(QPainter & p) {
     r.setTop(r.top() + sz.height());
   }
   
-  r.setTop(r.top() + fm.height() / 2);  
+  r.setTop(r.top() + half_fnt_height);  
   
   int nregion = 0;
   QListViewItem * child = browser_node->firstChild();
@@ -551,7 +853,7 @@ void StateCanvas::draw(QPainter & p) {
     int szreg = ((region_horizontally) ? r.height() : r.width())
       / nregion;
     
-    if (szreg > fm.height()) {
+    if (szreg > fnt_height) {
       regions.resize(nregion);
       regions_rect.resize(nregion);
       p.drawLine(r.topLeft(), r.topRight());
@@ -637,6 +939,110 @@ void StateCanvas::draw(QPainter & p) {
     show_mark(p, rect());
 }
 
+void StateCanvas::compute_regions() {
+  // code of draw() without drawing
+  QRect r = rect();
+  QRect re = r;    
+  
+  if (used_color != UmlTransparent) {
+    const int shadow = the_canvas()->shadow();
+    
+    if (shadow != 0) {
+      r.setRight(r.right() - shadow);
+      r.setBottom(r.bottom() - shadow);
+    }
+  }
+  
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+  const int fnt_height = fm.height();
+  const int half_fnt_height = fnt_height / 2;
+  const BasicData * data = browser_node->get_data();
+  
+  r.setTop(r.top() + half_fnt_height
+	   + fnt_height
+	   + half_fnt_height);
+  
+  if (data->get_stereotype()[0] != 0) {
+    r.setTop(r.top() + fnt_height);
+  }
+  
+  const int sixteen = (int) (16 * the_canvas()->zoom());
+  
+  r.setLeft(r.left() + sixteen);
+  r.setRight(r.right() - sixteen);
+  
+  if (! activities.isEmpty()) {
+    QSize sz = fm.size(0, activities);
+    
+    r.setTop(r.top() + half_fnt_height
+	     + half_fnt_height
+	     + sz.height());
+  } 
+  
+  int nregion = 0;
+  QListViewItem * child = browser_node->firstChild();
+  
+  while (child != 0) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlRegion))
+      nregion += 1;
+    child = child->nextSibling();
+  }
+  
+  if (nregion != 0) {
+    int szreg = ((region_horizontally) ? r.height() : r.width())
+      / nregion;
+    
+    if (szreg > fnt_height) {
+      regions.resize(nregion);
+      regions_rect.resize(nregion);
+      
+      child = browser_node->firstChild();
+      
+      for (;;) {
+	while (((BrowserNode *) child)->deletedp() ||
+	       (((BrowserNode *) child)->get_type() != UmlRegion))
+	  child = child->nextSibling();
+	
+	// child
+	regions[--nregion] = (BrowserRegion *) child;
+	
+	QRect & rr = regions_rect[nregion];
+	  
+	if (region_horizontally) {
+	  rr.setTop(r.top());
+	  r.setTop(r.top() + szreg);
+	  rr.setBottom(r.top());
+	  rr.setLeft(re.left());
+	  rr.setRight(re.right());
+	}
+	else {
+	  rr.setTop(r.top());
+	  rr.setBottom(re.bottom());
+	  rr.setLeft(r.left());
+	  r.setLeft(r.left() + szreg);
+	  rr.setRight(r.left());
+	}
+	
+	if (nregion == 0)
+	  break;
+	
+	child = child->nextSibling();
+      }
+    }
+    else {
+      regions.resize(0);
+      regions_rect.resize(1);
+      regions_rect[0] = r;
+    }
+  }
+  else {
+    regions.resize(0);
+    regions_rect.resize(1);
+    regions_rect[0] = r;
+  }
+}
+
 UmlCode StateCanvas::type() const {
   return UmlState;
 }
@@ -661,7 +1067,7 @@ QRect StateCanvas::region_rect(BrowserRegion * r) {
   return re;
 }
 
-void StateCanvas::delete_available(bool & in_model, bool & out_model) const {
+void StateCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -683,7 +1089,7 @@ void StateCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

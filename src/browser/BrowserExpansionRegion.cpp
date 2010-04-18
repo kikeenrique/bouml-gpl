@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -186,15 +186,10 @@ BrowserExpansionRegion *
 }
 
 void BrowserExpansionRegion::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("expansion region");
-  
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
@@ -226,7 +221,7 @@ Note that you can undelete it after"));
     }
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
 		   TR("to know who reference the <i>region</i>"));
-    mark_menu(m, TR("expansion region"), 90);
+    mark_menu(m, TR("the expansion region"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -413,6 +408,10 @@ UmlCode BrowserExpansionRegion::get_type() const {
   return UmlExpansionRegion;
 }
 
+QString BrowserExpansionRegion::get_stype() const {
+  return TR("expansion region");
+}
+
 int BrowserExpansionRegion::get_identifier() const {
   return get_ident();
 }
@@ -554,7 +553,7 @@ bool BrowserExpansionRegion::tool_cmd(ToolCom * com, const char * args) {
 }
 
 bool BrowserExpansionRegion::may_contains_them(const QList<BrowserNode> & l,
-					       bool & duplicable) const {
+					       BooL & duplicable) const {
   BrowserNode * activity = get_container(UmlActivity);
   QListIterator<BrowserNode> it(l);
   

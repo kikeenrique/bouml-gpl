@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,8 +62,7 @@ class ExpansionRegionCanvas : public QObject, public ActivityContainerCanvas {
     void add(ExpansionNodeCanvas * p) { nodes.append(p); }
     void force_nodes_arround();
     
-    void force_sub_inside();
-    void force_inside();
+    void force_sub_inside(bool rz);
     
     virtual void delete_it();
     
@@ -74,7 +73,7 @@ class ExpansionRegionCanvas : public QObject, public ActivityContainerCanvas {
     virtual void change_scale();
     
     virtual UmlCode type() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual void remove(bool from_model);
@@ -86,6 +85,7 @@ class ExpansionRegionCanvas : public QObject, public ActivityContainerCanvas {
     virtual void set_z(double z);
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual bool move_with_its_package() const;
     virtual void moveBy(double dx, double dy);
     

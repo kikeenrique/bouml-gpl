@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,13 +60,13 @@
 IdDict<BrowserSimpleRelation> BrowserSimpleRelation::all(257, __FILE__);
 
 BrowserSimpleRelation::BrowserSimpleRelation(BrowserNode * p, SimpleRelationData * d, int id)
-    : BrowserNode(d->definition(FALSE), p), Labeled<BrowserSimpleRelation>(all, id),
+    : BrowserNode(d->definition(FALSE, FALSE), p), Labeled<BrowserSimpleRelation>(all, id),
       def(d) {
 }
 
 BrowserSimpleRelation::BrowserSimpleRelation(const BrowserSimpleRelation * model,
 					     BrowserNode * p)
-    : BrowserNode(model->def->definition(FALSE), p),
+    : BrowserNode(model->def->definition(FALSE, FALSE), p),
       Labeled<BrowserSimpleRelation>(all, 0) {
   def = new SimpleRelationData(model, this);
   comment = model->comment;
@@ -103,7 +103,7 @@ bool BrowserSimpleRelation::undelete(bool, QString & warning, QString & renamed)
   
   if (def->get_start_node()->deletedp() ||
       def->get_end_node()->deletedp()) {
-    warning += QString("<li><b>") + quote(def->definition(FALSE)) + "</b> " + TR("from") + " <b>" +
+    warning += QString("<li><b>") + quote(def->definition(FALSE, FALSE)) + "</b> " + TR("from") + " <b>" +
       def->get_start_node()->full_name() +
 	"</b> " + TR("to") + " <b>" + def->get_end_node()->full_name() + "</b>\n";
     return FALSE;
@@ -113,7 +113,7 @@ bool BrowserSimpleRelation::undelete(bool, QString & warning, QString & renamed)
     case UmlInherit:
       // use case
       if (!def->get_start_node()->check_inherit(def->get_end_node()).isEmpty()) {
-	warning += QString("<li><b>") + quote(def->definition(FALSE)) + "</b> "
+	warning += QString("<li><b>") + quote(def->definition(FALSE, FALSE)) + "</b> "
 	  + TR("because <b>%1</b> cannot (or already) inherit on <b>%2</b>",
 	       def->get_start_node()->full_name(),
 	       def->get_end_node()->full_name())
@@ -184,7 +184,7 @@ void BrowserSimpleRelation::renumber(int phase) {
 
 void BrowserSimpleRelation::update_stereotype(bool) {
   if (def != 0) {
-    QString n = def->definition(FALSE) + " " +
+    QString n = def->definition(FALSE, FALSE) + " " +
       def->get_end_node()->get_name();
     const char * stereotype = def->get_stereotype();
     
@@ -214,7 +214,7 @@ void BrowserSimpleRelation::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
@@ -323,7 +323,7 @@ void BrowserSimpleRelation::open(bool) {
 }
 
 void BrowserSimpleRelation::modified() {
-  set_name(def->definition(FALSE));
+  set_name(def->definition(FALSE, FALSE));
   update_stereotype(FALSE);
   repaint();
   ((BrowserNode *) parent())->modified();
@@ -331,6 +331,10 @@ void BrowserSimpleRelation::modified() {
 
 UmlCode BrowserSimpleRelation::get_type() const {
   return def->get_type();
+}
+
+QString BrowserSimpleRelation::get_stype() const {
+  return TR("relation");
 }
 
 int BrowserSimpleRelation::get_identifier() const {
@@ -445,7 +449,7 @@ BrowserSimpleRelation *
 	delete result->def;
       result->def = d;
       result->set_parent(parent);
-      result->set_name(d->definition(FALSE));
+      result->set_name(d->definition(FALSE, FALSE));
     }
     
     result->is_defined = TRUE;

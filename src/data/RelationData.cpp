@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "ToolCom.h"
 #include "GenerationSettings.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<RelationData> RelationData::all(1023, __FILE__);
 QList<RelationData> RelationData::Unconsistent;
@@ -190,7 +191,7 @@ void RelationData::delete_it() {
 }
 
 bool RelationData::undelete(QString & warning, QString & renamed,
-			    BrowserRelation * rel, bool & br_deleted) {
+			    BrowserRelation * rel, BooL & br_deleted) {
   QString s;
   bool changed = FALSE;
   BrowserNode * parent = (BrowserNode *) rel->parent();
@@ -329,8 +330,10 @@ QString RelationData::get_name(BrowserRelation * cl) const {
     : QString((const char *) name);
 }
 
-QString RelationData::definition(bool) const {
-  return name;
+QString RelationData::definition(bool, bool with_kind) const {
+  return (with_kind)
+    ? "[" + TR("relation") + "] " + name
+    : name.MyStr::operator QString();
 }
 
 UmlVisibility RelationData::get_visibility(BrowserNode * bn) {

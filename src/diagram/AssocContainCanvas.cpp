@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -187,7 +187,7 @@ void AssocContainCanvas::remove(bool from_model) {
     get_start()->unassociate(get_end());	// line will be deleted
 }
 
-void AssocContainCanvas::delete_available(bool & in_model, bool & out_model) const {
+void AssocContainCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= TRUE;
 }
@@ -196,7 +196,7 @@ ArrowPointCanvas * AssocContainCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z());
+  ap->setZ(z() + 1);
   
   AssocContainCanvas * other =
     new AssocContainCanvas(the_canvas(), ap, end, 0,

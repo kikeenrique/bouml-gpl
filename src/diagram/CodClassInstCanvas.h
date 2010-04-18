@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -68,7 +68,7 @@ class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInst
     virtual QString get_full_name() const;
     virtual bool alignable() const;
     virtual bool copyable() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void remove(bool from_model);
     virtual void history_load(QBuffer &);
     virtual void history_hide();

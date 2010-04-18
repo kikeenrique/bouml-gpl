@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,7 @@ void UmlExtraClassMember::generate_decl(aVisibility &,
 					QTextOStream & f_h,
 					const QCString &,
 					QCString indent,
-					bool & first, bool) {
+					BooL & first, bool) {
   first = FALSE;
   
   const char * p = cppDecl();

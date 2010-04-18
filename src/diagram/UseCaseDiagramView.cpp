@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -245,7 +245,6 @@ void UseCaseDiagramView::add_related_elements(DiagramItem *  di, QString what,
     int x = re.x();
     int y = re.bottom() + Diagram_Margin;
     int future_y = y;
-    const QList<BrowserNode> & l = BrowserNode::marked_nodes();
     QListIterator<BrowserNode> it(l);
     BrowserNode * bn;
     

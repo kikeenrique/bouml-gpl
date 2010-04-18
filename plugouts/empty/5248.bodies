@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(50);
+    write_unsigned(53);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(50);
+    write_unsigned(53);
     flush();
   }
   catch (Exception e) {
@@ -66,10 +66,10 @@ class UmlCom
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!71552.java!!!	message(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._messageCmd, s);
-!!!71680.cpp!!!	bye() : void
-  send_cmd(miscGlobalCmd, byeCmd);
-!!!71680.java!!!	bye() : void
-  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._byeCmd);
+!!!71680.cpp!!!	bye(in v : int) : void
+  send_cmd(miscGlobalCmd, byeCmd, v, "");
+!!!71680.java!!!	bye(in v : int) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._byeCmd, v, "");
 !!!71808.cpp!!!	close() : void
   delete sock;
   sock = 0;

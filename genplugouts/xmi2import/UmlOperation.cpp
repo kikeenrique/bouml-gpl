@@ -58,7 +58,7 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
 	       (s == "returnresult")) // andromda emf
 	op->addParameter(token, in);
       else if (s == "ownedrule")
-	op->set_Constraint(UmlClassMember::readConstraint(in, token));
+	op->set_Constraint(UmlItem::readConstraint(in, token));
       else
         op->UmlItem::import(in, token);
     }

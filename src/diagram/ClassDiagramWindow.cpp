@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -194,7 +194,7 @@ ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * 
 ClassDiagramWindow::~ClassDiagramWindow() {
   if (! no_save) {
     QString warning = "!";
-    bool is_new = FALSE;
+    BooL is_new = FALSE;
     
     save("d", warning, is_new);
     warning.remove(0, 1);	// removes !

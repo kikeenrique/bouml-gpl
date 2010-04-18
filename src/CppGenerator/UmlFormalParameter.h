@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,7 +41,7 @@ class UmlFormalParameter : public UmlBaseFormalParameter {
     UmlFormalParameter() {};
 
     void generate(QTextOStream & f_h, const char *& sep1,
-		  const char *& sep2, bool & need_space) const;
+		  const char *& sep2, BooL & need_space) const;
 
 };
 

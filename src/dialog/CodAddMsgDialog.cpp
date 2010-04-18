@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -214,7 +214,7 @@ void CodAddMsgDialog::menu_op() {
 	  index = opers.count();
 	  opers.append(od);
 	  
-	  QString s = od->definition(TRUE);
+	  QString s = od->definition(TRUE, FALSE);
 	  
 	  list.append(s);
 	  edoper->insertItem(s);

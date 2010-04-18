@@ -21,15 +21,18 @@ int main(int argc, char ** argv)
   }
 
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
+    int r = 0;
+
     try {
-      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.7<br>");
+      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.8<br>");
       UmlCom::targetItem()->import(file);
     }
     catch (...) {
+      r = 1;
     }
 
     // must be called to cleanly inform that all is done
-    UmlCom::bye();
+    UmlCom::bye(1);
   }
   
   UmlCom::close();

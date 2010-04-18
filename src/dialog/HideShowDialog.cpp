@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,7 +45,7 @@ QSize HideShowDialog::previous_size;
 
 HideShowDialog::HideShowDialog(const BrowserNodeList & a,
 			       QValueList<BrowserNode *> & hv,
-			       bool & visible)
+			       BooL & visible)
     : QDialog(0, "hide/show dialog", TRUE), all(a),
       hidden_visible(hv), on_visible(visible) {
   setCaption(TR("Settings dialog"));
@@ -85,7 +85,7 @@ HideShowDialog::HideShowDialog(const BrowserNodeList & a,
   QListIterator<BrowserNode> it(all);
   
   while (it.current() != 0) {
-    QString def = it.current()->get_data()->definition(TRUE);
+    QString def = it.current()->get_data()->definition(TRUE, FALSE);
     
     (((hidden_visible.findIndex(it.current()) == -1) ^ on_visible)
      ? lb_visible : lb_hidden)
@@ -213,7 +213,7 @@ void HideShowDialog::hide_private() {
   
   while (it.current() != 0) {
     BasicData * m = it.current()->get_data();
-    QString def = m->definition(TRUE);
+    QString def = m->definition(TRUE, FALSE);
     
     ((((ClassMemberData *) m)->get_visibility(m->get_browser_node()) != UmlPrivate)
      ? lb_visible : lb_hidden)
@@ -234,7 +234,7 @@ void HideShowDialog::hide_private_protected() {
   
   while (it.current() != 0) {
     BasicData * m = it.current()->get_data();
-    QString def = m->definition(TRUE);    
+    QString def = m->definition(TRUE, FALSE);    
     UmlVisibility visi =
       ((ClassMemberData *) m)->get_visibility(m->get_browser_node());
     

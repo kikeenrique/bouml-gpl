@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,7 +44,7 @@ class UmlClassItem : public UmlBaseClassItem {
     virtual void generate_enum_pattern_item(QTextOStream & f, int & current_value,
 					    const QCString & class_name, QCString indent) = 0;
     virtual void generate_enum_pattern_case(QTextOStream & f, QCString indent) = 0;
-    virtual void generate_enum_item(QTextOStream & f, QCString indent, bool & first);
+    virtual void generate_enum_item(QTextOStream & f, QCString indent, BooL & first);
     virtual void generate_enum_member(QTextOStream & f, QCString indent) = 0;
 };
 

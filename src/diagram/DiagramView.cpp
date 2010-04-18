@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -83,7 +83,7 @@ QCString DiagramView::clipboard;
 UmlCode DiagramView::copied_from;
 
 DiagramView::DiagramView(QWidget * parent, UmlCanvas * canvas, int i)
-    : QCanvasView(canvas, parent), id(i), selectArea(0), start(0),
+    : QCanvasView(canvas, parent), id(i), pressedButton(-1), selectArea(0), start(0),
       line(0), arrowBeginning(0), preferred_zoom(0), draw_line(FALSE),
       do_resize(NoCorner), history_protected(FALSE), history_frozen(FALSE),
       first_move(FALSE), on_arrow_decenter(FALSE), history_index(~0u) {
@@ -134,22 +134,29 @@ void DiagramView::contentsMouseDoubleClickEvent(QMouseEvent * e) {
 
 void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
   first_move = TRUE;
+  pressedButton = e->button();
   setFocus();
-  if (!window()->frozen()) {
+  
+  if (pressedButton == ::Qt::MidButton) {
+    mousePressPos = e->pos();
+    QApplication::setOverrideCursor(::Qt::sizeAllCursor);
+  }
+  else if (!window()->frozen()) {
     QCanvasItem * ci = the_canvas()->collision(e->pos());
     
-    if (e->button() == ::Qt::RightButton) {
+    if (pressedButton == ::Qt::RightButton) {
       // menu on several objects (excluding labels)
   
       if (! draw_line) {
 	const QCanvasItemList selected = selection();
 	QCanvasItemList::ConstIterator it;
 	int n_targets = 0;
-	bool in_model = FALSE;
-	bool out_model = FALSE;
+	BooL in_model = FALSE;
+	BooL out_model = FALSE;
 	bool alignable = FALSE;
 	UmlCode k = UmlCodeSup;
-	QList<DiagramItem> l;
+	QList<DiagramItem> l_drawing_settings;
+	int n_resize = 0;
 	
 	for (it = selected.begin(); it != selected.end(); ++it) {
 	  if (! isa_label(*it)) {
@@ -166,26 +173,30 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	      case UmlCodeSup:
 		// first case
 		k = item->type();
-		l.append(item);
+		l_drawing_settings.append(item);
 		break;
 	      case UmlArrowPoint:
 		// mark for several types
 		break;
 	      default:
 		if (item->type() == k)
-		  l.append(item);
+		  l_drawing_settings.append(item);
 		else {
 		  // several types
-		  l.clear();
+		  l_drawing_settings.clear();
 		  k = UmlArrowPoint;	// mark for several types
 		}
 	      }
 	    }
+	    
+	    if (item->on_resize_point(item->rect().topLeft()) != NoCorner)
+	      n_resize += 1;
 	  }	  
 	}
 	
 	if (n_targets > 1) {
-	  multiple_selection_menu(in_model, out_model, alignable, l);
+	  multiple_selection_menu(in_model, out_model, alignable,
+				  n_resize, l_drawing_settings);
 	  return;
 	}
       }
@@ -317,6 +328,15 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  window()->package_modified();
 	}
 	break;
+      case UmlFoundSyncMsg:
+      case UmlFoundAsyncMsg:
+	unselect_all();
+	history_save();
+	setCursor(::Qt::pointingHandCursor);
+	arrowBeginning = start = 0;
+	draw_line = TRUE;
+	mousePressPos = e->pos();
+	break;
       default:
 	// lines
 	unselect_all();
@@ -328,9 +348,9 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  DiagramItem * i = QCanvasItemToDiagramItem(ci);
 	  
 	  if (i != 0) {
-	    const char * err = i->may_start(action);
+	    QString err = i->may_start(action);
 	    
-	    if (err != 0) {
+	    if (!err.isEmpty()) {
 	      msg_critical("Bouml" , err);
 	      window()->selectOn();
 	    }
@@ -353,7 +373,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
-  else if ((e->button() == ::Qt::RightButton) &&
+  else if ((pressedButton == ::Qt::RightButton) &&
 	   ! BrowserNode::popupMenuActive()) {	// Qt bug
     BrowserNode::setPopupMenuActive(TRUE);
     
@@ -363,7 +383,13 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 }
 
 void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
-  if (!window()->frozen()) {
+  int button = pressedButton;
+  
+  pressedButton = -1;
+  
+  if (button == ::Qt::MidButton)
+    QApplication::restoreOverrideCursor();
+  else if (!window()->frozen()) {
     if (do_resize != NoCorner) {
       do_resize = NoCorner;
       previousResizeCorrection.clear();
@@ -382,46 +408,68 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
 	DiagramItem * i = QCanvasItemToDiagramItem(ci);
 	
 	if (i != 0) {
-	  UmlCode theo = action;
-	  QString err = arrowBeginning->may_connect(action, i);
-	  
-	  if (err.isEmpty()) {
-	    if ((theo != action) && (start != arrowBeginning))
-	      relation_to_simplerelation(action);
-	    start->connexion(action, i, mousePressPos, e->pos());
-	    window()->package_modified();
-	    temp.clear();
-	    draw_line = FALSE;
-	    unsetCursor();
-	    arrowBeginning->post_connexion(action, i);
-	  }
-	  else if (start->may_connect(action)) {
-	    // component required/provided interface
-	    if (start->connexion(action, mousePressPos, e->pos())) {
-	      window()->package_modified();
-	      temp.clear();
-	      draw_line = FALSE;
-	      unsetCursor();
+	  if (start == 0) {	    
+	    if (i->may_connect(action)) {
+	      // sequence diagram found msg
+	      if (i->connexion(action, mousePressPos, e->pos())) {
+		window()->package_modified();
+		temp.clear();
+		draw_line = FALSE;
+		unsetCursor();
+	      }
+	      else
+		abort_line_construction();
 	    }
 	    else
 	      abort_line_construction();
 	  }
-	  else if (err != TR("illegal")) {
-	    msg_critical("Bouml", err);
-	    abort_line_construction();
+	  else {
+	    UmlCode theo = action;
+	    QString err = arrowBeginning->may_connect(action, i);
+	    
+	    if (err.isEmpty()) {
+	      if ((theo != action) && (start != arrowBeginning))
+		relation_to_simplerelation(action);
+	      start->connexion(action, i, mousePressPos, e->pos());
+	      window()->package_modified();
+	      temp.clear();
+	      draw_line = FALSE;
+	      unsetCursor();
+	      arrowBeginning->post_connexion(action, i);
+	    }
+	    else if (start->may_connect(action)) {
+	      // component required/provided interface
+	      // sequence diagram lost msg
+	      if (start->connexion(action, mousePressPos, e->pos())) {
+		window()->package_modified();
+		temp.clear();
+		draw_line = FALSE;
+		unsetCursor();
+	      }
+	      else
+		abort_line_construction();
+	    }
+	    else if (err != TR("illegal")) {
+	      msg_critical("Bouml", err);
+	      abort_line_construction();
+	    }
+	    else if (arrowBeginning->allowed_direction(action) == DiagramItem::All) {
+	      add_point(e);
+	      return;
+	    }
+	    else
+	      abort_line_construction();
 	  }
-	  else if (arrowBeginning->allowed_direction(action) == DiagramItem::All) {
-	    add_point(e);
-	    return;
-	  }
-	  else
-	    abort_line_construction();
 	}
 	else
 	  abort_line_construction();
       }
+      else if (start == 0)
+	// start/found msg without dest/start specified
+	abort_line_construction();
       else if (start->may_connect(action)) {
 	// component required/provided interface
+	// sequence diagram lost msg
 	if (start->connexion(action, mousePressPos, e->pos())) {
 	  window()->package_modified();
 	  temp.clear();
@@ -443,7 +491,7 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
       history_protected = FALSE;
       window()->selectOn();
     }
-    else if ((e->button() != ::Qt::RightButton) && (selectArea != 0)) {
+    else if ((button == ::Qt::LeftButton) && (selectArea != 0)) {
       // selectionne les objets dans la zone de selection
       QRect r = selectArea->boundingRect();
       
@@ -467,6 +515,27 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
   }
 }
 
+void DiagramView::contentsWheelEvent(QWheelEvent * e) {
+  switch (e->state()) {
+  case ::Qt::ShiftButton:
+    // note : direction doesn't exist with Qt2.3 and to
+    // force direction to horizontal doesn't work with Qt3
+    scrollBy(e->delta() / -10, 0);
+    e->accept();
+    break;
+  case ::Qt::ControlButton:
+    window()->change_zoom(e->delta() / 12);
+    e->accept();
+    break;
+  default:
+    // not use QCanvasView::contentsWheelEvent(e)
+    // to have the same speed in horiz and vert
+    scrollBy(0, e->delta() / -10);
+    e->accept();
+    break;
+  }
+}
+
 void DiagramView::add_point(QMouseEvent * e) {
   // adds an ArrowPoint and the line to it
   history_protected = TRUE;
@@ -474,11 +543,11 @@ void DiagramView::add_point(QMouseEvent * e) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), e->x(), e->y());
   UmlCode action = window()->buttonOn();
-  
-  ap->upper();
-  
   UmlCode t = window()->browser_diagram()->get_type();
   ArrowCanvas * a;
+  
+  ap->show();
+  ap->upper();
   
   if ((t == UmlClassDiagram) && IsaRelation(action))
     a = new RelationCanvas(the_canvas(), start, ap, 0, action, 0, -1.0, -1.0);
@@ -501,7 +570,6 @@ void DiagramView::add_point(QMouseEvent * e) {
   temp.append(a);		// before the point, see abort_line_construction()
   temp.append(ap);
   
-  ap->show();
   a->show();
   
   // re create immediatly the line
@@ -525,10 +593,16 @@ void DiagramView::add_point(QMouseEvent * e) {
 }
 
 void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
-  ensureVisible (e->x(), e->y(), 30, 30);
+  if (pressedButton == ::Qt::MidButton) {
+    scrollBy(mousePressPos.x() - e->pos().x(),
+	     mousePressPos.y() - e->pos().y());
+    
+    mousePressPos = e->pos();
+  }
+  else if (!window()->frozen()) {
+    if (pressedButton == ::Qt::LeftButton) {
+      ensureVisible (e->x(), e->y(), 30, 30);
   
-  if (!window()->frozen()) {
-    if (e->button() != ::Qt::RightButton) {
       history_protected = TRUE;
       
       int dx = e->pos().x() - mousePressPos.x();
@@ -592,7 +666,9 @@ void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
 	  // premier deplacement : cree la ligne
 	  line = new QCanvasLine(canvas());
 	  line->setZ(TOP_Z);
-	  switch (arrowBeginning->allowed_direction(window()->buttonOn())) {
+	  switch ((arrowBeginning == 0) 
+		  ? DiagramItem::Horizontal
+		  : arrowBeginning->allowed_direction(window()->buttonOn())) {
 	  case DiagramItem::Horizontal:
 	    // horizontal line
 	    line->setPoints(mousePressPos.x(), mousePressPos.y(), 
@@ -609,7 +685,9 @@ void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
 	else {
 	  QPoint st = line->startPoint();
 	  
-	  switch (arrowBeginning->allowed_direction(window()->buttonOn())) {
+	  switch ((arrowBeginning == 0) 
+		  ? DiagramItem::Horizontal
+		  : arrowBeginning->allowed_direction(window()->buttonOn())) {
 	  case DiagramItem::Horizontal:
 	    // horizontal line
 	    line->setPoints(st.x(), st.y(), e->pos().x(), st.y());
@@ -717,12 +795,12 @@ void DiagramView::delete_them(bool in_model) {
 
     QCanvasItemList::ConstIterator it = selected.begin();
     DiagramItem * item = QCanvasItemToDiagramItem(*it);
-    bool in = FALSE;
-    bool out = FALSE;
+    BooL in = FALSE;
+    BooL out = FALSE;
 
     item->delete_available(in, out);
     if (in || out)
-      item->remove(in_model & in);		// modify selection()
+      item->remove(in_model && in);		// modify selection()
     else
       the_canvas()->unselect(*it);
   }
@@ -821,9 +899,34 @@ void DiagramView::alignCenter() {
 }
 
 
+void DiagramView::same_size(bool w, bool h) {
+  const QCanvasItemList selected = selection();
+  QCanvasItemList::ConstIterator it;
+  bool first = TRUE;
+  QSize sz;
+
+  for (it = selected.begin(); it != selected.end(); ++it) {
+    if (!isa_label(*it)) {
+      DiagramItem * item = QCanvasItemToDiagramItem(*it);
+      
+      if (item != 0 && (item->on_resize_point(item->rect().topLeft()) != NoCorner)) {
+	if (first) {
+	  QRect r = item->rect();
+	  
+	  first = FALSE;
+	  sz.setWidth(r.width());
+	  sz.setHeight(r.height());
+	}
+	else 
+	  item->resize(sz, w, h);
+      }
+    }
+  }
+}
+
 void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
-					  bool alignable,
-					  QList<DiagramItem> & l) {
+					  bool alignable, int n_resize,
+					  QList<DiagramItem> & l_drawing_settings) {
   const QCanvasItemList selected = selection();
   QCanvasItemList::ConstIterator it;
   QPopupMenu m(0);
@@ -839,6 +942,7 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   }
   
   QPopupMenu al(0);
+  QPopupMenu sz(0);
   
   if (alignable) {
     QPixmap top((const char **) align_top);
@@ -858,8 +962,18 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
     al.insertItem(hcenter, TR("align center horizontaly"), 10);
 
     m.insertItem(TR("Align"), &al);
+  }
+  
+  if (n_resize > 1) {
+    sz.insertItem(TR("same width"), 14);
+    sz.insertItem(TR("same height"), 15);
+    sz.insertItem(TR("same width and height"), 16);
+
+    m.insertItem(TR("Size"), &sz);
     m.insertSeparator();
   }
+  else if (alignable)
+    m.insertSeparator();
   
   m.insertItem(TR("Copy selected (Ctrl+c)"), 11);
   
@@ -870,7 +984,7 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   if (in_model)
     m.insertItem(TR("Delete selected (Ctrl+d)"), 3);
 
-  if (l.count() > 1) {
+  if (l_drawing_settings.count() > 1) {
     m.insertSeparator();
     m.insertItem(TR("Edit drawing settings"), 13);
   }
@@ -927,8 +1041,20 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
     return;
   case 13:
     history_protected = FALSE;
-    l.first()->edit_drawing_settings(l);
+    l_drawing_settings.first()->edit_drawing_settings(l_drawing_settings);
     break;
+  case 14:
+    history_save();
+    same_size(TRUE, FALSE);
+    break;
+  case 15:
+    history_save();
+    same_size(FALSE, TRUE);
+    break;
+  case 16:
+    history_save();
+    same_size(TRUE, TRUE);
+    break;   
   default:
     return;
   }
@@ -1077,6 +1203,28 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	history_protected = TRUE;
 	UmlWindow::save_it();
       }
+      else if (s == "Save as") {
+	if (!UmlWindow::saveas_it())
+	  history_protected = TRUE;
+	else
+	  return;
+      }
+      else if (s == "Close") {
+	UmlWindow::do_close();
+	return;
+      }
+      else if (s == "Quit") {
+	UmlWindow::do_quit();
+	return;
+      }
+      else if (s == "Open project") {
+	UmlWindow::load_it();
+	return;
+      }
+      else if (s == "Print") {
+	history_protected = TRUE;
+	UmlWindow::print_it();
+      }
       else if (s == "Browser search") {
 	history_protected = TRUE;
 	UmlWindow::browser_search_it();
@@ -1110,6 +1258,27 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	  // this allows to do several control-L
 	  select(((ArrowCanvas *) *it)->next_geometry());
 	}
+      }
+      else if (s == "Optimal scale") {
+	history_protected = TRUE;
+	window()->fit_scale();
+	return;
+      }
+      else if (s == "Optimal window size") {
+	do_optimal_window_size();
+	return;
+      }
+      else if (s == "Zoom +") {
+	window()->change_zoom(10);
+	return;
+      }
+      else if (s == "Zoom -") {
+	window()->change_zoom(-10);
+	return;
+      }
+      else if (s == "Zoom 100%") {
+	window()->new_scale(100);
+	return;
       }
       else {
 	const QCanvasItemList selected = selection();
@@ -1203,6 +1372,21 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	    history_protected = TRUE;
 	    history_save();
 	    alignTop();
+	  }
+	  else if (s == "Same width") {
+	    history_protected = TRUE;
+	    history_save();
+	    same_size(TRUE, FALSE);
+	  }
+	  else if (s == "Same height") {
+	    history_protected = TRUE;
+	    history_save();
+	    same_size(FALSE, TRUE);
+	  }
+	  else if (s == "Same size") {
+	    history_protected = TRUE;
+	    history_save();
+	    same_size(TRUE, TRUE);
 	  }
 	}
 	else if (selected .count() == 1) {
@@ -1483,6 +1667,8 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     if (available_redo())
       m.insertItem(TR("Redo (Ctrl+y or Ctrl+r)"), 12);
   }
+  m.insertSeparator();
+  m.insertItem(TR("Close"), 20);
 
   int choice = m.exec(QCursor::pos());
   
@@ -1570,6 +1756,13 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     break;
   case 12:
     redo();
+    break;
+  case 20:
+    window()->close(FALSE);
+    break;
+  case EDIT_DRAWING_SETTING_CMD:
+  case RELOAD_CMD:
+      // to be sure they are not reused
     break;
   default:
     if (choice >= f) {

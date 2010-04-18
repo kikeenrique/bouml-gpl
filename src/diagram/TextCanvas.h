@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,12 +50,13 @@ class TextCanvas : public DiagramCanvas {
     virtual void menu(const QPoint&);
     virtual QString may_start(UmlCode &) const;
     virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual bool move_with(UmlCode) const;
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual void apply_shortcut(QString s);
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);

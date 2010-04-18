@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -95,17 +95,7 @@ class Lex {
     static bool bypass_type(QCString s);
 };
 
-// an empty string is != a null string in Qt !
-bool inline neq(const QCString & s1, const QCString & s2)
-{
-  return (s1.isEmpty()) ? !s2.isEmpty() : (s1 != s2);
-}
-
-bool inline nequal(QCString s1, QCString s2)
-{
-  return (s1.isEmpty())
-    ? !s2.isEmpty() 
-    : (s1.stripWhiteSpace() != s2.stripWhiteSpace());
-}
+bool neq(const QCString & s1, const QCString & s2);
+bool nequal(const QCString & s1, const QCString & s2);
 
 #endif

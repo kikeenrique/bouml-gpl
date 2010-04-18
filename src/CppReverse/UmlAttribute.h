@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,7 +41,14 @@ class UmlAttribute : public UmlBaseAttribute {
 			bool staticp, bool constp, bool typenamep, bool mutablep,
 			bool volatilep,	const QCString & bitfield,
 			const QCString & value,	QCString comment,
-			QCString description);
+			QCString description
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
+#ifdef ROUNDTRIP
+    static UmlAttribute * search_attr(UmlClass * cl, const QCString & name);
+#endif
 };
 
 #endif

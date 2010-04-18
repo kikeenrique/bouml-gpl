@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include "UmlCom.h"
 #include "JavaSettings.h"
 #include "UmlArtifact.h"
+#include "util.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -68,7 +69,7 @@ QCString UmlPackage::file_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Java')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::file_path");
     }
     
@@ -101,7 +102,7 @@ QCString UmlPackage::file_path(const QCString & f) {
 	if (!sd.mkdir(s2)) {
 	  UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
 			+ s2 + "</i></b></font><br>");
-	  UmlCom::bye();
+	  UmlCom::bye(n_errors() + 1);
 	  UmlCom::fatal_error("UmlPackage::file_path");
 	}
       }
@@ -136,7 +137,9 @@ void UmlPackage::import(QTextOStream & f, const QCString & indent) {
   if (!s.isEmpty()) {
     s += ".*";
     
-    f << indent << "import " << s << ";\n";
-    UmlArtifact::generated_one()->imported(s);
+    if (! UmlArtifact::generated_one()->is_imported(s)) {
+      f << indent << "import " << s << ";\n";
+      UmlArtifact::generated_one()->imported(s);
+    }
   }
 }

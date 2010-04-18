@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -485,6 +485,7 @@ class ActivityActionData : public SimpleData {
     InfoData uml_condition;
     InfoData cpp_condition;
     InfoData java_condition;
+    MyStr constraint;
     AnyAction * action;
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
@@ -501,6 +502,7 @@ class ActivityActionData : public SimpleData {
     QString get_precond(DrawingLanguage) const;
     QString get_postcond(DrawingLanguage) const;
     QString str(DrawingLanguage lang) const;
+    const char * get_constraint() const { return constraint; }        
     UmlActionKind get_action_kind() const {
       return (action) ? action->kind() : UmlOpaqueAction;
     }

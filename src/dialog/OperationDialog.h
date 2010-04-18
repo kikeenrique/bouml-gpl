@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -169,7 +169,7 @@ class OperationDialog : public QTabDialog {
   
   protected:
     void manage_decorators(QString & s, QString indent,
-			   bool & indent_needed);
+			   BooL & indent_needed);
     void init_get_set();
     void init_uml();
     void init_cpp();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -201,7 +201,7 @@ void BrowserStateDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Show"), 0),
@@ -355,6 +355,10 @@ UmlCode BrowserStateDiagram::get_type() const {
   return UmlStateDiagram;
 }
 
+QString BrowserStateDiagram::get_stype() const {
+  return TR("state diagram");
+}
+
 int BrowserStateDiagram::get_identifier() const {
   return get_ident();
 }
@@ -378,7 +382,7 @@ void BrowserStateDiagram::get_statedrawingsettings(StateDrawingSettings & r) con
   r.assign(used_settings->statedrawingsettings);
 }
 
-void BrowserStateDiagram::package_settings(bool & name_in_tab,
+void BrowserStateDiagram::package_settings(BooL & name_in_tab,
 					   ShowContextMode & show_context) const {
   name_in_tab = used_settings->package_name_in_tab == UmlYes;
   show_context = used_settings->show_context_mode;
@@ -550,7 +554,7 @@ void BrowserStateDiagram::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "state_color", state_color, nl);
     save_color(st, "stateaction_color", stateaction_color, nl);

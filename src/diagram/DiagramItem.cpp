@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,7 +52,7 @@ BrowserNode * DiagramItem::get_bn() const {
   return 0;
 }
 
-void DiagramItem::delete_available(bool &, bool &) const {
+void DiagramItem::delete_available(BooL &, BooL &) const {
 }
 
 void DiagramItem::remove(bool) {
@@ -111,6 +111,10 @@ aCorner DiagramItem::on_resize_point(const QPoint &) {
 }
 
 void DiagramItem::resize(aCorner, int, int, QPoint &) {
+  // never called but must be defined
+}
+
+void DiagramItem::resize(const QSize &, bool, bool) {
   // never called but must be defined
 }
 

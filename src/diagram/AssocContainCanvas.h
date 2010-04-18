@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,7 +39,7 @@ class AssocContainCanvas : public ArrowCanvas {
     virtual void open();
     virtual void menu(const QPoint&);
     virtual void remove(bool from_model);
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     
     virtual void save(QTextStream & st, bool ref, QString & warning) const;
     static AssocContainCanvas * read(char * & st, UmlCanvas * canvas, char * k);

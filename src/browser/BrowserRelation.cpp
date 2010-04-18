@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "BrowserOperation.h"
 #include "BrowserClass.h"
 #include "RelationData.h"
+#include "ClassData.h"
 #include "BrowserClassInstance.h"
 #include "ReferenceDialog.h"
 #include "UmlPixmap.h"
@@ -443,7 +444,7 @@ void BrowserRelation::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
@@ -627,6 +628,10 @@ UmlCode BrowserRelation::get_type() const {
     : def->get_type();
 }
 
+QString BrowserRelation::get_stype() const {
+  return TR("relation");
+}
+
 int BrowserRelation::get_identifier() const {
   return get_ident();
 }
@@ -690,6 +695,8 @@ void BrowserRelation::write_id(ToolCom * com) {
 }
 
 bool BrowserRelation::tool_cmd(ToolCom * com, const char * args) {
+  ClassData::ToolCmd dummy;
+	
   switch ((unsigned char) args[-1]) {
   case isWritableCmd:
     com->write_bool(def->is_writable(this));
@@ -710,6 +717,17 @@ bool BrowserRelation::tool_cmd(ToolCom * com, const char * args) {
     else
       com->write_ack(FALSE);
     break;
+  case moveAfterCmd:
+  case moveInCmd:
+    switch (get_type()) {
+    case UmlGeneralisation:
+    case UmlRealize:
+      // may change order
+      ClassData::setDontUpdateActuals(FALSE);
+    default:
+      break;
+    }
+    return BrowserNode::tool_cmd(com, args);
   default:
     return (def->tool_cmd(com, this, args) ||
 	    BrowserNode::tool_cmd(com, args));

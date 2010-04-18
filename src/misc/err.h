@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,9 +28,11 @@
 
 #include <stdlib.h>
 
+extern int exit_value();
+
 // to manage case where Qt is compiled with -fnoexceptions
 extern bool ExitOnError;
-#define THROW_ERROR if (ExitOnError) ::exit(0); else throw 
+#define THROW_ERROR if (ExitOnError) ::exit(exit_value()); else throw 
 #define PRE_TRY bool previous_ExitOnError = ExitOnError; ExitOnError = FALSE
 #define POST_TRY ExitOnError = previous_ExitOnError
 

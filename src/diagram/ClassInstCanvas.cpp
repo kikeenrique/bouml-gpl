@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -181,6 +181,15 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
 		svg_color(used_color), 
 		r.x(), r.y(), r.width() - 1, r.height() - 1);
       }
+    }
+    else {
+      p.fillRect(r, co);
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(used_color), 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
     }
   }
   else if (fp != 0)

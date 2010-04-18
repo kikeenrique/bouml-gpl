@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,7 +45,6 @@ class UmlClass;
 class UmlItem;
 class Class;
 
-class Progress;
 class QApplication;
 
 class Package : public BrowserNode, public ClassContainer {
@@ -104,8 +103,8 @@ class Package : public BrowserNode, public ClassContainer {
     static bool scanning() { return scan; };
     static void set_step(int s, int n);
 #ifdef ROUNDTRIP
-    static void tic();
     void scan_dir(int & n);
+    void accept_roundtrip_root();
 #else
     static Package * scan_dir(int & n);
 #endif
@@ -113,8 +112,6 @@ class Package : public BrowserNode, public ClassContainer {
     
     static void push_context();
     static void pop_context();
-    
-    static void progress_closed();
     
   private:
     UmlPackage * uml;
@@ -139,7 +136,6 @@ class Package : public BrowserNode, public ClassContainer {
     static QStringList static_imports;
     static QStack<QStringList> stack;
     static QValueList<FormalParameterList> Formals;
-    static Progress * progress;
     static QApplication * app;
     
     static int file_number(QDir & dir, bool rec);

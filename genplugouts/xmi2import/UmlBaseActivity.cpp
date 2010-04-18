@@ -73,6 +73,15 @@ bool UmlBaseActivity::set_JavaPostCondition(const char * v) {
 }
 #endif
 
+const QCString & UmlBaseActivity::constraint() {
+  read_if_needed_();
+  return _constraint;
+}
+
+bool UmlBaseActivity::set_Constraint(const char * v) {
+  return set_it_(_constraint, v, setConstraintCmd);
+}
+
 bool UmlBaseActivity::isReadOnly() {
   read_if_needed_();
   return _read_only;
@@ -143,6 +152,7 @@ void UmlBaseActivity::unload(bool rec, bool del) {
   _java_post_condition = 0;
 #endif
   UmlBaseItem::unload(rec, del);
+  _constraint = 0;
 }
 
 void UmlBaseActivity::read_uml_() {
@@ -154,6 +164,7 @@ void UmlBaseActivity::read_uml_() {
   _single_execution = UmlCom::read_bool();
   _specification = (UmlOperation *) UmlBaseItem::read_();
   _active = UmlCom::read_bool();
+  _constraint = UmlCom::read_string();
 }
 
 #ifdef WITHCPP

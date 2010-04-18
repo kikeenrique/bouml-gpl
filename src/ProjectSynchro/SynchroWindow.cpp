@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -153,43 +153,46 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
 			  : "Can't create directory '" + path +"/all.lock'");
   else {
     const QFileInfoList * l = dir.entryInfoList("*.lock");
-    QListIterator<QFileInfo> it(*l);
-    QFileInfo * pfi;
-    QString ids;
     
-    while ((pfi = it.current()) != 0) {
-      if (pfi->isDir() && (my_baseName(*pfi) != "all"))
-	ids += " " + my_baseName(*pfi);
-      ++it;
+    if (l != 0) {
+      QListIterator<QFileInfo> it(*l);
+      QFileInfo * pfi;
+      QString ids;
+      
+      while ((pfi = it.current()) != 0) {
+	if (pfi->isDir() && (my_baseName(*pfi) != "all"))
+	  ids += " " + my_baseName(*pfi);
+	++it;
+      }
+      
+      if (! ids.isEmpty()) {
+	QMessageBox::critical(0, "Synchro project", 
+			      "The project " + path + " is edited by the users having these IDs :" + ids);
+	dir.rmdir("all.lock");
+	return;
+      }
     }
     
-    if (! ids.isEmpty()) {
-      QMessageBox::critical(0, "Synchro project", 
-			    "The project " + path + " is edited by the users having these IDs :" + ids);
-      dir.rmdir("all.lock");
+    QVBox * vbox = new QVBox(hbox);
+    BrowserView * browser = new BrowserView(vbox);
+    
+    QApplication::setOverrideCursor(Qt::waitCursor);
+    browser->set_project(dir);
+    
+    bool r = browser->get_project()->load(dir);
+    
+    QApplication::restoreOverrideCursor();
+    
+    if (! r) {
+      browser->close();
+      delete vbox;
+      // note : all.lock will be deleted by BrowserView
     }
     else {
-      QVBox * vbox = new QVBox(hbox);
-      BrowserView * browser = new BrowserView(vbox);
-      
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      browser->set_project(dir);
-      
-      bool r = browser->get_project()->load(dir);
-      
-      QApplication::restoreOverrideCursor();
-      
-      if (! r) {
-	browser->close();
-	delete vbox;
-	// note : all.lock will be deleted by BrowserView
-      }
-      else {
-	if (browsers.isEmpty())
-	  project_name = fi.fileName();
-	vbox->show();
-	browsers.append(browser);
-      }
+      if (browsers.isEmpty())
+	project_name = fi.fileName();
+      vbox->show();
+      browsers.append(browser);
     }
   }
 }
@@ -291,7 +294,7 @@ void SynchroWindow::windows_style() {
 }
 
 void SynchroWindow::about() {
-  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.2</b></p>" );
+  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.3</b></p>" );
 }
 
 void SynchroWindow::aboutQt() {

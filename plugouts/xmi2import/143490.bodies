@@ -3,7 +3,7 @@ class Token
   _couples.clear();
   
   const char * k;
-  bool str;
+  BooL str;
   
   // bypass comment
   for (;;) {

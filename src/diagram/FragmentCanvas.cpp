@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -175,7 +175,7 @@ UmlCode FragmentCanvas::type() const {
   return UmlFragment;
 }
 
-void FragmentCanvas::delete_available(bool &, bool & out_model) const {
+void FragmentCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -468,6 +468,15 @@ void FragmentCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   
   for (; it.current(); ++it)
     it.current()->update();
+}
+
+void FragmentCanvas::resize(const QSize & sz, bool w, bool h) {
+  if (DiagramCanvas::resize(sz, w, h, min_width, min_height)) {
+    QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+    for (; it.current(); ++it)
+      it.current()->update();
+  }
 }
 
 void FragmentCanvas::prepare_for_move(bool on_resize) {

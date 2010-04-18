@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -279,12 +279,8 @@ void ExpansionNodeCanvas::menu(const QPoint &) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   int index;
-  QString s = browser_node->get_name();
-  
-  if (s.isEmpty())
-    s = TR("expansion node");
-  
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+    
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -148,6 +148,17 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   comment->setText(bn->get_comment());
   //comment->setFont(font);
   
+  vtab = new QVBox(grid);
+  new QLabel(TR("constraint :"), vtab);
+  if (! visit) {
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_constraint()));
+  }
+  constraint = new MultiLineEdit(grid);
+  constraint->setReadOnly(visit);
+  constraint->setText(activity->constraint);
+  //constraint->setFont(font);
+  
   addTab(grid, "Uml");
 
   // UML / OCL
@@ -282,6 +293,16 @@ void ActivityDialog::post_edit_description(ActivityDialog * d, QString s)
   d->comment->setText(s);
 }
 
+void ActivityDialog::edit_constraint() {
+  edit(constraint->text(), edname->text().stripWhiteSpace() + "_constraint",
+       activity, TxtEdit, this, (post_edit) post_edit_constraint, edits);
+}
+
+void ActivityDialog::post_edit_constraint(ActivityDialog * d, QString s)
+{
+  d->constraint->setText(s);
+}
+
 void ActivityDialog::accept() {
   if (!check_edits(edits) || !kvtable->check_unique())
     return;
@@ -315,6 +336,8 @@ void ActivityDialog::accept() {
     
     bn->set_comment(comment->text());
     UmlWindow::update_comment_if_needed(bn);
+  
+    activity->constraint = constraint->stripWhiteSpaceText();
     
     kvtable->update(bn);
     

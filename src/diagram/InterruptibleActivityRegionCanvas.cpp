@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -108,7 +108,7 @@ void InterruptibleActivityRegionCanvas::modified() {
   update_show_lines();
   check_stereotypeproperties();
   canvas()->update();
-  force_sub_inside();
+  force_sub_inside(FALSE);
   package_modified();
 }
 
@@ -123,49 +123,35 @@ void InterruptibleActivityRegionCanvas::resize(aCorner c, int dx, int dy, QPoint
 			(int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom),
 			(int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom));
   
-  force_sub_inside();
+  force_sub_inside(FALSE);
+}
+
+void InterruptibleActivityRegionCanvas::resize(const QSize & sz, bool w, bool h) {
+  double zoom = the_canvas()->zoom();
+  
+  if (DiagramCanvas::resize(sz, w, h,
+			    (int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom),
+			    (int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom)))
+    force_sub_inside(FALSE);
 }
 
 bool InterruptibleActivityRegionCanvas::move_with_its_package() const {
   return TRUE;
 }
 
-void InterruptibleActivityRegionCanvas::force_sub_inside() {
+void InterruptibleActivityRegionCanvas::force_sub_inside(bool resize_it) {
   // update sub nodes position to be inside of the activity region
+  // or resize it to contains sub elts if resize_it
   QCanvasItemList all = canvas()->allItems();
-  QCanvasItemList::Iterator cit;
+  BooL need_sub_upper = FALSE;
   
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible() && !(*cit)->selected()) {
-      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
-      
-      if ((di != 0) &&
-	  (di->get_bn() != 0) &&
-	  (((BrowserNode *) di->get_bn())->parent() == browser_node))
-	ActivityContainerCanvas::force_inside(di, *cit);
-    }
-  }
-}
-
-void InterruptibleActivityRegionCanvas::force_inside() {
-  // if its parent is present, force inside it
+  if (resize_it)
+    resize_to_contain(all, need_sub_upper);
+  else
+    ActivityContainerCanvas::force_sub_inside(all, need_sub_upper);
   
-  QCanvasItemList all = the_canvas()->allItems();
-  QCanvasItemList::Iterator cit;
-  BrowserNode * parent = (BrowserNode *) browser_node->parent();
-
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible()) {
-      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
-      
-      if ((di != 0) &&
-	  IsaActivityContainer(di->type()) &&
-	  (((ActivityContainerCanvas *) di)->get_bn() == parent)) {
-	((ActivityContainerCanvas *) di)->force_inside(this, this);
-	break;
-      }
-    }
-  }
+  if (need_sub_upper)
+    force_sub_upper(all);
 }
 
 void InterruptibleActivityRegionCanvas::draw(QPainter & p) {
@@ -210,7 +196,7 @@ UmlCode InterruptibleActivityRegionCanvas::type() const {
   return UmlInterruptibleActivityRegion;
 }
 
-void InterruptibleActivityRegionCanvas::delete_available(bool & in_model, bool & out_model) const {
+void InterruptibleActivityRegionCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -232,7 +218,7 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

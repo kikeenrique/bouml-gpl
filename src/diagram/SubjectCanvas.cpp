@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -108,7 +108,7 @@ UmlCode SubjectCanvas::type() const {
   return UmlSubject;
 }
 
-void SubjectCanvas::delete_available(bool &, bool & out_model) const {
+void SubjectCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -121,7 +121,7 @@ bool SubjectCanvas::copyable() const {
 }
 
 void SubjectCanvas::open() {
-  bool ok;
+  BooL ok;
   QString s = MyInputDialog::getText(TR("Subject dialog"), TR("subject : "),
 				     fromUnicode(name), ok);
   
@@ -311,6 +311,10 @@ aCorner SubjectCanvas::on_resize_point(const QPoint & p) {
 
 void SubjectCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o, min_width, min_height);
+}
+
+void SubjectCanvas::resize(const QSize & sz, bool w, bool h) {
+  DiagramCanvas::resize(sz, w, h, min_width, min_height);
 }
 
 void SubjectCanvas::prepare_for_move(bool on_resize) {

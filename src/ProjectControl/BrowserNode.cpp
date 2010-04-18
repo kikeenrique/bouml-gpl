@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -290,7 +290,7 @@ void BrowserNode::menu() {
 void BrowserNode::assign(int w) {
   if (!ro && (owner != w)) {
     QDir & dir = BrowserView::get_dir();
-    bool dummy;
+    BooL dummy;
     
     char * p = read_file(dir, filename, dummy);
     

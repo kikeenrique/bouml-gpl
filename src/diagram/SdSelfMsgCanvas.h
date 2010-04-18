@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,7 +30,7 @@
 
 class SdSelfMsgCanvas : public SdMsgBaseCanvas {
   public:
-    SdSelfMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
+    SdSelfMsgCanvas(UmlCanvas * canvas, SdMsgSupport * d,
 		    UmlCode l, int v, int id);
     virtual ~SdSelfMsgCanvas();
     

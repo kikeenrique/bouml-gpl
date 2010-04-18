@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -486,23 +486,26 @@ void UmlWindow::projectMenuAboutToShow() {
       projectMenu->setWhatsThis(id, projectNewFromTemplateText());
     }
     
-    id = projectMenu->insertItem(openIcon, TR("&Open"),
-				 this, SLOT(load()));
+    id = projectMenu->insertItem(openIcon, TR("&Open"), this, SLOT(load()),
+				 ::Qt::CTRL+::Qt::Key_O);
     projectMenu->setWhatsThis(id, projectOpenText());
     
-    id = projectMenu->insertItem(saveIcon, TR("&Save"),
-				 this, SLOT(save()), ::Qt::CTRL+::Qt::Key_S);
+    id = projectMenu->insertItem(saveIcon, TR("&Save"), this, SLOT(save()),
+				 ::Qt::CTRL+::Qt::Key_S);
     projectMenu->setWhatsThis(id, projectSaveText());
     projectMenu->setItemEnabled(id, enabled);
     
-    id = projectMenu->insertItem(TR("Save &as..."), this, SLOT(saveAs()));
+    id = projectMenu->insertItem(TR("Save &as..."), this, SLOT(saveAs()),
+				 ::Qt::CTRL+::Qt::SHIFT+::Qt::Key_S);
     projectMenu->setWhatsThis(id, projectSaveAsText());
     projectMenu->setItemEnabled(id, enabled);
     
     projectMenu->insertSeparator();
-    projectMenu->insertItem(TR("&Close"), this, SLOT(close()));
+    projectMenu->insertItem(TR("&Close"), this, SLOT(close()),
+			    ::Qt::CTRL+::Qt::Key_W);
     projectMenu->setItemEnabled(id, enabled);
-    projectMenu->insertItem(TR("&Quit"), this, SLOT(quit()));
+    projectMenu->insertItem(TR("&Quit"), this, SLOT(quit()),
+			    ::Qt::CTRL+::Qt::Key_Q);
     
     // edit
     
@@ -598,7 +601,7 @@ void UmlWindow::toolMenuAboutToShow() {
       if (java)
 	toolMenu->insertItem(TR("Generate Java"), this, SLOT(java_generate()), ::Qt::CTRL+::Qt::Key_J);
       if (php)
-	toolMenu->insertItem(TR("Generate Php"), this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_P);
+	toolMenu->insertItem(TR("Generate Php"), this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_H);
       if (python)
 	toolMenu->insertItem(TR("Generate Python"), this, SLOT(python_generate()), ::Qt::CTRL+::Qt::Key_Y);
       if (idl)
@@ -607,8 +610,10 @@ void UmlWindow::toolMenuAboutToShow() {
     if (!BrowserNode::edition_active()) {
       if (lang_except_idl) {
 	toolMenu->insertSeparator();
-	if (cpp)
+	if (cpp) {
 	  toolMenu->insertItem(TR("Reverse C++"), this, SLOT(cpp_reverse()));
+	  toolMenu->insertItem(TR("Roundtrip C++"), this, SLOT(cpp_roundtrip()));
+	}
 	if (java) {
 	  toolMenu->insertItem(TR("Reverse Java"), this, SLOT(java_reverse()));
 	  toolMenu->insertItem(TR("Roundtrip Java"), this, SLOT(java_roundtrip()));
@@ -666,7 +671,7 @@ void UmlWindow::set_commented(BrowserNode * bn)
     if (bn != 0) {
       him->comment->setText(bn->get_comment());
       him->comment->setReadOnly(!bn->is_writable());
-      him->statusBar()->message(bn->get_data()->definition(TRUE));
+      him->statusBar()->message(bn->get_data()->definition(TRUE, TRUE));
       if (! same)
 	him->is_selected(bn);
     }
@@ -717,7 +722,7 @@ void UmlWindow::newProject() {
     
     if (browser->get_project() == 0) {
       QString f = QFileDialog::getSaveFileName(last_used_directory(), "*", this,
-					       0, TR("Select parent directory"));
+					       0, TR("Enter a folder name, this folder will be created and will name the new project"));
       
       if (!f.isEmpty()) {
 	set_last_used_directory(f);
@@ -790,7 +795,7 @@ void UmlWindow::historic_add(QString fn)
     for (it = the->historic.begin(), rank = 0;
 	 (it != the->historic.end()) && (rank != 10);
 	 ++it, rank += 1) {
-      (void) fwrite((const char *) *it, 1, (*it).length(), fp);
+      (void) fputs((const char *) *it, fp);
       fputc('\n', fp);
     }
     
@@ -798,6 +803,11 @@ void UmlWindow::historic_add(QString fn)
     
     fclose(fp);
   }
+}
+
+void UmlWindow::load_it()
+{
+  the->load();
 }
 
 void UmlWindow::load_it(QString fn)
@@ -955,7 +965,7 @@ bool UmlWindow::saveas_it()
   if (the->browser->get_project() && !BrowserNode::edition_active()) {
     for (;;) {
       QString f = QFileDialog::getSaveFileName(last_used_directory(), "*", the,
-					       0, TR("Select parent directory"));
+					       0, TR("Enter a folder name, this folder will be created and will name the new project"));
       
       if (!f.isEmpty()) {
 	set_last_used_directory(f);
@@ -1023,8 +1033,14 @@ bool UmlWindow::can_close() {
 
 void UmlWindow::close() {
   abort_line_construction();
-  if (can_close())
+  if (!BrowserNode::edition_active() && can_close())
     close_it();
+}
+
+void UmlWindow::do_close()
+{
+  if (the)
+    the->close();
 }
 
 void UmlWindow::closeEvent(QCloseEvent *) {
@@ -1087,6 +1103,12 @@ void UmlWindow::quit() {
     }
     QApplication::exit(0);
   }
+}
+
+void UmlWindow::do_quit()
+{
+  if (the)
+    the->quit();
 }
 
 void UmlWindow::save_session() {
@@ -1222,6 +1244,11 @@ void UmlWindow::read_session() {
     }
     delete [] s;
   }
+}
+
+void UmlWindow::print_it() 
+{
+  the->print();
 }
 
 void UmlWindow::print() {
@@ -1652,6 +1679,13 @@ void UmlWindow::java_reverse() {
     ToolCom::run("java_reverse", prj);
 }
 
+void UmlWindow::cpp_roundtrip() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run("cpp_roundtrip", prj);
+}
+
 void UmlWindow::java_roundtrip() {
   BrowserPackage * prj = browser->get_project();
   
@@ -1832,8 +1866,16 @@ void UmlWindow::keyPressEvent(QKeyEvent * e) {
 
     if (s == "Save")
       UmlWindow::save_it();
+    else if (s == "Save as")
+      UmlWindow::saveas_it();
     else if (s == "Browser search")
       UmlWindow::browser_search_it();
+    else if (s == "Close")
+      UmlWindow::do_close();
+    else if (s == "Quit")
+      UmlWindow::do_quit();
+    else if (s == "Open project")
+      UmlWindow::load_it();
   }
   else
     QMainWindow::keyPressEvent(e);

@@ -1,3 +1,551 @@
+<h3>4.20</h3>April 18th 2010<br /><br />
+    <ul>
+	<li> Remark : under Windows the png/svg exports of the diagrams
+		don't work when they are done by a <i>plug-out</i>
+		launched by <i>-execnogui</i> (they work with <i>-exec</i>)
+		<br /><br /></li>
+
+	<li> Add constraint on activity and activity action.
+		<br /><br /></li>
+
+	<li> <b>Java Generator 2.20.1</b><br />
+		<b>Python Generator 1.4.1</b><br />
+	 	when a nested class reference was produced the container
+		class(es) name was missing and only the nested class's
+		name was generated, fixed.
+		<br /><br /></li>
+
+	<li> <b>State machine generator 1.4.2</b><br />
+		Add the operation <i>doActivity()</i> on the class representing
+		the state machine, when you apply this operation the
+		<i>do activity</i> of the current state is executed
+		if it is not empty.
+		<br /><br /></li>
+
+	<li> <b>Html documentation Generator 2.19</b><br />
+		<b>XMI2 Generator 1.13</b><br />
+		<b>XMI2 Import 1.8</b><br />
+		To manage constraint on activities and activity actions.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.16.1</b><br />
+		Previous release missed to change the call of <i>UmlCom::bye</i>
+		in internal operation <i>UmlBaseItem::read_()</i>, fixed.<br />
+		To manage constraint on activities and activity actions.
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.19.3</h3>April 11th 2010<br /><br />
+    <ul>
+	<li> Add the new keyword <i>${inverse_name}</i> producing the name of the inverse
+		role of a bi directional relation between classes.
+		<br /><br /></li>
+
+	<li> When you apply a <i>plug-out</i> when Bouml is started with the option
+		<i>-exit</i>, the return value of Bouml	is the argument of the
+		operation <i>UmlCom::bye()</i>. This value is 0 when you apply an old
+		<i>plug-out</i> where <i>bye</i> doesn't have a parameter.<br />
+		The return value is -1 if the <i>plug-out</i> execution can't be done
+		or if the <i>plug-out</i> doesn't connect to the modeler in less than 30
+		seconds.
+		<br /><br /></li>
+
+	<li> New option <i>-execnogui</i>, use it in place of <i>-exec</i>
+		when you don't want to see the GUI when you apply a <i>plug-out</i>
+		when Bouml is started.<br />
+		In this case the messages normally written in
+		the trace window are produced on <i>stdout</i>.<br />
+		You have to kill the process Bouml by yourself if you use
+		<i>-execnogui</i> without <i>-exit</i>.
+		<br /><br /></li>
+
+	<li> <b>Python Generator 1.4</b><br />
+		Extends the auto generated <i>import</i> to the classes referenced
+		by the attributes, associations and operations. Previously only
+		the inherited classes and dependencies stereotyped <i>import</i> or
+		<i>from</i> was taken into account.<br />
+		Returns the number of errors through <i>UmlCom::bye()</i>.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.16</b><br />
+		<b>C++ Reverse 2.13</b><br />
+		<b>C++ Roundtrip 1.1</b><br />
+		<b>Java Generator 2.20</b><br />
+		<b>Java Catalog 2.15</b><br />
+		<b>Java Reverse 2.15.1</b><br />
+ 	     	<b>Java Roundtrip 1.3</b><br />
+		<b>Idl Generator 2.13</b><br />
+		<b>Php Generator 1.8</b><br />
+		<b>Php Reverse 1.6</b><br />
+	     	<b>Roundtrip body 1.11</b><br />
+		Returns the number of errors through <i>UmlCom::bye()</i>
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.16</b><br />
+		To add a parameter of type <i>int</i> to <i>UmlCom::bye</i>,
+		it will be managed as the return value of the <i>plug-out</i>,
+		0 means no error.<br />
+		<font color="#C05800">You have to add by yourself an argument to the calls of
+		<i>UmlCom::bye</i></font>
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.19.2 patch 1 (Windows)</h3>March 29th 2010<br /><br />
+    <ul>
+	<li> This release only exists for Windows.
+		<br /><br /></li>
+
+	<li> <font color="red">Since release 4.19 a crash could occurred
+		because of Microsoft Visual C++ compiler bug
+		when a nested relation was drawn in a class diagram and
+		changes was made concerning the drawn elements or the
+		diagram itself (including the case where a new nested relation
+		has to be drawn) </font>,
+		fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.19.2</h3>March 28th 2010<br /><br />
+    <ul>
+	<li> <font color="red">A crash could occurred when you opened a component
+		diagram referencing through a required or provided relation
+		a class deleted in a previous session</font>,
+		fixed.
+		<br /><br /></li>
+
+	<li> When you closed Bouml though a shortcut (<i>control-w</i> by default)
+		while an additional window like an artifact source windows was
+		still open, Bouml crashed (without true consequence because if needed
+		the previously load project was already saved),
+		fixed.
+		<br /><br /></li>
+		
+
+	<li> <i>fr.lang de.lang es.lang</i> updated.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.19.1</h3>March 14th 2010<br /><br />
+    <ul>
+	<li> <font color="red">Since release 4.17.1 a crash could occurred when you did
+		some changes on a state present in an opened diagram but never visible
+		because of the diagram dimensions and the position of the scrollbars</font>,
+		fixed.
+		<br /><br /></li>
+
+	<li><b>C++ Roundtrip 1.0.4</b><br />
+ 	    <b>Java Roundtrip 1.2.3</b><br />
+		To not empty the stereotypes when this is possible.
+		<br /><br /></li>
+
+	<li><b>Java Generator 2.19.2</b><br />
+		To not duplicate imports both defined in artifact definition and through
+		dependencies.
+		</li>
+
+    </ul>
+<br /><br />
+
+
+<h3>4.19</h3>February 27th 2010<br /><br />
+    <ul>
+	<li> The message written to signal a message can't be added in a sequence diagram
+		contained wrong characters, fixed.
+		<br /><br /></li>
+
+	<li> Add lost/found messages in sequence diagram.
+		<br /><br /></li>
+
+	<li> Add interface icon using a simple circle, extends <i>drawing mode</i>
+		with it for classes in a class diagram, instances in a sequence
+		diagram and actors in a use case diagram.<br />
+		<font color="blue">To not change the already existing diagrams, 
+		when you open an old diagram showing classes stereotyped interface
+		or instances of classes stereotyped interface, their drawing mode
+		is forced to <i>class</i> when it values <i>natural</i> (even
+		indirectly).</font>
+		<br /><br /></li>
+
+	<li> In a sequence diagram, when an instance doesn't send nor receive message
+		the menu of the instance proposes to hide/show the life line. To allow
+		to draw a multiple instance with only one visible life line.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.12.3</b><br />
+		To manage lost/found messages.
+		<br /><br /></li>
+	
+	<li> <b>Plug-out API</b><br />
+		The operation <i>from()</i> returns null for a <i>UmlBaseMessage</i>
+		corresponding to a found message.<br />
+		The operation <i>to()</i> returns null for a <i>UmlBaseMessage</i>
+		corresponding to a lost message.
+		<br /><br /></li>
+
+	<li> <i>fr.lang</i> updated.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.
+		</li>
+    </ul>
+<br /><br />
+
+<h3>4.18.2</h3>February 13th 2010<br /><br />
+    <ul>
+	<li> The class instances wasn't colored when you asked to
+		not draw the shadow in a sequence or communication diagrams, fixed.
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.12.4</b><br />
+		To set the C++ source and header directory for the additional packages
+		created during the reverse because all classes defined in a given directory
+		are not defined in the same namespace or some are defined in a namespace and some
+		others are defined out of a namespace, try to use path relative to root directory if
+		it is defined in the generation settings.
+		<br /><br /></li>
+
+	<li> <b>C++ Roundtrip 1.0.3</b><br />
+		The roundtrip was perturbed by the use of namespaces and produced a wrong
+		and inconsistent result, fixed.<br />
+		In the previous releases of C++ reverse/roundtrip the C++ directory of source
+		and header files wasn't set for additional packages created to manage several
+		namespaces (see remark concerning the reverse above),
+		because of that the roundtrip may propose to delete classes defined under
+		these packages. <font color="#C05800">If you used previous
+		releases of C++ reverse/roundtrip to reverse source codes using namespaces
+		you need to check the packages having empty C++ source and header directory
+		specifications to set them if needed.</font><br />
+		To discard \r when comparing two strings to update or not an element.
+		<br /><br /></li>
+
+	<li> <b>Java Roundtrip 1.2.2</b><br />
+		To discard \r when comparing two strings to update or not an element.
+		<br /><br /></li>
+
+	<li> <b>Uml projection 1.1.2</b><br />
+		Projection to C++ missed to set C++ header definition
+		on already existing artifacts, fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
+
+<h3>4.18.1</h3>February 6th 2010<br /><br />
+    <ul>
+	<li> <font color="red">A crash could occurred when you did some changes on relations
+		used by 'modeled' class instances (non pure graphical class instances)
+		or reload a project defining 'modeled' class instances</font>, fixed.
+		<br /><br /></li>
+
+	<li> In a class diagram when the drawing setting <i>draw all relations</i> was false
+		the only way to show not yet drawn nesting relations was to set <i>draw all relations</i>
+		to true, then to remove undesired shown relations. Now the menu of a nested
+		class proposes to show the nesting relation when it is not yet drawn and the container
+		class is present.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.7.2</b><br />
+		To replace newline by space in relations's name.
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.12.3</b><br />
+	     <b>C++ Roundtrip 1.0.2</b><br />
+		The name of the parameters of the operations must be the name specified
+			in the definition when it is not empty, rather than the name
+			given in the declaration (regression introduced when I added roundtrip).<br />
+		The instantiation of a template class inside the declaration or
+			the definition of its operations was reversed
+			as the class itself (without actuals), fixed.
+		<br /><br /></li>
+
+	<li> <i>fr.lang</i> updated.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.18</h3>January 24th 2010<br /><br />
+    <ul>
+	<li> <font color="red">In the previous release changes done in an activity
+		diagram may crashed the memory under Windows because of a bug in
+		Microsoft Visual C++ compiler, this problem potentially also
+		existed in other cases</font>, bypassed.
+		<br /><br /></li>
+
+	<li> I was forbidden to add a flow from an action to an object whose
+		<i>is control</i> was false, fixed.
+		<br /><br /></li>
+
+	<li> When you added a shortcut the indications control/shift/alt was removed when
+		you specified the key in case the current line was the last (generally the case),
+		fixed.
+		<br /><br /></li>
+
+	<li> Add the new shortcut commands <i>Open project, Print</i> and
+		<i>Save as</i>, default shortcuts are <i>control o</i>,
+		<i>control p</i> and <i>control shift s</i>.<br />
+		Also add default shortcut <i>control p</i> printing the active shown diagram.<br />
+		<font color="#C05800">Warning, the default shortcut to generate Php source is
+		now <i>control h</i> rather than <i>control p</i></font>.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.12.2</b><br />
+		Improvement to know if a flow is a control or an object flow.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.15.2</b><br />
+	     <b>C++ Reverse 2.12.2</b><br />
+	     <b>C++ Roundtrip 1.0.1</b><br />
+	     <b>Java Generator 2.19.1</b><br />
+	     <b>Idl Generator 2.12.1</b><br />
+	     <b>Python Generator 1.3.1</b><br />
+	     <b>Project control 1.2.4</b><br />
+	     <b>Project synchro 1.2.3</b><br />
+	     <b>XMI2 Import 1.7.1</b><br />
+	     <b>File Control 1.0.5</b><br />
+	     <b>Uml projection 1.1.1</b><br />
+		Modified to not be potentially affected by Microsoft Visual C++ compiler bug.
+		<br /><br /></li>
+
+	<li> <i>fr.lang, de.lang</i> and <i>es.lang</i> updated.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.17.1</h3>January 9th 2010<br /><br />
+    <ul>	
+	<li> <font color="red">A crash may occurred when drawing a class instances
+		non transparent and without drawing the shadows</font>, fixed.
+		<br /><br /></li>
+
+	<li> Under Windows the default language was wrongly set to Spanish in case you previously used a
+		release older than the 1.15.1 and the environment variables LANG and LCID don't specify
+		English or French, fixed.
+		<br /><br /></li>
+
+	<li> <i>Add related elements</i> did nothing in a use case or deployment
+		diagram, fixed.
+		<br /><br /></li>
+
+	<li> When you manually resized an element in a diagram its self relations may be hidden
+		depending on the position of the self relation and the used corner, fixed.
+		<br /><br /></li>
+
+	<li> In a state diagram, when you added an element and it was automatically moved to be placed
+		in its container, its self relations didn't follow it and their cut points was poorly
+		placed,	fixed.
+		<br /><br /></li>
+
+	<li> When you add a container in a state or activity diagram and its possible container wasn't
+		drawn but its sub elements was drawn, now the added container is automatically resized
+		to contain its sub elements. To try to not poorly move already placed elements to force
+		them to be inside the added container.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>es.lang</h3>January 3th 2010<br /><br />
+    <ul>
+	<li> Complete version of <a href="http://downloads.sourceforge.net/bouml/es.lang">es.lang</a> to use Bouml in Spanish,
+		this version is newer than Bouml 4.17 and can be used with any releases since 4.15.1 (useless before).
+		Download <a href="http://downloads.sourceforge.net/bouml/es.lang">es.lang</a>
+		and indicate where you place it through the "Miscellaneous / Edit environment" dialog.
+		Many Thanks to Paulo Cesar Coronado.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.17</h3>January 1th 2010<br /><br />
+    <ul>
+	<li> A crash occurred when you load an inconsistent model where two
+		operations share the same internal identifier, fixed.
+		<br /><br /></li>
+
+	<li> The optional parameters wasn't given to the init/check plug-outs
+		associated to the stereotypes part of profiles, fixed.
+		<br /><br /></li>
+	
+	<li> The boxes representing the class instances was not produced in SVG
+		when you didn't ask for to draw the shadows and they aren't
+		transparent, fixed.
+		<br /><br /></li>
+	
+	<li> Add the new shortcut commands <i>Optimal scale, Optimal window size,
+		Zoom +, Zoom -</i> and <i>Zoom 100%</i> for diagrams.<br />
+		Also add <i>control mouse wheel up/down</i> management to
+		increase / decrease the zoom.
+		<br /><br /></li>
+
+	<li> In a diagram to move the mouse with the mid click pressed
+		moves the viewport accordingly.
+		<br /><br /></li>
+
+	<li> In a diagram add <i>shift mouse wheel up/down</i> management to
+		scroll left/right (<i>mouse wheel up/down</i> already did scroll up/down).
+		<br /><br /></li>
+	
+	<li> Add the new shortcut commands <i>Close</i> and <i>Quit</i> to close
+		the project or quit, default shortcuts are <i>control w</i> and <i>control q</i>.
+		<br /><br /></li>
+
+	<li> When several resizable elements are selected in a diagram
+		the multiple selection menu allows you to resize them
+		to have the same width and/or height of the first selected element.
+		Have associated shortcut commands (<i>Same width</i>, <i>Same height</i>
+		and <i>Same size</i>)
+		<br /><br /></li>
+
+	<li> It is now possible to have a class diagram under a use case or a use case view,
+		this allows to define Iconix <i>robustness diagram</i> throw class diagram.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.12.1</b><br />
+		The post condition of an activity actions was not
+		exported, and the pre conditions wasn't exported
+		when the post condition was empty, fixed.
+		<br /><br /></li>
+
+	<li> <b>C++ Roundtrip 1.0</b><br />
+		New <i>plug-out</i>, please refer to the
+			<a href="doc/index_cpproundtrip.html">documentation</a>.
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.12.1</b><br />
+		For compatibility with the roundtrip now the <i>#file</i> property
+		is get from the project package rather than in the package where you start
+		a reverse.<br />
+		To set the C++ source and header directory for the packages
+		created during the reverse, try to use path relative to root directory if
+		it is defined in the generation settings.
+		<br /><br /></li>
+
+	<li> <b>Java Roundtrip 1.2.1</b><br />
+		Fixe bugs.<br />
+		To set the Java directory for the packages created during the
+		reverse even without associated Java package,
+		try to use path relative to root directory if it is defined.
+		<br /><br /></li>
+
+	<li> <b>Java Reverse 2.15.1</b><br />
+		<b>Java Catalog 2.14.1</b><br />
+		To set the Java directory for the packages created during the
+		reverse even without associated Java package,
+		try to use path relative to root directory if it is defined.
+		<br /><br /></li>
+	
+	<li> <b>Plug-out upgrade 1.15.2</b><br />
+		To allow to create a class diagram under a use case or use case view
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> <i>es.lang</i> added allowing to use the modeler in Spain,
+		this work is in progress and some translations are still missing
+		(in this case the English is used).
+		<font color="blue">Many thanks to Paulo Cesar Coronado for the translation</font>.
+		So you can currently choose between English, French German and Spain.
+		<br /><br /></li>
+
+	<li> <font color="blue">Recall : if you are volunteer to add the
+		translation for a new language contract me. The work consists
+		to translate more than 2000 short sentences with a tool
+		I developped for that (of course you don't have to change
+		the sources of Bouml).</font>
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.16.4</h3>November 25th 2009<br /><br />
+    <ul>
+	<li> Facilitates the adding in a diagram of a incoming/outgoing
+		line (transition, flow ...) to/from a small item already
+		having lines.
+		<br /><br /></li>
+
+	<li> When you moved a decentered line having a geometry (
+		<img src="doc/figs/linegeo1.png" alt="" border="0" />,
+		<img src="doc/figs/linegeo2.png" alt="" border="0" />,
+		<img src="doc/figs/linegeo3.png" alt="" border="0" /> or
+		<img src="doc/figs/linegeo4.png" alt="" border="0" />),
+		the attached labels (name, stereotype ...) could be moved
+		more than expected, fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>4.16.3</h3>November 18th 2009<br /><br />
+    <ul>
+	<li> Facilitates the selection in diagrams of small items having
+		incoming and/or outgoing lines.
+		<br /><br /></li>
+
+	<li> When you add an element in a state diagram and its state container
+		is already drawn, force the added element to be inside its
+		state container or region. When you add a state the already
+		draw sub elements are moved to be inside the added state, but
+		because the added state is small this poorly place them.
+		<br /><br /></li>
+
+	<li> You can now decenter lines (relations, transition ...)
+		having a geometry (
+		<img src="doc/figs/linegeo1.png" alt="" border="0" />,
+		<img src="doc/figs/linegeo2.png" alt="" border="0" />,
+		<img src="doc/figs/linegeo3.png" alt="" border="0" /> or
+		<img src="doc/figs/linegeo4.png" alt="" border="0" />),
+		when you change the geometry the line is first recentered
+		on both	extremities.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.15.1</b><br />
+		A space was missing between the two last &gt; in an inheritance
+		of a template class when the last actual is also a template class,
+		fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
 <h3>4.16.2</h3>November 8th 2009<br /><br />
     <ul>
 	<li> Except few exceptions when you resized element like classes
@@ -28,7 +576,7 @@
 		<br /><br /></li>
 
 	<li> <font color="blue">Recall : if you are volunteer to add the
-		translation for a new language prevent me. The work consists
+		translation for a new language contact me. The work consists
 		to translate more than 2000 short sentences with a tool
 		I developped for that (of course you don't have to change
 		the sources of Bouml).</font></li>
@@ -120,7 +668,7 @@
 		Currently only the translation file <i>fr.lang</i> is available
 		to use French because I only speak French and English<br /><br />
 		<font color="blue">If you are volunteer to add a
-		new translation prevent me and I will send you the small tool I made
+		new translation contact me and I will send you the small tool I made
 		for that and how to do. I do not deny that it is quite laborious to translate
 		more that 2000 sentences, be sure you will have the courage to do that
 		before contacting me ;-)</font>
@@ -167,7 +715,7 @@
     <ul>
 	<li> When you deleted a package through a <i>plug-out</i> the container
 		package was not marked modified and was not saved without an
-		other reason marking it modified, and an error occured when you
+		other reason marking it modified, and an error occurred when you
 		reload the project, fixed.
 		<br /><br /></li>
 
@@ -369,7 +917,7 @@
 
 
 	<li> <b>Plug-out upgrade 1.13</b><br />
-		A crash occured when you upgraded an old <i>plug-out</i>
+		A crash occurred when you upgraded an old <i>plug-out</i>
 			without	Python management, fixed.<br />			
 		Follow the new API.
 		<br /><br /></li>
@@ -783,7 +1331,7 @@ New user contribution, please refer to <a href="contrib.html">contributions</a>
 	<li> <font color="red">When a class was present in at least two
 		of the provided required and realizing lists of a component
 		and you	deleted the class, saved the model then reload it,
-		the model was inconsistent and a crash can occured</font>, fixed.
+		the model was inconsistent and a crash can occurred</font>, fixed.
 		<br /><br /></li>
 
 	<li> Operation's parameters using accentued characters in their
@@ -1060,7 +1608,7 @@ New user contribution, please refer to <a href="contrib.html">contributions</a>
 
 <h3>4.8 patch 1</h3>October, 26th 2008<br /><br />
     <ul>
-	<li> <font color="red">Since the release 4.6 a crash occured when
+	<li> <font color="red">Since the release 4.6 a crash occurred when
 		only one language is selected and you modified the parameters
 		list of an operation defined for an actor placed in a
 		use case or a use case view</font>, fixed.

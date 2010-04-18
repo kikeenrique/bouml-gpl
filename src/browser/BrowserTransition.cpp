@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -187,15 +187,10 @@ QString BrowserTransition::str(bool horiz, DrawingLanguage lg) const {
 }
 
 void BrowserTransition::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("transition");
-  
-  QPopupMenu m(0, s);
+  QPopupMenu m(0, "transition");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
@@ -210,7 +205,7 @@ Note that you can undelete it after"));
       m.insertSeparator();
     }
     
-    s = def->get_end_node()->get_name();
+    QString s = def->get_end_node()->get_name();
     
     if (s.isEmpty())
       s = stringify(def->get_end_node()->get_type());
@@ -313,6 +308,10 @@ void BrowserTransition::modified() {
 
 UmlCode BrowserTransition::get_type() const {
   return UmlTransition;
+}
+
+QString BrowserTransition::get_stype() const {
+  return TR("transition");
 }
 
 int BrowserTransition::get_identifier() const {

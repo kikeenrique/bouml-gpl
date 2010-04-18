@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -194,7 +194,7 @@ void BrowserStateAction::menu() {
   QPopupMenu m(0, "action");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(TR(s), m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Edit"), 1),
@@ -300,6 +300,17 @@ void BrowserStateAction::modified() {
 
 UmlCode BrowserStateAction::get_type() const {
   return UmlStateAction;
+}
+
+QString BrowserStateAction::get_stype() const {
+  const char * st = def->get_stereotype();
+  
+  if (!strcmp(st, "receive-signal"))
+    return TR("receive-signal action");
+  else if (!strcmp(st, "send-signal"))
+    return TR("send-signal action");
+  else
+    return TR("state action");
 }
 
 int BrowserStateAction::get_identifier() const {

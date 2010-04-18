@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
     bool ok = FALSE;
     
     try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.15.1<br><hr>");
+      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.16.1<br><hr>");
       if (UmlPackage::getProject()->upgrade())
 	UmlCom::trace("<br><hr>Done<br>");
       ok = TRUE;
@@ -59,7 +59,7 @@ int main(int argc, char ** argv)
 
       UmlCom::message("");
       UmlCom::showTrace();
-      UmlCom::bye();	// application must not be deleted
+      UmlCom::bye((ok) ? 0 : 1);	// application must not be deleted
     }
     catch (...) {
     }

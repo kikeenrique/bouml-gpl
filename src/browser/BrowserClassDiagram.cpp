@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,7 +34,6 @@
 #include "BrowserClassDiagram.h"
 #include "SimpleData.h"
 #include "RelationData.h"
-#include "BrowserClassView.h"
 #include "ClassDiagramWindow.h"
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
@@ -47,6 +46,7 @@
 #include "BrowserView.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 QList<BrowserClassDiagram> BrowserClassDiagram::imported;
 QValueList<int> BrowserClassDiagram::imported_ids;
@@ -191,7 +191,7 @@ void BrowserClassDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem("Show", 0),
@@ -213,7 +213,7 @@ Note that you can undelete it after");
 	}
       }
     }
-    mark_menu(m, "class diagram", 90);
+    mark_menu(m, TR("the class diagram"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) && 
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -344,6 +344,10 @@ UmlCode BrowserClassDiagram::get_type() const {
   return UmlClassDiagram;
 }
 
+QString BrowserClassDiagram::get_stype() const {
+  return TR("class diagram");
+}
+
 int BrowserClassDiagram::get_identifier() const {
   return get_ident();
 }
@@ -363,7 +367,7 @@ void BrowserClassDiagram::get_classdiagramsettings(ClassDiagramSettings & r) con
   r.assign(*used_settings);
 }
 
-void BrowserClassDiagram::package_settings(bool & name_in_tab,
+void BrowserClassDiagram::package_settings(BooL & name_in_tab,
 					   ShowContextMode & show_context) const {
   name_in_tab = used_settings->package_name_in_tab == UmlYes;
   show_context = used_settings->show_context_mode;
@@ -496,7 +500,7 @@ void BrowserClassDiagram::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "class_color", class_color, nl);
     save_color(st, "note_color", note_color, nl);

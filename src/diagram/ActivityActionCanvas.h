@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     QValueList<ParameterSetCanvas *> paramsets;
     InfoCanvas * pre;
     InfoCanvas * post;
+    InfoCanvas * constraint;
     ActivityDrawingSettings settings;
     ActivityDrawingSettings used_settings;
     Uml3States show_opaque_action_definition;
@@ -63,7 +64,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
   
     void check_pins();
     void check_parametersets();
-    void check_conditions();
+    void check_conditions_constraint();
   
   public:
     ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y);
@@ -73,7 +74,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     void add(PinCanvas * p) { pins.append(p); }
     void force_pins_arround();
     
-    void force_inside();
+    bool force_inside();
     void check_parameter_sets_position();
 
     int shadow_margin() const;
@@ -88,7 +89,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     virtual void change_scale();
     
     virtual UmlCode type() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual void remove(bool from_model);
@@ -100,6 +101,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     virtual void set_z(double z);
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual bool move_with_its_package() const;
     virtual void moveBy(double dx, double dy);
     

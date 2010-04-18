@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -134,7 +134,7 @@ char * read_token(char * & st)
 
 //
 
-static int open_file(QFile & fp, bool & ro)
+static int open_file(QFile & fp, BooL & ro)
 {
   QString filename = fp.name();
   
@@ -152,7 +152,7 @@ static int open_file(QFile & fp, bool & ro)
   return fi.size();
 }
 
-char * read_file(QDir & dir, QString fn, bool & ro)
+char * read_file(QDir & dir, QString fn, BooL & ro)
 {
   QString filename = dir.absFilePath(fn);
   QFile fp(filename);
@@ -301,26 +301,26 @@ void purge(QDir & dir, QDict<void> & useful)
   }
   
   // remove deleted packages
-  l = dir.entryInfoList("*");
-  
-  QListIterator<QFileInfo> it(*l);
-  QFileInfo *fi;
+  if ((l = dir.entryInfoList("*")) != 0) {
+    QListIterator<QFileInfo> it(*l);
+    QFileInfo *fi;
     
-  while ((fi = it.current()) != 0) {
-    QString s = fi->fileName();
-    const char * p = s;
-    
-    while ((*p >= '0') && (*p <= '9'))
-      p += 1;
-    
-    if ((*p == 0) &&
-	(useful.find(s) == 0) &&
-	! QFile::remove(fi->absFilePath()))
-      QMessageBox::critical(0, "Project synchro",
-			    "can't remove " + fi->absFilePath() +
-			    ", do it yourself");
-    
-    ++it;
+    while ((fi = it.current()) != 0) {
+      QString s = fi->fileName();
+      const char * p = s;
+      
+      while ((*p >= '0') && (*p <= '9'))
+	p += 1;
+      
+      if ((*p == 0) &&
+	  (useful.find(s) == 0) &&
+	  ! QFile::remove(fi->absFilePath()))
+	QMessageBox::critical(0, "Project synchro",
+			      "can't remove " + fi->absFilePath() +
+			      ", do it yourself");
+      
+      ++it;
+    }
   }
 }
 

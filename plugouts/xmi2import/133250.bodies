@@ -128,6 +128,8 @@ class UmlActivity
 	  if (! token.closed())
 	    in.finish(s);
 	}
+	else if (s == "ownedrule")
+	  a->set_Constraint(UmlItem::readConstraint(in, token));
 	else
 	  a->UmlItem::import(in, token);
       }

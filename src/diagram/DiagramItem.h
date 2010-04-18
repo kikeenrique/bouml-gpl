@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,7 +73,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     bool attached_to(const ArrowCanvas *) const;
     
     virtual UmlCode type() const = 0;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual void remove(bool from_model);
     virtual BrowserNode * get_bn() const;
     virtual UmlCanvas * the_canvas() const = 0;
@@ -96,6 +96,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual bool alignable() const;
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual void update();
     virtual void change_scale() = 0;
     virtual double get_z() const = 0;

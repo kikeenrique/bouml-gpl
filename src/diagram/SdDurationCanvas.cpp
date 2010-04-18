@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "SdClassInstCanvas.h"
 #include "SdSelfMsgCanvas.h"
 #include "SdMsgCanvas.h"
+#include "SdLostFoundMsgSupportCanvas.h"
 #include "UmlCanvas.h"
 #include "BrowserSeqDiagram.h"
 #include "UmlGlobal.h"
@@ -53,7 +54,7 @@
 
 SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 				   int v, bool isdest)
-    : DiagramCanvas(0, canvas, 0, v, DURATION_WIDTH,
+    : SdMsgSupport(canvas, 0, v, DURATION_WIDTH,
 		    (isdest) ? DURATION_MIN_HEIGHT : DURATION_START_HEIGHT,
 		    0),
       support(sp), itscolor(UmlDefaultColor), coregion(FALSE) {
@@ -70,7 +71,7 @@ SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 // called by load
 SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 				   int x, int y, int wi, int he, int id, bool coreg)
-    : DiagramCanvas(0, canvas, x, y, wi, he, id),
+    : SdMsgSupport(canvas, x, y, wi, he, id),
       support(sp), itscolor(UmlDefaultColor), coregion(coreg) {
   browser_node = canvas->browser_diagram();
   support->add(this);
@@ -91,7 +92,7 @@ void SdDurationCanvas::delete_it() {
   DiagramCanvas::delete_it();
 }
 
-void SdDurationCanvas::delete_available(bool &, bool & out_model) const {
+void SdDurationCanvas::delete_available(BooL &, BooL & out_model) const {
   out_model |= TRUE;
 }
 
@@ -230,7 +231,7 @@ UmlCode SdDurationCanvas::type() const {
 }
 
 DiagramItem::LineDirection SdDurationCanvas::allowed_direction(UmlCode c) {
-  return (c == UmlAnchor) ? DiagramItem::All : DiagramItem::Vertical;
+  return (c == UmlAnchor) ? DiagramItem::All : DiagramItem::Horizontal;
 }
 
 // called by the duration's messages to increase if
@@ -301,6 +302,18 @@ QString SdDurationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) con
   }
 }
 
+bool SdDurationCanvas::may_connect(UmlCode l) const {
+  switch (l) {
+  case UmlFoundSyncMsg:
+  case UmlFoundAsyncMsg:
+  case UmlLostSyncMsg:
+  case UmlLostAsyncMsg:
+    return TRUE;
+  default:
+    return FALSE;
+  }
+}
+
 void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
 				 const QPoint & s, const QPoint & e) {
   switch (l) {
@@ -314,12 +327,12 @@ void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
       dest = new SdDurationCanvas(the_canvas(), d, s.y(), TRUE);
       d->update_v_to_contain((SdDurationCanvas *) dest, FALSE);
     }
-    (new SdSelfMsgCanvas(the_canvas(), ((SdDurationCanvas *) dest), l, s.y(), 0))->upper();
+    (new SdSelfMsgCanvas(the_canvas(), (SdDurationCanvas *) dest, l, s.y(), 0))->upper();
     break;
   case UmlSelfReturnMsg:
     if (dest->type() == UmlLifeLine)
       dest = this;
-    (new SdSelfMsgCanvas(the_canvas(), ((SdDurationCanvas *) dest), l, s.y(), 0))->upper();
+    (new SdSelfMsgCanvas(the_canvas(), (SdDurationCanvas *) dest, l, s.y(), 0))->upper();
     break;
   case UmlAnchor:
     DiagramCanvas::connexion(l, dest, s, e);
@@ -337,10 +350,50 @@ void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
 	d->update_v_to_contain((SdDurationCanvas *) dest, FALSE);
       }
       
-      (new SdMsgCanvas(the_canvas(), this, ((SdDurationCanvas *) dest), l, s.y(), 0))
+      (new SdMsgCanvas(the_canvas(), this, (SdDurationCanvas *) dest, l, s.y(), 0))
 	->upper();
     }
   }
+}
+
+bool SdDurationCanvas::connexion(UmlCode l, const QPoint & s, const QPoint & e) {
+  // for lost/found msg, 'this' starts or ends msg depending on l
+  SdMsgSupport * start;
+  SdMsgSupport * dest;
+  int v;
+  
+  switch (l) {
+  case UmlFoundSyncMsg:
+  case UmlFoundAsyncMsg:
+    // 'this' is dest
+    if (((BrowserSeqDiagram * ) browser_node)->is_overlapping_bars() &&
+	(!msgs.isEmpty() || !durations.isEmpty())) { // 'this' not just created
+      dest = new SdDurationCanvas(the_canvas(), this, s.y(), TRUE);
+      update_v_to_contain((SdDurationCanvas *) dest, FALSE);
+    }
+    else
+      dest = this;
+    v = s.y();
+    start = new SdLostFoundMsgSupportCanvas(the_canvas(), s.x() - LOSTFOUND_SIZE/2,
+					    v - LOSTFOUND_SIZE/2, 0);
+    start->show();
+    break;
+  case UmlLostSyncMsg:
+  case UmlLostAsyncMsg:
+    // 'this' is start
+    start = this;
+    v = e.y();
+    dest = new SdLostFoundMsgSupportCanvas(the_canvas(), e.x() - LOSTFOUND_SIZE/2,
+					   v - LOSTFOUND_SIZE/2, 0);
+    dest->show();
+    break;
+  default:
+    return FALSE;
+  }
+  
+  (new SdMsgCanvas(the_canvas(), start, dest, l, v - MSG_HEIGHT/2, 0))->upper();
+  
+  return TRUE;
 }
 
 void SdDurationCanvas::add(SdMsgBaseCanvas * m) {
@@ -812,6 +865,17 @@ void SdDurationCanvas::resize(aCorner c, int, int dy, QPoint & o) {
   support->update_instance_dead();
 }
 
+void SdDurationCanvas::resize(const QSize & sz, bool, bool h) {
+  double zoom = the_canvas()->zoom();
+  
+  if (DiagramCanvas::resize(sz, FALSE, h,
+			    (int) (DURATION_WIDTH * zoom),
+			    (int) (DURATION_MIN_HEIGHT * zoom))) {
+    support->update_v_to_contain(this, FALSE);
+    support->update_instance_dead();
+  }
+}
+
 void SdDurationCanvas::select_associated() {
   if (! selected())
     the_canvas()->select(this);
@@ -1065,7 +1129,7 @@ void SdDurationCanvas::history_load(QBuffer & b) {
 
 // for plug out
 
-unsigned SdDurationCanvas::count_msg() const {
+unsigned SdDurationCanvas::count_msg(int api_format) const {
   unsigned count = 0;
   QListIterator<SdMsgBaseCanvas> itm(msgs);
   double maxy = 0;
@@ -1076,11 +1140,11 @@ unsigned SdDurationCanvas::count_msg() const {
     case UmlSyncMsg:
     case UmlAsyncMsg:
     case UmlReturnMsg:
-      if (itm.current()->get_dest() == this)
+      if (itm.current()->get_dest() == (const SdMsgSupport *) this)
 	break;
       // no break
     default:
-      // msg start from duration
+      // msg starts from duration or duration ends a found msg
       count += 1;
     }
     
@@ -1104,7 +1168,7 @@ unsigned SdDurationCanvas::count_msg() const {
   QListIterator<SdDurationCanvas> itd(durations);
   
   for (; itd.current(); ++itd)
-    count += itd.current()->count_msg();
+    count += itd.current()->count_msg(api_format);
   
   return count;
 }
@@ -1119,11 +1183,11 @@ void SdDurationCanvas::send(ToolCom * com, int id) const {
     case UmlSyncMsg:
     case UmlAsyncMsg:
     case UmlReturnMsg:
-      if (itm.current()->get_dest() == this)
+      if (itm.current()->get_dest() == (const SdMsgSupport *) this)
 	break;
       // no break
     default:
-      // msg start from duration
+      // msg start from duration, except for found msg
       itm.current()->send(com, id);
     }
     

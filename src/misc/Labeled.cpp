@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,13 +62,17 @@ bool in_lib_import()
     
 int place(IdDict<void> & d, int id, void * x)
 {
+  const int uid = user_id();
+  
   if (id != -1) {
     // id is relevant
+    bool check = TRUE;
+    
     if (id == 0) {
       // compute a new id
-      if ((d.idmax < FIRST_ID) && (user_id() != 0))
+      if ((d.idmax < FIRST_ID) && (uid != 0))
 	d.idmax = FIRST_ID - 128;
-      id = (d.idmax += 128) | user_id();
+      id = (d.idmax += 128) | uid;
     }
     else if (d.old_diagram) {
       // place id unchanged among the old ones
@@ -79,9 +83,9 @@ int place(IdDict<void> & d, int id, void * x)
       
       // id doesn't contains a user_id field
       // create new one for the current user_id
-      if ((d.idmax < FIRST_ID) && (user_id() != 0))
+      if ((d.idmax < FIRST_ID) && (uid != 0))
 	d.idmax = FIRST_ID - 128;
-      id = (d.idmax += 128) | user_id();
+      id = (d.idmax += 128) | uid;
     }
     else if (NeedRenumber) {
       // place id unchanged among the old ones
@@ -96,11 +100,14 @@ int place(IdDict<void> & d, int id, void * x)
 	// an id was already attributed for it
 	id = nid;
 	
+	if ((d.idmax < FIRST_ID) && (uid != 0))
+	  d.idmax = FIRST_ID - 128;
+	
 	if ((((unsigned) (id & ~127)) > ((unsigned) d.idmax)) &&
-	    ((id & 127) == user_id()))
+	    ((id & 127) == uid))
 	  d.idmax = id & ~127;
       }
-      else if ((d.dict[0][id] != 0) || ((id & 127) != user_id())) {
+      else if ((d.dict[0][id] != 0) || ((id & 127) != uid)) {
 	// already used or for an other user, change id to a new one
 	if ((id & 127) < 2) {
 	  // import a plug out in a plug out !!!!!
@@ -109,28 +116,38 @@ int place(IdDict<void> & d, int id, void * x)
 	  
 	  while (d.dict[0][id] != 0)
 	    id += 128;
+	  
+	  check = FALSE;
 	}
 	else {
 	  // create new id for the current user_id
-	  if ((d.idmax < FIRST_ID) && (user_id() != 0))
+	  if ((d.idmax < FIRST_ID) && (uid != 0))
 	    d.idmax = FIRST_ID - 128;
-	  id = (d.idmax += 128) | user_id();
+	  id = (d.idmax += 128) | uid;
 	}
       }
       else
 	// id unchanged for the current user
+	check = FALSE;
 	if ((((unsigned) (id & ~127)) > ((unsigned) d.idmax)) &&
-	    ((id & 127) == user_id()))
+	    ((id & 127) == uid))
 	  d.idmax = id & ~127;
     }
     else {      
       // no renum, id unchanged
+      check = FALSE;
       if ((((unsigned) (id & ~127)) > ((unsigned) d.idmax)) &&
-	  ((id & 127) == user_id()))
+	  ((id & 127) == uid))
 	d.idmax = id & ~127;
     }
     
-    d.dict[0].replace(id, x);
+    if (check) {
+      // useless except bug or project broken by user probably on merge
+      while (d.dict[0][id] != 0)
+	id = (d.idmax += 128) | uid;
+    }
+    
+    d.dict[0].insert(id, x);
     
     if ((d.dict[0].count() / 2) >= d.dict[0].size())
       d.dict[0].resize(d.dict[0].size() * 2 - 1);
@@ -144,6 +161,10 @@ int new_place(IdDict<void> & d, int user_id, void * x)
   if (d.idmax == FIRST_ID)
     d.idmax = FIRST_BASE_ID;
   else
+    d.idmax += 128;
+  
+  while (d.dict[0][d.idmax | user_id] != 0)
+    // not possible except bug
     d.idmax += 128;
   
   d.dict[0].insert(d.idmax | user_id, x);

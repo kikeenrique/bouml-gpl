@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,14 +63,17 @@ MLEDialog::MLEDialog(QString t, bool buttons) : QDialog(0, "Uml", TRUE, 0) {
 MLEDialog::~MLEDialog() {
 }
 
-void MLEDialog::get(QString & t, const QPoint & p)
+void MLEDialog::get(QString & t, const QPoint & p, QSize & sz)
 {
   MLEDialog d(t, TRUE);
   
   d.move(p);
+  if (sz.isValid())
+    d.resize(sz);
   d.e->setFocus();
   if (d.exec() == QDialog::Accepted)
     t = d.e->text();
+  sz = d.size();
 }
 
 QString MLEDialog::text() {

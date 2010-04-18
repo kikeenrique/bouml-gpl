@@ -36,7 +36,7 @@ class FileIn {
     //doesn't return on eof
     //
     //Warning : returned value will be changed by next call !
-    const char * readWord(bool any, bool & str);
+    const char * readWord(bool any, BooL & str);
 
     void finish(QCString what);
 

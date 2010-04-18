@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,18 @@ QValueList<QStringList> Namespace::UsingScope;
 
 // namespace aliases
 QMap<QCString,QCString> Namespace::Aliases;
+
+void Namespace::set(const QCString & s)
+{
+  // for upload only
+  Stack.append(QString(s) + "::");
+}
+
+void Namespace::unset()
+{
+  // for upload only
+  Stack.remove(Stack.last());
+}
 
 void Namespace::enter(const QCString & s)
 {

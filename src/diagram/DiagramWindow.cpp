@@ -1,7 +1,7 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -136,6 +136,14 @@ void DiagramWindow::optimal_window_size() {
   get_view()->do_optimal_window_size();
 }
 
+void DiagramWindow::change_zoom(int n) {
+  int z = sb_zoom->value() + n;
+  
+  new_scale((z > 200) 
+	    ? 200 
+	    : ((z < 30) ? 30 : z));
+}
+
 void DiagramWindow::package_modified() const {
   browser_node->package_modified();
 }
@@ -177,7 +185,7 @@ void DiagramWindow::session_window_size() {
 }
 
 void DiagramWindow::save(const char * ext, QString & warning,
-			 bool & is_new) const {
+			 BooL & is_new) const {
   double zm  = canvas->zoom();
   
   if (zm != 1)
@@ -206,7 +214,7 @@ void DiagramWindow::duplicate(int dest_id, const char * ext) const {
   QString diagram_def;
   QTextOStream st(&diagram_def);
   int current_indent = indent();
-  bool is_new = TRUE;
+  BooL is_new = TRUE;
   
   indent0();
   get_view()->save(st, warning, FALSE);

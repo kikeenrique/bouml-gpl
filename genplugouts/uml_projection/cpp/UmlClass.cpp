@@ -50,9 +50,13 @@ void UmlClass::uml2cpp(bool rec) {
 	ch[i]->uml2cpp(rec);
     }
     
-    if (parent()->kind() == aClassView)
+    if (parent()->kind() == aClassView) {
       // not nested
-      artifact()->set_CppSource(CppSettings::sourceContent());
+      UmlArtifact * art = artifact();
+			 
+      art->set_CppSource(CppSettings::sourceContent());
+      art->set_CppHeader(CppSettings::headerContent());
+    }
   }
 }
 

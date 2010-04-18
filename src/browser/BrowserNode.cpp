@@ -1,10 +1,10 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -641,7 +641,7 @@ UmlVisibility BrowserNode::get_visibility(UmlCode who) const {
   return ((BrowserNode *) parent())->get_visibility(who);
 }
 
-void BrowserNode::package_settings(bool &, ShowContextMode &) const {
+void BrowserNode::package_settings(BooL &, ShowContextMode &) const {
   // never called
 }
 
@@ -753,7 +753,7 @@ QString BrowserNode::check_inherit(const BrowserNode * new_parent) const {
 }
 
 bool BrowserNode::may_contains_them(const QList<BrowserNode> &,
-				    bool &) const {
+				    BooL &) const {
   return FALSE;
 }
 
@@ -815,8 +815,8 @@ void BrowserNode::mark_menu(QPopupMenu & m, const char * s, int bias) const {
 	}
       }
       
-      bool duplicable_into = TRUE;
-      bool duplicable_after = TRUE;
+      BooL duplicable_into = TRUE;
+      BooL duplicable_after = TRUE;
       bool into = may_contains_them(marked_list, duplicable_into) 
 	&& is_writable();
       bool after = (this != BrowserView::get_project()) &&
@@ -1037,7 +1037,7 @@ void BrowserNode::children(BrowserNodeList & nodes,
 bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode type,
 				   bool allow_spaces, bool allow_empty) {
   for (;;) {
-    bool ok = FALSE;
+    BooL ok = FALSE;
     r = MyInputDialog::getText("Uml", msg, QString::null, ok);
     
     if (ok) {
@@ -1069,7 +1069,8 @@ bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode typ
   *old = 0;
   
   for (;;) {
-    bool ok = FALSE;
+    BooL ok = FALSE;
+    
     r = (list.count() == 1)
       ? MyInputDialog::getText("Uml", msg, QString::null, ok)
       : MyInputDialog::getText("Uml", msg, list, QString::null, existing, ok);
@@ -1098,6 +1099,9 @@ bool BrowserNode::wrong_child_name(const QString & s, UmlCode type,
     return !allow_empty;
   
   const char * str = s;
+
+  if (str != fromUnicode(s))
+    return true;
   
   switch (type) {
   case UmlExtraMember:
@@ -1751,7 +1755,7 @@ void BrowserNodeList::full_defs(QStringList & list) const {
   QListIterator<BrowserNode> it(*this);
   
   while (it.current() != 0) {
-    list.append(it.current()->get_data()->definition(TRUE));
+    list.append(it.current()->get_data()->definition(TRUE, FALSE));
     ++it;
   }
 }

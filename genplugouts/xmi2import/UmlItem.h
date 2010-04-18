@@ -209,6 +209,8 @@ class UmlItem : public UmlBaseItem {
 
     static bool fromEclipse();
 
+    static QCString readConstraint(FileIn & in, Token & token);
+
     static QMap<QCString, QCString> OpaqueDefs;
 
 

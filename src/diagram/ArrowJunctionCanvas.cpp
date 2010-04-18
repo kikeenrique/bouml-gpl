@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -70,11 +70,14 @@ void ArrowJunctionCanvas::delete_it() {
 }
 
 void ArrowJunctionCanvas::unconnect() {
-  disconnect(interface->get_data(), 0, this, 0);
+  if (interface != 0) {
+    disconnect(interface->get_data(), 0, this, 0);
+    interface = 0;
+  }
 }
 
 void ArrowJunctionCanvas::modified() {
-  if (interface->get_name() != label->get_name())
+  if ((interface != 0) && (interface->get_name() != label->get_name()))
     label->set_name(interface->get_name());
 }
 

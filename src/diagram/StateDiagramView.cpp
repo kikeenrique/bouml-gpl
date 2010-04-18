@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ void StateDiagramView::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(TR("State diagram menu"), m.font()), -1);
  
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserStateDiagram *) the_canvas()->browser_diagram())->edit_settings();
     break;
@@ -118,7 +118,12 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  c->show();
 	  c->upper();
+	  canvas()->update();
+	  StateCanvas::force_inside(c, TRUE);
+	  canvas()->update();
+	  history_protected = FALSE;
 	  window()->package_modified();
+	  return; // canvas already updated
 	}
       }
       break;
@@ -180,6 +185,7 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  c->show();
 	  c->upper();
+	  StateCanvas::force_inside(c, FALSE);
 	  window()->package_modified();
 	}
       }
@@ -226,6 +232,7 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	c->show();
 	c->upper();
+	StateCanvas::force_inside(c, FALSE);
 	window()->package_modified();
       }
       break;
@@ -278,9 +285,10 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
       
       history_protected = TRUE;
       c->show();
-      c->upper();
-      
+      c->upper();  
       canvas()->update();
+      StateCanvas::force_inside(c, TRUE); 
+      canvas()->update();    
       history_protected = FALSE;
       window()->package_modified();
     }
@@ -310,7 +318,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
       history_protected = TRUE;
       c->show();
       c->upper();
-      
+      StateCanvas::force_inside(c, FALSE);      
       canvas()->update();
       history_protected = FALSE;
       window()->package_modified();
@@ -329,7 +337,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
       history_protected = TRUE;
       c->show();
       c->upper();
-      
+      StateCanvas::force_inside(c, FALSE);
       canvas()->update();
       history_protected = FALSE;
       window()->package_modified();

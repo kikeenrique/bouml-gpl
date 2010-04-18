@@ -10,8 +10,8 @@
 void UmlPackage::fileControl(bool ci) {
   UmlPackage * prj = getProject();
   QCString prjfile = prj->supportFile();
-  bool rec;
-  bool reload;
+  BooL rec;
+  BooL reload;
   QCString cmd;
   
   if (! prj->propertyValue((ci) ? "check-in-cmd" : "check-out-cmd", cmd))

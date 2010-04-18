@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #define ACTIVITY_CANVAS_MIN_SIZE 40
 
 class ParameterCanvas;
+class InfoCanvas;
 
 class ActivityCanvas : public QObject, public ActivityContainerCanvas {
   Q_OBJECT
@@ -47,6 +48,7 @@ class ActivityCanvas : public QObject, public ActivityContainerCanvas {
     ActivityDrawingSettings settings;
     UmlColor itscolor;
     UmlColor used_color;
+    bool show_info_note;
     int min_width;
     int min_height;
     QString pre;
@@ -57,18 +59,20 @@ class ActivityCanvas : public QObject, public ActivityContainerCanvas {
     QPoint post_offset;
     int post_width;
     QValueList<ParameterCanvas *> params;
+    InfoCanvas * constraint;
     
   protected:
     ActivityCanvas(UmlCanvas * canvas, int id);
   
     void check_params();
+    void check_constraint();
   
   public:
     ActivityCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y);
     virtual ~ActivityCanvas();
     
     QValueList<ParameterCanvas *> get_params() { return params; }
-    void force_sub_inside();
+    void force_sub_inside(bool rz);
     
     virtual void delete_it();
     
@@ -79,7 +83,7 @@ class ActivityCanvas : public QObject, public ActivityContainerCanvas {
     virtual void change_scale();
     
     virtual UmlCode type() const;
-    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual void remove(bool from_model);
@@ -91,6 +95,7 @@ class ActivityCanvas : public QObject, public ActivityContainerCanvas {
     virtual void set_z(double z);
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy, QPoint &);
+    virtual void resize(const QSize & sz, bool w, bool h);
     virtual bool move_with_its_package() const;
     virtual void moveBy(double dx, double dy);
     

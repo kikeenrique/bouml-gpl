@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -173,7 +173,7 @@ void BrowserDeploymentView::menu() {
   QPopupMenu roundtripbodym(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
@@ -202,7 +202,7 @@ Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, TR("deployment view"), 90);
+    mark_menu(m, TR("the deployment view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     bool cpp = GenerationSettings::cpp_get_default_defs();
@@ -214,8 +214,11 @@ Note that you can undelete them after"));
     if (cpp || java || php || python || idl) {
       m.insertSeparator();
       m.insertItem(TR("Generate"), &subm);
-      if (cpp)
+      if (cpp) {
 	subm.insertItem("C++", 10);
+	if ((edition_number == 0) && !is_read_only)
+	  roundtripm.insertItem("C++", 41);
+      }
       if (java) {
 	subm.insertItem("Java", 11);
 	if ((edition_number == 0) && !is_read_only)
@@ -384,6 +387,9 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
   case 33:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
+  case 41:
+    ToolCom::run("cpp_roundtrip", this);
+    return;
   case 42:
     ToolCom::run("java_roundtrip", this);
     return;
@@ -477,6 +483,10 @@ void BrowserDeploymentView::open(bool) {
 
 UmlCode BrowserDeploymentView::get_type() const {
   return UmlDeploymentView;
+}
+
+QString BrowserDeploymentView::get_stype() const {
+  return TR("deployment view");
 }
 
 int BrowserDeploymentView::get_identifier() const {
@@ -610,7 +620,7 @@ void BrowserDeploymentView::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserDeploymentView::may_contains_them(const QList<BrowserNode> & l,
-					      bool & duplicable) const {
+					      BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -702,7 +712,7 @@ void BrowserDeploymentView::save(QTextStream & st, bool ref, QString & warning) 
     //st << "//deployment node settings";
     //deploymentnode_settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "deploymentnode_color", deploymentnode_color, nl);
     save_color(st, "artifact_color", artifact_color, nl);

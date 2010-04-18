@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -101,7 +101,7 @@ UmlCode ConstraintCanvas::type() const {
   return UmlConstraint;
 }
 
-void ConstraintCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ConstraintCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   if (cl->isSelected())
     cl->delete_available(in_model, out_model);
 }

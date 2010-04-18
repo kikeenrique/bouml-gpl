@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -241,7 +241,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
   
       // enums items
       
-      bool first = TRUE;
+      BooL first = TRUE;
       
       for (index = 0; index != sup; index += 1) {
 	if (ch[index]->kind() != aNcRelation) {
@@ -291,20 +291,23 @@ void UmlClass::write(QTextOStream & f) {
     f << s;
   }
   else {
-    UmlArtifact * cp = associatedArtifact();
+    UmlClass * toplevel = this;
+    UmlItem * p;
+    QCString s2;
+    
+    while ((p = toplevel->parent())->kind() == aClass) {
+      toplevel = (UmlClass *) p;
+      s2 = dot + p->name() + s2;
+    }
+    
+    UmlArtifact * cp = toplevel->associatedArtifact();
     UmlPackage * pack = (UmlPackage *)
-      ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
+      ((cp != 0) ? (UmlItem *) cp : (UmlItem *) toplevel)->package();
     
     if (pack != UmlArtifact::generation_package()) {
       QCString s = pack->javaPackage();
 
       if (! s.isEmpty() && (s != "java.lang") && (s.left(10) != "java.lang.")) {
-	QCString s2;
-	UmlItem * p = this;
-	
-	while ((p = p->parent())->kind() == aClass)
-	  s2 = dot + p->name() + s2;
-	
 	s += s2;
 	
 	if (JavaSettings::isForcePackagePrefixGeneration() ||
@@ -312,6 +315,8 @@ void UmlClass::write(QTextOStream & f) {
 	  f << s << '.';
       }
     }
+    else if (! s2.isEmpty())
+      f << s2.mid(1) << '.';
     
     f << name();
   }
@@ -341,8 +346,10 @@ void UmlClass::import(QTextOStream & f, const QCString & indent) {
   else
     s += dot + name();
   
-  f << indent << "import " << s << ";\n";
-  UmlArtifact::generated_one()->imported(s);
+  if (! UmlArtifact::generated_one()->is_imported(s)) {
+    f << indent << "import " << s << ";\n";
+    UmlArtifact::generated_one()->imported(s);
+  }
 }
 
 void UmlClass::generate_enum_pattern_item(QTextOStream &, int &,

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -106,7 +106,7 @@ void TransitionCanvas::deleted() {
   package_modified();
 }
 
-void TransitionCanvas::delete_available(bool & in_model, bool & out_model) const {
+void TransitionCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= data->get_start()->is_writable();
 }
@@ -214,10 +214,7 @@ void TransitionCanvas::menu(const QPoint &) {
     QPopupMenu geo(0);
     QPopupMenu toolm(0);
     
-    m.insertItem(new MenuTitle(((plabel == 0) || plabel->label->get_name().isEmpty())
-			       ? QString("transition")
-			       : toUnicode(plabel->label->get_name()),
-			       m.font()),
+    m.insertItem(new MenuTitle(data->definition(FALSE, TRUE), m.font()),
 		 -1);
     m.insertSeparator();
     m.insertItem("Edit", 0);
@@ -393,7 +390,7 @@ ArrowPointCanvas * TransitionCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z());
+  ap->setZ(z() + 1);
   
   TransitionCanvas * other =
     // do not give data to not call update()

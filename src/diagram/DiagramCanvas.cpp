@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -176,6 +176,18 @@ void DiagramCanvas::moveBy(double dx, double dy) {
   update_show_lines();
 }
 
+void DiagramCanvas::moveSelfRelsBy(double dx, double dy) {
+  QListIterator<ArrowCanvas> it(lines);
+  
+  while (it.current()) {
+    if (it.current()->get_start() == it.current()->get_end())
+      // self relation
+      it.current()->move_self_points(dx, dy); // move only if first segment => not done 2 times
+    
+    ++it;
+  }
+}
+
 void DiagramCanvas::setSelected(bool yes) {
   if (browser_node) {
     if (yes)
@@ -249,26 +261,37 @@ void DiagramCanvas::resize(aCorner c, int dx, int dy, QPoint & o,
   switch (c) {
   case UmlTopLeft:
     QCanvasRectangle::moveBy(dx, dy);
+    moveSelfRelsBy(dx, dy);
     dx = -dx;
     dy = -dy;
     break;
   case UmlTopRight:
-    if (stay_centered)
+    if (stay_centered) {
       QCanvasRectangle::moveBy(-dx, dy);
-    else
+      moveSelfRelsBy(-dx, dy);
+    }
+    else {
       QCanvasRectangle::moveBy(0, dy);
+      moveSelfRelsBy(0, dy);
+    }
     dy = -dy;
     break;
   case UmlBottomLeft:
-    if (stay_centered)
+    if (stay_centered) {
       QCanvasRectangle::moveBy(dx, -dy);
-    else
+      moveSelfRelsBy(dx, -dy);
+    }
+    else {
       QCanvasRectangle::moveBy(dx, 0);
+      moveSelfRelsBy(dx, 0);
+    }
     dx = -dx;
     break;
   default:
-    if (stay_centered)
+    if (stay_centered) {
       QCanvasRectangle::moveBy(-dx, -dy);
+      moveSelfRelsBy(-dx, -dy);
+    }
     break;
   }
   
@@ -311,10 +334,54 @@ void DiagramCanvas::resize(aCorner c, int dx, int dy, QPoint & o,
   }
 	    
   resize(wi, he);
-
   update_show_lines();
+  force_self_rel_visible();
   
   canvas()->update();
+}
+
+// min_width and min_height must take into account the current zoom
+// some element like parameter stay centered to their old position
+bool DiagramCanvas::resize(const QSize & sz, bool w, bool h,
+			   int min_width, int min_height,
+			   bool odd, bool stay_centered) {
+  int wi = (w) ? sz.width() : width();
+  int he = (h) ? sz.height() : height();
+  
+  if (odd) {
+    wi |= 1;
+    he |= 1;
+  }
+  
+  if (wi < min_width)
+    wi = min_width;
+  
+  if (he < min_height)
+    he = min_height;
+  
+  if ((wi == width()) && (he == height()))
+    return FALSE;
+  
+  hide_lines();
+  
+  if (stay_centered) {
+    int xc = center_x_scale100;
+    int yc = center_y_scale100;
+    
+    resize(wi, he);
+    center_x_scale100 = xc;
+    center_y_scale100 = yc;
+    recenter();
+  }
+  else
+    resize(wi, he);
+
+  update_show_lines();
+  force_self_rel_visible();
+  
+  canvas()->update();
+  
+  return TRUE;
 }
 
 void DiagramCanvas::prepare_for_move(bool on_resize) {
@@ -372,8 +439,20 @@ void DiagramCanvas::upper() {
 	((*it)->z() > max_z))
       max_z = (*it)->z();
   
-  if ((z() - max_z) < 5)
-    set_z(((int) max_z) + 5);	// (int) to manage Template & label
+  if ((z() - max_z) < 5) {
+    double nz = ((int) max_z) + 5;	// (int) to manage Template & label
+    
+    set_z(nz);
+    
+    nz += 1;
+      
+    QListIterator<ArrowCanvas> it(lines);
+    
+    while (it.current()) {
+      it.current()->go_up(nz);
+      ++it;
+    }
+  }
 }
 
 void DiagramCanvas::lower() {
@@ -438,6 +517,13 @@ void DiagramCanvas::z_up() {
     }
     
     set_z(next_z);
+      
+    QListIterator<ArrowCanvas> it(lines);
+    
+    while (it.current()) {
+      it.current()->go_up(next_z);
+      ++it;
+    }
   }
 }
 
@@ -648,6 +734,31 @@ void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    left, r.top() + sz, left + sz, r.top() + sz);
+    sz /= 2;
+    fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	    svg_color(used_color),
+	    (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
+  }
+}
+
+ void DiagramCanvas::draw_interface_icon(QPainter & p, QRect & r,
+				      UmlColor used_color, double zoom)
+{
+  int sz = (int) (INTERFACE_SIZE * zoom);
+  int left = (r.left() + r.right() - sz)/2;
+  QBrush brsh = p.brush();
+  QColor co = color(used_color);
+  
+  p.setBrush(co);
+    
+  p.drawEllipse(left, r.top(), sz, sz);
+  
+  p.setBrush(brsh);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
     sz /= 2;
     fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -76,6 +76,7 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
     virtual void open(bool);
     void open_new_ste_attr();
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual void modified();

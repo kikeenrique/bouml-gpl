@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -161,15 +161,24 @@ UmlClass * Class::get_uml() {
   switch (stereotype) {
   case 'i':
 #ifdef ROUNDTRIP
-    abstract_relevant = FALSE;
-    
-    if (!roundtrip || (uml->stereotype() != "interface"))
+      if (roundtrip) {
+	if (JavaSettings::classStereotype(uml->stereotype()) != "interface") {
+	  uml->set_Stereotype("interface");
+	  set_updated();
+	}
+	if (neq(uml->javaDecl(), JavaSettings::interfaceDecl())) {
+	  uml->set_JavaDecl(JavaSettings::interfaceDecl());
+	  set_updated();
+	}
+	abstract_relevant = FALSE;
+      }
+      else {
 #endif
-      uml->set_Stereotype("interface");
+	uml->set_Stereotype("interface");
+	uml->set_JavaDecl(JavaSettings::interfaceDecl());
 #ifdef ROUNDTRIP
-    if (!roundtrip || (uml->javaDecl() != JavaSettings::interfaceDecl()))
+      }
 #endif
-      uml->set_JavaDecl(JavaSettings::interfaceDecl());
     break;
   case '@':
     {
@@ -181,7 +190,7 @@ UmlClass * Class::get_uml() {
       
 #ifdef ROUNDTRIP
       if (roundtrip) {
-	if (uml->stereotype() != "@interface") {
+	if (JavaSettings::classStereotype(uml->stereotype()) != "@interface") {
 	  uml->set_Stereotype("@interface");
 	  set_updated();
 	}
@@ -203,7 +212,7 @@ UmlClass * Class::get_uml() {
   case 'e':
 #ifdef ROUNDTRIP
     if (roundtrip) {
-      if (uml->stereotype() != "enum") {
+      if (JavaSettings::classStereotype(uml->stereotype()) != "enum") {
 	uml->set_Stereotype("enum");
 	set_updated();
       }
@@ -225,9 +234,14 @@ UmlClass * Class::get_uml() {
 #ifdef ROUNDTRIP
     if (roundtrip) {
       if (!uml->stereotype().isEmpty()) {
-	uml->set_Stereotype("");
-	set_updated();
+	QCString jst = JavaSettings::classStereotype(uml->stereotype());
+	
+	if ((jst == "interface") || (jst == "@interface") || (jst == "enum")) {
+	  uml->set_Stereotype("");
+	  set_updated();
+	}
       }
+      
       if (neq(uml->javaDecl(), JavaSettings::classDecl())) {
 	uml->set_JavaDecl(JavaSettings::classDecl());
 	set_updated();
@@ -250,6 +264,7 @@ UmlClass * Class::get_uml() {
     uml->set_isAbstract(abstractp);
   
   unsigned rank;
+  FormalParameterList::ConstIterator formals_end = formals.end();
   FormalParameterList::ConstIterator it;
   
 #ifdef ROUNDTRIP
@@ -258,7 +273,7 @@ UmlClass * Class::get_uml() {
     QValueList<UmlFormalParameter>::ConstIterator it2;
     
     for (rank = 0, it = formals.begin(), it2 = fs.begin();
-	 (it != formals.end()) && (it2 != fs.end());
+	 (it != formals_end) && (it2 != fs.end());
 	 it++, it2++, rank += 1) {
       const UmlFormalParameter & p1 = *it;
       const UmlFormalParameter & p2 = *it2;
@@ -269,14 +284,14 @@ UmlClass * Class::get_uml() {
       }
     }
     
-    if (it != formals.end()) {
+    if (it != formals_end) {
       // have missing formals
       set_updated();
       do {
 	uml->addFormal(rank, *it);
 	it++;
 	rank += 1;
-      } while (it != formals.end());
+      } while (it != formals_end);
     }
     else if (it2 != fs.end()) {
       // have extra formals
@@ -290,7 +305,7 @@ UmlClass * Class::get_uml() {
   }
   else
 #endif
-  for (rank = 0, it = formals.begin(); it != formals.end(); it++, rank += 1)
+  for (rank = 0, it = formals.begin(); it != formals_end; it++, rank += 1)
     uml->addFormal(rank, *it);
   
   formals.clear();

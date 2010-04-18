@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,7 +60,7 @@ void ObjectDiagramView::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(TR("Object diagram menu"), m.font()), -1);
  
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserObjectDiagram *) the_canvas()->browser_diagram())->edit_settings();
     break;

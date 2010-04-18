@@ -614,7 +614,7 @@ UmlItem * UmlBaseItem::read_()
     case aReduceAction:
       return new UmlReduceAction(id, name);
     default:
-      UmlCom::bye();
+      UmlCom::bye(-1);
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
     }
   }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 //
 // This program is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ void ParameterData::send_java_def(ToolCom * com) {
 
 bool ParameterData::tool_cmd(ToolCom * com, const char * args,
 			     BrowserNode * bn, const QString & comment) {
-  bool ack;
+  BooL ack;
 
   if (((unsigned char) args[-1]) >= firstSetCmd) {
     if (!bn->is_writable() && !root_permission())

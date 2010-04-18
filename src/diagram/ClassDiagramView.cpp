@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -140,8 +140,10 @@ void ClassDiagramView::menu(const QPoint& p) {
 	m.insertSeparator();
       }
     }
-    else if (marked_not_yet_drawn(drawn))
+    else if (marked_not_yet_drawn(drawn)) {
       m.insertItem(TR("Add marked elements"), 28);
+      m.insertSeparator();
+    }
     
     switch (default_menu(m, 30)) {
     case EDIT_DRAWING_SETTING_CMD:

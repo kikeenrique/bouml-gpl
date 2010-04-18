@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include "JavaSettings.h"
 #include "PhpSettings.h"
 #include "PythonSettings.h"
+#include "util.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -93,7 +94,7 @@ QCString UmlPackage::source_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'C++')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::source_path");
     }
         
@@ -114,7 +115,7 @@ QCString UmlPackage::header_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'C++')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::source_path");
     }
     
@@ -123,7 +124,7 @@ QCString UmlPackage::header_path(const QCString & f) {
 		    + name() + "</i>'s header path <i>(" + dir.h
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'C++')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::source_path");
     }
   }
@@ -156,7 +157,7 @@ QCString UmlPackage::java_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'Java')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::java_path");
     }
         
@@ -184,7 +185,7 @@ QCString UmlPackage::php_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'php')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::php_path");
     }
         
@@ -212,7 +213,7 @@ QCString UmlPackage::python_path(const QCString & f) {
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'python')</b></font><br>");
-      UmlCom::bye();
+      UmlCom::bye(n_errors() + 1);
       UmlCom::fatal_error("UmlPackage::python_path");
     }
         

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,7 +41,7 @@ class UmlAttribute : public UmlBaseAttribute {
 					    const QCString & class_name,
 					    QCString indent);
     virtual void generate_enum_pattern_case(QTextOStream & f, QCString indent);
-    virtual void generate_enum_item(QTextOStream & f, QCString indent, bool & first);
+    virtual void generate_enum_item(QTextOStream & f, QCString indent, BooL & first);
     virtual void generate_enum_member(QTextOStream & f, QCString indent);
     
   private:

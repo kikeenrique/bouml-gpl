@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ class UmlClassItem : public UmlBaseClassItem {
     };
   
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, bool & indent_needed,
+			  QCString indent, BooL & indent_needed,
 			  int & enum_item_rank, const QCString & self) = 0;
 };
 

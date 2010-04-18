@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -667,7 +667,7 @@ BrowserNode * OdClassInstCanvas::container(UmlCode c) const {
   return the_canvas()->browser_diagram()->container(c);
 }
 
-void OdClassInstCanvas::delete_available(bool & in_model, bool & out_model) const {
+void OdClassInstCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   if (browser_node->get_type() == UmlClassInstance)
     in_model |=  browser_node->is_writable();

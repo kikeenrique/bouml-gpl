@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -131,7 +131,7 @@ char * read_token(char * & st)
 
 //
 
-static int open_file(QFile & fp, bool & ro)
+static int open_file(QFile & fp, BooL & ro)
 {
   QString filename = fp.name();
   
@@ -149,7 +149,7 @@ static int open_file(QFile & fp, bool & ro)
   return fi.size();
 }
 
-char * read_file(QDir & dir, QString fn, bool & ro)
+char * read_file(QDir & dir, QString fn, BooL & ro)
 {
   QString filename = dir.absFilePath(fn);
   QFile fp(filename);

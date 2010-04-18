@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,7 +36,7 @@ class Shortcut {
     static const QStringList & keys();
 
     static const QMap<QString, QString> & shortcuts();
-    static QString extract(QString, bool & shift, bool & ctrl, bool & alt);
+    static QString extract(QString, BooL & shift, BooL & ctrl, BooL & alt);
     
     static QString shortcut(int key, int buttons);
     

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -115,6 +115,8 @@ void Shortcut::init(bool conv)
     "Align top",
     "Arrow geometry",
     "Browser search",
+    "Close",
+    "Quit",
     "Copy",
     "Create source artifact",
     "Cut",
@@ -185,7 +187,11 @@ void Shortcut::init(bool conv)
     "New use case",
     "New use case diagram",
     "New use case view",
+    "Open project",
+    "Optimal scale",
+    "Optimal window size",
     "Paste",
+    "Print",
     "Referenced by",
     "Redo",
     "Remove from view",
@@ -193,7 +199,11 @@ void Shortcut::init(bool conv)
     "Roundtrip Java operation body",
     "Roundtrip Php operation body",
     "Roundtrip Python operation body",
+    "Same width",
+    "Same height",
+    "Same size",
     "Save",
+    "Save as",
     "See C++ header file",
     "See C++ source file",
     "See Idl source file",
@@ -212,7 +222,10 @@ void Shortcut::init(bool conv)
     "Undo",
     "Unmark",
     "Unmark all",
-    "Upper"
+    "Upper",
+    "Zoom +",
+    "Zoom -",
+    "Zoom 100%"
   };
   
   for (i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1)
@@ -267,7 +280,7 @@ const QMap<QString, QString> & Shortcut::shortcuts()
   return Shortcuts;
 }
 
-QString Shortcut::extract(QString k, bool & shift, bool & ctrl, bool & alt)
+QString Shortcut::extract(QString k, BooL & shift, BooL & ctrl, BooL & alt)
 {
   const char * p = k;
   
@@ -383,7 +396,13 @@ void Shortcut::load(bool conv)
   add("R",	FALSE, TRUE, FALSE, "Redo");
   add("Y",	FALSE, TRUE, FALSE, "Redo");
   add("S",	FALSE, TRUE, FALSE, "Save");
+  add("W",	FALSE, TRUE, FALSE, "Close");
+  add("Q",	FALSE, TRUE, FALSE, "Quit");
   add("L",	FALSE, TRUE, FALSE, "Arrow geometry");
+  add("F",	FALSE, TRUE, FALSE, "Browser search");
+  add("O",	FALSE, TRUE, FALSE, "Open project");
+  add("P",	FALSE, TRUE, FALSE, "Print");
+  add("S",	TRUE, TRUE, FALSE, "Save as");
   
   QString f = shortcut_file_path(conv);
   

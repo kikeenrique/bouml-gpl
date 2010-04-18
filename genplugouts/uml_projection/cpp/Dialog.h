@@ -7,11 +7,11 @@ class QCheckBox;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(bool & rec, char & lang);
+    Dialog(BooL & rec, char & lang);
 
 
   protected:
-    bool & _rec;
+    BooL & _rec;
 
     //c = c++
     //j = java

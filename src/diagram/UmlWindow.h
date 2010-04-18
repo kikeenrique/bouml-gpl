@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -100,6 +100,9 @@ class UmlWindow : public QMainWindow {
     static void save_it();
     static bool saveas_it();
     static void close_it();
+    static void do_close();
+    static void do_quit();
+    static void load_it();
     static void load_it(QString fn);
     static void reload_it();
     static CanvasFormat default_format();
@@ -107,6 +110,7 @@ class UmlWindow : public QMainWindow {
     static void abort_line_construction();
     static void clear_select_historic();
     static void browser_search_it();
+    static void print_it();
     
   protected:
     void init_format_menu(QPopupMenu * m, QPopupMenu * lm);
@@ -167,6 +171,7 @@ class UmlWindow : public QMainWindow {
     void java_catalog();
     //void doc_generate();
     void cpp_reverse();
+    void cpp_roundtrip();
     void java_reverse();
     void java_roundtrip();
     void php_reverse();

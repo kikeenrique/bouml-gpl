@@ -103,7 +103,7 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	      in.finish(s);
 	  }
 	  else if (s == "ownedrule")
-	    att->set_Constraint(UmlClassMember::readConstraint(in, token));
+	    att->set_Constraint(UmlItem::readConstraint(in, token));
 	  else
 	    att->UmlItem::import(in, token);
 	}

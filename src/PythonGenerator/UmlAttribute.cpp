@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,8 +32,14 @@
 #include "UmlCom.h"
 #include "util.h"
 
+void UmlAttribute::generate_imports(QTextOStream & f, QCString & made) {
+  if (!pythonDecl().isEmpty())
+    type().generate_import(f, ((UmlClass *) parent())->associatedArtifact(), 
+			   FALSE, made);
+}
+
 void UmlAttribute::generate(QTextOStream & f, const QCString & st,
-			    QCString indent, bool & indent_needed,
+			    QCString indent, BooL & indent_needed,
 			    int & enum_item_rank, const QCString & self) {
   if (self.isEmpty() != isClassMember())
     return;

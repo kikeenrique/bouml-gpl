@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -75,12 +75,14 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a, const QStringList & defaults)
   if (a->msg == 0)
     edoper->insertItem(a->explicit_msg);
   else
-    edoper->insertItem(a->msg->definition(TRUE));
+    edoper->insertItem(a->msg->definition(TRUE, FALSE));
   edoper->setAutoCompletion(completion());
 
   // gets operations
-  cl = a->get_dest()->get_line()->get_obj()->get_class();
-  if (cl != 0) {
+  if (!a->get_dest()->isaDuration())
+    cl = 0;
+  else if ((cl = ((SdDurationCanvas *) a->get_dest())->get_line()->get_obj()->get_class())
+	   != 0) {
     cl->get_opers(opers, list);
     edoper->insertStringList(list);
     
@@ -220,7 +222,7 @@ void SdMsgDialog::menu_op() {
 	  index = opers.count();
 	  opers.append(od);
 	  
-	  QString s = od->definition(TRUE);
+	  QString s = od->definition(TRUE, FALSE);
 	  
 	  list.append(s);
 	  edoper->insertItem(s);

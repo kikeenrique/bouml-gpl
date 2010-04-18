@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,7 +47,7 @@ class UmlRelation : public UmlBaseRelation {
 			  const QCString & cl_stereotype);
     virtual void generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 			       const QCString & cl_stereotype, QCString indent,
-			       bool & first, bool last);
+			       BooL & first, bool last);
     virtual void generate_def(QTextOStream & f, QCString indent, bool h,
 			      QCString templates, QCString cl_names,
 			      QCString templates_tmplop, 

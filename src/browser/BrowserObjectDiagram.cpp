@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -197,7 +197,7 @@ void BrowserObjectDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem(TR("Show"), 0),
@@ -352,6 +352,10 @@ UmlCode BrowserObjectDiagram::get_type() const {
   return UmlObjectDiagram;
 }
 
+QString BrowserObjectDiagram::get_stype() const {
+  return TR("Object diagram");
+}
+
 int BrowserObjectDiagram::get_identifier() const {
   return get_ident();
 }
@@ -371,7 +375,7 @@ void BrowserObjectDiagram::get_objectdiagramsettings(ObjectDiagramSettings & r) 
   r.assign(*used_settings);
 }
 
-void BrowserObjectDiagram::package_settings(bool & name_in_tab,
+void BrowserObjectDiagram::package_settings(BooL & name_in_tab,
 					    ShowContextMode & show_context) const {
   name_in_tab = used_settings->package_name_in_tab == UmlYes;
   show_context = used_settings->show_context_mode;
@@ -513,7 +517,7 @@ void BrowserObjectDiagram::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     settings.save(st);
     
-    bool nl = FALSE;
+    BooL nl = FALSE;
     
     save_color(st, "class_instance_color", class_instance_color, nl);
     save_color(st, "note_color", note_color, nl);

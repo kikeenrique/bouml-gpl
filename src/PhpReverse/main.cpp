@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Php reverse</b> release 1.5<br><hr>");
+      UmlCom::trace("<b>Php reverse</b> release 1.6<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -121,7 +121,7 @@ int main(int argc, char ** argv)
       // socket may be already closed
       UmlCom::message("");
       UmlCom::showTrace();
-      UmlCom::bye();	// application must not be deleted
+      UmlCom::bye(0);	// application must not be deleted
     }
     catch (...) {
     }

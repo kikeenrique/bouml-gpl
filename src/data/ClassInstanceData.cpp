@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -203,22 +203,25 @@ void ClassInstanceData::check() {
       }
       else if (l.findRef((BrowserClass *) br->parent()) == -1) {
 	// new instance type, must be removed in both side
-	QValueList<SlotRel> & other_rels = 
-	  ((ClassInstanceData *) slot_rel.value->get_data())->relations;
-	QValueList<SlotRel>::Iterator it_rel_other;
-	
-	for (it_rel_other = other_rels.begin();
-	     it_rel_other != other_rels.end();
-	     it_rel_other++) {
-	  const SlotRel & other_slot_rel = *it_rel_other;
-
-	  if ((other_slot_rel.value == browser_node) &&
-	      (other_slot_rel.rel == slot_rel.rel)) {
-	    other_rels.remove(it_rel_other);
-	    break;
+	if (slot_rel.value->get_data() != this) {
+	  // not reflexive
+	  QValueList<SlotRel> & other_rels = 
+	    ((ClassInstanceData *) slot_rel.value->get_data())->relations;
+	  QValueList<SlotRel>::Iterator it_rel_other;
+	  
+	  for (it_rel_other = other_rels.begin();
+	       it_rel_other != other_rels.end();
+	       it_rel_other++) {
+	    const SlotRel & other_slot_rel = *it_rel_other;
+	    
+	    if ((other_slot_rel.value == browser_node) &&
+		(other_slot_rel.rel == slot_rel.rel)) {
+	      other_rels.remove(it_rel_other);
+	      break;
+	    }
 	  }
 	}
-	
+
 	it_rel = relations.remove(it_rel);
 	modif = TRUE;
       }

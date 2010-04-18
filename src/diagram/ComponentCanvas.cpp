@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -395,6 +395,11 @@ void ComponentCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
     DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
 }
 
+void ComponentCanvas::resize(const QSize & sz, bool w, bool h) {
+  if (! as_icon)
+    DiagramCanvas::resize(sz, w, h, min_width, min_height, TRUE);
+}
+
 void ComponentCanvas::prepare_for_move(bool on_resize) {
   if (! on_resize) {
     DiagramCanvas::prepare_for_move(on_resize);
@@ -743,7 +748,7 @@ UmlCode ComponentCanvas::type() const {
   return UmlComponent;
 }
 
-void ComponentCanvas::delete_available(bool & in_model, bool & out_model) const {
+void ComponentCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -765,7 +770,7 @@ void ComponentCanvas::menu(const QPoint&) {
   QPopupMenu toolm(0);
   int index;
   
-  m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

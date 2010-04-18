@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,3 +29,26 @@
 
 UmlItem::~UmlItem() {
 }
+
+#ifdef ROUNDTRIP
+void UmlItem::upload(ClassContainer *) {
+  // does nothing
+}
+
+bool UmlItem::set_roundtrip_expected() {
+  // does nothing
+  return TRUE;
+}
+
+void UmlItem::mark_useless(QList<UmlItem> &) {
+  // does nothing
+}
+
+void UmlItem::scan_it(int &) {
+  // does nothing
+}
+
+void UmlItem::send_it(int) {
+  // does nothing
+}
+#endif

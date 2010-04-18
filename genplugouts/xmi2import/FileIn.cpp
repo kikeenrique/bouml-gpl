@@ -164,7 +164,7 @@ QCString FileIn::body(QCString what) {
   }
 }
 
-const char * FileIn::readWord(bool any, bool & str) {
+const char * FileIn::readWord(bool any, BooL & str) {
   int c;
   
   // bypass comment

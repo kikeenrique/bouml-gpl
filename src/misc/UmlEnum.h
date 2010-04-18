@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,9 +79,11 @@ enum UmlCode {
   UmlDependOn, UmlInherit, UmlObjectLink,	// not between classes
   UmlArrowPoint,
   UmlNote, UmlAnchor, UmlLabel, UmlText,
-  UmlSyncMsg, UmlAsyncMsg, UmlSyncSelfMsg, UmlAsyncSelfMsg,
+  UmlSyncMsg, UmlAsyncMsg, 
+  UmlFoundSyncMsg, UmlFoundAsyncMsg, UmlLostSyncMsg, UmlLostAsyncMsg, 
+  UmlSyncSelfMsg, UmlAsyncSelfMsg,
   UmlReturnMsg, UmlSelfReturnMsg,
-  UmlLifeLine, UmlActivityDuration,
+  UmlLifeLine, UmlActivityDuration, UmlLostFoundMsgSupport,
   UmlLink, UmlSelfLink, UmlLinkDirs,
   UmlContain, 
   UmlTemplate, UmlIcon,
@@ -190,7 +192,7 @@ enum UmlColor {
   UmlDefaultColor
 };
 
-enum ClassDrawingMode { asClass, asControl, asBoundary, asEntity, asActor, Natural, DefaultClassDrawingMode };
+enum ClassDrawingMode { asClass, asInterface, asControl, asBoundary, asEntity, asActor, Natural, DefaultClassDrawingMode };
 
 enum DrawingLanguage { UmlView, CppView, JavaView, IdlView, PhpView, PythonView, DefaultDrawingLanguage };
 

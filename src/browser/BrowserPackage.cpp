@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -516,7 +516,7 @@ void BrowserPackage::menu() {
   QPopupMenu importm(0);
   bool isprofile = (strcmp(def->get_stereotype(), "profile") == 0);
   
-  m.insertItem(new MenuTitle(name, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
@@ -642,10 +642,11 @@ through a relation"));
 	  if (python)
 	    revm.insertItem("Python", 35);
 #endif
-	  if (java) {
+	  if (java || cpp) {
 	    m.insertItem(TR("Roundtrip"), &roundtripm);
 	    
-            roundtripm.insertItem("Java", 37);
+            if (cpp) roundtripm.insertItem("C++", 38);
+            if (java) roundtripm.insertItem("Java", 37);
 	  }
 	  
 	  if (preserve_bodies()) {
@@ -876,6 +877,10 @@ void BrowserPackage::exec_menu_choice(int rank) {
   case 37:
     if (!isprofile)
       ToolCom::run("java_roundtrip", this);
+    return;
+  case 38:
+    if (!isprofile)
+      ToolCom::run("cpp_roundtrip", this);
     return;
   case 26:
     if (!isprofile)
@@ -1291,6 +1296,10 @@ void BrowserPackage::update_lib() {
 
 UmlCode BrowserPackage::get_type() const {
   return UmlPackage;
+}
+
+QString BrowserPackage::get_stype() const {
+  return TR("package");
 }
 
 int BrowserPackage::get_identifier() const {
@@ -1778,7 +1787,7 @@ void BrowserPackage::DragMoveInsideEvent(QDragMoveEvent * e) {
 }
 
 bool BrowserPackage::may_contains_them(const QList<BrowserNode> & l,
-				       bool & duplicable) const {
+				       BooL & duplicable) const {
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
@@ -2091,7 +2100,7 @@ void BrowserPackage::save_all(bool modified_only)
     QString fn;
     
     if (prj)
-      fn.sprintf("%s.prj", (const char *) pack->name);
+      fn = ((const char *) pack->name) + QString(".prj");
     else 
       fn.setNum(it.currentKey());
     
@@ -2185,7 +2194,7 @@ void BrowserPackage::save_all(bool modified_only)
 	pack->activitydiagram_settings.save(st);
 	nl_indent(st);
   
-	bool nl = FALSE;
+	BooL nl = FALSE;
 	
 	save_color(st, "class_color", pack->class_color, nl);
 	save_color(st, "duration_color", pack->duration_color, nl);

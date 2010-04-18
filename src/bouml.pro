@@ -64,6 +64,7 @@ HEADERS		= data/ActualParamData.h \
 		  diagram/SdMsgBaseCanvas.h \
 		  diagram/SdMsgCanvas.h \
 		  diagram/SdObjCanvas.h \
+		  diagram/SdLostFoundMsgSupportCanvas.h \
 		  diagram/SdSelfMsgCanvas.h \
 		  diagram/SelectAreaCanvas.h \
 		  diagram/SeqDiagramView.h \
@@ -308,6 +309,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/SdMsgBaseCanvas.cpp \
 		  diagram/SdMsgCanvas.cpp \
 		  diagram/SdObjCanvas.cpp \
+		  diagram/SdLostFoundMsgSupportCanvas.cpp \
 		  diagram/SdSelfMsgCanvas.cpp \
 		  diagram/SelectAreaCanvas.cpp \
 		  diagram/SeqDiagramView.cpp \
@@ -456,4 +458,4 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  xpm/UmlPixmap.cpp
 INTERFACES	= 
 TARGET		= bouml
-
+DEFINES         = BooL=bool

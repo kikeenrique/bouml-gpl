@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -132,8 +132,10 @@ void BasicData::set_browser_node(BrowserNode * bn) {
   bn->update_stereotype();
 }
 
-QString BasicData::definition(bool) const {
-  return browser_node->get_name();
+QString BasicData::definition(bool, bool with_kind) const {
+  return (with_kind)
+    ? "[" + browser_node->get_stype() + "] " + browser_node->get_name()
+    : QString(browser_node->get_name());
 }
 
 bool BasicData::decldefbody_contain(const QString &, bool,

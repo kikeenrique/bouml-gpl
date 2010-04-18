@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -142,7 +142,7 @@ class OperationData : public ClassMemberData,
     
     void set_browser_node(BrowserOperation *, bool update);
 
-    virtual QString definition(bool full) const;
+    virtual QString definition(bool full, bool with_kind) const;
     QString definition(bool full, bool withdir, bool withname) const;
     QString definition(bool full, DrawingLanguage language, bool withdir, bool withname) const;
     

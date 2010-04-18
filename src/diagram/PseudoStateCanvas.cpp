@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -209,6 +209,23 @@ void PseudoStateCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
       DiagramCanvas::resize(c, dx, 0, o, MIN_FORK_JOIN_LARGESIDE, FORK_JOIN_SMALLSIDE, TRUE);
     else
       DiagramCanvas::resize(c, 0, dy, o, FORK_JOIN_SMALLSIDE, MIN_FORK_JOIN_LARGESIDE, TRUE);
+    break;
+  default:
+    break;
+  }
+}
+
+void PseudoStateCanvas::resize(const QSize & sz, bool w, bool h) {
+  switch (browser_node->get_type()) {
+  case ForkPS:
+  case JoinPS:
+    manual_size = TRUE;
+    xpm = 0;
+    
+    if (horiz)
+      DiagramCanvas::resize(sz, w, h, MIN_FORK_JOIN_LARGESIDE, FORK_JOIN_SMALLSIDE, TRUE);
+    else
+      DiagramCanvas::resize(sz, w, h, FORK_JOIN_SMALLSIDE, MIN_FORK_JOIN_LARGESIDE, TRUE);
     break;
   default:
     break;
@@ -443,7 +460,7 @@ void PseudoStateCanvas::draw(QPainter & p) {
 		px + 7, py + 7);
       else
 	fprintf(fp, "<ellipse fill=\"black\" stroke=\"none\" cx=\"%d\" cy=\"%d\" rx=\"4.5\" ry=\"4.5\" />\n",
-		px + 7, py + 7);
+		px + 5, py + 5);
       break;
     case ChoicePS:
       // note : shadow not produced
@@ -489,7 +506,7 @@ UmlCode PseudoStateCanvas::type() const {
   return browser_node->get_type();
 }
 
-void PseudoStateCanvas::delete_available(bool & in_model, bool & out_model) const {
+void PseudoStateCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -510,17 +527,8 @@ void PseudoStateCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   int index;
-  QString s = browser_node->get_name();
-  
-  if (s.isEmpty()) {
-    s = stringify(browser_node->get_type());
-    int index = s.find("_");
     
-    if (index != -1)
-      s.replace(index, 1, " ");
-  }
-  
-  m.insertItem(new MenuTitle(TR(s), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,11 +54,11 @@ class MyInputDialog : public QDialog {
     
   public:
     static QString getText(const char * title, const QString & msg,
-			   const QString & init, bool & ok,
+			   const QString & init, BooL & ok,
 			   const QValidator * v = 0);
     static QString getText(const char * title, const QString & msg,
 			   const QStringList & l, const QString & init,
-			   bool existing, bool & ok);
+			   bool existing, BooL & ok);
     
   protected slots:
     virtual void polish();

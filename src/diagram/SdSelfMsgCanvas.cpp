@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,7 +46,7 @@
 #define SELF_MSG_WIDTH  20
 #define SELF_MSG_HEIGHT 14
 
-SdSelfMsgCanvas::SdSelfMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
+SdSelfMsgCanvas::SdSelfMsgCanvas(UmlCanvas * canvas, SdMsgSupport * d,
 				 UmlCode l, int v, int id)
     : SdMsgBaseCanvas(canvas, d, l, v + 1, id) {
   dest->add(this);
@@ -287,10 +287,10 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
     msg->get_browser_node()->select_in_browser();
     return;
   case 9:
-    dest->go_up(this, TRUE);
+    ((SdDurationCanvas *) dest)->go_up(this, TRUE);
     break;
   case 10:
-    dest->go_down(this);
+    ((SdDurationCanvas *) dest)->go_down(this);
   default:
     return;
   }

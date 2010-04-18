@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@ class DiagramView : public QCanvasView {
     
   protected:
     int id;
+    int pressedButton;
     QPoint mousePressPos;	// mouse position when it is pressed or moved
     QCanvasRectangle * selectArea;
     DiagramItem * start;	// last added line part start
@@ -64,8 +65,8 @@ class DiagramView : public QCanvasView {
     bool history_frozen;
     bool first_move;
     bool on_arrow_decenter;
-    bool decenter_start;
-    bool decenter_horiz;
+    BooL decenter_start;
+    BooL decenter_horiz;
     QValueList<QPoint> previousResizeCorrection;
     QList<QByteArray> history;
     unsigned history_index;
@@ -91,7 +92,7 @@ class DiagramView : public QCanvasView {
     void preferred_size_zoom();
     bool has_preferred_size_zoom() { return preferred_zoom != 0; }
     void multiple_selection_menu(bool in_model, bool out_model, bool alignable,
-				 QList<DiagramItem> &);
+				 int n_resize, QList<DiagramItem> & l_drawing_settings);
     bool is_present(BrowserNode * bn);
     virtual void add_related_elements(DiagramItem *, QString what,
 				      bool inh, bool assoc);
@@ -144,6 +145,7 @@ class DiagramView : public QCanvasView {
     virtual void contentsMousePressEvent(QMouseEvent *);
     virtual void contentsMouseReleaseEvent(QMouseEvent *);
     virtual void contentsMouseMoveEvent(QMouseEvent *);
+    virtual void contentsWheelEvent(QWheelEvent *);
     void moveSelected(int dx, int dy, bool first);
     void resizeSelected(int dx, int dy);
     void add_point(QMouseEvent * e);
@@ -162,6 +164,7 @@ class DiagramView : public QCanvasView {
     void alignCenter();
     void alignHorizontaly();
     void alignVerticaly();
+    void same_size(bool w, bool h);
     
     void delete_them(bool in_model);
     

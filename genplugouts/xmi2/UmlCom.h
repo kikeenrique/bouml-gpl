@@ -71,7 +71,7 @@ class UmlCom {
     // does not use Qt rich text
     static void message(const char * s);
     // must be called just before the disconnexion
-    static void bye();
+    static void bye(int v);
     // disconnexion
     static void close();
 

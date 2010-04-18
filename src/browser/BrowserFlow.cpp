@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -184,15 +184,10 @@ const QPixmap* BrowserFlow::pixmap(int) const {
 }
 
 void BrowserFlow::menu() {
-  QString s = name;
-  
-  if (s.isEmpty())
-    s = TR("flow");
-  
-  QPopupMenu m(0, s);
+  QPopupMenu m(0, "flow");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
@@ -207,7 +202,7 @@ Note that you can undelete it after"));
       m.insertSeparator();
     }
     
-    s = def->get_end_node()->get_name();
+    QString s = def->get_end_node()->get_name();
     
     if (s.isEmpty())
       s = stringify(def->get_end_node()->get_type());
@@ -216,7 +211,7 @@ Note that you can undelete it after"));
 		   TR("to select the destination"));
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
 		   TR("to know who reference the <i>region</i>"));
-    mark_menu(m, TR("flow"), 90);
+    mark_menu(m, TR("the flow"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -310,6 +305,10 @@ void BrowserFlow::modified() {
 
 UmlCode BrowserFlow::get_type() const {
   return UmlFlow;
+}
+
+QString BrowserFlow::get_stype() const {
+  return TR("flow");
 }
 
 int BrowserFlow::get_identifier() const {

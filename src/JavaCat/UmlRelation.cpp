@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,7 +47,7 @@ using namespace std;
 
 #ifdef ROUNDTRIP
 static UmlRelation * search_rel(Class * container, const QCString & name,
-				const QCString & st)
+				UmlClass * dest, const QCString & st)
 {
   UmlItem * x = container->get_uml()->search_for_att_rel(name);
   
@@ -63,14 +63,21 @@ static UmlRelation * search_rel(Class * container, const QCString & name,
       ? ((UmlRelation *) x)
       : ((UmlRelation *) x)->side(FALSE);
 
-    if ((r2 == 0) ||
-	st.isEmpty() ||
-	(((UmlRelation *) x)->stereotype() == st) ||
-	(((x == r1) ? r2 : r1)->javaDecl().find("${stereotype}") == -1))
+    if ((((UmlRelation *) x)->roleType() == dest) &&
+	((r2 == 0) ||
+	 st.isEmpty() ||
+	 (((UmlRelation *) x)->stereotype() == st) ||
+	 (((x == r1) ? r2 : r1)->javaDecl().find("${stereotype}") == -1)))
       return (UmlRelation *) x;
     
-    // new stereotype not compatible with other side
-    ((x == r1) ? r2 : r1)->set_unidir();
+    // rel target or new stereotype not compatible with other side
+    if (x != r1)
+      r1->set_unidir();
+    else if (r2 == 0)
+      r1->deleteIt();
+    else
+      r2->set_unidir();
+    
     return 0;
   }
 }
@@ -87,7 +94,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
 #ifdef ROUNDTRIP
 			  , bool roundtrip, QList<UmlItem> & expected_order
 #endif
-			)
+			  )
 {
 #ifdef TRACE
   cout << "RELATION '" << name << "' from '" << cl->Name() << "' to '" << dest.type->Name()
@@ -111,7 +118,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   bool created;
   
   if (!roundtrip ||
-      ((rel = search_rel(container, name, "")) == 0)) {
+      ((rel = search_rel(container, name, dest.type, "")) == 0)) {
 #endif
     rel = UmlBaseRelation::create(aDirectionalAssociation, cl, dest.type);
     
@@ -294,7 +301,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   bool created;
   
   if (!roundtrip ||
-      ((rel = search_rel(container, name, st)) == 0)) {
+      ((rel = search_rel(container, name, type, st)) == 0)) {
 #endif
   rel = UmlBaseRelation::create(aDirectionalAssociation, cl, type);
   
@@ -383,7 +390,9 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
       container->set_updated();
     }
     
-    if (neq(rel->stereotype(), st)) {
+    if (neq(rel->stereotype(), st) &&
+	(rel->stereotype().isEmpty() ||
+	 (JavaSettings::relationAttributeStereotype(rel->stereotype()) != st))) {
       rel->set_Stereotype(st);
       container->set_updated();
     }
@@ -392,6 +401,8 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
       rel->set_JavaDecl(decl);
       container->set_updated();
     }
+    
+    // role name is the right one
     
     rel->set_usefull();
     expected_order.append(rel);

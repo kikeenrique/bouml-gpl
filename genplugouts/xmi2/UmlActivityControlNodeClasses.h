@@ -13,6 +13,8 @@ class UmlInitialActivityNode : public UmlBaseInitialActivityNode {
 
     virtual const char * sKind() const;
 
+    virtual void solve_output_flows();
+
 };
 
 class UmlFlowFinalActivityNode : public UmlBaseFlowFinalActivityNode {
@@ -22,6 +24,8 @@ class UmlFlowFinalActivityNode : public UmlBaseFlowFinalActivityNode {
     }
 
     virtual const char * sKind() const;
+
+    virtual void solve_output_flows();
 
 };
 
@@ -33,6 +37,8 @@ class UmlActivityFinalActivityNode : public UmlBaseActivityFinalActivityNode {
 
     virtual const char * sKind() const;
 
+    virtual void solve_output_flows();
+
 };
 
 class UmlDecisionActivityNode : public UmlBaseDecisionActivityNode {
@@ -42,6 +48,8 @@ class UmlDecisionActivityNode : public UmlBaseDecisionActivityNode {
     }
 
     virtual const char * sKind() const;
+
+    virtual void solve_output_flows();
 
 };
 
@@ -53,6 +61,8 @@ class UmlMergeActivityNode : public UmlBaseMergeActivityNode {
 
     virtual const char * sKind() const;
 
+    virtual void solve_output_flows();
+
 };
 
 class UmlForkActivityNode : public UmlBaseForkActivityNode {
@@ -63,6 +73,8 @@ class UmlForkActivityNode : public UmlBaseForkActivityNode {
 
     virtual const char * sKind() const;
 
+    virtual void solve_output_flows();
+
 };
 
 class UmlJoinActivityNode : public UmlBaseJoinActivityNode {
@@ -72,6 +84,8 @@ class UmlJoinActivityNode : public UmlBaseJoinActivityNode {
     }
 
     virtual const char * sKind() const;
+
+    virtual void solve_output_flows();
 
 };
 

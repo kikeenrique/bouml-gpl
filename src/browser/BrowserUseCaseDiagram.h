@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -74,6 +74,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
@@ -87,7 +88,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings & r) const;
     virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual bool get_auto_label_position() const;    
-    virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
+    virtual void package_settings(BooL & name_in_tab, ShowContextMode & show_context) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserUseCaseDiagram * read(char * &, char *, BrowserNode *);

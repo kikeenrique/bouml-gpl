@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -119,7 +119,7 @@ const QPixmap * BrowserNode::pixmap(int col) const {
 
 // load package definition
 bool BrowserNode::load(QDir & dir) {
-  bool ro = FALSE;
+  BooL ro = FALSE;
   char * buff = read_file(dir, filename, ro);
   
   if (buff == 0)

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,7 +56,7 @@ OperationListDialog::OperationListDialog(const char * m,
   
   for (BrowserOperation * oper = l.first(); oper; oper = l.next()) {
     QString s = ((BrowserNode *) oper->parent())->get_name() +
-      QString("::") + oper->get_data()->definition(TRUE);
+      QString("::") + oper->get_data()->definition(TRUE, FALSE);
     
     if (((OperationData *) oper->get_data())->get_is_abstract())
       cb->insertItem("[a] " + s);

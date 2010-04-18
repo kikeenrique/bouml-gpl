@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,8 +41,10 @@ class UmlOperation : public UmlBaseOperation {
       : UmlBaseOperation(id, n) {};
   
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, bool & indent_needed,
+			  QCString indent, BooL & indent_needed,
 			  int &, const QCString &);
+    
+    virtual void generate_imports(QTextOStream & f, QCString & made);
     
     QCString compute_name();
     
@@ -50,7 +52,7 @@ class UmlOperation : public UmlBaseOperation {
     
   private:
     const char * generate_body(QTextOStream & f, QCString indent,
-			       bool & indent_needed, const char * p);
+			       BooL & indent_needed, const char * p);
 };
 
 #endif

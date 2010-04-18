@@ -1,6 +1,6 @@
 class UmlItem
 !!!202242.cpp!!!	projection() : void
-  bool rec = (children().size() != 0);
+  BooL rec = (children().size() != 0);
   char lang;
   Dialog d(rec, lang);
   

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -3074,7 +3074,7 @@ void OperationDialog::python_unmapped_def() {
 }
 
 void OperationDialog::manage_decorators(QString & s, QString indent,
-					bool & indent_needed) {
+					BooL & indent_needed) {
   if (! pythondecorator.isEmpty()) {
     int index = 0;
     int index2;
@@ -3111,7 +3111,7 @@ void OperationDialog::python_update_def() {
   bool nobody = abstract_cb->isChecked();
   const char * pp = 0;
   const char * afterparam = 0;
-  bool indent_needed = FALSE;
+  BooL indent_needed = FALSE;
   bool in_params = FALSE;
   QString indent;
   QString saved_indent = indent;

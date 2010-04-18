@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2010 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -237,7 +237,10 @@ aCorner StateActionCanvas::on_resize_point(const QPoint & p) {
 
 void StateActionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
-  compute_size();
+}
+
+void StateActionCanvas::resize(const QSize & sz, bool w, bool h) {
+  DiagramCanvas::resize(sz, w, h, min_width, min_height, TRUE);
 }
 
 void StateActionCanvas::draw(QPainter & p) {
@@ -453,7 +456,7 @@ UmlCode StateActionCanvas::type() const {
   return UmlStateAction;
 }
 
-void StateActionCanvas::delete_available(bool & in_model, bool & out_model) const {
+void StateActionCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();
 }
@@ -474,16 +477,8 @@ void StateActionCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   int index;
-  QString s = browser_node->get_name();
-  
-  if (s.isEmpty()) {
-    const BasicData * data = browser_node->get_data();
-    QString st = data->get_stereotype();
     
-    s = (!st.isEmpty()) ? st : TR("action");
-  }
-  
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);
