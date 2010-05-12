@@ -324,24 +324,28 @@ void BrowserUseCaseDiagram::open(bool) {
 }
 
 void BrowserUseCaseDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(6);
-  
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("note color"), &note_color);
-  co[1].set(TR("use case color"), &usecase_color);
-  co[2].set(TR("package color"), &package_color);
-  co[3].set(TR("fragment color"), &fragment_color);
-  co[4].set(TR("subject color"), &subject_color);
-  co[5].set(TR("class color"), &class_color);
-
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(6);
+    
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("note color"), &note_color);
+    co[1].set(TR("use case color"), &usecase_color);
+    co[2].set(TR("package color"), &package_color);
+    co[3].set(TR("fragment color"), &fragment_color);
+    co[4].set(TR("subject color"), &subject_color);
+    co[5].set(TR("class color"), &class_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 

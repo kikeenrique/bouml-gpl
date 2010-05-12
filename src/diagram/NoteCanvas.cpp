@@ -240,7 +240,7 @@ void NoteCanvas::menu(const QPoint&) {
     delete_it();
     break;
   case 6:
-    {
+    for (;;) {
       ColorSpecVector co(1);
       
       co[0].set(TR("color"), &fg_c);
@@ -256,6 +256,11 @@ void NoteCanvas::menu(const QPoint&) {
       hide();
       show();
       canvas()->update();
+      
+      if (!dialog.redo())
+	break;
+      else
+	package_modified();
     }
     break;
   default:
@@ -294,15 +299,19 @@ void NoteCanvas::apply_shortcut(QString s) {
 }
 
 void NoteCanvas::edit_drawing_settings() {
-  ColorSpecVector co(1);
-  
-  co[0].set(TR("note color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    ColorSpecVector co(1);
+    
+    co[0].set(TR("note color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool NoteCanvas::has_drawing_settings() const {
@@ -310,21 +319,38 @@ bool NoteCanvas::has_drawing_settings() const {
 }
 
 void NoteCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("note color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((NoteCanvas *) it.current())->itscolor = itscolor;
-      ((NoteCanvas *) it.current())->modified();	// call package_modified()
-    }    
+    co[0].set(TR("note color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((NoteCanvas *) it.current())->itscolor = itscolor;
+	((NoteCanvas *) it.current())->modified();	// call package_modified()
+      }    
+    }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void NoteCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  NoteCanvas * x = (NoteCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    NoteCanvas * o =  (NoteCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

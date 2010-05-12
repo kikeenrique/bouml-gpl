@@ -50,6 +50,8 @@ class ClassInstCanvas : public Instance {
     bool horiz;
     Uml3States show_stereotype_properties;
     bool show_properties;
+    ShowContextMode show_context_mode;
+    ShowContextMode used_show_context_mode;
   
   public:
     ClassInstCanvas();

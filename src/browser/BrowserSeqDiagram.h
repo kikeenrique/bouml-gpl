@@ -82,6 +82,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     virtual void set_name(const char * s);
     virtual void update_drawing_settings();
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
+    void get_sequencediagramsettings_msg(SequenceDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;
@@ -89,6 +90,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     virtual bool get_auto_label_position() const;    
     virtual bool get_show_stereotype_properties() const;
     virtual bool get_classinstwritehorizontally() const;
+    virtual ShowContextMode get_classinstshowmode() const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserSeqDiagram * read(char * &, char *, BrowserNode *);

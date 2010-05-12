@@ -326,26 +326,30 @@ void BrowserActivityDiagram::open(bool) {
 }
 
 void BrowserActivityDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(8);
-  
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("activity color"), &activity_color);
-  co[1].set(TR("activity region color"), &activityregion_color);
-  co[2].set(TR("activity partition color"), &activitypartition_color);
-  co[3].set(TR("activity action color"), &activityaction_color);
-  co[4].set(TR("parameter and pin color"), &parameterpin_color);
-  co[5].set(TR("note color"), &note_color);
-  co[6].set(TR("package color"), &package_color);
-  co[7].set(TR("fragment color"), &fragment_color);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(8);
+    
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("activity color"), &activity_color);
+    co[1].set(TR("activity region color"), &activityregion_color);
+    co[2].set(TR("activity partition color"), &activitypartition_color);
+    co[3].set(TR("activity action color"), &activityaction_color);
+    co[4].set(TR("parameter and pin color"), &parameterpin_color);
+    co[5].set(TR("note color"), &note_color);
+    co[6].set(TR("package color"), &package_color);
+    co[7].set(TR("fragment color"), &fragment_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 

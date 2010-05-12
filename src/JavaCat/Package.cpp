@@ -33,6 +33,7 @@
 #endif
 #include <qdatastream.h> 
 #include <qdir.h>
+#include <qregexp.h>
 #ifdef ROUNDTRIP
 #include <qmessagebox.h>
 #endif
@@ -59,6 +60,13 @@ Package * Package::root;
 
 // to place unknown classes
 Package * Package::unknown;
+
+// regexp to filter dirs/files
+QRegExp * Package::DirFilter;
+QRegExp * Package::FileFilter;
+
+// "java"
+QString Package::Ext;
 
 // to know if it is the scan step or the reverse step
 bool Package::scan;
@@ -213,6 +221,18 @@ void Package::init(UmlPackage * r, QApplication * a)
     RootCDir = RootSDir;
   }
   
+  QString s;
+  
+  DirFilter = (!(s = (const char *) JavaSettings::reverseRoundtripDirRegExp()).isEmpty())
+    ? new QRegExp(s, JavaSettings::isReverseRoundtripDirRegExpCaseSensitive(), TRUE)
+    : 0;
+  
+  FileFilter = (!(s = (const char *) JavaSettings::reverseRoundtripFileRegExp()).isEmpty())
+    ? new QRegExp(s, JavaSettings::isReverseRoundtripFileRegExpCaseSensitive(), TRUE)
+    : 0;
+  
+  Ext = JavaSettings::sourceExtension();
+  
 #ifdef ROUNDTRIP
   root = new Package(0, r);
   r->init(root);
@@ -318,6 +338,7 @@ Package * Package::scan_dir(int & n)
 
   if (! path.isEmpty()) {
     QDir d(path);
+    
     Package * p = new Package(root, path, d.dirName());
     
     // scanning phase
@@ -343,8 +364,23 @@ Package * Package::scan_dir(int & n)
 }
 #endif
 
+static bool allowed(QRegExp * rg, QString f)
+{
+  if (rg != 0) {
+    int matchLen;
+    
+    return ((rg->match(f, 0, &matchLen) != 0) ||
+	    (matchLen != (int) f.length()));
+  }
+  else
+    return TRUE;
+}
+
 int Package::file_number(QDir & d, bool rec)
 {
+  if (! allowed(DirFilter, d.dirName()))
+    return 0;
+  
 #ifdef ROUNDTRIP
   if (DirManaged[d.path()] != 0)
     return 0;
@@ -359,7 +395,7 @@ int Package::file_number(QDir & d, bool rec)
     QFileInfo * fi;
     
     while ((fi = it.current()) != 0) {
-      if (fi->extension(FALSE) == "java")
+      if (fi->extension(FALSE) == Ext)
 	result += 1;
       
       ++it;
@@ -468,6 +504,9 @@ void Package::reverse_directory(QDir & d, bool rec) {
   
   DirManaged.insert(d.path(), (bool *) 1);
 #endif
+  
+  if (! allowed(DirFilter, d.dirName()))
+    return;
 
   // reads files
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
@@ -477,12 +516,13 @@ void Package::reverse_directory(QDir & d, bool rec) {
     QFileInfo * fi;
     
     while ((fi = it.current()) != 0) {
-      if (fi->extension() == "java") {
-	reverse_file(QCString(fi->filePath())
+      if (fi->extension() == Ext) {
+	if (allowed(FileFilter, fi->fileName()))
+	  reverse_file(QCString(fi->filePath())
 #ifdef ROUNDTRIP
-		     , roundtriped.find(fi->baseName())
+		       , roundtriped.find(fi->baseName())
 #endif
-		     );
+		       );
 	Progress::tic_it();
       }
       ++it;
@@ -500,10 +540,16 @@ void Package::reverse_directory(QDir & d, bool rec) {
       while ((di = itd.current()) != 0) {
 	if (((const char *) di->fileName())[0] != '.') {
 	  QDir sd(di->filePath());
-	  Package * p = find(QCString(sd.dirName()), TRUE);
-	  
-	  if (p != 0)
-	    p->reverse_directory(sd, TRUE);
+#ifndef REVERSE
+	  if (allowed(DirFilter, sd.dirName())) {
+#endif
+	    Package * p = find(QCString(sd.dirName()), TRUE);
+	    
+	    if (p != 0)
+	      p->reverse_directory(sd, TRUE);
+#ifndef REVERSE
+	  }
+#endif
 	}
 	++itd;
       }
@@ -513,7 +559,8 @@ void Package::reverse_directory(QDir & d, bool rec) {
 
 #ifdef ROUNDTRIP
 void Package::reverse(UmlArtifact * art) {
-  reverse_file(path + "/" + art->name() + ".java", art);
+  if (allowed(FileFilter, QString(art->name()) + "." + Ext))
+    reverse_file(path + "/" + art->name() + "." + QCString(Ext), art);
 }
 #endif
 

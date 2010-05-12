@@ -520,15 +520,19 @@ void ExpansionRegionCanvas::apply_shortcut(QString s) {
 }
 
 void ExpansionRegionCanvas::edit_drawing_settings() {
-  ColorSpecVector co(1);
-  
-  co[0].set(TR("expansion region color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    ColorSpecVector co(1);
+    
+    co[0].set(TR("expansion region color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ExpansionRegionCanvas::has_drawing_settings() const {
@@ -536,21 +540,38 @@ bool ExpansionRegionCanvas::has_drawing_settings() const {
 }
 
 void ExpansionRegionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("expansion region color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((ExpansionRegionCanvas *) it.current())->itscolor = itscolor;
-      ((ExpansionRegionCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("expansion region color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((ExpansionRegionCanvas *) it.current())->itscolor = itscolor;
+	((ExpansionRegionCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ExpansionRegionCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ExpansionRegionCanvas * x = (ExpansionRegionCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ExpansionRegionCanvas * o =  (ExpansionRegionCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

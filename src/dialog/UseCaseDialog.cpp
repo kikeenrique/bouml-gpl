@@ -119,6 +119,8 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, TR("Properties"));
+  
+  open_dialog(this);
 }
 
 void UseCaseDialog::polish() {
@@ -132,6 +134,8 @@ UseCaseDialog::~UseCaseDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void UseCaseDialog::edit_description() {

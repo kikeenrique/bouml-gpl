@@ -16,10 +16,10 @@ class UmlOperation : public UmlBaseOperation {
     void add_param(int rank, aDirection dir,
 		   const char * name, UmlTypeSpec type);
     void set_cpp(const char * return_form_or_inherit,
-		 const char * params, const char * body,
+		 const char * params, QCString body,
 		 bool inlinep, const char * if_def, const char * end_if);
     void set_java(const char * return_form, const char * params,
-		  const char * body, bool inlinep);
+		  QCString body, bool inlinep);
     
     virtual void rename_jdk5();
     

@@ -73,7 +73,6 @@ class CodDirsCanvas : public QObject, public DiagramCanvas, public CodMsgSupport
     void update_label_pos(LabelCanvas *, bool forward);
     virtual void update_msgs();
     bool edit_drawing_settings();
-
     virtual void draw(QPainter & p);
     virtual void setVisible(bool yes);
     

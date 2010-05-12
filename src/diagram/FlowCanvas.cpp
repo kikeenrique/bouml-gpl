@@ -343,19 +343,23 @@ void FlowCanvas::apply_shortcut(QString s) {
 }
 
 void FlowCanvas::edit_drawing_settings() {
-  StateSpecVector st(1);
-  
-  st[0].set(TR("write horizontally"), &write_horizontally);
-  settings.complete(st, TRUE);
-  
-  SettingsDialog dialog(&st, 0, FALSE);
-  
-  dialog.setCaption(TR("Flow Drawing Settings dialog"));
-  dialog.raise();
-  
-  if (dialog.exec() == QDialog::Accepted) {
-    propagate_drawing_settings();
-    modified();
+  for (;;) {
+    StateSpecVector st(1);
+    
+    st[0].set(TR("write horizontally"), &write_horizontally);
+    settings.complete(st, TRUE);
+    
+    SettingsDialog dialog(&st, 0, FALSE);
+    
+    dialog.setCaption(TR("Flow Drawing Settings dialog"));
+    dialog.raise();
+    
+    if (dialog.exec() == QDialog::Accepted) {
+      propagate_drawing_settings();
+      modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -368,29 +372,48 @@ bool FlowCanvas::has_drawing_settings() const {
 }
 
 void FlowCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  Uml3States write_horizontally;
-  ActivityDrawingSettings settings;
-  
-  st[0].set(TR("write horizontally"), &write_horizontally);
-  settings.complete(st, TRUE);
-  
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
-  
-  dialog.setCaption(TR("Flow Drawing Settings dialog"));
-  dialog.raise();
-  
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(1);
+    Uml3States write_horizontally;
+    ActivityDrawingSettings settings;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((FlowCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      ((FlowCanvas *) it.current())->settings.set(st, 1);
-      ((FlowCanvas *) it.current())->propagate_drawing_settings();
-      ((FlowCanvas *) it.current())->modified();
+    st[0].set(TR("write horizontally"), &write_horizontally);
+    settings.complete(st, TRUE);
+    
+    SettingsDialog dialog(&st, 0, FALSE, TRUE);
+    
+    dialog.setCaption(TR("Flow Drawing Settings dialog"));
+    dialog.raise();
+    
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((FlowCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	((FlowCanvas *) it.current())->settings.set(st, 1);
+	((FlowCanvas *) it.current())->propagate_drawing_settings();
+	((FlowCanvas *) it.current())->modified();
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void FlowCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  FlowCanvas * x = (FlowCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    FlowCanvas * o =  (FlowCanvas *) it.current();
+				 
+    o->write_horizontally = x->write_horizontally;
+    o->settings = x->settings;
+    o->propagate_drawing_settings();
+    o->modified();
   }
 }
 

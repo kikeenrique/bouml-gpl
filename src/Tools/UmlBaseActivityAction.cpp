@@ -96,6 +96,7 @@ void UmlBaseActivityAction::read_uml_() {
   UmlBaseItem::read_uml_();
   _pre_condition = UmlCom::read_string();
   _post_condition = UmlCom::read_string();
+  (void) UmlCom::read_string(); // constraint
 }
 
 #ifdef WITHCPP

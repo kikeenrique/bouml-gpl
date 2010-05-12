@@ -241,6 +241,8 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   
   kvtable = new KeyValuesTable(ex->get_browser_node(), grid, visit);
   addTab(grid, TR("Properties"));
+  
+  open_dialog(this);
 }
 
 void ExtraMemberDialog::polish() {
@@ -254,6 +256,8 @@ ExtraMemberDialog::~ExtraMemberDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void ExtraMemberDialog::accept() {

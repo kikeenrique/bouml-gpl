@@ -65,7 +65,7 @@ void UmlOperation::add_param(int rank, aDirection dir,
 }
 
 void UmlOperation::set_cpp(const char * return_form_or_inherit,
-			   const char * params, const char * body,
+			   const char * params, QCString body,
 			   bool inlinep, const char * if_def,
 			   const char * end_if) {
   if (*return_form_or_inherit == ':') {
@@ -78,7 +78,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       s.insert(index, params);
       s.append(" ");
       s.append(return_form_or_inherit);
-      if (*body) {
+      if (!body.isEmpty()) {
 	s.append(" {\n  ");
 	s.append(body);
 	s.append("}\n");
@@ -106,7 +106,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       s.insert(index, params);
       s.append(" ");
       s.append(return_form_or_inherit);
-      if (*body) {
+      if (!body.isEmpty()) {
 	s.append(" {\n  ");
 	s.append(body);
 	s.append("}\n");
@@ -126,7 +126,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       s.replace(index, 7, return_form_or_inherit);
       s.insert(s.find("${)}", index), params);
       s.resize(s.findRev(";") + 1);
-      if (*body) {
+      if (!body.isEmpty()) {
 	s.append(" {\n  ");
 	s.append(body);
 	s.append("}\n");
@@ -161,7 +161,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
 
 
 void UmlOperation::set_java(const char * return_form,
-			    const char * params, const char * body,
+			    const char * params, QCString body,
 			    bool inlinep) {
   QCString s = JavaSettings::operationDef();
   int index = s.find("${type}");

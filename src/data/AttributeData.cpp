@@ -172,7 +172,8 @@ QString AttributeData::definition(bool full, bool with_kind) const {
 }
 
 QString AttributeData::definition(bool full, bool mult, bool init,
-				  bool modif, DrawingLanguage language) const {
+				  bool modif, DrawingLanguage language,
+				  ShowContextMode mode) const {
   switch (language) {
   case UmlView:
     {
@@ -182,7 +183,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
 	r = "/" + r;
       
       if (full) {
-	r += QString(" : ") + ((const char *) type.get_type());
+	r += " : " + type.get_type(mode);
 	
 	if (mult && !multiplicity.isEmpty())
 	  r += " [" + QString((const char *) multiplicity) + "]";
@@ -222,7 +223,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
   case CppView:
     if (full)
       return AttributeDialog::cpp_decl((BrowserAttribute *) browser_node,
-				       init);
+				       init, mode);
     else if (!cpp_decl.isEmpty())
       return definition(FALSE, FALSE);
     else
@@ -230,7 +231,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
   case JavaView:
     if (full)
       return AttributeDialog::java_decl((BrowserAttribute *) browser_node,
-					init);
+					init, mode);
     else if (!java_decl.isEmpty())
       return definition(FALSE, FALSE);
     else
@@ -238,7 +239,7 @@ QString AttributeData::definition(bool full, bool mult, bool init,
   case PhpView:
     if (full)
       return AttributeDialog::php_decl((BrowserAttribute *) browser_node,
-				       init);
+				       init, mode);
     else if (!php_decl.isEmpty())
       return definition(FALSE, FALSE);
     else
@@ -246,14 +247,14 @@ QString AttributeData::definition(bool full, bool mult, bool init,
   case PythonView:
     if (full)
       return AttributeDialog::python_decl((BrowserAttribute *) browser_node,
-					  init);
+					  init, mode);
     else if (!python_decl.isEmpty())
       return definition(FALSE, FALSE);
     else
       return QString::null;
   default:
     if (full)
-      return AttributeDialog::idl_decl((BrowserAttribute *) browser_node);
+      return AttributeDialog::idl_decl((BrowserAttribute *) browser_node, mode);
     else if (!idl_decl.isEmpty())
       return definition(FALSE, FALSE);
     else

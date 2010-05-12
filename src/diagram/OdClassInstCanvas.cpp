@@ -144,6 +144,10 @@ void OdClassInstCanvas::compute_size() {
       
   he = fm.height() + two + two;
   
+  used_show_context_mode = (show_context_mode == DefaultShowContextMode)
+    ? canvas->browser_diagram()->get_classinstshowmode()
+    : show_context_mode;
+  
   if (horiz)
     wi = fm.width(full_name());
   else {
@@ -151,7 +155,7 @@ void OdClassInstCanvas::compute_size() {
     
     int w = fm.width(get_name() + ":");
     
-    wi = fm.width(data->get_class()->get_name());
+    wi = fm.width(data->get_class()->contextual_name(used_show_context_mode));
     if (w > wi)
       wi = w;
   }
@@ -430,10 +434,10 @@ void OdClassInstCanvas::draw(QPainter & p) {
       r.setTop(r.top() + fm.height());
       
       p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
-		 cl->get_name());
+		 cl->contextual_name(used_show_context_mode));
       if (fp != 0)
 	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
-		  cl->get_name(),
+		  cl->contextual_name(used_show_context_mode),
 		  p.font(), fp);
     }
     
@@ -609,20 +613,25 @@ void OdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void OdClassInstCanvas::edit_drawing_settings() {
-  StateSpecVector st((browser_node->get_type() != UmlClass) ? 2 : 1);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  if (browser_node->get_type() != UmlClass)
-    st[1].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() != QDialog::Accepted)
-    return;
-  modified();	// call package_modified
+  for (;;) {
+    StateSpecVector st((browser_node->get_type() != UmlClass) ? 3 : 2);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show class context"), &show_context_mode);
+    if (browser_node->get_type() != UmlClass)
+      st[2].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() != QDialog::Accepted)
+      return;
+    modified();	// call package_modified
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool OdClassInstCanvas::has_drawing_settings() const {
@@ -630,28 +639,52 @@ bool OdClassInstCanvas::has_drawing_settings() const {
 }
 
 void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  Uml3States write_horizontally;
-  UmlColor itscolor;
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    Uml3States write_horizontally;
+    ShowContextMode show_context_mode;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((OdClassInstCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!co[0].name.isEmpty())
-	((OdClassInstCanvas *) it.current())->itscolor = itscolor;
-      ((OdClassInstCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show class context"), &show_context_mode);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((OdClassInstCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!st[1].name.isEmpty())
+	  ((OdClassInstCanvas *) it.current())->show_context_mode =
+	    show_context_mode;
+	if (!co[0].name.isEmpty())
+	  ((OdClassInstCanvas *) it.current())->itscolor = itscolor;
+	((OdClassInstCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void OdClassInstCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  OdClassInstCanvas * x = (OdClassInstCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    OdClassInstCanvas * o =  (OdClassInstCanvas *) it.current();
+				 
+    o->write_horizontally = x->write_horizontally;
+    o->show_context_mode = x->show_context_mode;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 
@@ -778,6 +811,7 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     result->setZ(z);    
     result->itscolor = co;
     result->write_horizontally = ho;
+    result->show_context_mode = noContext;
     
     k = read_keyword(st);
     
@@ -812,6 +846,8 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     result->setZ(read_double(st));
         
     result->ClassInstCanvas::read(st, k);
+    if (read_file_format() < 74)
+      result->show_context_mode = noContext;
     
     result->read_stereotype_property(st, k);	// updates k
     

@@ -132,6 +132,8 @@ FlowDialog::FlowDialog(FlowData * d)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void FlowDialog::polish() {
@@ -145,6 +147,8 @@ FlowDialog::~FlowDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
     
 void FlowDialog::change_tabs(QWidget * w) {

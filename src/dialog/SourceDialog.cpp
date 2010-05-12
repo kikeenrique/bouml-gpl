@@ -134,12 +134,16 @@ SourceDialog::SourceDialog(QString p, BooL & flg, unsigned & edn)
   
   // not done in polish else the initial size is too small
   UmlDesktop::setsize_center(this, previous_size, 0.5, 0.5);
+  
+  open_dialog(this);
 }
 
 SourceDialog::~SourceDialog() {
   edited = FALSE;
   edition_number -= 1;
   previous_size = size();
+  
+  close_dialog(this);
 }
 
 void SourceDialog::updateCursorPos(int l, int c) {

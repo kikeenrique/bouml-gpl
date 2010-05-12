@@ -135,7 +135,7 @@ void CodDirsCanvas::update_msgs() {
   QString backward;
   ColMsg * msg;
   CollaborationDiagramSettings  dflt = settings;
-  
+    
   the_canvas()->browser_diagram()->get_collaborationdiagramsettings(dflt);  
   
   for (; (msg = it.current()) != 0; ++it) {
@@ -148,7 +148,8 @@ void CodDirsCanvas::update_msgs() {
     if (msg->get_is_forward()) {
       QString s = msg->def(dflt.show_hierarchical_rank == UmlYes,
 			   dflt.show_full_operations_definition == UmlYes,
-			   dflt.drawing_language);
+			   dflt.drawing_language,
+			   dflt.show_msg_context_mode);
       
       if (!s.isEmpty()) {
 	forward += *forward_pfix + s;
@@ -158,7 +159,8 @@ void CodDirsCanvas::update_msgs() {
     else {
       QString s = msg->def(dflt.show_hierarchical_rank == UmlYes,
 			   dflt.show_full_operations_definition == UmlYes,
-			   dflt.drawing_language);
+			   dflt.drawing_language,
+			   dflt.show_msg_context_mode);
       
       if (!s.isEmpty()) {
 	backward += *backward_pfix + s;
@@ -287,19 +289,22 @@ void CodDirsCanvas::draw(QPainter & p) {
 }
 
 bool CodDirsCanvas::edit_drawing_settings() {
-  StateSpecVector st;
-  
-  settings.complete(st, TRUE);
-  
-  SettingsDialog dialog(&st, 0, FALSE);
-      
-  dialog.raise();
-  if (dialog.exec() != QDialog::Accepted)
-    return FALSE;
-  
-  update_msgs();
-  
-  return TRUE;
+  for (;;) {
+    StateSpecVector st;
+    
+    settings.complete_msg(st);
+    
+    SettingsDialog dialog(&st, 0, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() != QDialog::Accepted)
+      return FALSE;
+    
+    update_msgs();
+    
+    if (!dialog.redo())
+      return TRUE;
+  }
 }
 
 UmlCode CodDirsCanvas::type() const {
@@ -351,7 +356,7 @@ void CodDirsCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     
     indent(+1);
     
-    settings.save(st);
+    settings.save_msg(st);
     
     if (label != 0) {
       nl_indent(st);

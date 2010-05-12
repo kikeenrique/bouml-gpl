@@ -309,22 +309,26 @@ void BrowserClassDiagram::open(bool) {
 }
 
 void BrowserClassDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(4);
-  
-  settings.complete(st, UmlClassDiagram);
-  
-  co[0].set("class color", &class_color);
-  co[1].set("note color", &note_color);
-  co[2].set("package color", &package_color);
-  co[3].set("fragment color", &fragment_color);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(4);
+    
+    settings.complete(st, UmlClassDiagram);
+    
+    co[0].set("class color", &class_color);
+    co[1].set("note color", &note_color);
+    co[2].set("package color", &package_color);
+    co[3].set("fragment color", &fragment_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 

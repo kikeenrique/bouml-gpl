@@ -429,6 +429,8 @@ RelationDialog::RelationDialog(RelationData * r)
   
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(update_all_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 RelationDialog::~RelationDialog() {
@@ -437,6 +439,8 @@ RelationDialog::~RelationDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void RelationDialog::polish() {

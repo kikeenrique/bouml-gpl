@@ -38,6 +38,12 @@ const char * AType::get_type() const {
   return (type != 0) ? type->get_name() : explicit_type; 
 }
 
+QString AType::get_type(ShowContextMode mode) const {
+  return (type == 0)
+    ? QString((const char *) explicit_type)
+    : type->contextual_name(mode);
+}
+
 QString AType::get_full_type() const {
   return (type != 0) ? type->full_name(TRUE)
 		     : QString((const char *) explicit_type); 

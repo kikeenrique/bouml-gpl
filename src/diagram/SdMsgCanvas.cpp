@@ -348,16 +348,21 @@ void SdMsgCanvas::apply_shortcut(QString s) {
 }
 
 void SdMsgCanvas::edit_drawing_settings() {
-  StateSpecVector st(2);
-  
-  st[0].set(TR("operation drawing language"), &drawing_language);
-  st[1].set(TR("show full operation definition"), &show_full_oper);
-  
-  SettingsDialog dialog(&st, 0, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    StateSpecVector st(3);
+    
+    st[0].set(TR("operation drawing language"), &drawing_language);
+    st[1].set(TR("show full operation definition"), &show_full_oper);
+    st[2].set(TR("show context mode"), &show_context_mode);
+    
+    SettingsDialog dialog(&st, 0, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool SdMsgCanvas::has_drawing_settings() const {
@@ -365,28 +370,52 @@ bool SdMsgCanvas::has_drawing_settings() const {
 }
 
 void SdMsgCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(2);
-  DrawingLanguage drawing_language;
-  Uml3States show_full_oper;
-  
-  st[0].set(TR("operation drawing language"), &drawing_language);
-  st[1].set(TR("show full operation definition"), &show_full_oper);
-  
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(3);
+    DrawingLanguage drawing_language;
+    Uml3States show_full_oper;
+    ShowContextMode show_context_mode;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((SdMsgCanvas *) it.current())->drawing_language =
-	  drawing_language;
-      if (!st[1].name.isEmpty())
-	((SdMsgCanvas *) it.current())->show_full_oper =
-	  show_full_oper;
-      ((SdMsgCanvas *) it.current())->modified();	// call package_modified()
-    }
+    st[0].set(TR("operation drawing language"), &drawing_language);
+    st[1].set(TR("show full operation definition"), &show_full_oper);
+    st[2].set(TR("show context mode"), &show_context_mode);
+    
+    SettingsDialog dialog(&st, 0, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((SdMsgCanvas *) it.current())->drawing_language =
+	    drawing_language;
+	if (!st[1].name.isEmpty())
+	  ((SdMsgCanvas *) it.current())->show_full_oper =
+	    show_full_oper;
+	if (!st[2].name.isEmpty())
+	  ((SdMsgCanvas *) it.current())->show_context_mode =
+	    show_context_mode;
+	((SdMsgCanvas *) it.current())->modified();	// call package_modified()
+      }
+    }  
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void SdMsgCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  SdMsgCanvas * x = (SdMsgCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    SdMsgCanvas * o =  (SdMsgCanvas *) it.current();
+				 
+    o->drawing_language = x->drawing_language;
+    o->show_full_oper = x->show_full_oper;
+    o->show_context_mode = x->show_context_mode;
+    o->modified();	// call package_modified()
   }  
 }
 

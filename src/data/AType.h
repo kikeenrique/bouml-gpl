@@ -26,6 +26,7 @@
 #ifndef ATYPE_H
 #define ATYPE_H
 
+#include "UmlEnum.h"
 #include "mystr.h"
 
 class QTextStream;
@@ -40,6 +41,7 @@ class AType {
   public:
     AType() : type(0) {};
     const char * get_type() const;
+    QString get_type(ShowContextMode mode) const;
     QString get_full_type() const;
     
     void send_def(ToolCom * com) const;

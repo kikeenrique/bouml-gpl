@@ -37,6 +37,7 @@ class UmlAttribute : public UmlBaseAttribute {
 
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
 			  QCString indent, int & enum_item_rank);
+    virtual void generate_require_onces(QTextOStream & f, QCString & made);
 };
 
 #endif

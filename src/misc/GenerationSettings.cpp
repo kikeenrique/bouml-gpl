@@ -175,7 +175,7 @@ bool GenerationSettings::cpp_include_with_path;
 bool GenerationSettings::cpp_relative_path;
 bool GenerationSettings::cpp_root_relative_path;
 
-bool GenerationSettings::php_include_with_path;
+bool GenerationSettings::php_req_with_path;
 bool GenerationSettings::php_relative_path;
 bool GenerationSettings::php_root_relative_path;
 
@@ -201,6 +201,12 @@ QString GenerationSettings::idl_root_dir;
 QString GenerationSettings::php_root_dir;
 QString GenerationSettings::python_root_dir;
 
+ReverseRoundtripFilter GenerationSettings::cpp_dir_filter;
+ReverseRoundtripFilter GenerationSettings::cpp_file_filter;
+ReverseRoundtripFilter GenerationSettings::java_dir_filter;
+ReverseRoundtripFilter GenerationSettings::java_file_filter;
+ReverseRoundtripFilter GenerationSettings::php_dir_filter;
+ReverseRoundtripFilter GenerationSettings::php_file_filter;  
 
 inline void Builtin::set(const char * u, const char * c,
 			 const char * j, const char * i) {
@@ -280,6 +286,7 @@ ${definition}";
 
 #define PHP_SRC_CONTENT "<?php\n\
 ${comment}\n\
+${require_once}\n\
 ${definition}\n\
 ?>\n";
   php_src_content = PHP_SRC_CONTENT;
@@ -447,7 +454,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_set_name = "set${Name}";
   php_set_final = FALSE;
   php_javadoc_comment = FALSE;
-  php_include_with_path = FALSE;
+  php_req_with_path = FALSE;
   php_relative_path = FALSE;
   php_root_relative_path = FALSE;
 
@@ -581,6 +588,13 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_set_default_defs(FALSE);
   python_set_default_defs(FALSE);
   idl_set_default_defs(FALSE);
+  
+  cpp_dir_filter.case_sensitive = 
+    cpp_file_filter.case_sensitive =
+      java_dir_filter.case_sensitive = 
+	java_file_filter.case_sensitive = 
+	  php_dir_filter.case_sensitive =
+	    php_file_filter.case_sensitive = FALSE;
 }
 
 int GenerationSettings::find_type(const QString & s) {
@@ -1052,8 +1066,13 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
 	com->write_bool(cpp_root_relative_path);
 	if (api_version >= 30) {
 	  com->write_bool(cpp_javadoc_comment);
-	  if (api_version >= 49)
+	  if (api_version >= 49) {
 	    com->write_bool(cpp_inline_force_incl_in_h);
+	    if (api_version >= 54) {
+	      cpp_dir_filter.send_def(com);
+	      cpp_file_filter.send_def(com);
+	    }
+	  }
 	}
       }
     }
@@ -1150,8 +1169,13 @@ void GenerationSettings::send_java_def(ToolCom * com)
   com->write_bool(java_set_param_final);
   if (api_version >= 30) {
     com->write_bool(java_javadoc_comment);
-    if (api_version >= 40)
+    if (api_version >= 40) {
       com->write_bool(java_force_package_gen);
+      if (api_version >= 54) {
+	java_dir_filter.send_def(com);
+	java_file_filter.send_def(com);
+      }
+    }
   }
 }
 
@@ -1188,8 +1212,16 @@ void GenerationSettings::send_php_def(ToolCom * com)
   com->write_char(noncpp_get_visibility);
   com->write_string(php_set_name);
   com->write_bool(php_set_final);
-  if (api_version >= 38)
+  if (api_version >= 38) {
     com->write_bool(php_javadoc_comment);
+    if (api_version >= 54) {      
+      com->write_bool(php_req_with_path);    
+      com->write_bool(php_relative_path);    
+      com->write_bool(php_root_relative_path);
+      php_dir_filter.send_def(com);
+      php_file_filter.send_def(com);
+    }
+  }
 }
 
 void GenerationSettings::send_python_def(ToolCom * com)
@@ -1692,6 +1724,12 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
       case setCppJavadocStyleCmd:
 	cpp_javadoc_comment = (*args != 0);
 	break;
+      case setCppDirRevFilterCmd:
+	cpp_dir_filter.receive_def(args);
+	break;
+      case setCppFileRevFilterCmd:
+	cpp_file_filter.receive_def(args);
+	break;
       default:
 	return FALSE;
       }
@@ -1845,6 +1883,12 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
       case setJavaForcePackageGenCmd:
 	java_force_package_gen = (*args != 0);
 	break;
+      case setJavaDirRevFilterCmd:
+	java_dir_filter.receive_def(args);
+	break;
+      case setJavaFileRevFilterCmd:
+	java_file_filter.receive_def(args);
+	break;
       default:
 	return FALSE;
       }
@@ -1930,6 +1974,25 @@ bool GenerationSettings::tool_global_php_cmd(ToolCom * com,
 	break;
       case setPhpJavadocStyleCmd:
 	php_javadoc_comment = (*args != 0);
+	break;
+      case setPhpRequireOnceWithPathCmd:
+	php_req_with_path = (*args != 0);
+	break;
+      case setPhpRelativePathCmd:
+	php_relative_path = (*args != 0);
+	if (php_relative_path)
+	  php_root_relative_path = FALSE;
+	break;
+      case setPhpRootRelativePathCmd:
+	php_root_relative_path = (*args != 0);
+	if (php_root_relative_path)
+	  php_relative_path = FALSE;
+	break;
+      case setPhpDirRevFilterCmd:
+	php_dir_filter.receive_def(args);
+	break;
+      case setPhpFileRevFilterCmd:
+	php_file_filter.receive_def(args);
 	break;
       default:
 	return FALSE;
@@ -2353,9 +2416,9 @@ void GenerationSettings::save()
     st << "cpp_javadoc_comment";
   }
   
-  if (php_include_with_path) {
+  if (php_req_with_path) {
     nl_indent(st);
-    st << "php_include_with_path";
+    st << "php_req_with_path";
   }
   if (php_relative_path) {
     nl_indent(st);
@@ -2547,6 +2610,8 @@ void GenerationSettings::save()
     st << "cpp_force_throw";
     nl_indent(st);
   }
+  cpp_dir_filter.save("cpp_dir_filter", st);
+  cpp_file_filter.save("cpp_file_filter", st);
 
   save_includes_imports(cpp_includes, "cpp_includes");
     
@@ -2624,6 +2689,8 @@ void GenerationSettings::save()
   st << "java_default_operation_definition ";
   save_string(java_oper_def, st);
   nl_indent(st);
+  java_dir_filter.save("java_dir_filter", st);
+  java_file_filter.save("java_file_filter", st);
   
   save_includes_imports(java_imports, "java_imports");
   
@@ -2666,6 +2733,8 @@ void GenerationSettings::save()
   st << "php_default_operation_definition ";
   save_string(php_oper_def, st);
   nl_indent(st);
+  php_dir_filter.save("php_dir_filter", st);
+  php_file_filter.save("php_file_filter", st);
   
   if (python_2_2) {
     st << "python_2_2";
@@ -3095,12 +3164,13 @@ void GenerationSettings::read(char * & st, char * & k)
   else
     cpp_javadoc_comment = FALSE;
   
-  if (!strcmp(k, "php_include_with_path")) {
-    php_include_with_path = TRUE;
+  if (!strcmp(k, "php_include_with_path") ||
+      !strcmp(k, "php_req_with_path")) {
+    php_req_with_path = TRUE;
     k = read_keyword(st);
   }
   else
-    php_include_with_path = FALSE;
+    php_req_with_path = FALSE;
   if (!strcmp(k, "php_relative_path")) {
     php_relative_path = TRUE;
     k = read_keyword(st);
@@ -3320,6 +3390,8 @@ void GenerationSettings::read(char * & st, char * & k)
     }
     else
       cpp_force_throw = FALSE;
+    cpp_dir_filter.read("cpp_dir_filter", st, k);
+    cpp_file_filter.read("cpp_file_filter", st, k);
     
     if (!strcmp(k, "cpp_includes")) {
       // old version
@@ -3457,8 +3529,11 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     
     read_keyword(st, "java_default_operation_definition");
     java_oper_def = read_string(st);
-    
     k = read_keyword(st);
+    
+    java_dir_filter.read("java_dir_filter", st, k);
+    java_file_filter.read("java_file_filter", st, k);
+    
     if (!strcmp(k, "java_imports")) {
       // old version
       java_imports.types.clear();
@@ -3535,6 +3610,8 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
 	wrong_keyword(k, "php_default_operation_definition");
       php_oper_def = read_string(st);
       k = read_keyword(st);
+      php_dir_filter.read("php_dir_filter", st, k);
+      php_file_filter.read("php_file_filter", st, k);
     }
     
     if (fileformat < 51) {
@@ -4070,4 +4147,35 @@ QString GenerationSettings::new_java_enums()
   nclassstereotypes += 1;
   
   return new_st;
+}
+
+void ReverseRoundtripFilter::send_def(ToolCom * com) {
+  com->write_string(regexp);
+  com->write_bool(case_sensitive);
+}
+
+void ReverseRoundtripFilter::receive_def(const char * args) {
+  case_sensitive = (*args != 0);
+  regexp = args + 1;
+}
+
+void ReverseRoundtripFilter::save(const char * key, QTextOStream & st) {
+  if (! regexp.isEmpty()) {
+    st << key << ' ';
+    save_string(regexp, st);
+    if (case_sensitive)
+      st << " case_sensitive";
+    nl_indent(st);
+  }
+}
+
+void ReverseRoundtripFilter::read(const char * key, char * & st, char * & k) {
+  if (! strcmp(k, key)) {
+    regexp = read_string(st);
+    k = read_keyword(st);
+    if (! strcmp(k, "case_sensitive")) {
+      case_sensitive = TRUE;
+      k = read_keyword(st);
+    }
+  }
 }

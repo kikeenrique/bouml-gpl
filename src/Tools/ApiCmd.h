@@ -372,7 +372,11 @@ enum CppSettingsCmd {
   // api 30
   setCppJavadocStyleCmd,
   // api 49
-  setCppInlineOperForceInclInHeaderCmd
+  setCppInlineOperForceInclInHeaderCmd,
+  
+  // api 54
+  setCppDirRevFilterCmd,
+  setCppFileRevFilterCmd
 };
 
 enum JavaSettingsCmd {
@@ -411,7 +415,11 @@ enum JavaSettingsCmd {
   setJavaJavadocStyleCmd,
     
   // api 40
-  setJavaForcePackageGenCmd
+  setJavaForcePackageGenCmd,
+  
+  // api 54
+  setJavaDirRevFilterCmd,
+  setJavaFileRevFilterCmd
 };
 
 // api 34
@@ -439,7 +447,16 @@ enum PhpSettingsCmd {
   setPhpIsSetParamFinalCmd,
   
   // api 38
-  setPhpJavadocStyleCmd
+  setPhpJavadocStyleCmd,
+    
+  // api 54
+  setPhpRequireOnceWithPathCmd,
+  setPhpRelativePathCmd,
+  setPhpRootRelativePathCmd,
+  
+  // api 54
+  setPhpDirRevFilterCmd,
+  setPhpFileRevFilterCmd
 };
 
 // api 39

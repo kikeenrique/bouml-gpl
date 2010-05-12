@@ -102,9 +102,11 @@ void SdClassInstCanvas::compute_size() {
   SequenceDiagramSettings dflt;
   
   dflt.instances_drawing_mode = drawing_mode;
+  dflt.show_class_context_mode = show_context_mode;
   the_canvas()->browser_diagram()->get_sequencediagramsettings(dflt);
   
   used_drawing_mode = dflt.instances_drawing_mode;
+  used_show_context_mode = dflt.show_class_context_mode;
     
   if (used_drawing_mode == Natural) {
     const char * st = get_class()->get_data()->get_short_stereotype();
@@ -493,20 +495,25 @@ void SdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void SdClassInstCanvas::edit_drawing_settings() {
-  StateSpecVector st((browser_node->get_type() != UmlClass) ? 3: 2);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("drawing mode"), &drawing_mode);
-  st[1].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  if (browser_node->get_type() != UmlClass)
-    st[2].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    StateSpecVector st((browser_node->get_type() != UmlClass) ? 4 : 3);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("drawing mode"), &drawing_mode);
+    st[1].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[2].set(TR("show class context"), &show_context_mode);
+    if (browser_node->get_type() != UmlClass)
+      st[3].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool SdClassInstCanvas::has_drawing_settings() const {
@@ -514,28 +521,58 @@ bool SdClassInstCanvas::has_drawing_settings() const {
 }
 
 void SdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  Uml3States write_horizontally;
-  UmlColor itscolor;
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(3);
+    ColorSpecVector co(1);
+    ClassDrawingMode drawing_mode;
+    Uml3States write_horizontally;
+    ShowContextMode show_context_mode;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((SdClassInstCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!co[0].name.isEmpty())
-	((SdClassInstCanvas *) it.current())->itscolor = itscolor;
-      ((SdClassInstCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("drawing mode"), &drawing_mode);
+    st[1].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[2].set(TR("show class context"), &show_context_mode);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((SdClassInstCanvas *) it.current())->drawing_mode =
+	    drawing_mode;
+	if (!st[1].name.isEmpty())
+	  ((SdClassInstCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!st[2].name.isEmpty())
+	  ((SdClassInstCanvas *) it.current())->show_context_mode =
+	    show_context_mode;
+	if (!co[0].name.isEmpty())
+	  ((SdClassInstCanvas *) it.current())->itscolor = itscolor;
+	((SdClassInstCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void SdClassInstCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  SdClassInstCanvas * x = (SdClassInstCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    SdClassInstCanvas * o =  (SdClassInstCanvas *) it.current();
+			
+    o->drawing_mode = x->drawing_mode;
+    o->show_context_mode = x->show_context_mode;
+    o->write_horizontally = x->write_horizontally;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

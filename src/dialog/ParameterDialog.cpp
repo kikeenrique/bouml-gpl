@@ -272,6 +272,8 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 ParameterDialog::~ParameterDialog() {
@@ -280,6 +282,8 @@ ParameterDialog::~ParameterDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void ParameterDialog::change_tabs(QWidget * w) {

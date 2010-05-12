@@ -311,7 +311,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     edit(TR("Use case view"), its_default_stereotypes);
     return;
   case 9:
-    {
+    for (;;) {
       StateSpecVector st;
       ColorSpecVector co(15);
       
@@ -345,6 +345,10 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
       if (dialog.exec() != QDialog::Accepted)
 	return;
       DrawingSettings::modified();
+      if (!dialog.redo())
+	break;
+      else
+	package_modified();
     }
     break;
   case 10:

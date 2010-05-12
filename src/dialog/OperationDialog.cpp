@@ -183,6 +183,8 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   default:
     break;
   }
+  
+  open_dialog(this);
 }
 
 OperationDialog::~OperationDialog() {
@@ -191,6 +193,8 @@ OperationDialog::~OperationDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void OperationDialog::polish() {
@@ -292,7 +296,10 @@ void OperationDialog::init_uml() {
   if (oper->is_get_or_set)
     edreturn_type->setEnabled(FALSE);
   else if (! visit) {
-    edreturn_type->insertStringList(GenerationSettings::basic_types());
+    QStringList l = GenerationSettings::basic_types();
+    
+    cl->addFormals(l);
+    edreturn_type->insertStringList(l);
     edreturn_type_offset = edreturn_type->count();
     edreturn_type->insertStringList(list);
     edreturn_type->setAutoCompletion(completion());
@@ -1699,7 +1706,8 @@ void OperationDialog::cpp_update_decl() {
   showcppdecl->setText(s);
 }
 
-QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
+QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname,
+				  ShowContextMode mode)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->cpp_decl;
@@ -1730,7 +1738,7 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
       p += 10;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_cpp_name(d->return_type);
+      s += get_cpp_name(d->return_type, mode);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -1755,7 +1763,7 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
       break;
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (rank < d->nparams) 
-	s += GenerationSettings::cpp_type(d->params[rank].get_type().get_type());
+	s += GenerationSettings::cpp_type(d->params[rank].get_type().get_type(mode));
       else {
 	s += "${t";
 	s += QString::number(rank);
@@ -2493,7 +2501,8 @@ void OperationDialog::java_update_def() {
   forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
-QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
+QString OperationDialog::java_decl(const BrowserOperation * op, bool withname,
+				   ShowContextMode mode)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->java_def;
@@ -2524,7 +2533,7 @@ QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
       p += 15;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_java_name(d->return_type);
+      s += get_java_name(d->return_type, mode);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -2546,7 +2555,7 @@ QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (rank < d->nparams) 
-	s += GenerationSettings::java_type(d->params[rank].get_type().get_type());
+	s += GenerationSettings::java_type(d->params[rank].get_type().get_type(mode));
       else {
 	s += "${t";
 	s += QString::number(rank);
@@ -2821,7 +2830,8 @@ void OperationDialog::php_update_def() {
   forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
-QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
+QString OperationDialog::php_decl(const BrowserOperation * op, bool withname,
+				  ShowContextMode mode)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->php_def;
@@ -2870,7 +2880,7 @@ QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (rank < d->nparams) 
-	s += d->params[rank].get_type().get_type();
+	s += d->params[rank].get_type().get_type(mode);
       else {
 	s += "${t";
 	s += QString::number(rank);
@@ -2916,7 +2926,7 @@ QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
       manage_alias(op, p, s, 0);
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_php_name(d->return_type);
+      s += get_php_name(d->return_type, mode);
     }
     else
       s += *p++;
@@ -3259,7 +3269,8 @@ void OperationDialog::python_update_def() {
   forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
-QString OperationDialog::python_decl(const BrowserOperation * op, bool withname)
+QString OperationDialog::python_decl(const BrowserOperation * op, bool withname,
+				     ShowContextMode mode)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->python_def;
@@ -3303,7 +3314,7 @@ QString OperationDialog::python_decl(const BrowserOperation * op, bool withname)
       s += ')';
       
       if (!strncmp(p, "${type}", 7)) {
-	QString t = get_php_name(d->return_type);
+	QString t = get_python_name(d->return_type, mode);
 	
 	if (!t.isEmpty())
 	  s += " -> " + t;
@@ -3312,7 +3323,7 @@ QString OperationDialog::python_decl(const BrowserOperation * op, bool withname)
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (rank < d->nparams) {
-	QCString t = d->params[rank].get_type().get_type();
+	QString t = d->params[rank].get_type().get_type(mode);
 	
 	if (!t.isEmpty()) {
 	  if (in_params)
@@ -3632,8 +3643,8 @@ void OperationDialog::idl_update_decl() {
   showidldecl->setText(s);
 }
 
-QString OperationDialog::idl_decl(const BrowserOperation * op,
-				  bool withdir, bool withname)
+QString OperationDialog::idl_decl(const BrowserOperation * op, bool withdir,
+				  bool withname, ShowContextMode mode)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->idl_decl;
@@ -3656,7 +3667,7 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
       p += 9;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_idl_name(d->return_type);
+      s += get_idl_name(d->return_type, mode);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -3695,7 +3706,7 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (withname) {
 	if (rank < d->nparams) 
-	  s += GenerationSettings::idl_type(d->params[rank].get_type().get_type());
+	  s += GenerationSettings::idl_type(d->params[rank].get_type().get_type(mode));
 	else {
 	  s += "${t";
 	  s += QString::number(rank);
@@ -4269,6 +4280,8 @@ ParamsTable::ParamsTable(OperationData * o, QWidget * parent,
     horizontalHeader()->setLabel(4, TR("do"));
     
     alltypes = GenerationSettings::basic_types();
+    ((ClassData *) ((BrowserNode *) o->get_browser_node()->parent())->get_data())
+      ->addFormals(alltypes);
     for (QStringList::ConstIterator it = list.begin(); it != list.end(); ++it)
       alltypes.append(*it);
     

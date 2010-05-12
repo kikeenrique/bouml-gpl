@@ -56,6 +56,7 @@ class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
     virtual void draw_svg() const = 0;
     virtual void get_componentdrawingsettings(ComponentDrawingSettings & r) const;
     virtual bool get_classinstwritehorizontally() const;
+    virtual ShowContextMode get_classinstshowmode() const;
     
     CanvasFormat get_format() const { return canvas_size; }
     void set_format(CanvasFormat c) { canvas_size = c; }

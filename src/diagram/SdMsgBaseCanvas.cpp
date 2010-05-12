@@ -53,7 +53,8 @@ SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdMsgSupport * d,
     : DiagramCanvas(0, canvas, 0, v, 0, 0, id),
       dest(d), msg(0), stereotype(0), itsType(l),
       already_moved(FALSE), show_full_oper(UmlDefaultState),
-      drawing_language(DefaultDrawingLanguage) {
+      drawing_language(DefaultDrawingLanguage),
+      show_context_mode(DefaultShowContextMode) {
   browser_node = canvas->browser_diagram();
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -89,10 +90,13 @@ QString SdMsgBaseCanvas::get_msg(bool with_args) const {
       
     dflt.show_full_operations_definition = show_full_oper;
     dflt.drawing_language = drawing_language;
-    the_canvas()->browser_diagram()->get_sequencediagramsettings(dflt);
+    dflt.show_msg_context_mode = show_context_mode;
+    ((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->get_sequencediagramsettings_msg(dflt);
     
     m = msg->definition(dflt.show_full_operations_definition == UmlYes,
-			dflt.drawing_language, TRUE, TRUE);
+			dflt.drawing_language, TRUE, TRUE, 
+			dflt.show_msg_context_mode);
   }
   
   if (!with_args || args.isEmpty())
@@ -412,7 +416,8 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
   
   nl_indent(st);
   st << "show_full_operations_definition " << stringify(show_full_oper)
-    << " drawing_language " << stringify(drawing_language);
+    << " drawing_language " << stringify(drawing_language)
+      << " show_context_mode " << stringify(show_context_mode);
   
   if (label != 0) {
     if (! args.isEmpty()) {
@@ -469,6 +474,10 @@ void SdMsgBaseCanvas::read(char * & st) {
     }
     if (!strcmp(k, "drawing_language")) {
       drawing_language = ::drawing_language(read_keyword(st));
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "show_context_mode")) {
+      show_context_mode = ::context_mode(read_keyword(st));
       k = read_keyword(st);
     }
     

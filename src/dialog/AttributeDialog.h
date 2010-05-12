@@ -142,11 +142,16 @@ class AttributeDialog : public QTabDialog {
     AttributeDialog(AttributeData * a, bool new_st_attr);
     virtual ~AttributeDialog();
   
-    static QString cpp_decl(const BrowserAttribute * at, bool init = FALSE);
-    static QString java_decl(const BrowserAttribute * at, bool init = FALSE);
-    static QString php_decl(const BrowserAttribute * at, bool init = FALSE);
-    static QString python_decl(const BrowserAttribute * at, bool init = FALSE);
-    static QString idl_decl(const BrowserAttribute * at);
+    static QString cpp_decl(const BrowserAttribute * at, bool init = FALSE,
+			    ShowContextMode mode = noContext);
+    static QString java_decl(const BrowserAttribute * at, bool init = FALSE,
+			    ShowContextMode mode = noContext);
+    static QString php_decl(const BrowserAttribute * at, bool init = FALSE,
+			    ShowContextMode mode = noContext);
+    static QString python_decl(const BrowserAttribute * at, bool init = FALSE,
+			    ShowContextMode mode = noContext);
+    static QString idl_decl(const BrowserAttribute * at,
+			    ShowContextMode mode = noContext);
   
   protected slots:
     virtual void polish();

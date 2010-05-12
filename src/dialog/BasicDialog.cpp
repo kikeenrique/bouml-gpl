@@ -115,6 +115,8 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, TR("Properties"));
+  
+  open_dialog(this);
 }
 
 void BasicDialog::polish() {
@@ -128,6 +130,8 @@ BasicDialog::~BasicDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void BasicDialog::edit_description() {

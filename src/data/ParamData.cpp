@@ -51,14 +51,22 @@ void ParamData::set_default_value(const char * str) {
   default_value = str;
 }
 
-QString ParamData::definition(bool withdir, bool withname) const {
+QString ParamData::definition(bool withdir, bool withname,
+			      ShowContextMode mode) const {
+  QString t;
+  
+  if (type.type == 0)
+    t = (const char *) type.explicit_type;
+  else
+    t = type.type->contextual_name(mode);
+  
   if (withdir) {
     QString r = stringify(dir) + QString(" ");
     
     if (withname)
       r += name + " : ";
   
-    r += type.get_type();
+    r += t;
     
     QString v = default_value;
     
@@ -69,9 +77,9 @@ QString ParamData::definition(bool withdir, bool withname) const {
       : r + " = " + v;
   }
   else if (withname)
-    return name + QString(" : ") + type.get_type();
+    return name + QString(" : ") + t;
   else
-    return type.get_type();
+    return t;
 }
 
 void ParamData::send_uml_def(ToolCom * com) {

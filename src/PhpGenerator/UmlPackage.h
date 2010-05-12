@@ -30,6 +30,7 @@
 
 struct Dir {
   QCString file;
+  bool file_absolute;
   bool read;
 };
  
@@ -41,10 +42,12 @@ class UmlPackage : public UmlBasePackage {
     Dir dir;
   
   public:
-    QCString file_path(const QCString &);
+    QCString file_path(const QCString &, QCString relto = "");
     QCString text_path(const QCString &);
     virtual void generate();
     virtual UmlPackage * package();
+    
+    static QCString rootDir();
 };
 
 #endif

@@ -34,7 +34,7 @@
 
 void UmlAttribute::generate_imports(QTextOStream & f, QCString & made) {
   if (!pythonDecl().isEmpty())
-    type().generate_import(f, ((UmlClass *) parent())->associatedArtifact(), 
+    type().generate_import(f, ((UmlClass *) parent())->assocArtifact(), 
 			   FALSE, made);
 }
 

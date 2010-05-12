@@ -314,11 +314,14 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
 }
 
 QSize SettingsDialog::previous_size;
+QPoint SettingsDialog::previous_position;
+QString SettingsDialog::previous_active_tab;
 
 SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
 			       bool nodefault, bool unchanged, QString title)
     : QTabDialog(0, title, TRUE),
-      states(st), colors(co), several(unchanged) {
+      states(st), colors(co), first_visible_page(0),
+      several(unchanged), did_apply(FALSE) {
   setCaption((title.isEmpty()) ? TR("Diagram Drawing Settings dialog") : title);
   
   QString s_diagram = TR("diagram");
@@ -345,8 +348,12 @@ SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
 	tbn = s_diagram;
       
       if ((grid == 0) || (tabname != tbn)) {
-	if (grid != 0)
+	if (grid != 0) {
 	  addTab(grid, tabname);
+	  grid->setName(tabname);
+	  if (tabname == previous_active_tab)
+	    first_visible_page = grid;
+	}
 	grid = new QGrid(5, this);
 	grid->setMargin(2);
 	grid->setSpacing(2);
@@ -384,6 +391,9 @@ SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
     }
     
     addTab(grid, tabname);
+    grid->setName(tabname);
+    if (tabname == previous_active_tab)
+      first_visible_page = grid;
   }
   
   if (colors != 0) {
@@ -398,7 +408,11 @@ SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
     
     for (i = 0; i != n; i += 1) {
       if (i == 11) {
-	addTab(grid, TR("color [1]"));
+	lbl = TR("color [1]");
+	addTab(grid, lbl);
+	grid->setName(lbl);
+	if (previous_active_tab == lbl)
+	  first_visible_page = grid;
 	lbl = TR("color [2]");
 	grid = new QGrid(5, this);
 	grid->setMargin(2);
@@ -417,15 +431,30 @@ SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
     }
     
     addTab(grid, lbl);
+    grid->setName(lbl);
+    if (previous_active_tab == lbl)
+      first_visible_page = grid;
   }
   
+  // use help rather than apply because when the OK button is clicked,
+  // the applyButtonPressed() signal is emitted
   setOkButton(TR("OK"));
+  setHelpButton(TR("Apply"));
   setCancelButton(TR("Cancel"));
+  
+  connect(this, SIGNAL(helpButtonPressed()),
+	  this, SLOT(apply()));
 }
 
 void SettingsDialog::polish() {
   QTabDialog::polish();
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+  
+  if (first_visible_page != 0) {
+    move(previous_position);
+    previous_active_tab = "";
+    showPage(first_visible_page);
+  }
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -434,6 +463,13 @@ SettingsDialog::~SettingsDialog() {
   if (states != 0)
     delete cbstates;
   previous_size = size();
+}
+
+void SettingsDialog::apply() {
+  did_apply = TRUE;
+  previous_position = pos();
+  previous_active_tab = currentPage()->name();
+  accept();
 }
 
 void SettingsDialog::accept() {

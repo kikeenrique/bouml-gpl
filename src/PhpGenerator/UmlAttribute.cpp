@@ -120,3 +120,8 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
   
   enum_item_rank += 1;
 }
+
+void UmlAttribute::generate_require_onces(QTextOStream & f, QCString & made) {
+  if (!phpDecl().isEmpty())
+    type().generate_require_onces(f, made, ((UmlClass *) parent())->assocArtifact());
+}

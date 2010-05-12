@@ -23,33 +23,22 @@
 //
 // *************************************************************************
 
-#ifndef UMLOPERATION_H
-#define UMLOPERATION_H
 
-#include <qintdict.h>
+#ifndef HELPREGEXPDIALOG_H
+#define HELPREGEXPDIALOG_H
 
-#include "UmlBaseOperation.h"
+#include "qdialog.h"
 
-class QTextOStream;
-
-class UmlOperation : public UmlBaseOperation {
-  private:
-    static QIntDict<char> bodies;
-
-  public:
-    UmlOperation(void * id, const QCString & n)
-      : UmlBaseOperation(id, n) {};
+class HelpRegexpDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    static QSize previous_size;
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int &);
-    virtual void generate_require_onces(QTextOStream & f, QCString & made);
-    
-    QCString compute_name();
-    
-    static void read_bodies(const char * path);
-    
-  private:
-    const char * generate_body(QTextOStream & f, QCString indent, const char * p);
+  public:
+    HelpRegexpDialog();
+    virtual ~HelpRegexpDialog();
 };
 
 #endif
+

@@ -330,24 +330,28 @@ void BrowserSeqDiagram::open(bool) {
 }
 
 void BrowserSeqDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(5);
-  
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("note color"), &note_color);
-  co[1].set(TR("class instance \ncolor"), &class_instance_color);
-  co[2].set(TR("duration color"), &duration_color);
-  co[3].set(TR("continuation color"), &continuation_color);
-  co[4].set(TR("fragment color"), &fragment_color);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(5);
+    
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("note color"), &note_color);
+    co[1].set(TR("class instance \ncolor"), &class_instance_color);
+    co[2].set(TR("duration color"), &duration_color);
+    co[3].set(TR("continuation color"), &continuation_color);
+    co[4].set(TR("fragment color"), &fragment_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -388,6 +392,10 @@ void BrowserSeqDiagram::update_drawing_settings() {
 
 void BrowserSeqDiagram::get_sequencediagramsettings(SequenceDiagramSettings & r) const {
   r.assign(*used_settings);
+}
+
+void BrowserSeqDiagram::get_sequencediagramsettings_msg(SequenceDiagramSettings & r) const {
+  r.assign_msg(*used_settings);
 }
 
 UmlColor BrowserSeqDiagram::get_color(UmlCode who) const {
@@ -439,6 +447,10 @@ bool BrowserSeqDiagram::get_show_stereotype_properties() const {
 
 bool BrowserSeqDiagram::get_classinstwritehorizontally() const {
   return used_settings->write_horizontally == UmlYes;
+}
+
+ShowContextMode BrowserSeqDiagram::get_classinstshowmode() const {
+  return used_settings->show_class_context_mode;
 }
 
 BasicData * BrowserSeqDiagram::get_data() const {

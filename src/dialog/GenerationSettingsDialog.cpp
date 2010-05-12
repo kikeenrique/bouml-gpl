@@ -787,6 +787,23 @@ void GenerationSettingsDialog::init_php1() {
   php_javadoc_cb = new QCheckBox(htab2);
   php_javadoc_cb->setChecked(GenerationSettings::php_javadoc_comment);
 
+  htab2 = new QHBox(vtab);
+  htab2->setMargin(3);
+  new QLabel(TR("    require_once : "), htab2);
+  php_require_with_path_cb = new QComboBox(FALSE, htab2);
+  php_require_with_path_cb->insertItem(TR("without path"));
+  php_require_with_path_cb->insertItem(TR("with absolute path"));
+  php_require_with_path_cb->insertItem(TR("with relative path"));
+  php_require_with_path_cb->insertItem(TR("with root relative path"));
+  if (!GenerationSettings::php_req_with_path)
+    php_require_with_path_cb->setCurrentItem(0);
+  else if (GenerationSettings::php_relative_path)
+    php_require_with_path_cb->setCurrentItem(2);
+  else if (GenerationSettings::php_root_relative_path)
+    php_require_with_path_cb->setCurrentItem(3);
+  else
+    php_require_with_path_cb->setCurrentItem(1);
+
   new QLabel(TR("Class default \ndeclaration :"), grid);
   edphp_class_decl = new MultiLineEdit(grid);
   edphp_class_decl->setText(GenerationSettings::php_class_decl);
@@ -1766,12 +1783,12 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_inout = inout;
     GenerationSettings::cpp_return = opreturn;
 
-    GenerationSettings::cpp_h_extension = edcpp_h_extension->currentText();
-    GenerationSettings::cpp_src_extension = edcpp_src_extension->currentText();
-    GenerationSettings::java_extension = edjava_extension->currentText();
-    GenerationSettings::php_extension = edphp_extension->currentText();
-    GenerationSettings::python_extension = edpython_extension->currentText();
-    GenerationSettings::idl_extension = edidl_extension->currentText();
+    GenerationSettings::cpp_h_extension = edcpp_h_extension->currentText().stripWhiteSpace();
+    GenerationSettings::cpp_src_extension = edcpp_src_extension->currentText().stripWhiteSpace();
+    GenerationSettings::java_extension = edjava_extension->currentText().stripWhiteSpace();
+    GenerationSettings::php_extension = edphp_extension->currentText().stripWhiteSpace();
+    GenerationSettings::python_extension = edpython_extension->currentText().stripWhiteSpace();
+    GenerationSettings::idl_extension = edidl_extension->currentText().stripWhiteSpace();
 
     GenerationSettings::cpp_h_content = edcpp_h_content->text();
     GenerationSettings::cpp_src_content = edcpp_src_content->text();
@@ -1847,6 +1864,28 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::php_attr_decl = edphp_attr_decl->text();
     GenerationSettings::php_oper_def = edphp_oper_def->text();
     GenerationSettings::php_javadoc_comment = php_javadoc_cb->isChecked();
+    
+    switch (php_require_with_path_cb->currentItem()) {
+    case 0:
+      GenerationSettings::php_req_with_path = FALSE;
+      GenerationSettings::php_relative_path = FALSE;
+      GenerationSettings::php_root_relative_path = FALSE;
+      break;
+    case 1:
+      GenerationSettings::php_req_with_path = TRUE;
+      GenerationSettings::php_relative_path = FALSE;
+      GenerationSettings::php_root_relative_path = FALSE;
+      break;
+    case 2:
+      GenerationSettings::php_req_with_path = TRUE;
+      GenerationSettings::php_relative_path = TRUE;
+      GenerationSettings::php_root_relative_path = FALSE;
+      break;
+    default:
+      GenerationSettings::php_req_with_path = TRUE;
+      GenerationSettings::php_relative_path = FALSE;
+      GenerationSettings::php_root_relative_path = TRUE;
+    }
     
     GenerationSettings::python_indent_step = "        " + (8 - indentstep_sb->value());
     GenerationSettings::python_2_2 = python_2_2_cb->isChecked();

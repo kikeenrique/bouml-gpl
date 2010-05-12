@@ -44,13 +44,15 @@ ClassInstCanvas::ClassInstCanvas() {
   itscolor = UmlDefaultColor;
   write_horizontally = UmlDefaultState;
   show_stereotype_properties = UmlDefaultState;
+  show_context_mode = DefaultShowContextMode;
 }
 
 ClassInstCanvas::~ClassInstCanvas() {
 }
 
 QString ClassInstCanvas::full_name() const {
-  return get_name() + ":" + get_type()->get_name();
+  return get_name() + ":" +
+    ((BrowserClass *) get_type())->contextual_name(used_show_context_mode);
 }
 
 BrowserNode * ClassInstCanvas::new_type() {
@@ -64,7 +66,7 @@ bool ClassInstCanvas::new_type_available() {
 }
 
 void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
-  BrowserNode * cl = get_type();
+  BrowserClass * cl = (BrowserClass *) get_type();
   QString iname = get_name();
   
   used_color = (itscolor == UmlDefaultColor)
@@ -112,6 +114,10 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
     h += shadow;
   }
   
+  used_show_context_mode = (show_context_mode == DefaultShowContextMode)
+    ? canvas->browser_diagram()->get_classinstshowmode()
+    : show_context_mode;
+  
   if (horiz)
     w = fm.width(full_name());
   else {
@@ -119,7 +125,7 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
     
     int wi = fm.width(iname + ":");
     
-    w = fm.width(cl->get_name());
+    w = fm.width(cl->contextual_name(used_show_context_mode));
     if (wi > w)
       w = wi;
   }
@@ -131,7 +137,7 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
 }
 
 void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
-  BrowserNode * cl = get_type();
+  BrowserClass * cl = (BrowserClass *) get_type();
   QString iname = get_name();
   
   QColor bckgrnd = p.backgroundColor();
@@ -235,9 +241,9 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
       draw_text(r1, ::Qt::AlignCenter, iname + ":",
 		p.font(), fp);
     r1.moveBy(0, r.height()/2);
-    p.drawText(r1, ::Qt::AlignCenter, cl->get_name());
+    p.drawText(r1, ::Qt::AlignCenter, cl->contextual_name(used_show_context_mode));
     if (fp != 0)
-      draw_text(r1, ::Qt::AlignCenter, cl->get_name(),
+      draw_text(r1, ::Qt::AlignCenter, cl->contextual_name(used_show_context_mode),
 		p.font(), fp);
   }
   p.setFont(canvas->get_font(UmlNormalFont));
@@ -254,6 +260,8 @@ void ClassInstCanvas::save(QTextStream & st) const {
     st << " write_horizontally " << stringify(write_horizontally);
   if (show_stereotype_properties != UmlDefaultState)
     st << " show_stereotype_properties " << stringify(show_stereotype_properties);
+  if (show_context_mode != DefaultShowContextMode)
+    st << " show_context_mode " << stringify(show_context_mode);
 }
 
 void ClassInstCanvas::read(char *& st, char *& k) {
@@ -275,5 +283,12 @@ void ClassInstCanvas::read(char *& st, char *& k) {
   }
   else
     show_stereotype_properties = UmlDefaultState;
+  
+  if (!strcmp(k, "show_context_mode")) {
+    show_context_mode = context_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
+  else
+    show_context_mode = DefaultShowContextMode;
 }
 

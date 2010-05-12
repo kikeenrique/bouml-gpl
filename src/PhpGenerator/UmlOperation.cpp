@@ -318,6 +318,45 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
   }
 }
 
+void UmlOperation::generate_require_onces(QTextOStream & f, QCString & made) {
+  QCString s = phpDecl();
+  
+  if (!s.isEmpty()) {
+    UmlArtifact * art = ((UmlClass *) parent())->assocArtifact();
+			   
+    returnType().generate_require_onces(f, made, art);
+    
+    int index1 = s.find("${(}");
+    
+    if (index1 == -1)
+      return;
+    
+    index1 += 4;
+    
+    int index2 = s.find("${)}", index1);
+    
+    if(index2 == -1)
+      return;
+       
+    s = s.mid((unsigned) index1, (unsigned) (index2 - index1));
+    
+    const QValueList<UmlParameter> & params = this->params();
+    QValueListConstIterator<UmlParameter> it;
+    unsigned rank;
+    char ti[16];
+    
+    strcpy(ti, "${p");
+    
+    for (it = params.begin(), rank = 0;
+	 it != params.end();
+	 ++it, rank += 1) {
+      sprintf(ti + 3, "%u}", rank);
+      if (s.find(ti) != -1)
+	(*it).type.generate_require_onces(f, made, art);
+    }    
+  }
+}
+
 //
 
 static char * read_file(const char * filename)

@@ -142,6 +142,7 @@ ClassDiagramSettings::ClassDiagramSettings() {
   show_full_members_definition = UmlDefaultState;
   show_members_visibility = UmlDefaultState;
   show_members_stereotype = UmlDefaultState;
+  show_members_context = DefaultShowContextMode;
   show_members_multiplicity = UmlDefaultState;
   show_members_initialization = UmlDefaultState;
   show_attribute_modifiers = UmlDefaultState;
@@ -170,22 +171,23 @@ void ClassDiagramSettings::save(QTextStream & st) const {
 	  << " show_members_full_definition " << stringify(show_full_members_definition)
 	    << " show_members_visibility " << stringify(show_members_visibility)
 	      << " show_members_stereotype " << stringify(show_members_stereotype)
-		<< " show_members_multiplicity " << stringify(show_members_multiplicity)
-		  << " show_members_initialization " << stringify(show_members_initialization)
-		    << " show_attribute_modifiers " << stringify(show_attribute_modifiers)
-		      << " member_max_width " << ((int) member_max_width)
-			<< " show_parameter_dir " << stringify(show_parameter_dir)
-			  << " show_parameter_name " << stringify(show_parameter_name)
-			    << " package_name_in_tab " << stringify(package_name_in_tab)
-			      << " class_drawing_mode " << stringify(class_drawing_mode)
-				<< " drawing_language " << stringify(drawing_language)
-				  << " show_context_mode " << stringify(show_context_mode)
-				    << " auto_label_position " << stringify(auto_label_position)
-				      << " show_relation_modifiers " << stringify(show_relation_modifiers)
-					<< " show_relation_visibility " << stringify(show_relation_visibility)
-					  << " show_infonote " << stringify(show_infonote)
-					    << " shadow " << stringify(shadow)
-					      << " show_stereotype_properties " << stringify(show_stereotype_properties);
+		<< " show_members_context " << stringify(show_members_context)
+		  << " show_members_multiplicity " << stringify(show_members_multiplicity)
+		    << " show_members_initialization " << stringify(show_members_initialization)
+		      << " show_attribute_modifiers " << stringify(show_attribute_modifiers)
+			<< " member_max_width " << ((int) member_max_width)
+			  << " show_parameter_dir " << stringify(show_parameter_dir)
+			    << " show_parameter_name " << stringify(show_parameter_name)
+			      << " package_name_in_tab " << stringify(package_name_in_tab)
+				<< " class_drawing_mode " << stringify(class_drawing_mode)
+				  << " drawing_language " << stringify(drawing_language)
+				    << " show_context_mode " << stringify(show_context_mode)
+				      << " auto_label_position " << stringify(auto_label_position)
+					<< " show_relation_modifiers " << stringify(show_relation_modifiers)
+					  << " show_relation_visibility " << stringify(show_relation_visibility)
+					    << " show_infonote " << stringify(show_infonote)
+					      << " shadow " << stringify(shadow)
+						<< " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void ClassDiagramSettings::read(char * & st, char * & k) {
@@ -211,6 +213,7 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     show_full_members_definition = state(read_keyword(st));
     show_members_visibility = show_full_members_definition;
     show_members_stereotype = UmlNo;
+    show_members_context = noContext;
     show_members_multiplicity = UmlNo;
     show_members_initialization = UmlNo;
     show_attribute_modifiers = UmlNo;
@@ -235,6 +238,11 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     if (!strcmp(k, "show_members_stereotype")) {
       // new version
       show_members_stereotype = state(read_keyword(st));
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "show_members_context")) {
+      // new version
+      show_members_context = context_mode(read_keyword(st));
       k = read_keyword(st);
     }
     if (!strcmp(k, "show_members_multiplicity")) {
@@ -333,6 +341,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(show_full_members_definition, UmlDefaultState);
   check_default(show_members_visibility, UmlDefaultState);
   check_default(show_members_stereotype, UmlDefaultState);
+  check_default(show_members_context, DefaultShowContextMode);
   check_default(show_members_multiplicity, UmlDefaultState);
   check_default(show_members_initialization, UmlDefaultState);
   check_default(show_attribute_modifiers, UmlDefaultState);
@@ -350,7 +359,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(shadow, UmlDefaultState);
   check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 23;
+  return done == 24;
 }
 
 void ClassDiagramSettings::assign(const ClassDiagramSettings & from) {
@@ -361,6 +370,7 @@ void ClassDiagramSettings::assign(const ClassDiagramSettings & from) {
   assign_default(show_full_members_definition, UmlDefaultState);
   assign_default(show_members_visibility, UmlDefaultState);
   assign_default(show_members_stereotype, UmlDefaultState);
+  assign_default(show_members_context, DefaultShowContextMode);
   assign_default(show_members_multiplicity, UmlDefaultState);
   assign_default(show_members_initialization, UmlDefaultState);
   assign_default(show_attribute_modifiers, UmlDefaultState);
@@ -385,7 +395,7 @@ void ClassDiagramSettings::complete(StateSpecVector & a, UmlCode who) {
   switch (who) {
   case UmlClass:
     // order known by ClassDiagramSettings::set
-    a.resize(i + 17);
+    a.resize(i + 18);
   
     a[i].set(TR("drawing language"), &drawing_language);
     a[i + 1].set(TR("drawing mode"), &class_drawing_mode);
@@ -399,21 +409,23 @@ void ClassDiagramSettings::complete(StateSpecVector & a, UmlCode who) {
 		 &show_members_visibility);
     a[i + 8].set(TR("show members stereotype"),
 		 &show_members_stereotype);
-    a[i + 9].set(TR("show attributes multiplicity"),
+    a[i + 9].set(TR("show context in members definition"),
+		 &show_members_context);
+    a[i + 10].set(TR("show attributes multiplicity"),
 		 &show_members_multiplicity);
-    a[i + 10].set(TR("show attributes initialisation"),
+    a[i + 11].set(TR("show attributes initialisation"),
 		 &show_members_initialization);
-    a[i + 11].set(TR("show attribute modifiers"),
+    a[i + 12].set(TR("show attribute modifiers"),
 		 &show_attribute_modifiers);
-    a[i + 12].set(TR("show parameter direction"),
+    a[i + 13].set(TR("show parameter direction"),
 		  &show_parameter_dir);
-    a[i + 13].set(TR("show parameter name"),
+    a[i + 14].set(TR("show parameter name"),
 		  &show_parameter_name);
-    a[i + 14].set(TR("members max width"),
+    a[i + 15].set(TR("members max width"),
 		  &member_max_width);
-    a[i + 15].set(TR("show information note"),
+    a[i + 16].set(TR("show information note"),
 		  &show_infonote);
-    a[i + 16].set(TR("show stereotype properties"),
+    a[i + 17].set(TR("show stereotype properties"),
 		  &show_stereotype_properties);
     break;
   case UmlPackage:
@@ -424,7 +436,7 @@ void ClassDiagramSettings::complete(StateSpecVector & a, UmlCode who) {
     a[i + 2].set(TR("show stereotype properties"), &show_stereotype_properties);
     break;
   case UmlClassDiagram:
-    a.resize(i + 23);
+    a.resize(i + 24);
   
     a[i].set(TR("drawing language"), &drawing_language);
     a[i + 1].set(TR("classes drawing mode"), &class_drawing_mode);
@@ -437,34 +449,36 @@ void ClassDiagramSettings::complete(StateSpecVector & a, UmlCode who) {
 		 &show_members_visibility);
     a[i + 7].set(TR("show members stereotype"),
 		 &show_members_stereotype);
-    a[i + 8].set(TR("show attributes multiplicity"),
+    a[i + 8].set(TR("show context in members definition"),
+		 &show_members_context);
+    a[i + 9].set(TR("show attributes multiplicity"),
 		 &show_members_multiplicity);
-    a[i + 9].set(TR("show attributes initialization"),
-		 &show_members_initialization);
-    a[i + 10].set(TR("show attribute modifiers"),
+    a[i + 10].set(TR("show attributes initialization"),
+		  &show_members_initialization);
+    a[i + 11].set(TR("show attribute modifiers"),
 		 &show_attribute_modifiers);
-    a[i + 11].set(TR("show parameter direction"),
+    a[i + 12].set(TR("show parameter direction"),
 		  &show_parameter_dir);
-    a[i + 12].set(TR("show parameter name"),
+    a[i + 13].set(TR("show parameter name"),
 		  &show_parameter_name);
-    a[i + 13].set(TR("members max width"),
+    a[i + 14].set(TR("members max width"),
 		  &member_max_width);
-    a[i + 14].set(TR("draw all relations"), &draw_all_relations);
-    a[i + 15].set(TR("show relation modifiers"), &show_relation_modifiers);
-    a[i + 16].set(TR("show relation visibility"), &show_relation_visibility);
-    a[i + 17].set(TR("show packages name in tab"), &package_name_in_tab);
-    a[i + 18].set(TR("show classes and packages context"), &show_context_mode);
-    a[i + 19].set(TR("automatic labels position"), &auto_label_position);
-    a[i + 20].set(TR("show information note"), &show_infonote);
-    a[i + 21].set(TR("show stereotype properties"),
+    a[i + 15].set(TR("draw all relations"), &draw_all_relations);
+    a[i + 16].set(TR("show relation modifiers"), &show_relation_modifiers);
+    a[i + 17].set(TR("show relation visibility"), &show_relation_visibility);
+    a[i + 18].set(TR("show packages name in tab"), &package_name_in_tab);
+    a[i + 19].set(TR("show classes and packages context"), &show_context_mode);
+    a[i + 20].set(TR("automatic labels position"), &auto_label_position);
+    a[i + 21].set(TR("show information note"), &show_infonote);
+    a[i + 22].set(TR("show stereotype properties"),
 		  &show_stereotype_properties);
-    a[i + 22].set(TR("draw shadow"), &shadow);
+    a[i + 23].set(TR("draw shadow"), &shadow);
     break;
   default:
     {
       QString s = TR("class") + "#";
       
-      a.resize(i + 23);
+      a.resize(i + 24);
       
       a[i].set(s + TR("drawing language"), &drawing_language);
       a[i + 1].set(s + TR("classes drawing mode"), &class_drawing_mode);
@@ -477,28 +491,30 @@ void ClassDiagramSettings::complete(StateSpecVector & a, UmlCode who) {
 		   &show_members_visibility);
       a[i + 7].set(s + TR("show classes members stereotype"),
 		   &show_members_stereotype);
-      a[i + 8].set(s + TR("show attribute multiplicity"),
+      a[i + 8].set(s + TR("show context in classes members definition"),
+		   &show_members_context);
+      a[i + 9].set(s + TR("show attribute multiplicity"),
 		   &show_members_multiplicity);
-      a[i + 9].set(s + TR("show attribute initialization"),
-		   &show_members_initialization);
-      a[i + 10].set(s + TR("show attribute modifiers"),
+      a[i + 10].set(s + TR("show attribute initialization"),
+		    &show_members_initialization);
+      a[i + 11].set(s + TR("show attribute modifiers"),
 		    &show_attribute_modifiers);
-      a[i + 11].set(s + TR("show operation parameter direction"),
+      a[i + 12].set(s + TR("show operation parameter direction"),
 		    &show_parameter_dir);
-      a[i + 12].set(s + TR("show operation parameter name"),
+      a[i + 13].set(s + TR("show operation parameter name"),
 		    &show_parameter_name);
-      a[i + 13].set(s + TR("max members width"),
+      a[i + 14].set(s + TR("max members width"),
 		    &member_max_width);
-      a[i + 14].set(s + TR("draw all relations"), &draw_all_relations);
-      a[i + 15].set(s + TR("show packages name in tab"), &package_name_in_tab);
-      a[i + 16].set(s + TR("show relation modifiers"), &show_relation_modifiers);
-      a[i + 17].set(s + TR("show relation visibility"), &show_relation_visibility);
-      a[i + 18].set(s + TR("show classes and packages context"), &show_context_mode);
-      a[i + 19].set(s + TR("automatic labels position"), &auto_label_position);
-      a[i + 20].set(s + TR("show information note"), &show_infonote);
-      a[i + 21].set(s + TR("show stereotype properties"),
+      a[i + 15].set(s + TR("draw all relations"), &draw_all_relations);
+      a[i + 16].set(s + TR("show packages name in tab"), &package_name_in_tab);
+      a[i + 17].set(s + TR("show relation modifiers"), &show_relation_modifiers);
+      a[i + 18].set(s + TR("show relation visibility"), &show_relation_visibility);
+      a[i + 19].set(s + TR("show classes and packages context"), &show_context_mode);
+      a[i + 20].set(s + TR("automatic labels position"), &auto_label_position);
+      a[i + 21].set(s + TR("show information note"), &show_infonote);
+      a[i + 22].set(s + TR("show stereotype properties"),
 		    &show_stereotype_properties);
-      a[i + 22].set(s + TR("draw shadow"), &shadow);
+      a[i + 23].set(s + TR("draw shadow"), &shadow);
     }
   }
 }
@@ -524,21 +540,23 @@ void ClassDiagramSettings::set(StateSpecVector & a, int index) {
   if (!a[index + 8].name.isEmpty())
     show_members_stereotype = (Uml3States) *((Uml3States *) a[index + 8].state);
   if (!a[index + 9].name.isEmpty())
-    show_members_multiplicity = (Uml3States) *((Uml3States *) a[index + 9].state);
+    show_members_context = (ShowContextMode) *((ShowContextMode *) a[index + 9].state);
   if (!a[index + 10].name.isEmpty())
-    show_attribute_modifiers = (Uml3States) *((Uml3States *) a[index + 10].state);
+    show_members_multiplicity = (Uml3States) *((Uml3States *) a[index + 10].state);
   if (!a[index + 11].name.isEmpty())
-    show_members_initialization = (Uml3States) *((Uml3States *) a[index + 11].state);
+    show_attribute_modifiers = (Uml3States) *((Uml3States *) a[index + 11].state);
   if (!a[index + 12].name.isEmpty())
-    show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 12].state);
+    show_members_initialization = (Uml3States) *((Uml3States *) a[index + 12].state);
   if (!a[index + 13].name.isEmpty())
-    show_parameter_name = (Uml3States) *((Uml3States *) a[index + 13].state);
+    show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 13].state);
   if (!a[index + 14].name.isEmpty())
-    member_max_width = *((char *) a[index + 14].state);
+    show_parameter_name = (Uml3States) *((Uml3States *) a[index + 14].state);
   if (!a[index + 15].name.isEmpty())
-    show_infonote = (Uml3States) *((Uml3States *) a[index + 15].state);
+    member_max_width = *((char *) a[index + 15].state);
   if (!a[index + 16].name.isEmpty())
-    show_stereotype_properties = (Uml3States) *((Uml3States *) a[index + 16].state);
+    show_infonote = (Uml3States) *((Uml3States *) a[index + 16].state);
+  if (!a[index + 17].name.isEmpty())
+    show_stereotype_properties = (Uml3States) *((Uml3States *) a[index + 17].state);
 }
 
 
@@ -610,6 +628,8 @@ SequenceDiagramSettings::SequenceDiagramSettings() {
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
   show_stereotype_properties = UmlDefaultState;
+  show_class_context_mode = DefaultShowContextMode;
+  show_msg_context_mode = DefaultShowContextMode;
 }
 
 void SequenceDiagramSettings::save(QTextStream & st) const {
@@ -620,7 +640,9 @@ void SequenceDiagramSettings::save(QTextStream & st) const {
 	<< " drawing_language " << stringify(drawing_language)
 	  << " draw_all_relations " << stringify(draw_all_relations)
 	    << " shadow " << stringify(shadow)
-	      << " show_stereotype_properties " << stringify(show_stereotype_properties);
+	      << " show_stereotype_properties " << stringify(show_stereotype_properties)
+		<< " show_class_context_mode " << stringify(show_class_context_mode)
+		  << " show_msg_context_mode " << stringify(show_msg_context_mode);
 }
 
 void SequenceDiagramSettings::read(char * & st, char * & k) {
@@ -653,6 +675,14 @@ void SequenceDiagramSettings::read(char * & st, char * & k) {
     show_stereotype_properties = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_class_context_mode")) {
+    show_class_context_mode = context_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "show_msg_context_mode")) {
+    show_msg_context_mode = context_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
@@ -665,8 +695,10 @@ bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   check_default(show_stereotype_properties, UmlDefaultState);
+  check_default(show_class_context_mode, DefaultShowContextMode);
+  check_default(show_msg_context_mode, DefaultShowContextMode);
   
-  return done == 7;
+  return done == 9;
 }
 
 void SequenceDiagramSettings::assign(const SequenceDiagramSettings & from) {
@@ -677,21 +709,31 @@ void SequenceDiagramSettings::assign(const SequenceDiagramSettings & from) {
   assign_default(draw_all_relations, UmlDefaultState);
   assign_default(shadow, UmlDefaultState);
   assign_default(show_stereotype_properties, UmlDefaultState);
+  assign_default(show_class_context_mode, DefaultShowContextMode);
+  assign_default(show_msg_context_mode, DefaultShowContextMode);
+}
+
+void SequenceDiagramSettings::assign_msg(const SequenceDiagramSettings & from) {
+  assign_default(show_full_operations_definition, UmlDefaultState);
+  assign_default(drawing_language, DefaultDrawingLanguage);
+  assign_default(show_msg_context_mode, DefaultShowContextMode);
 }
 
 void SequenceDiagramSettings::complete(StateSpecVector & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 7);
+  a.resize(i + 9);
 
   if (local) {
     a[i].set(TR("drawing language"), &drawing_language);
     a[i + 1].set(TR("instances drawing mode"), &instances_drawing_mode);
     a[i + 2].set(TR("show operations full definition"), &show_full_operations_definition);
     a[i + 3].set(TR("write name:type horizontally"), &write_horizontally);
-    a[i + 4].set(TR("draw all relations"), &draw_all_relations);
-    a[i + 5].set(TR("show stereotype properties"), &show_stereotype_properties);
-    a[i + 6].set(TR("draw shadow"), &shadow);
+    a[i + 4].set(TR("show classes context"), &show_class_context_mode);
+    a[i + 5].set(TR("show messages context"), &show_msg_context_mode);
+    a[i + 6].set(TR("draw all relations"), &draw_all_relations);
+    a[i + 7].set(TR("show stereotype properties"), &show_stereotype_properties);
+    a[i + 8].set(TR("draw shadow"), &shadow);
   }
   else {
     QString s = TR("sequence") + "#";
@@ -700,9 +742,11 @@ void SequenceDiagramSettings::complete(StateSpecVector & a, bool local) {
     a[i + 1].set(s + TR("instances drawing mode"), &instances_drawing_mode);
     a[i + 2].set(s + TR("show operations full definition"), &show_full_operations_definition);
     a[i + 3].set(s + TR("write name:type horizontally"), &write_horizontally);
-    a[i + 4].set(s + TR("draw all relations"), &draw_all_relations);
-    a[i + 5].set(s + TR("show stereotype properties"), &show_stereotype_properties);
-    a[i + 6].set(s + TR("draw shadow"), &shadow);
+    a[i + 4].set(s + TR("show classes context"), &show_class_context_mode);
+    a[i + 5].set(s + TR("show messages context"), &show_msg_context_mode);
+    a[i + 6].set(s + TR("draw all relations"), &draw_all_relations);
+    a[i + 7].set(s + TR("show stereotype properties"), &show_stereotype_properties);
+    a[i + 8].set(s + TR("draw shadow"), &shadow);
   }
 }
 
@@ -714,7 +758,8 @@ CollaborationDiagramSettings::CollaborationDiagramSettings() {
   write_horizontally = UmlDefaultState;
   drawing_language = DefaultDrawingLanguage;
   package_name_in_tab = UmlDefaultState;
-  show_context_mode = DefaultShowContextMode;
+  show_class_pack_context_mode = DefaultShowContextMode;
+  show_msg_context_mode = DefaultShowContextMode;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
   show_stereotype_properties = UmlDefaultState;
@@ -727,10 +772,19 @@ void CollaborationDiagramSettings::save(QTextStream & st) const {
 	<< " write_horizontally " << stringify(write_horizontally)
 	  << " drawing_language " << stringify(drawing_language)
 	    << " package_name_in_tab " << stringify(package_name_in_tab)
-	      << " show_context " << stringify(show_context_mode)
-		<< " draw_all_relations " << stringify(draw_all_relations)
-		  << " shadow " << stringify(shadow)
-		    << " show_stereotype_properties " << stringify(show_stereotype_properties);
+	      << " show_context " << stringify(show_class_pack_context_mode)
+		<< " show_msg_context " << stringify(show_msg_context_mode)
+		  << " draw_all_relations " << stringify(draw_all_relations)
+		    << " shadow " << stringify(shadow)
+		      << " show_stereotype_properties " << stringify(show_stereotype_properties);
+}
+
+void CollaborationDiagramSettings::save_msg(QTextStream & st) const {
+    nl_indent(st);
+    st << "show_full_operations_definition " << stringify(show_full_operations_definition)
+      << " show_hierarchical_rank " << stringify(show_hierarchical_rank)
+	<< " drawing_language " << stringify(drawing_language)
+	  << " show_msg_context " << stringify(show_msg_context_mode);
 }
 
 void CollaborationDiagramSettings::read(char * & st, char * & k) {
@@ -756,7 +810,11 @@ void CollaborationDiagramSettings::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   if (!strcmp(k, "show_context")) {
-    show_context_mode = context_mode(read_keyword(st));
+    show_class_pack_context_mode = context_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "show_msg_context")) {
+    show_msg_context_mode = context_mode(read_keyword(st));
     k = read_keyword(st);
   }
   if (!strcmp(k, "draw_all_relations")) {
@@ -781,12 +839,13 @@ bool CollaborationDiagramSettings::complete(CollaborationDiagramSettings & resul
   check_default(write_horizontally, UmlDefaultState);
   check_default(drawing_language, DefaultDrawingLanguage);
   check_default(package_name_in_tab, UmlDefaultState);
-  check_default(show_context_mode, DefaultShowContextMode);
+  check_default(show_class_pack_context_mode, DefaultShowContextMode);
+  check_default(show_msg_context_mode, DefaultShowContextMode);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 9;
+  return done == 10;
 }
 
 void CollaborationDiagramSettings::assign(const CollaborationDiagramSettings & from) {
@@ -795,7 +854,8 @@ void CollaborationDiagramSettings::assign(const CollaborationDiagramSettings & f
   assign_default(write_horizontally, UmlDefaultState);
   assign_default(drawing_language, DefaultDrawingLanguage);
   assign_default(package_name_in_tab, UmlDefaultState);
-  assign_default(show_context_mode, DefaultShowContextMode);
+  assign_default(show_class_pack_context_mode, DefaultShowContextMode);
+  assign_default(show_msg_context_mode, DefaultShowContextMode);
   assign_default(draw_all_relations, UmlDefaultState);
   assign_default(shadow, UmlDefaultState);
   assign_default(show_stereotype_properties, UmlDefaultState);
@@ -804,7 +864,7 @@ void CollaborationDiagramSettings::assign(const CollaborationDiagramSettings & f
 void CollaborationDiagramSettings::complete(StateSpecVector & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 9);
+  a.resize(i + 10);
   if (local) {
     a[i].set(TR("drawing language"), &drawing_language);
     a[i+1].set(TR("show operations full definition"),
@@ -814,10 +874,11 @@ void CollaborationDiagramSettings::complete(StateSpecVector & a, bool local) {
     a[i+3].set(TR("write name:type horizontally"),
 	       &write_horizontally);
     a[i+4].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i+5].set(TR("show package context"), &show_context_mode);
-    a[i+6].set(TR("draw all relations"), &draw_all_relations);
-    a[i+7].set(TR("show stereotype properties"), &show_stereotype_properties);
-    a[i+8].set(TR("draw shadow"), &shadow);
+    a[i+5].set(TR("show classes and packages context"), &show_class_pack_context_mode);
+    a[i+6].set(TR("show messages context"), &show_msg_context_mode);
+    a[i+7].set(TR("draw all relations"), &draw_all_relations);
+    a[i+8].set(TR("show stereotype properties"), &show_stereotype_properties);
+    a[i+9].set(TR("draw shadow"), &shadow);
   }
   else {
     QString s = TR("communication") + "#";
@@ -831,11 +892,24 @@ void CollaborationDiagramSettings::complete(StateSpecVector & a, bool local) {
     a[i+3].set(s + TR("write name:type horizontally"),
 	       &write_horizontally);
     a[i+4].set(s + TR("show packages name in tab"), &package_name_in_tab);
-    a[i+5].set(s + TR("show packages context"), &show_context_mode);
-    a[i+6].set(s + TR("draw all relations"), &draw_all_relations);
-    a[i+7].set(s + TR("show stereotype properties"), &show_stereotype_properties);
-    a[i+8].set(s + TR("draw shadow"), &shadow);
+    a[i+5].set(s + TR("show classes and packages context"), &show_class_pack_context_mode);
+    a[i+6].set(s + TR("show messages context"), &show_msg_context_mode);
+    a[i+7].set(s + TR("draw all relations"), &draw_all_relations);
+    a[i+8].set(s + TR("show stereotype properties"), &show_stereotype_properties);
+    a[i+9].set(s + TR("draw shadow"), &shadow);
   }
+}
+
+void CollaborationDiagramSettings::complete_msg(StateSpecVector & a) {
+  int i = a.size();
+  
+  a.resize(i + 4);
+  a[i].set(TR("drawing language"), &drawing_language);
+  a[i+1].set(TR("show operations full definition"),
+	     &show_full_operations_definition);
+  a[i+2].set(TR("show messages context"), &show_msg_context_mode);
+  a[i+3].set(TR("show hierarchical rank"),
+	     &show_hierarchical_rank);
 }
 
 //
@@ -843,7 +917,7 @@ void CollaborationDiagramSettings::complete(StateSpecVector & a, bool local) {
 ObjectDiagramSettings::ObjectDiagramSettings() {
   write_horizontally = UmlDefaultState;
   package_name_in_tab = UmlDefaultState;
-  show_context_mode = DefaultShowContextMode;
+  show_class_pack_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
@@ -854,7 +928,7 @@ void ObjectDiagramSettings::save(QTextStream & st) const {
     nl_indent(st);
     st << " write_horizontally " << stringify(write_horizontally)
       << " package_name_in_tab " << stringify(package_name_in_tab)
-	<< " show_context " << stringify(show_context_mode)
+	<< " show_context " << stringify(show_class_pack_context_mode)
 	  << " auto_label_position " << stringify(auto_label_position)
 	    << " draw_all_relations " << stringify(draw_all_relations)
 	      << " shadow " << stringify(shadow)
@@ -872,7 +946,7 @@ void ObjectDiagramSettings::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   if (!strcmp(k, "show_context")) {
-    show_context_mode = context_mode(read_keyword(st));
+    show_class_pack_context_mode = context_mode(read_keyword(st));
     k = read_keyword(st);
   }
   if (!strcmp(k, "auto_label_position")) {
@@ -898,7 +972,7 @@ bool ObjectDiagramSettings::complete(ObjectDiagramSettings & result) const {
   
   check_default(write_horizontally, UmlDefaultState);
   check_default(package_name_in_tab, UmlDefaultState);
-  check_default(show_context_mode, DefaultShowContextMode);
+  check_default(show_class_pack_context_mode, DefaultShowContextMode);
   check_default(auto_label_position, UmlDefaultState);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
@@ -910,7 +984,7 @@ bool ObjectDiagramSettings::complete(ObjectDiagramSettings & result) const {
 void ObjectDiagramSettings::assign(const ObjectDiagramSettings & from) {
   assign_default(write_horizontally, UmlDefaultState);
   assign_default(package_name_in_tab, UmlDefaultState);
-  assign_default(show_context_mode, DefaultShowContextMode);
+  assign_default(show_class_pack_context_mode, DefaultShowContextMode);
   assign_default(auto_label_position, UmlDefaultState);
   assign_default(draw_all_relations, UmlDefaultState);
   assign_default(shadow, UmlDefaultState);
@@ -924,7 +998,7 @@ void ObjectDiagramSettings::complete(StateSpecVector & a, bool local) {
   if (local) {
     a[i].set(TR("write name:type horizontally"), &write_horizontally);
     a[i+1].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i+2].set(TR("show package context"), &show_context_mode);
+    a[i+2].set(TR("show classes and packages context"), &show_class_pack_context_mode);
     a[i+3].set(TR("automatic labels position"), &auto_label_position);
     a[i+4].set(TR("draw all relations"), &draw_all_relations);
     a[i+5].set(TR("show stereotype properties"), &show_stereotype_properties);
@@ -935,7 +1009,7 @@ void ObjectDiagramSettings::complete(StateSpecVector & a, bool local) {
     
     a[i].set(s + TR("write name:type horizontally"), &write_horizontally);
     a[i+1].set(s + TR("show packages name in tab"), &package_name_in_tab);
-    a[i+2].set(s + TR("show packages context"), &show_context_mode);
+    a[i+2].set(s + TR("show classes and packages context"), &show_class_pack_context_mode);
     a[i+3].set(s + TR("automatic labels position"), &auto_label_position);
     a[i+4].set(s + TR("draw all relations"), &draw_all_relations);
     a[i+5].set(s + TR("show stereotype properties"), &show_stereotype_properties);
@@ -1037,7 +1111,7 @@ void UseCaseDiagramSettings::complete(StateSpecVector & a, bool local) {
   a.resize(i + 7);
   if (local) {
     a[i].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i + 1].set(TR("show package context"), &show_context_mode);
+    a[i + 1].set(TR("show packages context"), &show_context_mode);
     a[i + 2].set(TR("automatic labels position"), &auto_label_position);
     a[i + 3].set(TR("draw all relations"), &draw_all_relations);
     a[i + 4].set(TR("class drawing mode"), &class_drawing_mode);
@@ -1130,7 +1204,7 @@ void ComponentDiagramSettings::complete(StateSpecVector & a, bool local) {
   a.resize(i + 5);
   if (local) {
     a[i].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i + 1].set(TR("show package context"), &show_context_mode);
+    a[i + 1].set(TR("show packages context"), &show_context_mode);
     a[i + 2].set(TR("automatic labels position"), &auto_label_position);
     a[i + 3].set(TR("draw all relations"), &draw_all_relations);
     a[i + 4].set(TR("draw shadow"), &shadow);
@@ -1229,7 +1303,7 @@ void DeploymentDiagramSettings::complete(StateSpecVector & a, bool local) {
   a.resize(i + 6);
   if (local) {
     a[i].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i + 1].set(TR("show package context"), &show_context_mode);
+    a[i + 1].set(TR("show packages context"), &show_context_mode);
     a[i + 2].set(TR("write node instance horizontally"), &write_horizontally);
     a[i + 3].set(TR("automatic labels position"), &auto_label_position);
     a[i + 4].set(TR("draw all relations"), &draw_all_relations);
@@ -1421,7 +1495,7 @@ void StateDiagramSettings::complete(StateSpecVector & a, bool local) {
   a.resize(i + 7);
   if (local) {
     a[i].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i + 1].set(TR("show package context"), &show_context_mode);
+    a[i + 1].set(TR("show packages context"), &show_context_mode);
     a[i + 2].set(TR("automatic labels position"), &auto_label_position);
     a[i + 3].set(TR("write transition horizontally"), &write_label_horizontally);
     a[i + 4].set(TR("show transition definition"), &show_trans_definition);
@@ -1606,7 +1680,7 @@ void ActivityDiagramSettings::complete(StateSpecVector & a, bool local) {
   a.resize(i + 7);
   if (local) {
     a[i].set(TR("packages name in tab"), &package_name_in_tab);
-    a[i + 1].set(TR("show package context"), &show_context_mode);
+    a[i + 1].set(TR("show packages context"), &show_context_mode);
     a[i + 2].set(TR("automatic labels position"), &auto_label_position);
     a[i + 3].set(TR("write flow label horizontally"), &write_label_horizontally);
     a[i + 4].set(TR("show opaque action definition"), &show_opaque_action_definition);

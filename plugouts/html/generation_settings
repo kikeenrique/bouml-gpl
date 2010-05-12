@@ -175,6 +175,7 @@ ${body}}
 "
   php_default_src_content "<?php
 ${comment}
+${require_once}
 ${definition}
 ?>
 "

@@ -127,6 +127,8 @@ HEADERS		= data/ActualParamData.h \
 		  dialog/ClassListDialog.h \
 		  dialog/ClassViewDialog.h \
 		  dialog/ClassSettingsDialog.h \
+		  dialog/RevSettingsDialog.h \
+		  dialog/HelpRegexpDialog.h \
 		  dialog/FragmentDialog.h \
 		  dialog/ContinuationDialog.h \
 		  dialog/ComboItem.h \
@@ -375,6 +377,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ClassListDialog.cpp \
 		  dialog/ClassViewDialog.cpp \
 		  dialog/ClassSettingsDialog.cpp \
+		  dialog/RevSettingsDialog.cpp \
 		  dialog/ComboItem.cpp \
 		  dialog/FragmentDialog.cpp \
 		  dialog/ContinuationDialog.cpp \

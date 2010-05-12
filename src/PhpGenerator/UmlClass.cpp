@@ -206,6 +206,82 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 void UmlClass::generate(QTextOStream &, const QCString &, QCString, int &) {
 }
 
+void UmlClass::generate_require_onces(QTextOStream & f, QCString & made) {
+  if (!phpDecl().isEmpty()) {
+    QVector<UmlItem> ch = children();
+    unsigned index;
+    const unsigned sup = ch.size();
+    
+    for (index = 0; index != sup; index += 1) {
+      UmlClassMember * m = dynamic_cast<UmlClassMember *>(ch[index]);
+      
+      if (m != 0)
+	m->generate_require_onces(f, made);
+    }
+  }
+}
+
+void UmlClass::generate_require_onces(QTextOStream & f, QCString & made,
+				      UmlArtifact * using_art) {
+  QCString s;
+  
+  if (isPhpExternal()) {
+    s = phpDecl();
+    
+    int index;
+    
+    if ((index = s.find('\n')) == -1)
+      // wrong form
+      return;
+      
+      s = s.mid(index + 1) + '\n';
+      
+      for (;;) {
+	if ((index = s.find("${name}")) != -1)
+	  s.replace(index, 7, name());
+	else if ((index = s.find("${Name}")) != -1)
+	  s.replace(index, 7, capitalize(name()));
+	else if ((index = s.find("${NAME}")) != -1)
+	  s.replace(index, 7, name().upper());
+	else if ((index = s.find("${nAME}")) != -1)
+	  s.replace(index, 7, name().lower());
+	else
+	  break;
+      }
+  }
+  else {
+    UmlArtifact * art = assocArtifact();
+    
+    if ((art == 0) || (art == using_art))
+      return;
+
+    if (PhpSettings::requireOnceWithPath()) {
+      UmlPackage * p = art->package();
+      UmlPackage * pack = using_art->package();
+      QCString dir;
+      
+      if (PhpSettings::isRelativePath()) {
+	QCString empty;
+	
+	dir = pack->file_path(empty);
+      }
+      else if (PhpSettings::isRootRelativePath())
+	dir = UmlPackage::rootDir();
+	  
+      s = "require_once \'" + p->file_path(art->name(), dir) + "';\n";
+    }
+    else
+      s = "require_once \'" + art->name() + '.' +
+	PhpSettings::sourceExtension() + "';\n";
+  }
+  
+  if (made.find(s) == -1) {
+    made += s;
+    if (using_art->phpSource().find(s) == -1)
+      f << s;
+  }
+}
+
 void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
 {
   if (t.type != 0)
@@ -234,3 +310,11 @@ void UmlClass::write(QTextOStream & f) {
     f << name();
 }
 
+UmlArtifact * UmlClass::assocArtifact() {
+  UmlClass * cl = this;
+  
+  while (parent()->kind() == aClass)
+    cl = (UmlClass *) parent();
+  
+  return cl->associatedArtifact();
+}

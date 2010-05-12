@@ -100,6 +100,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
+    QString contextual_name(ShowContextMode) const;
     virtual void set_name(const char * s);
     virtual void member_cpp_def(const QString &, const QString &, QString & s, bool) const;
     virtual void menu();

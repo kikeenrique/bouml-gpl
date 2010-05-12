@@ -31,6 +31,9 @@
 #include "UmlSettings.h"
 #include "PhpSettings.h"
 
+void UmlClassMember::generate_require_onces(QTextOStream &, QCString &) {
+}
+
 void UmlClassMember::remove_comments(QCString & s)
 {
   int index1 = 0;

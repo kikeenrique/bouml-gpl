@@ -81,6 +81,7 @@ class ArtifactCanvas : public QObject, public DiagramCanvas {
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    virtual void same_drawing_settings(QList<DiagramItem> &);
     
     virtual void apply_shortcut(QString s);
     void edit_drawing_settings();

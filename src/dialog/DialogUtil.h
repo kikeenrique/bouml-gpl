@@ -112,16 +112,26 @@ extern QString type(const QString & t, const QStringList & types,
 		    BrowserNodeList & nodes);
 
 // 'true' name or external name
-extern QString get_cpp_name(const BrowserClass * cl);
-extern QString get_java_name(const BrowserClass * cl);
-extern QString get_php_name(const BrowserClass * cl);
-extern QString get_python_name(const BrowserClass * cl);
-extern QString get_idl_name(const BrowserClass * cl);
-extern QString get_cpp_name(const AType);
-extern QString get_java_name(const AType);
-extern QString get_php_name(const AType);
-extern QString get_python_name(const AType);
-extern QString get_idl_name(const AType);
+extern QString get_cpp_name(const BrowserClass * cl,
+			    ShowContextMode mode = noContext);
+extern QString get_java_name(const BrowserClass * cl,
+			    ShowContextMode mode = noContext);
+extern QString get_php_name(const BrowserClass * cl,
+			    ShowContextMode mode = noContext);
+extern QString get_python_name(const BrowserClass * cl,
+			    ShowContextMode mode = noContext);
+extern QString get_idl_name(const BrowserClass * cl,
+			    ShowContextMode mode = noContext);
+extern QString get_cpp_name(const AType,
+			    ShowContextMode mode = noContext);
+extern QString get_java_name(const AType,
+			    ShowContextMode mode = noContext);
+extern QString get_php_name(const AType,
+			    ShowContextMode mode = noContext);
+extern QString get_python_name(const AType,
+			    ShowContextMode mode = noContext);
+extern QString get_idl_name(const AType,
+			    ShowContextMode mode = noContext);
     
 extern void manage_alias(const BrowserNode * node, const char *& p,
 			 QString & s, KeyValuesTable *);
@@ -141,5 +151,9 @@ extern void set_editor(QString);
 
 extern void set_completion(bool y);
 extern bool completion();
+
+extern void open_dialog(QWidget *);
+extern void close_dialog(QWidget *);
+extern QWidgetList dialogs();
 
 #endif

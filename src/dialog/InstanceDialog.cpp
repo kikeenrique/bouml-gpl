@@ -93,6 +93,8 @@ InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
     
   connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  
+  open_dialog(this);
 }
 
 void InstanceDialog::polish() {
@@ -102,6 +104,7 @@ void InstanceDialog::polish() {
 
 InstanceDialog::~InstanceDialog() {
   previous_size = size();
+  close_dialog(this);
 }
 
 void InstanceDialog::menu_type() {

@@ -62,22 +62,28 @@ class SettingsDialog : public QTabDialog {
  
   protected:
     StateSpecVector * states;
-  ColorSpecVector * colors;
+    ColorSpecVector * colors;
     QVector<ComboStates> * cbstates;
     QVector<ComboColor> * cbcolors;
+    QWidget * first_visible_page;
     bool several;
+    bool did_apply;
  
     static QSize previous_size;
+    static QPoint previous_position;
+    static QString previous_active_tab;
   
   public:
     SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
 		   bool nodefault, bool unchanged = FALSE,
 		   QString title = QString());
     virtual ~SettingsDialog();
+    bool redo() const { return did_apply; }
     
   protected slots:
     virtual void polish();
     virtual void accept();
+    void apply();
 };
 
 #endif

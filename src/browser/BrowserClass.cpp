@@ -49,6 +49,7 @@
 #include "OperationData.h"
 #include "RelationData.h"
 #include "ClassData.h"
+#include "PackageData.h"
 #include "BrowserClassView.h"
 #include "BrowserClassDiagram.h"
 #include "BrowserUseCaseDiagram.h"
@@ -391,6 +392,60 @@ void BrowserClass::paintCell(QPainter * p, const QColorGroup & cg, int column,
 
 QString BrowserClass::full_name(bool rev, bool) const {
   return fullname(rev);
+}
+
+QString BrowserClass::contextual_name(ShowContextMode mode) const {
+  const MyStr & (PackageData::*f)() const;
+  QString sep;
+  
+  switch (mode) {
+  case umlContext:
+    return fullname(FALSE);
+  case namespaceContext:
+    f = &PackageData::get_cpp_namespace;
+    sep = "::";
+    break;
+  case javaPackageContext:
+    f = &PackageData::get_java_package;
+    sep = ".";
+    break;
+  case pythonPackageContext:
+    f = &PackageData::get_python_package;
+    sep = ".";
+    break;
+  case moduleContext:
+    f = &PackageData::get_idl_module;
+    sep = "::";
+    break;
+  default:
+    return get_name();
+  }
+  
+  QString s = get_name();
+  const BrowserClass * cl = this;
+    
+  if (cl->nestedp()) {
+    do {
+      cl = (BrowserClass *) cl->parent();
+      s = cl->get_name() + sep + s;
+    } while (cl->nestedp());
+  }
+    
+  if (((BrowserNode *) cl->parent())->get_type() == UmlClassView) {
+    // not under a use case
+    BrowserArtifact * cp = cl->get_associated_artifact();
+    
+    QString context =
+      (((PackageData *)
+	((BrowserNode *)
+	 (((cp == 0) ? (BrowserNode *) cl : (BrowserNode *) cp)
+	  ->parent()->parent()))->get_data())->*f)();
+    
+    if (!context.isEmpty())
+      s = context + sep + s;
+  }
+  
+  return s;
 }
 
 void BrowserClass::member_cpp_def(const QString &, const QString &, 

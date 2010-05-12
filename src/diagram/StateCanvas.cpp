@@ -1210,20 +1210,24 @@ void StateCanvas::apply_shortcut(QString s) {
 }
 
 void StateCanvas::edit_drawing_settings() {
-  StateSpecVector st(3);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("show activities"), &settings.show_activities);
-  st[1].set(TR("draw regions horizontally"), &settings.region_horizontally);
-  st[2].set(TR("drawing language"), &settings.drawing_language);
-  
-  co[0].set(TR("state color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st(3);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("show activities"), &settings.show_activities);
+    st[1].set(TR("draw regions horizontally"), &settings.region_horizontally);
+    st[2].set(TR("drawing language"), &settings.drawing_language);
+    
+    co[0].set(TR("state color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool StateCanvas::has_drawing_settings() const {
@@ -1231,39 +1235,57 @@ bool StateCanvas::has_drawing_settings() const {
 }
 
 void StateCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(3);
-  ColorSpecVector co(1);
-  Uml3States show_activities;
-  Uml3States region_horizontally;
-  UmlColor itscolor;
-  DrawingLanguage language;
-  
-  st[0].set(TR("show activities"), &show_activities);
-  st[1].set(TR("draw regions horizontally"), &region_horizontally);
-  st[2].set(TR("drawing language"), &language);
-  
-  co[0].set(TR("state color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(3);
+    ColorSpecVector co(1);
+    Uml3States show_activities;
+    Uml3States region_horizontally;
+    UmlColor itscolor;
+    DrawingLanguage language;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((StateCanvas *) it.current())->settings.show_activities =
-	  show_activities;
-      if (!st[1].name.isEmpty())
-	((StateCanvas *) it.current())->settings.region_horizontally =
-	  region_horizontally;
-      if (!st[2].name.isEmpty())
-	((StateCanvas *) it.current())->settings.drawing_language =
-	  language;
-      if (!co[0].name.isEmpty())
-	((StateCanvas *) it.current())->itscolor = itscolor;
-      ((StateCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("show activities"), &show_activities);
+    st[1].set(TR("draw regions horizontally"), &region_horizontally);
+    st[2].set(TR("drawing language"), &language);
+    
+    co[0].set(TR("state color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((StateCanvas *) it.current())->settings.show_activities =
+	    show_activities;
+	if (!st[1].name.isEmpty())
+	  ((StateCanvas *) it.current())->settings.region_horizontally =
+	    region_horizontally;
+	if (!st[2].name.isEmpty())
+	  ((StateCanvas *) it.current())->settings.drawing_language =
+	    language;
+	if (!co[0].name.isEmpty())
+	  ((StateCanvas *) it.current())->itscolor = itscolor;
+	((StateCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void StateCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  StateCanvas * x = (StateCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    StateCanvas * o =  (StateCanvas *) it.current();
+				 
+    o->settings = x->settings;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

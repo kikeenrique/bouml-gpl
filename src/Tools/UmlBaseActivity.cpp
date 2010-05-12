@@ -145,6 +145,7 @@ void UmlBaseActivity::read_uml_() {
   _single_execution = UmlCom::read_bool();
   _specification = (UmlOperation *) UmlBaseItem::read_();
   (void) UmlCom::read_bool(); // active
+  (void) UmlCom::read_string(); // constraint
 }
 
 #ifdef WITHCPP

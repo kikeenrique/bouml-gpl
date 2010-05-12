@@ -359,6 +359,10 @@ void DiagramItem::edit_drawing_settings(QList<DiagramItem> &) {
   // never called
 }
 
+void DiagramItem::same_drawing_settings(QList<DiagramItem> &) {
+  // never called
+}
+
 //
 
 void DiagramItem::apply_shortcut(QString) {

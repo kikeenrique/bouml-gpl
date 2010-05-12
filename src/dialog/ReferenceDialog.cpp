@@ -36,6 +36,7 @@
 #include "ReferenceDialog.h"
 #include "BrowserView.h"
 #include "UmlDesktop.h"
+#include "DialogUtil.h"
 #include "translate.h"
 
 ReferenceDialog * ReferenceDialog::the;
@@ -84,11 +85,15 @@ ReferenceDialog::ReferenceDialog(BrowserNode * bn)
   connect(results, SIGNAL(activated(int)), this, SLOT(selected(int)));
 
   compute();
+  
+  open_dialog(this);
 }
 
 ReferenceDialog::~ReferenceDialog() {
   the = 0;
   previous_size = size();
+  
+  close_dialog(this);
 }
 
 void ReferenceDialog::polish() {

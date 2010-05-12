@@ -92,7 +92,8 @@ class AttributeData : public ClassMemberData {
     void set_browser_node(BrowserAttribute *, bool update, bool enum_item);
   
     virtual QString definition(bool full, bool with_kind) const;
-    QString definition(bool full, bool mult, bool init, bool modif, DrawingLanguage language) const;
+    QString definition(bool full, bool mult, bool init, bool modif,
+		       DrawingLanguage language, ShowContextMode mode = noContext) const;
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     

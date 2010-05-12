@@ -895,19 +895,23 @@ void ComponentCanvas::apply_shortcut(QString s) {
 }
 
 void ComponentCanvas::edit_drawing_settings() {
-  StateSpecVector st(4);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("drawn as icon"), &settings.draw_component_as_icon);
-  st[1].set(TR("show required and provided interfaces"), &settings.show_component_req_prov);
-  st[2].set(TR("show realizations"), &settings.show_component_rea);
-  st[3].set(TR("show stereotype properties"), &settings.show_stereotype_properties);
-  co[0].set(TR("component color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st(4);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("drawn as icon"), &settings.draw_component_as_icon);
+    st[1].set(TR("show required and provided interfaces"), &settings.show_component_req_prov);
+    st[2].set(TR("show realizations"), &settings.show_component_rea);
+    st[3].set(TR("show stereotype properties"), &settings.show_stereotype_properties);
+    co[0].set(TR("component color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ComponentCanvas::has_drawing_settings() const {
@@ -915,38 +919,56 @@ bool ComponentCanvas::has_drawing_settings() const {
 }
 
 void ComponentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(4);
-  ColorSpecVector co(1);
-  Uml3States draw_component_as_icon;
-  Uml3States show_component_req_prov;
-  Uml3States show_component_rea;
-  Uml3States show_stereotype_properties;
-  UmlColor itscolor;
-  
-  st[0].set(TR("drawn as icon"), &draw_component_as_icon);
-  st[1].set(TR("show required and provided interfaces"), &show_component_req_prov);
-  st[2].set(TR("show realizations"), &show_component_rea);
-  st[3].set(TR("show stereotype properties"), &show_stereotype_properties);
-  co[0].set(TR("component color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(4);
+    ColorSpecVector co(1);
+    Uml3States draw_component_as_icon;
+    Uml3States show_component_req_prov;
+    Uml3States show_component_rea;
+    Uml3States show_stereotype_properties;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((ComponentCanvas *) it.current())->settings.draw_component_as_icon = draw_component_as_icon;
-      if (!st[1].name.isEmpty())
-	((ComponentCanvas *) it.current())->settings.show_component_req_prov = show_component_req_prov;
-      if (!st[2].name.isEmpty())
-	((ComponentCanvas *) it.current())->settings.show_component_rea = show_component_rea;
-      if (!st[3].name.isEmpty())
-	((ComponentCanvas *) it.current())->settings.show_stereotype_properties = show_stereotype_properties;
-      if (!co[0].name.isEmpty())
-	((ComponentCanvas *) it.current())->itscolor = itscolor;
-      ((ComponentCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("drawn as icon"), &draw_component_as_icon);
+    st[1].set(TR("show required and provided interfaces"), &show_component_req_prov);
+    st[2].set(TR("show realizations"), &show_component_rea);
+    st[3].set(TR("show stereotype properties"), &show_stereotype_properties);
+    co[0].set(TR("component color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((ComponentCanvas *) it.current())->settings.draw_component_as_icon = draw_component_as_icon;
+	if (!st[1].name.isEmpty())
+	  ((ComponentCanvas *) it.current())->settings.show_component_req_prov = show_component_req_prov;
+	if (!st[2].name.isEmpty())
+	  ((ComponentCanvas *) it.current())->settings.show_component_rea = show_component_rea;
+	if (!st[3].name.isEmpty())
+	  ((ComponentCanvas *) it.current())->settings.show_stereotype_properties = show_stereotype_properties;
+	if (!co[0].name.isEmpty())
+	  ((ComponentCanvas *) it.current())->itscolor = itscolor;
+	((ComponentCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ComponentCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ComponentCanvas * x = (ComponentCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ComponentCanvas * o =  (ComponentCanvas *) it.current();
+				 
+    o->settings = x->settings;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

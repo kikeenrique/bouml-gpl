@@ -316,23 +316,27 @@ void BrowserObjectDiagram::open(bool) {
 }
 
 void BrowserObjectDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(4);
-  
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("package color"), &package_color);
-  co[1].set(TR("fragment color"), &fragment_color);
-  co[2].set(TR("note color"), &note_color);
-  co[3].set(TR("class instance \ncolor"), &class_instance_color);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(4);
+    
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("package color"), &package_color);
+    co[1].set(TR("fragment color"), &fragment_color);
+    co[2].set(TR("note color"), &note_color);
+    co[3].set(TR("class instance \ncolor"), &class_instance_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -378,7 +382,7 @@ void BrowserObjectDiagram::get_objectdiagramsettings(ObjectDiagramSettings & r) 
 void BrowserObjectDiagram::package_settings(BooL & name_in_tab,
 					    ShowContextMode & show_context) const {
   name_in_tab = used_settings->package_name_in_tab == UmlYes;
-  show_context = used_settings->show_context_mode;
+  show_context = used_settings->show_class_pack_context_mode;
 }
 
 UmlColor BrowserObjectDiagram::get_color(UmlCode who) const {
@@ -426,6 +430,10 @@ bool BrowserObjectDiagram::get_show_stereotype_properties() const {
 
 bool BrowserObjectDiagram::get_classinstwritehorizontally() const {
   return used_settings->write_horizontally == UmlYes;
+}
+
+ShowContextMode BrowserObjectDiagram::get_classinstshowmode() const {
+  return used_settings->show_class_pack_context_mode;
 }
 
 BasicData * BrowserObjectDiagram::get_data() const {

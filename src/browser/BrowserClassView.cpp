@@ -361,7 +361,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
       return;
     break;
   case 7:
-    {
+    for (;;) {
       StateSpecVector st;
       ColorSpecVector co(13);
       
@@ -392,6 +392,10 @@ void BrowserClassView::exec_menu_choice(int rank) {
       if (dialog.exec() != QDialog::Accepted)
 	return;
       DrawingSettings::modified();
+      if (!dialog.redo())
+	break;
+      else
+	package_modified();
     }
     break;
   case 8:

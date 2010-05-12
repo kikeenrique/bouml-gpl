@@ -49,7 +49,10 @@ class UmlClass : public UmlBaseClass {
     
     virtual void generate();
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int & enum_item_rank);    
+			  QCString indent, int & enum_item_rank); 
+    void generate_require_onces(QTextOStream & f, QCString & made);
+    void generate_require_onces(QTextOStream & f, QCString & made, UmlArtifact *);
+    UmlArtifact * assocArtifact();
     
     void write(QTextOStream &);
     static void write(QTextOStream &, const UmlTypeSpec &);

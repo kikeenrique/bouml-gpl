@@ -38,6 +38,7 @@
 
 class QPixmap;
 class QDir;
+class QRegExp;
 
 class UmlPackage;
 class BrowserView;
@@ -125,6 +126,9 @@ class Package : public BrowserNode, public ClassContainer {
     static bool scan;
     static Package * root;
     static Package * unknown;
+    static QRegExp * DirFilter;
+    static QRegExp * FileFilter;
+    static QString Ext;
     static QDict<Class> classes;
     static QDict<Class> java_classes;
     static QDict<UmlClass> user_classes;

@@ -30,4 +30,6 @@ extern void add_php();
 
 extern void php_javadocstylecomment();
 
+extern void php_add_require_once();
+
 #endif

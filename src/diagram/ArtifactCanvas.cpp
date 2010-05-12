@@ -689,16 +689,20 @@ void ArtifactCanvas::apply_shortcut(QString s) {
 }
 
 void ArtifactCanvas::edit_drawing_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(1);
-  
-  co[0].set(TR("artifact color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(1);
+    
+    co[0].set(TR("artifact color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ArtifactCanvas::has_drawing_settings() const {
@@ -706,21 +710,38 @@ bool ArtifactCanvas::has_drawing_settings() const {
 }
 
 void ArtifactCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("artifact color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((ArtifactCanvas *) it.current())->itscolor = itscolor;
-      ((ArtifactCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("artifact color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((ArtifactCanvas *) it.current())->itscolor = itscolor;
+	((ArtifactCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ArtifactCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ArtifactCanvas * x = (ArtifactCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ArtifactCanvas * o =  (ArtifactCanvas *) it.current();
+
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

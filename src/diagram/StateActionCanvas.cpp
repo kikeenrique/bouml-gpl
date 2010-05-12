@@ -574,19 +574,23 @@ void StateActionCanvas::apply_shortcut(QString s) {
 }
 
 void StateActionCanvas::edit_drawing_settings() {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("drawing language"), &language);
-  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  
-  co[0].set(TR("state action color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("drawing language"), &language);
+    st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    
+    co[0].set(TR("state action color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool StateActionCanvas::has_drawing_settings() const {
@@ -594,31 +598,50 @@ bool StateActionCanvas::has_drawing_settings() const {
 }
 
 void StateActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  DrawingLanguage language;
-  UmlColor itscolor;
-  
-  st[0].set(TR("drawing language"), &language);
-  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  
-  co[0].set(TR("state action color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    DrawingLanguage language;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((StateActionCanvas *) it.current())->language = language;
-      if (!st[1].name.isEmpty())
-	((StateActionCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
-      if (!co[0].name.isEmpty())
-	((StateActionCanvas *) it.current())->itscolor = itscolor;
-      ((StateActionCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("drawing language"), &language);
+    st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    
+    co[0].set(TR("state action color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((StateActionCanvas *) it.current())->language = language;
+	if (!st[1].name.isEmpty())
+	  ((StateActionCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
+	if (!co[0].name.isEmpty())
+	  ((StateActionCanvas *) it.current())->itscolor = itscolor;
+	((StateActionCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void StateActionCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  StateActionCanvas * x = (StateActionCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    StateActionCanvas * o =  (StateActionCanvas *) it.current();
+				 
+    o->language = x->language;
+    o->show_stereotype_properties = x->show_stereotype_properties;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

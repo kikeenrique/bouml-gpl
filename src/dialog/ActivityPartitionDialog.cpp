@@ -157,6 +157,8 @@ ActivityPartitionDialog::ActivityPartitionDialog(ActivityPartitionData * d)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ActivityPartitionDialog::polish() {
@@ -170,6 +172,8 @@ ActivityPartitionDialog::~ActivityPartitionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
     
 void ActivityPartitionDialog::change_tabs(QWidget * w) {

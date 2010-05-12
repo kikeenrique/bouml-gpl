@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Php generator</b> release 1.8<br>");
+      UmlCom::trace("<b>Php generator</b> release 1.9<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();

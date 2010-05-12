@@ -987,6 +987,7 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   if (l_drawing_settings.count() > 1) {
     m.insertSeparator();
     m.insertItem(TR("Edit drawing settings"), 13);
+    m.insertItem(TR("Same drawing settings"), 17);
   }
   
   history_protected = TRUE;
@@ -1054,7 +1055,10 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   case 16:
     history_save();
     same_size(TRUE, TRUE);
-    break;   
+    break; 
+  case 17:
+    history_protected = FALSE;
+    l_drawing_settings.first()->same_drawing_settings(l_drawing_settings);
   default:
     return;
   }
@@ -1293,7 +1297,8 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	    for (it = selected.begin(); it != selected.end(); ++it)
 	      QCanvasItemToDiagramItem(*it)->select_associated();
 	  }
-	  else if (s == "Edit drawing settings") {
+	  else if ((s == "Edit drawing settings") || 
+		   (s == "Same drawing settings")) {
 	    QCanvasItemList::ConstIterator it;
 	    UmlCode k = UmlCodeSup;
 	    QList<DiagramItem> l;
@@ -1335,7 +1340,10 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	      break;
 	    default:
 	      history_protected = FALSE;
-	      l.first()->edit_drawing_settings(l);
+	      if (s == "Edit drawing settings")
+		l.first()->edit_drawing_settings(l);
+	      else
+		l.first()->same_drawing_settings(l);
 	    }
 	  }
 	  else if (s == "Align bottom") {

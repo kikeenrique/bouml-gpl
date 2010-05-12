@@ -41,6 +41,7 @@
 
 #include "HelpDialog.h"
 #include "UmlDesktop.h"
+#include "DialogUtil.h"
 #include "translate.h"
 
 static QString NavigatorPath;
@@ -112,10 +113,12 @@ HelpDialog::HelpDialog()
   UmlDesktop::setsize_center(this, Sz, 0.7, 0.7);
   
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  open_dialog(this);
 }
 
 HelpDialog::~HelpDialog() {
   the = 0;
+  close_dialog(this);
 }
     
 void HelpDialog::show(QString topic)

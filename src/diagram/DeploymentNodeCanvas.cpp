@@ -531,18 +531,22 @@ void DeploymentNodeCanvas::apply_shortcut(QString s) {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings() {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
-  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("Node color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("Node color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool DeploymentNodeCanvas::has_drawing_settings() const {
@@ -550,33 +554,52 @@ bool DeploymentNodeCanvas::has_drawing_settings() const {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  Uml3States write_horizontally;
-  Uml3States show_stereotype_properties;
-  UmlColor itscolor;
-  
-  st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
-  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("Node color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    Uml3States write_horizontally;
+    Uml3States show_stereotype_properties;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((DeploymentNodeCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!st[1].name.isEmpty())
-	((DeploymentNodeCanvas *) it.current())->show_stereotype_properties =
-	  show_stereotype_properties;
-      if (!co[0].name.isEmpty())
-	((DeploymentNodeCanvas *) it.current())->itscolor = itscolor;
-      ((DeploymentNodeCanvas *) it.current())->modified();	// call package_modified()
-    }
+    st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("Node color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((DeploymentNodeCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!st[1].name.isEmpty())
+	  ((DeploymentNodeCanvas *) it.current())->show_stereotype_properties =
+	    show_stereotype_properties;
+	if (!co[0].name.isEmpty())
+	  ((DeploymentNodeCanvas *) it.current())->itscolor = itscolor;
+	((DeploymentNodeCanvas *) it.current())->modified();	// call package_modified()
+      }
+    } 
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void DeploymentNodeCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  DeploymentNodeCanvas * x = (DeploymentNodeCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    DeploymentNodeCanvas * o =  (DeploymentNodeCanvas *) it.current();
+				 
+    o->write_horizontally = x->write_horizontally;
+    o->show_stereotype_properties = x->show_stereotype_properties;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   } 
 }
 

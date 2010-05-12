@@ -581,20 +581,24 @@ void ActivityObjectCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityObjectCanvas::edit_drawing_settings() {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() != QDialog::Accepted)
-    return;
-  modified();	// call package_modified
+  for (;;) {
+    StateSpecVector st(1);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("activity object color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() != QDialog::Accepted)
+      return;
+    modified();	// call package_modified
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ActivityObjectCanvas::has_drawing_settings() const {
@@ -602,32 +606,51 @@ bool ActivityObjectCanvas::has_drawing_settings() const {
 }
 
 void ActivityObjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  Uml3States write_horizontally;
-  UmlColor itscolor;
-  ActivityDrawingSettings settings;
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(1);
+    ColorSpecVector co(1);
+    Uml3States write_horizontally;
+    UmlColor itscolor;
+    ActivityDrawingSettings settings;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((ActivityObjectCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!co[0].name.isEmpty())
-	((ActivityObjectCanvas *) it.current())->itscolor = itscolor;
-      ((ActivityObjectCanvas *) it.current())->settings.set(st, 1);
-      ((ActivityObjectCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("activity object color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((ActivityObjectCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!co[0].name.isEmpty())
+	  ((ActivityObjectCanvas *) it.current())->itscolor = itscolor;
+	((ActivityObjectCanvas *) it.current())->settings.set(st, 1);
+	((ActivityObjectCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ActivityObjectCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ActivityObjectCanvas * x = (ActivityObjectCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ActivityObjectCanvas * o =  (ActivityObjectCanvas *) it.current();
+				 
+    o->write_horizontally = x->write_horizontally;
+    o->itscolor = x->itscolor;
+    o->settings = x->settings;
+    o->modified();	// call package_modified()
   }
 }
 

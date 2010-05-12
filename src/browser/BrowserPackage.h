@@ -139,6 +139,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     static BrowserNode * get_it(const char * k, int id);
     
     void edit_gen_settings();
+    void edit_rev_settings();
     void edit_stereotypes();
     void edit_class_settings();
     void edit_drawing_settings();

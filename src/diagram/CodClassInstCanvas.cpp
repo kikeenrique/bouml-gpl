@@ -355,20 +355,26 @@ void CodClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void CodClassInstCanvas::edit_drawing_settings() {
-  StateSpecVector st((browser_node->get_type() != UmlClass) ? 2 : 1);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  if (browser_node->get_type() != UmlClass)
-    st[1].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() != QDialog::Accepted)
-    return;
-  modified();	// call package_modified
+  for (;;) {
+    
+    StateSpecVector st((browser_node->get_type() != UmlClass) ? 3 : 2);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show class context"), &show_context_mode);
+    if (browser_node->get_type() != UmlClass)
+      st[2].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() != QDialog::Accepted)
+      return;
+    modified();	// call package_modified
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool CodClassInstCanvas::has_drawing_settings() const {
@@ -376,28 +382,52 @@ bool CodClassInstCanvas::has_drawing_settings() const {
 }
 
 void CodClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  Uml3States write_horizontally;
-  UmlColor itscolor;
-  
-  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
-  co[0].set(TR("class instance color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    Uml3States write_horizontally;
+    ShowContextMode show_context_mode;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((CodClassInstCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!co[0].name.isEmpty())
-	((CodClassInstCanvas *) it.current())->itscolor = itscolor;
-      ((CodClassInstCanvas *) it.current())->modified();	// call package_modified()
-    }
+    st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+    st[1].set(TR("show class context"), &show_context_mode);
+    co[0].set(TR("class instance color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((CodClassInstCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!st[1].name.isEmpty())
+	  ((CodClassInstCanvas *) it.current())->show_context_mode =
+	    show_context_mode;
+	if (!co[0].name.isEmpty())
+	  ((CodClassInstCanvas *) it.current())->itscolor = itscolor;
+	((CodClassInstCanvas *) it.current())->modified();	// call package_modified()
+      }
+    }  
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void CodClassInstCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  CodClassInstCanvas * x = (CodClassInstCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    CodClassInstCanvas * o =  (CodClassInstCanvas *) it.current();
+				 
+    o->write_horizontally = x->write_horizontally;
+    o->show_context_mode = x->show_context_mode;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }  
 }
 
@@ -458,6 +488,8 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
       new CodClassInstCanvas(cl, canvas, 0, 0, id);
    
     result->ClassInstCanvas::read(st, k);
+    if (read_file_format() < 74)
+      result->show_context_mode = noContext;
     
     if (!strcmp(k, "xyz")) {
       read_double(st);
@@ -489,6 +521,8 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     result->setZ(read_double(st));
    
     result->ClassInstCanvas::read(st, k);	// update k
+    if (read_file_format() < 74)
+      result->show_context_mode = noContext;
     
     result->read_stereotype_property(st, k);	// updates k
     

@@ -23,33 +23,48 @@
 //
 // *************************************************************************
 
-#ifndef UMLOPERATION_H
-#define UMLOPERATION_H
+#ifndef CLASSSETTINGSDIALOG_H
+#define CLASSSETTINGSDIALOG_H
 
-#include <qintdict.h>
+#include <qdialog.h>
 
-#include "UmlBaseOperation.h"
+class QCheckBox;
+class QComboBox;
+class LineEdit;
 
-class QTextOStream;
-
-class UmlOperation : public UmlBaseOperation {
-  private:
-    static QIntDict<char> bodies;
-
-  public:
-    UmlOperation(void * id, const QCString & n)
-      : UmlBaseOperation(id, n) {};
+class RevSettingsDialog : public QDialog {
+  Q_OBJECT
+ 
+  protected:
+    LineEdit * cpp_dir;
+    LineEdit * cpp_file;
+    QCheckBox * cpp_dir_case_sensitive;
+    QCheckBox * cpp_file_case_sensitive;
+    QComboBox * edcpp_h_extension;
+    QComboBox * edcpp_src_extension;
+    
+    LineEdit * java_dir;
+    LineEdit * java_file;
+    QCheckBox * java_dir_case_sensitive;
+    QCheckBox * java_file_case_sensitive;
+    QComboBox * edjava_extension;
+    
+    LineEdit * php_dir;
+    LineEdit * php_file;
+    QCheckBox * php_dir_case_sensitive;
+    QCheckBox * php_file_case_sensitive;
+    QComboBox * edphp_extension;
+ 
+    static QSize previous_size;
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int &);
-    virtual void generate_require_onces(QTextOStream & f, QCString & made);
-    
-    QCString compute_name();
-    
-    static void read_bodies(const char * path);
-    
-  private:
-    const char * generate_body(QTextOStream & f, QCString indent, const char * p);
+ public:
+    RevSettingsDialog();
+    virtual ~RevSettingsDialog();
+ 
+  protected slots:
+    virtual void polish();
+    void accept();
+    void show_regexp_help();
 };
 
 #endif

@@ -50,7 +50,8 @@ class ParamData {
     const char * get_default_value() const { return default_value; };
     void set_default_value(const char * s);
 
-    QString definition(bool withdir, bool withname) const;
+    QString definition(bool withdir, bool withname,
+		       ShowContextMode mode = noContext) const;
     
     void send_uml_def(ToolCom * com);
     

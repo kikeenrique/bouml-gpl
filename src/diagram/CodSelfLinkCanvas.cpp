@@ -142,31 +142,35 @@ void CodSelfLinkCanvas::update_msgs() {
   // does not unsubscribe & disconnect signals because compute_size may
   // be called during a signal management, and the signal connection list
   // cannot be modified in this case
-  msgs.sort();
-  
-  QListIterator<ColMsg> it(msgs);
-  QString nl = "\n";
-  const QString * pfix = &QString::null;
   QString s;
-  
-  for (; it.current() != 0; ++it) {
-    const BasicData * oper_data = it.current()->get_operation();
+
+  if (! msgs.isEmpty()) {
+    msgs.sort();
     
-    if ((oper_data != 0) && subscribe(oper_data)) {
-      connect(oper_data, SIGNAL(changed()), this, SLOT(modified()));
-      connect(oper_data, SIGNAL(deleted()), this, SLOT(modified()));
-    }
+    CollaborationDiagramSettings dflt = settings;
     
-    CollaborationDiagramSettings  dflt = settings;
-  
     the_canvas()->browser_diagram()->get_collaborationdiagramsettings(dflt);
     
-    QString m = it.current()->def(dflt.show_hierarchical_rank == UmlYes,
-				  dflt.show_full_operations_definition == UmlYes,
-				  dflt.drawing_language);
-    if (!m.isEmpty()) {
-      s += *pfix + m;
-      pfix = &nl;
+    QListIterator<ColMsg> it(msgs);
+    QString nl = "\n";
+    const QString * pfix = &QString::null;
+    
+    for (; it.current() != 0; ++it) {
+      const BasicData * oper_data = it.current()->get_operation();
+      
+      if ((oper_data != 0) && subscribe(oper_data)) {
+	connect(oper_data, SIGNAL(changed()), this, SLOT(modified()));
+	connect(oper_data, SIGNAL(deleted()), this, SLOT(modified()));
+      }
+      
+      QString m = it.current()->def(dflt.show_hierarchical_rank == UmlYes,
+				    dflt.show_full_operations_definition == UmlYes,
+				    dflt.drawing_language,
+				    dflt.show_msg_context_mode);
+      if (!m.isEmpty()) {
+	s += *pfix + m;
+	pfix = &nl;
+      }
     }
   }
   
@@ -269,16 +273,17 @@ void CodSelfLinkCanvas::menu(const QPoint&) {
 			   ((ColDiagramView *) the_canvas()->get_view())->get_msgs());
     return;
   case 4:
-    {
+    for (;;) {
       StateSpecVector st;
       
-      settings.complete(st, TRUE);
+      settings.complete_msg(st);
 
       SettingsDialog dialog(&st, 0, FALSE);
       
       if (dialog.exec() == QDialog::Accepted)
 	modified();
-      return;
+      if (!dialog.redo())
+	return;
     }
     break;
   case 5:
@@ -332,7 +337,7 @@ void CodSelfLinkCanvas::save(QTextStream & st, bool ref, QString & warning) cons
        << ' ' << sy.setNum(delta_y + obj_center.y());
 #endif
     
-    settings.save(st);
+    settings.save_msg(st);
     
     if (label != 0) {
       nl_indent(st);

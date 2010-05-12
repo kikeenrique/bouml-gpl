@@ -145,6 +145,7 @@ class ClassData : public BasicData {
     void get_template_prefixes(QString & template1, QString & template2) const;
     void get_class_spec(QString & templates, QString & names,
 			QString & templates_tmplop, QString & names_tmplop) const;
+    void addFormals(QStringList &);
 
     int get_n_actualparams() const { return actuals.count(); }
     QString get_actualparam_name(int);	// cannot be const, computed QString

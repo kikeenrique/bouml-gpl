@@ -65,7 +65,63 @@ class PhpSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
-    // return if generate Javadoc style comment
+    // return the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    static QCString reverseRoundtripDirRegExp();
+
+    // return if the regular expression used to bypass
+    // dir s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripDirRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripDirRegExp(QCString s, bool cs);
+
+    // return the regular expression used to bypass
+    // file s on reverse/roundtrip
+    static QCString reverseRoundtripFileRegExp();
+
+    // return if the regular expression used to bypass
+    // file s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripFileRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // file s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripFileRegExp(QCString s, bool cs);
+
+    // indicates to the code generator if the require_once may specify
+    // the path of just the file's name
+    static bool requireOnceWithPath();
+
+    // to indicates to the code generator if the require_once may specify
+    // the path of just the file's name
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_RequireOnceWithPath(bool v);
+
+    // return if a relative path must be used when the path
+    // must be generated in the produced require_once
+    static bool isRelativePath();
+
+    // set if a relative path must be used when the path
+    // must be generated in the produced require_once
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsRelativePath(bool v);
+
+    // return if a path relative to the project root must be used
+    // when the path must be generated in the produced require_once
+    static bool isRootRelativePath();
+
+    // set if a relative to the project root path must be used
+    // when the path must be generated in the produced require_once
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsRootRelativePath(bool v);
+
+    // return if  generate Javadoc style comment
     static bool isGenerateJavadocStyleComment();
 
     // set if  generate Javadoc style comment
@@ -191,7 +247,7 @@ class PhpSettings : public UmlSettings {
 
     // returns the default visibility of a 'set' operation generated
     // through the attribute and relation 'add set operation'
-    // note : visibility shared with Java
+    //   note : visibility shared with Java
     static aVisibility setVisibility();
 
     // set the default visibility of a 'set' operation generated
@@ -245,7 +301,21 @@ class PhpSettings : public UmlSettings {
 
     static QCString _ext;
 
+    static QCString _dir_regexp;
+
+    static bool _dir_regexp_case_sensitive;
+
+    static QCString _file_regexp;
+
+    static bool _file_regexp_case_sensitive;
+
     static bool _is_generate_javadoc_comment;
+
+    static bool _req_with_path;
+
+    static bool _is_relative_path;
+
+    static bool _is_root_relative_path;
 
   protected:
     static void read_();

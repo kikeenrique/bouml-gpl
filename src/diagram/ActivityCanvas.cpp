@@ -679,19 +679,23 @@ void ActivityCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityCanvas::edit_drawing_settings() {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("show conditions"), &settings.show_infonote);
-  st[1].set(TR("drawing language"), &settings.drawing_language);
-  
-  co[0].set(TR("activity color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("show conditions"), &settings.show_infonote);
+    st[1].set(TR("drawing language"), &settings.drawing_language);
+    
+    co[0].set(TR("activity color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ActivityCanvas::has_drawing_settings() const {
@@ -699,32 +703,49 @@ bool ActivityCanvas::has_drawing_settings() const {
 }
 
 void ActivityCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(2);
-  ColorSpecVector co(1);
-  Uml3States show_infonote;
-  DrawingLanguage drawing_language;
-  UmlColor itscolor;
-  
-  st[0].set(TR("show conditions"), &show_infonote);
-  st[1].set(TR("drawing language"), &drawing_language);
-  
-  co[0].set(TR("activity color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(2);
+    ColorSpecVector co(1);
+    Uml3States show_infonote;
+    DrawingLanguage drawing_language;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((ActivityCanvas *) it.current())->settings.show_infonote = show_infonote;
-      if (!st[1].name.isEmpty())
-	((ActivityCanvas *) it.current())->settings.drawing_language = drawing_language;
-      if (!co[0].name.isEmpty())
-	((ActivityCanvas *) it.current())->itscolor = itscolor;
-      ((ActivityCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("show conditions"), &show_infonote);
+    st[1].set(TR("drawing language"), &drawing_language);
+    
+    co[0].set(TR("activity color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((ActivityCanvas *) it.current())->settings.show_infonote = show_infonote;
+	if (!st[1].name.isEmpty())
+	  ((ActivityCanvas *) it.current())->settings.drawing_language = drawing_language;
+	if (!co[0].name.isEmpty())
+	  ((ActivityCanvas *) it.current())->itscolor = itscolor;
+	((ActivityCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ActivityCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ActivityCanvas * x = (ActivityCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ActivityCanvas * o =  (ActivityCanvas *) it.current();
+				 
+    o->settings = x->settings;
+    o->modified();	// call package_modified()
   }
 }
 

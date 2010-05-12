@@ -208,3 +208,8 @@ bool BrowserDiagram::get_classinstwritehorizontally() const {
   // never called
   return FALSE;
 }
+
+ShowContextMode BrowserDiagram::get_classinstshowmode() const {
+  // never called
+  return noContext;
+}

@@ -56,6 +56,8 @@ class UmlClass : public UmlBaseClass {
     void generate(QTextOStream &, QCString indent, BooL & indent_needed);
     void generate_instance_att_rel(QTextOStream & f, QCString indent,
 				   BooL & indent_needed, QCString self);
+    
+    UmlArtifact * assocArtifact();
 
     void write(QTextOStream &);
     static void write(QTextOStream &, const UmlTypeSpec &);

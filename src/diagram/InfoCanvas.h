@@ -48,6 +48,7 @@ class InfoCanvas : public NoteCanvas {
     virtual void apply_shortcut(QString s);
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    virtual void same_drawing_settings(QList<DiagramItem> &);
 
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static InfoCanvas * read(char * &, UmlCanvas *, char *, DiagramItem *);

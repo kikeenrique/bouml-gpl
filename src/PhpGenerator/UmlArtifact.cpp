@@ -129,6 +129,14 @@ void UmlArtifact::generate() {
 	if (*p == '\n')
 	  p += 1;
       }
+      else if (!strncmp(p, "${require_once}", 15)) {
+	QCString require_onces = "";
+	
+	for (index = 0; index != n; index += 1)
+	  cls[index]->generate_require_onces(f, require_onces);
+	
+	p +=15;
+      }
       else
 	f << *p++;
     }

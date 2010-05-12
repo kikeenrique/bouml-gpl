@@ -33,6 +33,7 @@
 #endif
 #include <qdatastream.h> 
 #include <qdir.h>
+#include <qregexp.h>
 
 #include "Package.h"
 #include "Class.h"
@@ -56,6 +57,13 @@ Package * Package::root;
 
 // to place unknown classes
 Package * Package::unknown;
+
+// regexp to filter dirs/files
+QRegExp * Package::DirFilter;
+QRegExp * Package::FileFilter;
+
+// "java"
+QString Package::Ext;
 
 // to know if it is the scan step or the reverse step
 bool Package::scan;
@@ -100,6 +108,18 @@ QString Package::get_path() const {
 
 void Package::init(UmlPackage * r, QApplication * a)
 {
+  QString s;
+  
+  DirFilter = (!(s = (const char *) PhpSettings::reverseRoundtripDirRegExp()).isEmpty())
+    ? new QRegExp(s, PhpSettings::isReverseRoundtripDirRegExpCaseSensitive(), TRUE)
+    : 0;
+  
+  FileFilter = (!(s = (const char *) PhpSettings::reverseRoundtripFileRegExp()).isEmpty())
+    ? new QRegExp(s, PhpSettings::isReverseRoundtripFileRegExpCaseSensitive(), TRUE)
+    : 0;
+  
+  Ext = PhpSettings::sourceExtension();
+  
 #ifdef REVERSE
   root = new Package(0, 0, r->name());
   root->uml = r;
@@ -153,8 +173,23 @@ void Package::progress_closed()
   progress = 0;
 }
 
+static bool allowed(QRegExp * rg, QString f)
+{
+  if (rg != 0) {
+    int matchLen;
+    
+    return ((rg->match(f, 0, &matchLen) != 0) ||
+	    (matchLen != (int) f.length()));
+  }
+  else
+    return TRUE;
+}
+
 int Package::file_number(QDir & d, bool rec)
 {
+  if (! allowed(DirFilter, d.dirName()))
+    return 0;
+  
   int result = 0;
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
   
@@ -163,7 +198,7 @@ int Package::file_number(QDir & d, bool rec)
     QFileInfo * fi;
     
     while ((fi = it.current()) != 0) {
-      if (fi->extension(FALSE) == "php")
+      if (fi->extension(FALSE) == Ext)
 	result += 1;
       ++it;
     }
@@ -227,6 +262,9 @@ QString my_baseName(QFileInfo * fi)
 }
 
 void Package::reverse_directory(QDir & d, bool rec) {
+  if (! allowed(DirFilter, d.dirName()))
+    return;
+
   // reads files
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
   
@@ -235,8 +273,9 @@ void Package::reverse_directory(QDir & d, bool rec) {
     QFileInfo * fi;
     
     while ((fi = it.current()) != 0) {
-      if (fi->extension(FALSE) == "php") {
-	reverse_file(QCString(fi->filePath()), QCString(my_baseName(fi)));
+      if (fi->extension(FALSE) == Ext) {
+	if (allowed(FileFilter, fi->fileName()))
+	  reverse_file(QCString(fi->filePath()), QCString(my_baseName(fi)));
 	if (progress)
 	  progress->tic();
 	app->processEvents();

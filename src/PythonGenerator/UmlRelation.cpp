@@ -52,7 +52,7 @@ void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
     else
       from = FALSE;
 
-    roleType()->generate_import(f, ((UmlClass *) parent())->associatedArtifact(), 
+    roleType()->generate_import(f, ((UmlClass *) parent())->assocArtifact(), 
 				from, made);
   }
 }

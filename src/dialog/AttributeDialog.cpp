@@ -183,7 +183,10 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
     BrowserClass::instances(nodes);
     nodes.full_names(list);        
     if (!visit) {
-      edtype->insertStringList(GenerationSettings::basic_types());
+      QStringList l = GenerationSettings::basic_types();
+      
+      cld->addFormals(l);
+      edtype->insertStringList(l);
       offset = edtype->count();
       edtype->insertStringList(list);
       edtype->setAutoCompletion(completion());
@@ -578,6 +581,8 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(update_all_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 AttributeDialog::~AttributeDialog() {
@@ -590,6 +595,8 @@ AttributeDialog::~AttributeDialog() {
   if (new_in_st)
     // new_in_st cleared by accept
     ProfiledStereotypes::added((BrowserAttribute *) att->browser_node);
+  
+  close_dialog(this);
 }
 
 void AttributeDialog::polish() {
@@ -956,7 +963,8 @@ void AttributeDialog::cpp_update() {
   showcppdecl->setText(s);
 }
 
-QString AttributeDialog::cpp_decl(const BrowserAttribute * at, bool init) 
+QString AttributeDialog::cpp_decl(const BrowserAttribute * at, bool init,
+				  ShowContextMode mode) 
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1001,7 +1009,7 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at, bool init)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_cpp_name(d->type);
+      s += get_cpp_name(d->type, mode);
     }
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
@@ -1181,7 +1189,8 @@ void AttributeDialog::java_update() {
   showjavadecl->setText(s);
 }
 
-QString AttributeDialog::java_decl(const BrowserAttribute * at, bool init)
+QString AttributeDialog::java_decl(const BrowserAttribute * at, bool init,
+				   ShowContextMode mode)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1231,7 +1240,7 @@ QString AttributeDialog::java_decl(const BrowserAttribute * at, bool init)
       p += 8;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_java_name(d->type);
+      s += get_java_name(d->type, mode);
     }
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
@@ -1393,7 +1402,8 @@ void AttributeDialog::php_update() {
   showphpdecl->setText(s);
 }
 
-QString AttributeDialog::php_decl(const BrowserAttribute * at, bool init)
+QString AttributeDialog::php_decl(const BrowserAttribute * at, bool init,
+				  ShowContextMode mode)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1460,7 +1470,7 @@ QString AttributeDialog::php_decl(const BrowserAttribute * at, bool init)
     else if (!strncmp(p, "${type}", 7)) {
       // for comment
       p += 7;
-      s += get_php_name(d->type);
+      s += get_php_name(d->type, mode);
     }
     else
       s += *p++;
@@ -1556,7 +1566,8 @@ void AttributeDialog::python_update() {
 }
 
 // produced out of __init__
-QString AttributeDialog::python_decl(const BrowserAttribute * at, bool init)
+QString AttributeDialog::python_decl(const BrowserAttribute * at,
+				     bool init, ShowContextMode)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1751,7 +1762,8 @@ void AttributeDialog::idl_update() {
   showidldecl->setText(s);
 }
 
-QString AttributeDialog::idl_decl(const BrowserAttribute * at) 
+QString AttributeDialog::idl_decl(const BrowserAttribute * at,
+				  ShowContextMode mode) 
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1793,7 +1805,7 @@ QString AttributeDialog::idl_decl(const BrowserAttribute * at)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_idl_name(d->type);
+      s += get_idl_name(d->type, mode);
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;

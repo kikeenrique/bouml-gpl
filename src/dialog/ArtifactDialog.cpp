@@ -95,6 +95,8 @@ ArtifactDialog::ArtifactDialog(ArtifactData * nd)
 
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(update_tab(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ArtifactDialog::polish() {
@@ -108,6 +110,8 @@ ArtifactDialog::~ArtifactDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
     
 void ArtifactDialog::init_uml_tab() {
@@ -1357,6 +1361,10 @@ void ArtifactDialog::php_update_src() {
       else if (!strncmp(p, "${nAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().lower();
+      }
+      else if (!strncmp(p, "${require_once}", 15)) {
+	p += 15;
+	s += "...require_once 'a_needed_file.php'   // produced by the Php generator\n";
       }
       else if (!strncmp(p, "${definition}", 13)) {
 	p += 13;

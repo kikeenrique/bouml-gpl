@@ -81,7 +81,7 @@ class ColMsg {
     QString next_hierarchical_rank() const;
     bool get_is_forward() { return is_forward; };
     const OperationData * get_operation() { return operation; };
-    QString def(bool hierarchical, bool full, DrawingLanguage language);
+    QString def(bool hierarchical, bool full, DrawingLanguage language, ShowContextMode context);
     
     static void update_ranks(ColMsgList & msgs);    
     void place_in(ColMsgList & l);

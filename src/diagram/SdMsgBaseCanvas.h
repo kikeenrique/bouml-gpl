@@ -52,6 +52,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     bool already_moved;
     Uml3States show_full_oper;
     DrawingLanguage drawing_language;
+    ShowContextMode show_context_mode;
   
   protected:
     SdMsgBaseCanvas(UmlCanvas * canvas, SdMsgSupport * d,

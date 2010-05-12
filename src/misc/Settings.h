@@ -77,6 +77,7 @@ class ClassDiagramSettings {
     Uml3States show_full_members_definition;
     Uml3States show_members_visibility;
     Uml3States show_members_stereotype;
+    ShowContextMode show_members_context;
     Uml3States show_members_multiplicity;
     Uml3States show_members_initialization;
     Uml3States show_attribute_modifiers;
@@ -129,10 +130,13 @@ class SequenceDiagramSettings {
     Uml3States draw_all_relations;
     Uml3States shadow;
     Uml3States show_stereotype_properties;
+    ShowContextMode show_class_context_mode;
+    ShowContextMode show_msg_context_mode;
   
     SequenceDiagramSettings();
     
     void assign(const SequenceDiagramSettings & from);
+    void assign_msg(const SequenceDiagramSettings & from);
     bool complete(SequenceDiagramSettings & result) const;
     void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
@@ -146,7 +150,8 @@ class CollaborationDiagramSettings {
     Uml3States write_horizontally;
     DrawingLanguage drawing_language;
     Uml3States package_name_in_tab;
-    ShowContextMode show_context_mode;
+    ShowContextMode show_class_pack_context_mode;
+    ShowContextMode show_msg_context_mode;
     Uml3States draw_all_relations;
     Uml3States shadow;
     Uml3States show_stereotype_properties;
@@ -156,7 +161,9 @@ class CollaborationDiagramSettings {
     void assign(const CollaborationDiagramSettings & from);
     bool complete(CollaborationDiagramSettings & result) const;
     void complete(StateSpecVector & a, bool local);
+    void complete_msg(StateSpecVector & a);
     void save(QTextStream &) const;
+    void save_msg(QTextStream &) const;
     void read(char * &, char * &);
 };
 
@@ -164,7 +171,7 @@ class ObjectDiagramSettings {
   public:
     Uml3States write_horizontally;
     Uml3States package_name_in_tab;
-    ShowContextMode show_context_mode;
+    ShowContextMode show_class_pack_context_mode;
     Uml3States auto_label_position;
     Uml3States draw_all_relations;
     Uml3States shadow;

@@ -141,7 +141,7 @@ void ConstraintCanvas::menu(const QPoint&) {
     m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-
+  
   int index = m.exec(QCursor::pos());
   
   switch (index) {
@@ -165,17 +165,18 @@ void ConstraintCanvas::menu(const QPoint&) {
     open();
     return;
   case 3:
-    {
+    for (;;) {
       ColorSpecVector co(1);
       
       co[0].set(TR("note color"), &itscolor);
-
+      
       SettingsDialog dialog(0, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
-      return;
+      if (!dialog.redo())
+	return;
     }
     break;
   case 4:
@@ -214,21 +215,38 @@ bool ConstraintCanvas::has_drawing_settings() const {
 }
 
 void ConstraintCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("note color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((ConstraintCanvas *) it.current())->itscolor = itscolor;
-      ((ConstraintCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("note color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((ConstraintCanvas *) it.current())->itscolor = itscolor;
+	((ConstraintCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ConstraintCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ConstraintCanvas * x = (ConstraintCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ConstraintCanvas * o =  (ConstraintCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

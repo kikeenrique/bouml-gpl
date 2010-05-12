@@ -48,7 +48,7 @@ void UmlOperation::generate_imports(QTextOStream & f, QCString & made) {
   QCString s = pythonDecl();
   
   if (!s.isEmpty()) {
-    UmlArtifact * art = ((UmlClass *) parent())->associatedArtifact();
+    UmlArtifact * art = ((UmlClass *) parent())->assocArtifact();
 			   
     returnType().generate_import(f, art, FALSE, made);
     

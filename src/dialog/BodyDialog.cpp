@@ -82,6 +82,8 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   e->setFocus();
   
   UmlDesktop::setsize_center(this, previous_size, 0.5, 0.5);
+  
+  open_dialog(this);
 }
 
 BodyDialog::~BodyDialog() {
@@ -90,4 +92,6 @@ BodyDialog::~BodyDialog() {
   if (eds.remove(this) && (f != 0))
     // dialog still active
     f(dlg, e->text());
+  
+  close_dialog(this);
 }

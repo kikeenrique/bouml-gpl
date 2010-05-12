@@ -161,6 +161,8 @@ StateActionDialog::StateActionDialog(StateActionData * d)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 StateActionDialog::~StateActionDialog() {
@@ -169,6 +171,8 @@ StateActionDialog::~StateActionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void StateActionDialog::change_tabs(QWidget * w) {

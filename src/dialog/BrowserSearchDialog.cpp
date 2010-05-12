@@ -182,6 +182,8 @@ BrowserSearchDialog::BrowserSearchDialog()
     search();
   else
     selected(-1);
+  
+  open_dialog(this);
 }
 
 void BrowserSearchDialog::polish() {
@@ -202,6 +204,8 @@ BrowserSearchDialog::~BrowserSearchDialog() {
   saved_comment = for_comment->isChecked();
   saved_decldefbody = for_decldefbody->isChecked();
   previous_size = size();
+  
+  close_dialog(this);
 }
 
 void BrowserSearchDialog::search() {

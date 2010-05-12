@@ -34,6 +34,7 @@
 
 #include "TraceDialog.h"
 #include "UmlDesktop.h"
+#include "DialogUtil.h"
 #include "translate.h"
 
 TraceDialog * TraceDialog::the;
@@ -70,12 +71,16 @@ TraceDialog::TraceDialog() : QDialog(0, "", FALSE, WDestructiveClose) {
   
   // not done in polish else the initial size is too small
   UmlDesktop::setsize_center(this, previous_size, 0.5, 0.5);
+  
+  open_dialog(this);
 }
 
 TraceDialog::~TraceDialog() {
   delete txt;
   txt = 0;
   previous_size = size();
+  
+  close_dialog(this);
 }
 
 void TraceDialog::clr() {

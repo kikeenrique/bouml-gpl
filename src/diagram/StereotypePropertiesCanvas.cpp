@@ -147,7 +147,7 @@ void StereotypePropertiesCanvas::menu(const QPoint&) {
     open();
     return;
   case 3:
-    {
+    for (;;) {
       ColorSpecVector co(1);
       
       co[0].set(TR("note color"), &itscolor);
@@ -157,7 +157,10 @@ void StereotypePropertiesCanvas::menu(const QPoint&) {
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
-      return;
+      if (!dialog.redo())
+	return;
+      else
+	package_modified();
     }
     break;
   case 4:
@@ -196,21 +199,38 @@ bool StereotypePropertiesCanvas::has_drawing_settings() const {
 }
 
 void StereotypePropertiesCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("note color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((StereotypePropertiesCanvas *) it.current())->itscolor = itscolor;
-      ((StereotypePropertiesCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("note color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((StereotypePropertiesCanvas *) it.current())->itscolor = itscolor;
+	((StereotypePropertiesCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void StereotypePropertiesCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  StereotypePropertiesCanvas * x = (StereotypePropertiesCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    StereotypePropertiesCanvas * o =  (StereotypePropertiesCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

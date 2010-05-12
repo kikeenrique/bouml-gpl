@@ -143,8 +143,11 @@ class OperationData : public ClassMemberData,
     void set_browser_node(BrowserOperation *, bool update);
 
     virtual QString definition(bool full, bool with_kind) const;
-    QString definition(bool full, bool withdir, bool withname) const;
-    QString definition(bool full, DrawingLanguage language, bool withdir, bool withname) const;
+    QString definition(bool full, bool withdir, bool withname,
+		       ShowContextMode mode = noContext) const;
+    QString definition(bool full, DrawingLanguage language,
+		       bool withdir, bool withname,
+		       ShowContextMode mode = noContext) const;
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     

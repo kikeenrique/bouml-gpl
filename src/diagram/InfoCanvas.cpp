@@ -147,7 +147,7 @@ void InfoCanvas::menu(const QPoint&) {
     who->open();
     return;
   case 3:
-    {
+    for (;;) {
       ColorSpecVector co(1);
       
       co[0].set(TR("note color"), &itscolor);
@@ -157,7 +157,8 @@ void InfoCanvas::menu(const QPoint&) {
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
-      return;
+      if (!dialog.redo())
+	return;
     }
     break;
   case 4:
@@ -196,21 +197,38 @@ bool InfoCanvas::has_drawing_settings() const {
 }
 
 void InfoCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("note color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((InfoCanvas *) it.current())->itscolor = itscolor;
-      ((InfoCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("note color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((InfoCanvas *) it.current())->itscolor = itscolor;
+	((InfoCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void InfoCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  InfoCanvas * x = (InfoCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    InfoCanvas * o =  (InfoCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

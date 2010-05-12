@@ -237,6 +237,8 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(update_all_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ClassInstanceDialog::polish() {
@@ -250,6 +252,8 @@ ClassInstanceDialog::~ClassInstanceDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void ClassInstanceDialog::update_all_tabs(QWidget * w) {

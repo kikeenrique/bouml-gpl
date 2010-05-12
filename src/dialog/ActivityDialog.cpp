@@ -185,6 +185,8 @@ ActivityDialog::ActivityDialog(ActivityData * d)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ActivityDialog::polish() {
@@ -252,6 +254,8 @@ ActivityDialog::~ActivityDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void ActivityDialog::change_tabs(QWidget *) {

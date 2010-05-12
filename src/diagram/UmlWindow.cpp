@@ -1812,14 +1812,27 @@ void UmlWindow::windowsMenuAboutToShow() {
     windowsMenu->setItemEnabled(preferredId, FALSE);
     windowsMenu->setItemEnabled(closeAllId, FALSE);
   }
+  else {
+    windowsMenu->insertSeparator();
+    
+    for (int i = 0; i < int(windows.count()); ++i) {
+      int id = windowsMenu->insertItem(windows.at(i)->caption(),
+				       this, SLOT(windowsMenuActivated(int)));
+      windowsMenu->setItemParameter(id, i);
+      windowsMenu->setItemChecked(id, ws->activeWindow() == windows.at(i));
+    }
+  }
   
-  windowsMenu->insertSeparator();
+  windows = dialogs();
   
-  for (int i = 0; i < int(windows.count()); ++i) {
-    int id = windowsMenu->insertItem(windows.at(i)->caption(),
-				     this, SLOT(windowsMenuActivated(int)));
-    windowsMenu->setItemParameter(id, i);
-    windowsMenu->setItemChecked(id, ws->activeWindow() == windows.at(i));
+  if (! windows.isEmpty()){
+    windowsMenu->insertSeparator();
+  
+    for (int j = 0; j < int(windows.count()); ++j) {
+      int id = windowsMenu->insertItem(windows.at(j)->caption(),
+				       this, SLOT(dialogsMenuActivated(int)));
+      windowsMenu->setItemParameter(id, j);
+    }
   }
 }
 
@@ -1837,6 +1850,10 @@ void UmlWindow::close_all_windows() {
   
   for (w = l.first(); w != 0; w = l.next())
     ((DiagramWindow *) w)->close();
+  
+  l = dialogs();
+  for (w = l.first(); w != 0; w = l.next())
+    w->close();
 }
 
 void UmlWindow::windowsMenuActivated(int id) {
@@ -1845,6 +1862,15 @@ void UmlWindow::windowsMenuActivated(int id) {
   if (w) {
     w->showNormal();
     w->setFocus();
+  }
+}
+
+void UmlWindow::dialogsMenuActivated(int id) {
+  QWidget* w = dialogs().at(id);
+  
+  if (w) {
+    w->showNormal();
+    w->raise();
   }
 }
 

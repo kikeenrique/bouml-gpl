@@ -261,6 +261,8 @@ PinDialog::PinDialog(PinData * pi)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 PinDialog::~PinDialog() {
@@ -269,6 +271,8 @@ PinDialog::~PinDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void PinDialog::change_tabs(QWidget * w) {

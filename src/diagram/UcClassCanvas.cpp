@@ -652,19 +652,23 @@ void UcClassCanvas::apply_shortcut(QString s) {
 }
 
 void UcClassCanvas::edit_drawing_settings()  {
-  StateSpecVector st;
-  ColorSpecVector co(1);
-  
-  settings.complete(st);
-  
-  co[0].set(TR("class color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(1);
+    
+    settings.complete(st);
+    
+    co[0].set(TR("class color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -673,28 +677,47 @@ bool UcClassCanvas::has_drawing_settings() const {
 }
 
 void UcClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st;
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  SimpleClassDiagramSettings settings;
-  
-  settings.complete(st);
-  
-  co[0].set(TR("class color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(1);
+    UmlColor itscolor;
+    SimpleClassDiagramSettings settings;
     
-    for (; it.current(); ++it) {
-      if (!co[0].name.isEmpty())
-	((UcClassCanvas *) it.current())->itscolor = itscolor;
-      ((UcClassCanvas *) it.current())->settings.set(st, 0);
-      ((UcClassCanvas *) it.current())->modified();
-      ((UcClassCanvas *) it.current())->package_modified();
-    }
+    settings.complete(st);
+    
+    co[0].set(TR("class color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!co[0].name.isEmpty())
+	  ((UcClassCanvas *) it.current())->itscolor = itscolor;
+	((UcClassCanvas *) it.current())->settings.set(st, 0);
+	((UcClassCanvas *) it.current())->modified();
+	((UcClassCanvas *) it.current())->package_modified();
+      }
+    }  
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void UcClassCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  UcClassCanvas * x = (UcClassCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    UcClassCanvas * o =  (UcClassCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->settings = x->settings;
+    o->modified();
+    o->package_modified();
   }  
 }
 

@@ -1104,16 +1104,19 @@ bool BrowserNode::wrong_child_name(const QString & s, UmlCode type,
     return true;
   
   switch (type) {
+  case UmlOperation:
+    switch (*str) {
+    case ' ':
+    case '\t':
+    case '\r':
+      return TRUE;
+    default:
+      // synonymous allowed
+      return FALSE;
+    }
   case UmlExtraMember:
     // always right, synonymous allowed
     return FALSE;
-  case UmlOperation:
-    if (strncmp(str, "operator", 8) == 0)
-      // skip character check
-      break;
-    if (*str == '~')
-      str += 1;
-    // no break !
   default:
     if (type <= UmlClass) {
       while (*str) {

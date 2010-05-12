@@ -77,7 +77,7 @@ void UmlClass::generate_import(QTextOStream & f, UmlArtifact * using_art,
       return;
   }
   else {
-    UmlArtifact * art = associatedArtifact();
+    UmlArtifact * art = assocArtifact();
     
     if ((art == 0) || (art == using_art))
       return;
@@ -277,6 +277,15 @@ void UmlClass::generate_instance_att_rel(QTextOStream & f, QCString indent,
       break;
     }
   }
+}
+
+UmlArtifact * UmlClass::assocArtifact() {
+  UmlClass * cl = this;
+  
+  while (parent()->kind() == aClass)
+    cl = (UmlClass *) parent();
+  
+  return cl->associatedArtifact();
 }
 
 void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)

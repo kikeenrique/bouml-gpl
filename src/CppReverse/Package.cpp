@@ -33,6 +33,7 @@ using namespace std;
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qdir.h>
+#include <qregexp.h>
 
 #include "Package.h"
 #include "Class.h"
@@ -54,6 +55,10 @@ using namespace std;
 
 // create all packages under it
 Package * Package::Root;
+
+// regexp to filter dirs/files
+QRegExp * Package::DirFilter;
+QRegExp * Package::FileFilter;
 
 // the packages selected by the user to reverse them
 QList<Package> Package::Choozen;
@@ -211,6 +216,16 @@ void Package::init(UmlPackage * r, QApplication * a)
     RootSDir = force_final_slash(d.filePath(RootSDir));
     RootCDir = RootSDir;
   }
+  
+  QString s;
+  
+  DirFilter = (!(s = (const char *) CppSettings::reverseRoundtripDirRegExp()).isEmpty())
+    ? new QRegExp(s, CppSettings::isReverseRoundtripDirRegExpCaseSensitive(), TRUE)
+    : 0;
+  
+  FileFilter = (!(s = (const char *) CppSettings::reverseRoundtripFileRegExp()).isEmpty())
+    ? new QRegExp(s, CppSettings::isReverseRoundtripFileRegExpCaseSensitive(), TRUE)
+    : 0;
   
 #ifdef ROUNDTRIP
   Root = new Package(0, r);
@@ -442,12 +457,28 @@ void Package::scan_dirs(int & n) {
 }
 #endif
     
+static bool allowed(QRegExp * rg, QString f)
+{
+  if (rg != 0) {
+    int matchLen;
+    
+    return ((rg->match(f, 0, &matchLen) != 0) ||
+	    (matchLen != (int) f.length()));
+  }
+  else
+    return TRUE;
+}
+
 int Package::file_number(QString path, bool rec, const char * ext)
 {
   int result = 0;
   
   if (! path.isEmpty()) {
     QDir d(path);
+    
+    if (! allowed(DirFilter, d.dirName()))
+      return 0;
+    
     const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
     
     if (list != 0) {
@@ -567,6 +598,10 @@ void Package::reverse_directory(QString path, bool rec,
 
   // reads files
   QDir d(path);
+  
+  if (! allowed(DirFilter, d.dirName()))
+    return;
+  
   const QFileInfoList * list =
     d.entryInfoList("*." + ext, QDir::Files | QDir::Readable);
   
@@ -574,23 +609,25 @@ void Package::reverse_directory(QString path, bool rec,
     QFileInfoListIterator it(*list);
     
     while (it.current() != 0) {
+      if (allowed(FileFilter, it.current()->fileName())) {
 #ifdef ROUNDTRIP
-      QString fn = it.current()->absFilePath();
-      UmlArtifact * art = Roundtriped.find(fn);
-      
-      if (h)
-	fname = my_baseName(it.current());
-      
-      if ((art != 0) && (art->parent()->parent() != uml))
-	// own by an other package
-	((UmlPackage *) art->parent()->parent())->get_package()->reverse_file(QCString(fn), art, h);
-      else
-	reverse_file(QCString(fn), art, h);
+	QString fn = it.current()->absFilePath();
+	UmlArtifact * art = Roundtriped.find(fn);
+	
+	if (h)
+	  fname = my_baseName(it.current());
+	
+	if ((art != 0) && (art->parent()->parent() != uml))
+	  // own by an other package
+	  ((UmlPackage *) art->parent()->parent())->get_package()->reverse_file(QCString(fn), art, h);
+	else
+	  reverse_file(QCString(fn), art, h);
 #else
-      if (h)
-	fname = my_baseName(it.current());
-      reverse_file(QCString(it.current()->filePath()));
+	if (h)
+	  fname = my_baseName(it.current());
+	reverse_file(QCString(it.current()->filePath()));
 #endif
+      }
       Progress::tic_it();
       ++it;
     }
@@ -620,11 +657,13 @@ void Package::reverse(UmlArtifact * art) {
   QCString f;
   
   f = h_path + art->name() + "." + CppSettings::headerExtension();
-  if (QFile::exists(f))
+  if (allowed(FileFilter, art->name() + "." + CppSettings::headerExtension()) &&
+      QFile::exists(f))
     reverse_file(f, art, TRUE);
   
   f = src_path + art->name() + "." + CppSettings::sourceExtension();
-  if (QFile::exists(f))
+  if (allowed(FileFilter, art->name() + "." + CppSettings::sourceExtension()) &&
+      QFile::exists(f))
     reverse_file(f, art, FALSE);
 }
 #endif
@@ -633,7 +672,7 @@ void Package::reverse_file(QCString f
 #ifdef ROUNDTRIP
 			   , UmlArtifact * art, bool h
 #endif
-			   ) {
+			   ) {  
 #ifdef ROUNDTRIP
   if (art != 0) {
     if (art->is_considered(h, Scan))

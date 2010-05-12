@@ -141,6 +141,8 @@ TransitionDialog::TransitionDialog(TransitionData * r)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 TransitionDialog::~TransitionDialog() {
@@ -149,6 +151,8 @@ TransitionDialog::~TransitionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void TransitionDialog::change_tabs(QWidget * w) {

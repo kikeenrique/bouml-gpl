@@ -112,17 +112,17 @@ enum UmlCode {
 // warning : only from plug-out
 #define IsaActivityAction(x) ((x >= umlOpaqueAction) && (x <= umlReduceAction))
 
-inline bool IsaActivityContainer(UmlCode k, bool part = FALSE)
+inline bool IsaActivityContainer(UmlCode k, bool part = 0)
 {
   switch (k) {
   case UmlActivity:
   case UmlExpansionRegion:
   case UmlInterruptibleActivityRegion:
-    return TRUE;
+    return !((bool) 0);
   case UmlActivityPartition:
     return part;
   default:
-    return FALSE;
+    return 0;
   }
 }
 
@@ -251,7 +251,7 @@ extern UmlCode arrow_type(const char *);
 extern bool IsaSimpleRelation(UmlCode);
 extern UmlVisibility visibility(const char * s);
 extern UmlCode relation_type(const char * s,
-			     bool simple_relation = FALSE);
+			     bool simple_relation = 0);
 extern UmlParamDirection direction(const char * s);
 extern UmlParamEffect effect(const char * s);
 extern Uml3States state(const char * s);

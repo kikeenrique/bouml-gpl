@@ -791,15 +791,19 @@ void SdDurationCanvas::apply_shortcut(QString s) {
 }
 
 void SdDurationCanvas::edit_drawing_settings() {
-  ColorSpecVector co(1);
-  
-  co[0].set(TR("duration color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    ColorSpecVector co(1);
+    
+    co[0].set(TR("duration color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool SdDurationCanvas::has_drawing_settings() const {
@@ -807,21 +811,38 @@ bool SdDurationCanvas::has_drawing_settings() const {
 }
 
 void SdDurationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("duration color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((SdDurationCanvas *) it.current())->itscolor = itscolor;
-      ((SdDurationCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("duration color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((SdDurationCanvas *) it.current())->itscolor = itscolor;
+	((SdDurationCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void SdDurationCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  SdDurationCanvas * x = (SdDurationCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    SdDurationCanvas * o =  (SdDurationCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

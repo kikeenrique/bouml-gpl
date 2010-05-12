@@ -126,6 +126,8 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, TR("Properties"));
+  
+  open_dialog(this);
 }
 
 void SimpleRelationDialog::polish() {
@@ -139,6 +141,8 @@ SimpleRelationDialog::~SimpleRelationDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void SimpleRelationDialog::edit_description() {

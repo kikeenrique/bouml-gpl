@@ -111,7 +111,9 @@ bool ColMsg::extract_it(ColMsgList & top) {
   return FALSE;
 }
 
-QString ColMsg::def(bool hierarchical, bool full, DrawingLanguage language) {
+QString ColMsg::def(bool hierarchical, bool full,
+		    DrawingLanguage language,
+		    ShowContextMode context) {
   QString op;
 
   if (operation == 0)
@@ -119,7 +121,7 @@ QString ColMsg::def(bool hierarchical, bool full, DrawingLanguage language) {
   else if (!full)
     op = operation->definition(FALSE, FALSE);
   else {
-    op = operation->definition(TRUE, language, TRUE, TRUE);
+    op = operation->definition(TRUE, language, TRUE, TRUE, context);
     
     if (op.isEmpty())
       return op;

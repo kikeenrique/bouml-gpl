@@ -40,6 +40,7 @@
 #include <qpopupmenu.h>
 #include <qtabdialog.h>
 #include <qapplication.h>
+#include <qwidgetlist.h>
 
 #include "BrowserClass.h"
 #include "ClassData.h"
@@ -291,14 +292,14 @@ QString type(const QString & t, const QStringList & types,
     : t;
 }
 
-QString get_cpp_name(const BrowserClass * cl)
+QString get_cpp_name(const BrowserClass * cl, ShowContextMode mode)
 {
   ClassData * d = (ClassData *) cl->get_data();
-  QString name = cl->get_name();
   
   if (! d->cpp_is_external())
-    return name;
+    return cl->contextual_name(mode);
   
+  QString name = cl->get_name();
   QString s = d->get_cppdecl();
   int index = s.find('\n');
   
@@ -316,14 +317,14 @@ QString get_cpp_name(const BrowserClass * cl)
   return s;
 }
 
-QString get_java_name(const BrowserClass * cl)
+QString get_java_name(const BrowserClass * cl, ShowContextMode mode)
 {
   ClassData * d = (ClassData *) cl->get_data();
-  QString name = cl->get_name();
   
   if (! d->java_is_external())
-    return name;
+    return cl->contextual_name(mode);
   
+  QString name = cl->get_name();
   QString s = d->get_javadecl();
   int index = s.find('\n');
   
@@ -341,14 +342,14 @@ QString get_java_name(const BrowserClass * cl)
   return s;
 }
 
-QString get_php_name(const BrowserClass * cl)
+QString get_php_name(const BrowserClass * cl, ShowContextMode mode)
 {
   ClassData * d = (ClassData *) cl->get_data();
-  QString name = cl->get_name();
   
   if (! d->php_is_external())
-    return name;
+    return cl->contextual_name(mode);
   
+  QString name = cl->get_name();
   QString s = d->get_phpdecl();
   int index = s.find('\n');
   
@@ -366,14 +367,14 @@ QString get_php_name(const BrowserClass * cl)
   return s;
 }
 
-QString get_python_name(const BrowserClass * cl)
+QString get_python_name(const BrowserClass * cl, ShowContextMode mode)
 {
   ClassData * d = (ClassData *) cl->get_data();
-  QString name = cl->get_name();
   
   if (! d->python_is_external())
-    return name;
+    return cl->contextual_name(mode);
   
+  QString name = cl->get_name();
   QString s = d->get_pythondecl();
   int index = s.find('\n');
   
@@ -391,14 +392,14 @@ QString get_python_name(const BrowserClass * cl)
   return s;
 }
 
-QString get_idl_name(const BrowserClass * cl)
+QString get_idl_name(const BrowserClass * cl, ShowContextMode mode)
 {
   ClassData * d = (ClassData *) cl->get_data();
-  QString name = cl->get_name();
   
   if (! d->idl_is_external())
-    return name;
+    return cl->contextual_name(mode);
   
+  QString name = cl->get_name();
   QString s = d->get_idldecl();
   int index = s.find('\n');
   
@@ -416,42 +417,42 @@ QString get_idl_name(const BrowserClass * cl)
   return s;
 }
 
-QString get_cpp_name(const AType t)
+QString get_cpp_name(const AType t, ShowContextMode mode)
 {
   if (t.type != 0)
-    return get_cpp_name(t.type);
+    return get_cpp_name(t.type, mode);
   else
     return GenerationSettings::cpp_type(t.explicit_type);
 }
 
-QString get_java_name(const AType t)
+QString get_java_name(const AType t, ShowContextMode mode)
 {
   if (t.type != 0)
-    return get_java_name(t.type);
+    return get_java_name(t.type, mode);
   else
     return GenerationSettings::java_type(t.explicit_type);
 }
 
-QString get_php_name(const AType t)
+QString get_php_name(const AType t, ShowContextMode mode)
 {
   if (t.type != 0)
-    return get_php_name(t.type);
+    return get_php_name(t.type, mode);
   else
     return t.explicit_type;
 }
 
-QString get_python_name(const AType t)
+QString get_python_name(const AType t, ShowContextMode mode)
 {
   if (t.type != 0)
-    return get_python_name(t.type);
+    return get_python_name(t.type, mode);
   else
     return t.explicit_type;
 }
 
-QString get_idl_name(const AType t)
+QString get_idl_name(const AType t, ShowContextMode mode)
 {
   if (t.type != 0)
-    return get_idl_name(t.type);
+    return get_idl_name(t.type, mode);
   else
     return GenerationSettings::idl_type(t.explicit_type);
 }
@@ -585,3 +586,24 @@ bool completion()
 {
   return Completion;
 }
+
+//
+
+static QWidgetList NonModalDialogs;
+
+void open_dialog(QWidget * w)
+{
+  NonModalDialogs.append(w);
+}
+
+
+void close_dialog(QWidget * w)
+{
+  NonModalDialogs.remove(w);
+}
+
+QWidgetList dialogs()
+{
+  return NonModalDialogs;
+}
+

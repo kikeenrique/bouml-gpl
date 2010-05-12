@@ -1,8 +1,7 @@
 #ifndef _UMLCOM_H
 #define _UMLCOM_H
 
-// added by 53 : constraint added on activity and activity action
-#define APIVERSION 52
+#define APIVERSION 54
 
 #include <qsocketdevice.h>
 #include "CmdFamily.h"

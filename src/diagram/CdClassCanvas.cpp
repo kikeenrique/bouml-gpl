@@ -148,55 +148,8 @@ void CdClassCanvas::check_size() {
   used_settings = settings;
   the_canvas()->browser_diagram()->get_classdiagramsettings(used_settings);
     
-  full_name = browser_node->get_name();
-  
-  const MyStr & (PackageData::*f)() const = 0;
-  const char * sep = 0;	// to avoid warning
-  
-  switch (used_settings.show_context_mode) {
-  case umlContext:
-    full_name = browser_node->full_name();
-    break;
-  case namespaceContext:
-    f = &PackageData::get_cpp_namespace;
-    sep = "::";
-    break;
-  case javaPackageContext:
-    f = &PackageData::get_java_package;
-    sep = ".";
-    break;
-  case pythonPackageContext:
-    f = &PackageData::get_python_package;
-    sep = ".";
-    break;
-  case moduleContext:
-    f = &PackageData::get_idl_module;
-    sep = "::";
-    break;
-  default:
-    break;
-  }
-  
-  if (f != 0) {
-    BrowserClass * cl = (BrowserClass *) browser_node;
-    
-    while (cl->nestedp())
-      cl = (BrowserClass *) cl->parent();
-    
-    if (((BrowserNode *) cl->parent())->get_type() == UmlClassView) {
-      // not under a use case
-      BrowserArtifact * cp = cl->get_associated_artifact();
-      
-      QString context =
-	(((PackageData *)
-	  ((BrowserNode *)
-	   (((cp == 0) ? (BrowserNode *) cl : (BrowserNode *) cp)
-	    ->parent()->parent()))->get_data())->*f)();
-      
-      if (!context.isEmpty())
-	full_name = context + sep + full_name;
-    }
-  }
+  full_name = ((BrowserClass *) browser_node)
+    ->contextual_name(used_settings.show_context_mode);
   
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   QFontMetrics fbm(the_canvas()->get_font(UmlNormalBoldFont));
@@ -270,7 +223,8 @@ void CdClassCanvas::check_size() {
 	  
 	  s = ((AttributeData *) child_data)
 	    ->definition(full_members, show_multiplicity, show_initialization,
-			 show_modifiers, used_settings.drawing_language);
+			 show_modifiers, used_settings.drawing_language,
+			 used_settings.show_members_context);
 	  
 	  if (s.isEmpty())
 	    continue;
@@ -299,8 +253,8 @@ void CdClassCanvas::check_size() {
 	    continue;
 	  
 	  s = ((OperationData *) child_data)
-	    ->definition(full_members, used_settings.drawing_language,
-			 show_dir, show_name);
+	    ->definition(full_members, used_settings.drawing_language, show_dir,
+			 show_name, used_settings.show_members_context);
 
 	  if (s.isEmpty())
 	    continue;
@@ -1002,7 +956,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	AttributeData * data =
 	  ((AttributeData *) ((BrowserNode *) child)->get_data());
 	QString s = data->definition(full_members, show_multiplicity, show_initialization,
-				     show_modifiers, used_settings.drawing_language);
+				     show_modifiers, used_settings.drawing_language,
+				     used_settings.show_members_context);
 	
 	if (s.isEmpty())
 	  continue;
@@ -1086,7 +1041,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	  continue;
 	
 	QString s = data->definition(full_members, used_settings.drawing_language,
-				     show_dir, show_name);
+				     show_dir, show_name,
+				     used_settings.show_members_context);
 	
 	if (s.isEmpty())
 	  continue;
@@ -1525,19 +1481,23 @@ void CdClassCanvas::apply_shortcut(QString s) {
 }
 
 void CdClassCanvas::edit_drawing_settings()  {
-  StateSpecVector st;
-  ColorSpecVector co(1);
-  
-  settings.complete(st, UmlClass);
-  
-  co[0].set(TR("class color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(1);
+    
+    settings.complete(st, UmlClass);
+    
+    co[0].set(TR("class color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -1546,28 +1506,47 @@ bool CdClassCanvas::has_drawing_settings() const {
 }
 
 void CdClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st;
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  ClassDiagramSettings settings;
-  
-  settings.complete(st, UmlClass);
-  
-  co[0].set(TR("class color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(1);
+    UmlColor itscolor;
+    ClassDiagramSettings settings;
     
-    for (; it.current(); ++it) {
-      if (!co[0].name.isEmpty())
-	((CdClassCanvas *) it.current())->itscolor = itscolor;
-      ((CdClassCanvas *) it.current())->settings.set(st, 0);
-      ((CdClassCanvas *) it.current())->modified();
-      ((CdClassCanvas *) it.current())->package_modified();
-    }
+    settings.complete(st, UmlClass);
+    
+    co[0].set(TR("class color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!co[0].name.isEmpty())
+	  ((CdClassCanvas *) it.current())->itscolor = itscolor;
+	((CdClassCanvas *) it.current())->settings.set(st, 0);
+	((CdClassCanvas *) it.current())->modified();
+	((CdClassCanvas *) it.current())->package_modified();
+      }
+    }  
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void CdClassCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  CdClassCanvas * x = (CdClassCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    CdClassCanvas * o =  (CdClassCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->settings = x->settings;
+    o->modified();
+    o->package_modified();
   }  
 }
 

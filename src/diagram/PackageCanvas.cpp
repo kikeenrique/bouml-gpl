@@ -552,19 +552,23 @@ void PackageCanvas::apply_shortcut(QString s) {
 }
 
 void PackageCanvas::edit_drawing_settings() {
-  StateSpecVector st(3);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("name in tab"), &name_in_tab);
-  st[1].set(TR("show context"), &show_context_mode);
-  st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("Package color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();
+  for (;;) {
+    StateSpecVector st(3);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("name in tab"), &name_in_tab);
+    st[1].set(TR("show context"), &show_context_mode);
+    st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("Package color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool PackageCanvas::has_drawing_settings() const {
@@ -572,35 +576,55 @@ bool PackageCanvas::has_drawing_settings() const {
 }
 
 void PackageCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(3);
-  ColorSpecVector co(1);
-  Uml3States name_in_tab;
-  Uml3States show_stereotype_properties;
-  ShowContextMode show_context_mode;
-  UmlColor itscolor;
-  
-  st[0].set(TR("name in tab"), &name_in_tab);
-  st[1].set(TR("show context"), &show_context_mode);
-  st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
-  co[0].set(TR("Package color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(3);
+    ColorSpecVector co(1);
+    Uml3States name_in_tab;
+    Uml3States show_stereotype_properties;
+    ShowContextMode show_context_mode;
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((PackageCanvas *) it.current())->name_in_tab = name_in_tab;
-      if (!st[1].name.isEmpty())
-	((PackageCanvas *) it.current())->show_context_mode = show_context_mode;
-      if (!st[2].name.isEmpty())
-	((PackageCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
-      if (!co[0].name.isEmpty())
-	((PackageCanvas *) it.current())->itscolor = itscolor;
-      ((PackageCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("name in tab"), &name_in_tab);
+    st[1].set(TR("show context"), &show_context_mode);
+    st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+    co[0].set(TR("Package color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((PackageCanvas *) it.current())->name_in_tab = name_in_tab;
+	if (!st[1].name.isEmpty())
+	  ((PackageCanvas *) it.current())->show_context_mode = show_context_mode;
+	if (!st[2].name.isEmpty())
+	  ((PackageCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
+	if (!co[0].name.isEmpty())
+	  ((PackageCanvas *) it.current())->itscolor = itscolor;
+	((PackageCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void PackageCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  PackageCanvas * x = (PackageCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    PackageCanvas * o =  (PackageCanvas *) it.current();
+				 
+    o->name_in_tab = x->name_in_tab;
+    o->show_context_mode = x->show_context_mode;
+    o->show_stereotype_properties = x->show_stereotype_properties;
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

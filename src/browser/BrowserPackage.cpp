@@ -75,6 +75,7 @@
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "SettingsDialog.h"
+#include "RevSettingsDialog.h"
 #include "StereotypesDialog.h"
 #include "GenerationSettings.h"
 #include "myio.h"
@@ -113,6 +114,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.show_full_members_definition = UmlNo;
   classdiagram_settings.show_members_visibility = UmlNo;
   classdiagram_settings.show_members_stereotype = UmlNo;
+  classdiagram_settings.show_members_context = noContext;
   classdiagram_settings.show_members_multiplicity = UmlNo;
   classdiagram_settings.show_members_initialization = UmlNo;
   classdiagram_settings.show_attribute_modifiers = UmlNo;
@@ -150,20 +152,23 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   sequencediagram_settings.draw_all_relations = UmlYes;
   sequencediagram_settings.shadow = UmlYes;
   sequencediagram_settings.show_stereotype_properties = UmlNo;
+  sequencediagram_settings.show_class_context_mode = noContext;
+  sequencediagram_settings.show_msg_context_mode = noContext;
   
   collaborationdiagram_settings.show_full_operations_definition = UmlNo;
   collaborationdiagram_settings.show_hierarchical_rank = UmlNo;
   collaborationdiagram_settings.write_horizontally = UmlYes;
   collaborationdiagram_settings.drawing_language = UmlView;
   collaborationdiagram_settings.package_name_in_tab = UmlNo;
-  collaborationdiagram_settings.show_context_mode = noContext;
+  collaborationdiagram_settings.show_class_pack_context_mode = noContext;
+  collaborationdiagram_settings.show_msg_context_mode = noContext;
   collaborationdiagram_settings.draw_all_relations = UmlYes;
   collaborationdiagram_settings.shadow = UmlYes;
   collaborationdiagram_settings.show_stereotype_properties = UmlNo;
   
   objectdiagram_settings.write_horizontally = UmlYes;
   objectdiagram_settings.package_name_in_tab = UmlNo;
-  objectdiagram_settings.show_context_mode = noContext;
+  objectdiagram_settings.show_class_pack_context_mode = noContext;
   objectdiagram_settings.auto_label_position = UmlYes;
   objectdiagram_settings.draw_all_relations = UmlYes;
   objectdiagram_settings.shadow = UmlYes;
@@ -562,6 +567,8 @@ the current <i>package</i> and to be able later to reimport it to update it"));
 			 TR("to set how an Uml type is compiled in C++ etc..., \
 to set the default parameter passing, to set the default code \
 produced for an attribute etc..., and to set the root directories"));
+	  m.setWhatsThis(m.insertItem(TR("Edit reverse/roundtrip settings"), 18),
+			 TR("to specify directory/file to not reverse/roundtrip them"));
 	  m.setWhatsThis(m.insertItem(TR("Edit default stereotypes"), 6),
 			 TR("to set the default stereotypes list"));
 	}
@@ -830,6 +837,9 @@ void BrowserPackage::exec_menu_choice(int rank) {
   case 17:
     update_lib();
     return;
+  case 18:
+    edit_rev_settings();
+    return;
   case 20:
     if (!isprofile) {
       ToolCom::run((verbose_generation()) 
@@ -968,6 +978,8 @@ void BrowserPackage::apply_shortcut(QString s) {
 	if (this == BrowserView::get_project()) {
 	  if (s == "Edit generation settings")
 	    choice = 8;
+	  else if (s == "Edit reverse/roundtrip settings")
+	    choice = 18;
 	  else if (s == "Edit default stereotypes")
 	    choice = 6;
 	}
@@ -1033,6 +1045,14 @@ void BrowserPackage::edit_gen_settings() {
     package_modified();
 }
 
+void BrowserPackage::edit_rev_settings() {
+  RevSettingsDialog d;
+      
+  d.raise();
+  if (d.exec())
+    package_modified();
+}
+
 void BrowserPackage::edit_stereotypes() {
   StereotypesDialog d;
       
@@ -1048,44 +1068,48 @@ void BrowserPackage::edit_class_settings() {
 }
 
 void BrowserPackage::edit_drawing_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(18);
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(18);
+    
+    classdiagram_settings.complete(st, UmlClassView);
+    sequencediagram_settings.complete(st, FALSE);
+    collaborationdiagram_settings.complete(st, FALSE);
+    objectdiagram_settings.complete(st, FALSE);
+    usecasediagram_settings.complete(st, FALSE);
+    componentdiagram_settings.complete(st, FALSE);
+    deploymentdiagram_settings.complete(st, FALSE);
+    statediagram_settings.complete(st, FALSE);
+    activitydiagram_settings.complete(st, FALSE);
+    
+    co[0].set(TR("class color"), &class_color);
+    co[1].set(TR("note color"), &note_color);
+    co[2].set(TR("package color"), &package_color);
+    co[3].set(TR("fragment color"), &fragment_color);
+    co[4].set(TR("subject color"), &subject_color);
+    co[5].set(TR("use case color"), &usecase_color);
+    co[6].set(TR("duration color"), &duration_color);
+    co[7].set(TR("continuation color"), &continuation_color);
+    co[8].set(TR("component color"), &component_color);
+    co[9].set(TR("artifact color"), &artifact_color);
+    co[10].set(TR("node color"), &deploymentnode_color);
+    co[11].set(TR("state color"), &state_color);
+    co[12].set(TR("state action color"), &stateaction_color);
+    co[13].set(TR("activity color"), &activity_color);
+    co[14].set(TR("activity region color"), &activityregion_color);
+    co[15].set(TR("activity partition color"), &activitypartition_color);
+    co[16].set(TR("activity action color"), &activityaction_color);
+    co[17].set(TR("parameter and pin color"), &parameterpin_color);
+
+    SettingsDialog dialog(&st, &co, this == BrowserView::get_project());
   
-  classdiagram_settings.complete(st, UmlClassView);
-  sequencediagram_settings.complete(st, FALSE);
-  collaborationdiagram_settings.complete(st, FALSE);
-  objectdiagram_settings.complete(st, FALSE);
-  usecasediagram_settings.complete(st, FALSE);
-  componentdiagram_settings.complete(st, FALSE);
-  deploymentdiagram_settings.complete(st, FALSE);
-  statediagram_settings.complete(st, FALSE);
-  activitydiagram_settings.complete(st, FALSE);
-  
-  co[0].set(TR("class color"), &class_color);
-  co[1].set(TR("note color"), &note_color);
-  co[2].set(TR("package color"), &package_color);
-  co[3].set(TR("fragment color"), &fragment_color);
-  co[4].set(TR("subject color"), &subject_color);
-  co[5].set(TR("use case color"), &usecase_color);
-  co[6].set(TR("duration color"), &duration_color);
-  co[7].set(TR("continuation color"), &continuation_color);
-  co[8].set(TR("component color"), &component_color);
-  co[9].set(TR("artifact color"), &artifact_color);
-  co[10].set(TR("node color"), &deploymentnode_color);
-  co[11].set(TR("state color"), &state_color);
-  co[12].set(TR("state action color"), &stateaction_color);
-  co[13].set(TR("activity color"), &activity_color);
-  co[14].set(TR("activity region color"), &activityregion_color);
-  co[15].set(TR("activity partition color"), &activitypartition_color);
-  co[16].set(TR("activity action color"), &activityaction_color);
-  co[17].set(TR("parameter and pin color"), &parameterpin_color);
-  
-  SettingsDialog dialog(&st, &co, this == BrowserView::get_project());
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    package_modified();
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 

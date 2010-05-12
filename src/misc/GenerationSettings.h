@@ -70,8 +70,19 @@ struct IncludesSpec {
   QStringList includes;
 };
 
+struct ReverseRoundtripFilter {
+  QString regexp;
+  bool case_sensitive;
+  
+  void send_def(ToolCom * com);
+  void receive_def(const char * args);
+  void save(const char * key, QTextOStream & st);
+  void read(const char * key, char * & st, char * & k);
+};
+
 class GenerationSettings {
   friend class GenerationSettingsDialog;
+  friend class RevSettingsDialog;
   friend class TypesTable;
   friend class StereotypesTable;
   
@@ -208,7 +219,7 @@ class GenerationSettings {
     static IncludesSpec java_imports;
     static IncludesSpec python_imports;
     static QString php_extension;
-    static bool php_include_with_path;
+    static bool php_req_with_path;
     static bool php_relative_path;
     static bool php_root_relative_path;
     static QString python_extension;
@@ -232,6 +243,13 @@ class GenerationSettings {
     static QString php_root_dir;
     static QString python_root_dir;
     static QString idl_root_dir;
+    
+    static ReverseRoundtripFilter cpp_dir_filter;
+    static ReverseRoundtripFilter cpp_file_filter;
+    static ReverseRoundtripFilter java_dir_filter;
+    static ReverseRoundtripFilter java_file_filter;
+    static ReverseRoundtripFilter php_dir_filter;
+    static ReverseRoundtripFilter php_file_filter;
   
     static int find_type(const QString &);
     static int find_relationattribute_stereotype(const QString &);

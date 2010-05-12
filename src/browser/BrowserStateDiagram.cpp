@@ -319,23 +319,27 @@ void BrowserStateDiagram::open(bool) {
 }
 
 void BrowserStateDiagram::edit_settings() {
-  StateSpecVector st;
-  ColorSpecVector co(5);
-  
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("state color"), &state_color);
-  co[1].set(TR("state action color"), &stateaction_color);
-  co[2].set(TR("note color"), &note_color);
-  co[3].set(TR("package color"), &package_color);
-  co[4].set(TR("fragment color"), &fragment_color);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    DrawingSettings::modified();
-    package_modified();
+  for (;;) {
+    StateSpecVector st;
+    ColorSpecVector co(5);
+    
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("state color"), &state_color);
+    co[1].set(TR("state action color"), &stateaction_color);
+    co[2].set(TR("note color"), &note_color);
+    co[3].set(TR("package color"), &package_color);
+    co[4].set(TR("fragment color"), &fragment_color);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      DrawingSettings::modified();
+      package_modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 

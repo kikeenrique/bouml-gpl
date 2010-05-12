@@ -930,19 +930,23 @@ void ActivityActionCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityActionCanvas::edit_drawing_settings() {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  
-  st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("action color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    StateSpecVector st(1);
+    ColorSpecVector co(1);
+    
+    st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("action color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ActivityActionCanvas::has_drawing_settings() const {
@@ -950,32 +954,51 @@ bool ActivityActionCanvas::has_drawing_settings() const {
 }
 
 void ActivityActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(1);
-  ColorSpecVector co(1);
-  Uml3States show_opaque_action_definition;
-  UmlColor itscolor;
-  ActivityDrawingSettings settings;
-  
-  st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
-  settings.complete(st, TRUE);
-  
-  co[0].set(TR("action color"), &itscolor);
-  
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(1);
+    ColorSpecVector co(1);
+    Uml3States show_opaque_action_definition;
+    UmlColor itscolor;
+    ActivityDrawingSettings settings;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((ActivityActionCanvas *) it.current())->show_opaque_action_definition =
-	  show_opaque_action_definition;
-      if (!co[0].name.isEmpty())
-	((ActivityActionCanvas *) it.current())->itscolor = itscolor;
-      ((ActivityActionCanvas *) it.current())->settings.set(st, 1);
-      ((ActivityActionCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
+    settings.complete(st, TRUE);
+    
+    co[0].set(TR("action color"), &itscolor);
+    
+    SettingsDialog dialog(&st, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((ActivityActionCanvas *) it.current())->show_opaque_action_definition =
+	    show_opaque_action_definition;
+	if (!co[0].name.isEmpty())
+	  ((ActivityActionCanvas *) it.current())->itscolor = itscolor;
+	((ActivityActionCanvas *) it.current())->settings.set(st, 1);
+	((ActivityActionCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ActivityActionCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ActivityActionCanvas * x = (ActivityActionCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ActivityActionCanvas * o =  (ActivityActionCanvas *) it.current();
+				 
+    o->show_opaque_action_definition = x->show_opaque_action_definition;
+    o->itscolor = x->itscolor;
+    o->settings = x->settings;
+    o->modified();	// call package_modified()
   }
 }
 

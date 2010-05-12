@@ -87,6 +87,7 @@ class BrowserColDiagram : public BrowserDiagram {
     virtual bool get_auto_label_position() const;    
     virtual bool get_show_stereotype_properties() const;
     virtual bool get_classinstwritehorizontally() const;
+    virtual ShowContextMode get_classinstshowmode() const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserColDiagram * read(char * &, char *, BrowserNode *);

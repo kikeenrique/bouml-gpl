@@ -445,7 +445,8 @@ QString OperationData::definition(bool full, bool with_kind) const {
     : definition(full, TRUE, TRUE);
 }
 
-QString OperationData::definition(bool full, bool withdir, bool withname) const {
+QString OperationData::definition(bool full, bool withdir,
+				  bool withname, ShowContextMode mode) const {
   QString result;
   
   if (full) {
@@ -458,14 +459,14 @@ QString OperationData::definition(bool full, bool withdir, bool withname) const 
       
       for (index = 0; index != nparams; index += 1) {
 	result += sep;
-	result += params[index].definition(withdir, withname);
+	result += params[index].definition(withdir, withname, mode);
 	sep = ", ";
       }
       result += ")";
     }
     
-    QString rt = get_return_type().get_type();
-    
+    QString rt = return_type.get_type(mode);
+      
     return (rt.isEmpty()) ? result : result + " : " + rt;
   }
   else
@@ -473,41 +474,47 @@ QString OperationData::definition(bool full, bool withdir, bool withname) const 
 }
 
 QString OperationData::definition(bool full, DrawingLanguage language,
-				  bool withdir, bool withname) const {
+				  bool withdir, bool withname,
+				  ShowContextMode mode) const {
   switch (language) {
   case UmlView:
-    return definition(full, withdir, withname);
+    return definition(full, withdir, withname, mode);
   case CppView:
     if (full)
-      return OperationDialog::cpp_decl((BrowserOperation *) browser_node, withname);
+      return OperationDialog::cpp_decl((BrowserOperation *) browser_node,
+				       withname, mode);
     else if (!cpp_decl.isEmpty())
       return definition(FALSE, FALSE);
     else
       return QString::null;
   case JavaView:
     if (full)
-      return OperationDialog::java_decl((BrowserOperation *) browser_node, withname);
+      return OperationDialog::java_decl((BrowserOperation *) browser_node,
+					withname, mode);
     else if (!java_def.isEmpty())
       return definition(FALSE, FALSE);
     else
       return QString::null;
   case PhpView:
     if (full)
-      return OperationDialog::php_decl((BrowserOperation *) browser_node, withname);
+      return OperationDialog::php_decl((BrowserOperation *) browser_node,
+				       withname, mode);
     else if (!php_def.isEmpty())
       return definition(FALSE, FALSE);
     else
       return QString::null;
   case PythonView:
     if (full)
-      return OperationDialog::python_decl((BrowserOperation *) browser_node, withname);
+      return OperationDialog::python_decl((BrowserOperation *) browser_node,
+					  withname, mode);
     else if (!python_def.isEmpty())
       return definition(FALSE, FALSE);
     else
       return QString::null;
   default:
     if (full)
-      return OperationDialog::idl_decl((BrowserOperation *) browser_node, withdir, withname);
+      return OperationDialog::idl_decl((BrowserOperation *) browser_node,
+				       withdir, withname, mode);
     else if (!idl_decl.isEmpty())
       return definition(FALSE, FALSE);
     else

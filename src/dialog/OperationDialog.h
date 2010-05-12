@@ -208,11 +208,16 @@ class OperationDialog : public QTabDialog {
     OperationDialog(OperationData * a, DrawingLanguage l);
     virtual ~OperationDialog();
   
-    static QString cpp_decl(const BrowserOperation * op, bool withname);
-    static QString java_decl(const BrowserOperation * op, bool withname);
-    static QString php_decl(const BrowserOperation * op, bool withname);
-    static QString python_decl(const BrowserOperation * op, bool withname);
-    static QString idl_decl(const BrowserOperation * op, bool withdir, bool withname);
+    static QString cpp_decl(const BrowserOperation * op, bool withname,
+			    ShowContextMode mode);
+    static QString java_decl(const BrowserOperation * op, bool withname,
+				  ShowContextMode mode);
+    static QString php_decl(const BrowserOperation * op, bool withname,
+				  ShowContextMode mode);
+    static QString python_decl(const BrowserOperation * op, bool withname,
+				  ShowContextMode mode);
+    static QString idl_decl(const BrowserOperation * op, bool withdir,
+			    bool withname, ShowContextMode mode);
     
     void force_param(int rank, bool recompute);
     void insert_param(int rank);

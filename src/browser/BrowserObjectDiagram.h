@@ -87,6 +87,7 @@ class BrowserObjectDiagram : public BrowserDiagram {
     virtual void dont_draw_all_relations();
     virtual bool get_show_stereotype_properties() const;
     virtual bool get_classinstwritehorizontally() const;
+    virtual ShowContextMode get_classinstshowmode() const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;
     virtual void save(QTextStream &, bool ref, QString & warning);

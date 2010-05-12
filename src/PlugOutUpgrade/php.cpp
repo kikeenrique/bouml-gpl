@@ -974,3 +974,206 @@ void php_javadocstylecomment()
   // stay root
 }
 
+//
+//
+//
+
+void php_add_require_once()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("<b>Add require_once generation mode</b><br>\n");
+  
+  // attributes
+  
+  UmlClass * php_settings = UmlClass::get("PhpSettings", 0);
+  UmlAttribute * at;
+  UmlAttribute * at2;
+  UmlOperation * op;
+  UmlOperation * op2;
+  
+  at = php_settings->add_attribute("_req_with_path", PrivateVisibility,
+				   "bool", 0, 0);
+  at->moveAfter(php_settings->get_attribute("_is_generate_javadoc_comment"));
+  at->set_isClassMember(TRUE);
+  at2 = at;
+  
+  at = php_settings->add_attribute("_is_relative_path", PrivateVisibility,
+				   "bool", 0, 0);
+  at->moveAfter(at2);
+  at->set_isClassMember(TRUE);
+  at2 = at;
+  
+  at = php_settings->add_attribute("_is_root_relative_path", PrivateVisibility,
+				   "bool", 0, 0);
+  at->moveAfter(at2);
+  at->set_isClassMember(TRUE);
+
+  // requireOnceWithPath
+  
+  op = php_settings->add_op("requireOnceWithPath", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" indicates to the code generator if the require_once may specify\n"
+		      " the path of just the file's name");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _req_with_path;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _req_with_path;\n",
+	       FALSE);
+  op->moveAfter(php_settings->get_operation("set_SourceExtension"));
+
+  // set_RequireOnceWithPath
+  
+  op2 = php_settings->add_op("set_RequireOnceWithPath", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" to indicates to the code generator if the require_once may specify\n"
+		       " the path of just the file's name\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+	       "  UmlCom::send_cmd(phpSettingsCmd, setPhpRequireOnceWithPathCmd, v);\n"
+	       "  if (UmlCom::read_bool()) {\n"
+	       "    _req_with_path = v;\n"
+	       "    return TRUE;\n"
+	       "  }\n"
+	       "  else\n"
+	       "    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRequireOnceWithPathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _req_with_path = v;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  // isRelativePath
+  
+  op = php_settings->add_op("isRelativePath", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if a relative path must be used when the path\n"
+		      " must be generated in the produced require_once");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_relative_path;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_relative_path;\n",
+	       FALSE);
+  op->moveAfter(op2);
+
+  // set_IsRelativePath
+  
+  op2 = php_settings->add_op("set_IsRelativePath", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if a relative path must be used when the path\n"
+		       " must be generated in the produced require_once\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+	       "  UmlCom::send_cmd(phpSettingsCmd, setPhpRelativePathCmd, v);\n"
+	       "  if (UmlCom::read_bool()) {\n"
+	       "    _is_relative_path = v;\n"
+	       "    if (v) _is_root_relative_path = FALSE;\n"
+	       "    return TRUE;\n"
+	       "  }\n"
+	       "  else\n"
+	       "    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRelativePathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_relative_path = v;\n"
+	       "  if (v) _is_root_relative_path = false;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  // isRootRelativePath
+  
+  op = php_settings->add_op("isRootRelativePath", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if a path relative to the project root must be used\n"
+		      " when the path must be generated in the produced require_once");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_root_relative_path;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_root_relative_path;\n",
+	       FALSE);
+  op->moveAfter(op2);
+
+  // set_IsRootRelativePath
+  
+  op2 = php_settings->add_op("set_IsRootRelativePath", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if a relative to the project root path must be used\n"
+		       " when the path must be generated in the produced require_once\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+	       "  UmlCom::send_cmd(phpSettingsCmd, setPhpRootRelativePathCmd, v);\n"
+	       "  if (UmlCom::read_bool()) {\n"
+	       "    _is_root_relative_path = v;\n"
+	       "    if (v) _is_relative_path = FALSE;\n"
+	       "    return TRUE;\n"
+	       "  }\n"
+	       "  else\n"
+	       "    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRootRelativePathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_root_relative_path = v;\n"
+	       "  if (v) _is_relative_path = false;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  //
+
+  op = php_settings->get_operation("read_");
+  op->set_CppBody(op->cppBody() + 
+		  "  _req_with_path = UmlCom::read_bool();\n"
+		  "  _is_relative_path = UmlCom::read_bool();\n"
+		  "  _is_root_relative_path = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() +
+		   "  _req_with_path = UmlCom.read_bool();\n"
+		   "  _is_relative_path = UmlCom.read_bool();\n"
+		   "  _is_root_relative_path = UmlCom.read_bool();\n");
+
+  //
+
+  UmlClass * stcmd = UmlClass::get("PhpSettingsCmd", 0);
+  
+  stcmd->add_enum_item("setPhpRequireOnceWithPathCmd");
+  stcmd->add_enum_item("setPhpRelativePathCmd");
+  stcmd->add_enum_item("setPhpRootRelativePathCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}

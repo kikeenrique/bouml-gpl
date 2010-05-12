@@ -36,6 +36,8 @@ class UmlClassMember : public UmlBaseClassMember {
   public:
     UmlClassMember(void * id, const QCString & n)
       : UmlBaseClassMember(id, n) {};
+  
+    virtual void generate_require_onces(QTextOStream & f, QCString & made);
 	
     void generate_visibility(QTextOStream & f);
     

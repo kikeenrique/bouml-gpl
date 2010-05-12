@@ -231,6 +231,8 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ActivityActionDialog::polish() {
@@ -244,6 +246,8 @@ ActivityActionDialog::~ActivityActionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void ActivityActionDialog::change_tabs(QWidget * w) {

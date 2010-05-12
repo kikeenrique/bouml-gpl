@@ -5036,6 +5036,140 @@ void add_constraint2(UmlClass * basecl, const char *afterop, const char * aftera
 }
 
 //
+//
+//
+
+void add_rev_filter()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("<b>Add reverse/roundtrip dir/file filtering</b><br>\n");
+  
+  //
+  
+  const char * const langs[] = { "Cpp", "Java", "Php" };
+  unsigned i;
+  
+  for (i = 0; i != sizeof(langs) / sizeof(langs[0]); i += 1) {
+    QCString pfix = langs[i];
+    UmlClass * settings = UmlClass::get(pfix + "Settings", 0);
+    UmlClass * settingscmd = UmlClass::get(settings->name() + "Cmd", 0);
+    UmlAttribute * at2 = settings->get_attribute((langs[i][0] == 'C') ? "_src_ext" : "_ext");
+    UmlOperation * op2 = settings->get_operation("set_SourceExtension");
+    QCString what = "Dir";
+    QCString cmd, rg, cs, s;
+    UmlAttribute * at;
+    UmlOperation * op;
+    
+    for (;;) {
+      cmd = "set" + pfix + what + "RevFilterCmd";
+      settingscmd->add_enum_item(cmd);
+  
+      rg = "_" + what.lower() + "_regexp";
+      at = settings->add_attribute(rg, PrivateVisibility, "string", 0, 0);
+      at->set_isClassMember(TRUE);
+      at->moveAfter(at2);
+      at2 = at;
+  
+      cs = rg + "_case_sensitive";
+      at = settings->add_attribute(cs, PrivateVisibility, "bool", 0, 0);
+      at->set_isClassMember(TRUE);
+      at->moveAfter(at2);
+      at2 = at;
+      
+      s = "reverseRoundtrip" + what + "RegExp";
+      op = settings->add_op(s, PublicVisibility, "string");
+      op->moveAfter(op2);
+      op2 = op;
+      op->set_isClassMember(TRUE);
+      op->set_Description(" return the regular expression used to bypass\n"
+			  " " + what.lower() + " s on reverse/roundtrip");
+      op->set_cpp("${type}", "",
+		"  read_if_needed_();\n"
+		"\n"
+		"  return " + rg + ";\n",
+		  FALSE, 0, 0);
+      op->set_java("${type}", "",
+		   "  read_if_needed_();\n"
+		   "\n"
+		   "  return " + rg + ";\n",
+		   FALSE);
+      
+      s = "isReverseRoundtrip" + what + "RegExpCaseSensitive";
+      op = settings->add_op(s, PublicVisibility, "bool");
+      op->moveAfter(op2);
+      op2 = op;
+      op->set_isClassMember(TRUE);
+      op->set_Description(" return if the regular expression used to bypass\n"
+			  " " + what.lower() + " s on reverse/roundtrip is case sensitive");
+      op->set_cpp("${type}", "",
+		"  read_if_needed_();\n"
+		"\n"
+		"  return " + cs + ";\n",
+		  FALSE, 0, 0);
+      op->set_java("${type}", "",
+		   "  read_if_needed_();\n"
+		   "\n"
+		   "  return " + cs + ";\n",
+		   FALSE);
+
+      s = "set_ReverseRoundtrip" + what + "RegExp";
+      op = settings->add_op(s, PublicVisibility, "bool");
+      op->moveAfter(op2);
+      op2 = op;
+      op->set_isClassMember(TRUE);
+      op->set_Description(" set the regular expression used to bypass\n"
+			  " " + what.lower() + " s on reverse/roundtrip\n"
+			  " On error : return FALSE in C++, produce a RuntimeException in Java");
+      op->add_param(0, InputDirection, "s", "string"); 
+      op->add_param(1, InputDirection, "cs", "bool"); 
+      op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
+		  "  UmlCom::send_cmd(" + pfix.lower() + "SettingsCmd, " + cmd + ", s, cs);\n"
+		  "  if (UmlCom::read_bool()) {\n"
+		  "    " + rg + " = s;\n"
+		  "    " + cs + " = cs;\n"
+		  "    return TRUE;\n"
+		  "  }\n"
+		  "  else\n"
+		  "    return FALSE;\n",
+		  FALSE, 0, 0);
+      op->set_java("void", "${t0} ${p0}, ${t1} ${p1}",
+		   "  UmlCom.send_cmd(CmdFamily." + pfix.lower() + "SettingsCmd, " + pfix + "SettingsCmd._" + cmd + ", s, cs);\n"
+		   "  UmlCom.check();\n"
+		   "  " + rg + " = s;\n"
+		   "  " + cs + " = cs;\n",
+		   FALSE);
+      
+      op = settings->get_operation("read_");
+      
+      s = op->cppBody() + "\n\
+  " + rg + " = UmlCom::read_string();\n\
+  " + cs + " = UmlCom::read_bool();\n";
+      op->set_CppBody(s);
+      
+      s = op->javaBody() + "\n\
+  " + rg + " = UmlCom.read_string();\n\
+  " + cs + " = UmlCom.read_bool();\n";
+      op->set_JavaBody(s);
+      
+      if (what == "Dir")
+	what = "File";
+      else
+	break;
+    }
+  }
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
 
 bool ask_for_upgrade()
 {
@@ -5632,14 +5766,46 @@ bool UmlPackage::upgrade() {
 		      "set_JavaPostCondition", "_java_post_condition");
 
       work = TRUE;
-    }    
+    }
+    
+    UmlClass * phpsettings = UmlClass::get("PhpSettings", 0);
+
+    if (phpsettings->get_attribute("_req_with_path") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      php_add_require_once();
+
+      work = TRUE;
+    }
+    
+    UmlAttribute * attpython = 
+      UmlClass::get("UmlStereotype", 0)->get_attribute("python");
+    int index = (s = attpython->cppDecl()).find("#ifdef WITHPHP");
+    
+    if (index != -1) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      UmlCom::trace("fixe UmlStereotype::python<br>\n");
+      s.replace(index + 12, 2, "YTHON");
+      attpython->set_CppDecl(s);
+      work = TRUE;
+    }
+    
+    if (cppsettings->get_attribute("_rev_dir_regexp") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_rev_filter();
+
+      work = TRUE;
+    }
     
     if (work) {
       CppSettings::set_UseDefaults(cpp_default);
       JavaSettings::set_UseDefaults(java_default);
 
       UmlCom::trace("update api version<br>\n");
-      update_api_version("53");
+      update_api_version("54");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

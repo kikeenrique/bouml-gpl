@@ -34,6 +34,7 @@
 
 class QDir;
 class QFileInfo;
+class QRegExp;
 class UmlPackage;
 class QApplication;
 
@@ -51,9 +52,6 @@ class Package : public BrowserNode, public ClassContainer {
     virtual Class * upload_define(UmlClass *);
     void own(UmlArtifact *);
     void reverse(UmlArtifact *);
-    void reverse_file(QCString f, UmlArtifact * art, bool h);
-#else
-    void reverse_file(QCString f);
 #endif
     void reverse_variable(const QCString & name);
     
@@ -116,6 +114,8 @@ class Package : public BrowserNode, public ClassContainer {
     static int Nfiles;
     static bool Scan;
     static Package * Root;
+    static QRegExp * DirFilter;
+    static QRegExp * FileFilter;
     //static Package * Unknown;
     static QValueList<FormalParameterList> Formals;
     static QList<UmlClass> UsedClasses;
@@ -129,6 +129,11 @@ class Package : public BrowserNode, public ClassContainer {
 #endif
     
     void reverse_directory(QString path, bool rec, QString ext, bool h);
+#ifdef ROUNDTRIP
+    void reverse_file(QCString f, UmlArtifact * art, bool h);
+#else
+    void reverse_file(QCString f);
+#endif    
     void reverse_toplevel_forms(QCString f, bool sub_block);
     void reverse_toplevel_form(QCString f, QCString s);
         

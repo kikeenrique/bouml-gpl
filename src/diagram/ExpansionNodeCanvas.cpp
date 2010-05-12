@@ -371,15 +371,19 @@ void ExpansionNodeCanvas::apply_shortcut(QString s) {
 }
 
 void ExpansionNodeCanvas::edit_drawing_settings() {
-  ColorSpecVector co(1);
-  
-  co[0].set(TR("expansion node color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE);
-  
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted)
-    modified();	// call package_modified()
+  for (;;) {
+    ColorSpecVector co(1);
+    
+    co[0].set(TR("expansion node color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE);
+    
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted)
+      modified();	// call package_modified()
+    if (!dialog.redo())
+      break;
+  }
 }
 
 bool ExpansionNodeCanvas::has_drawing_settings() const {
@@ -387,21 +391,38 @@ bool ExpansionNodeCanvas::has_drawing_settings() const {
 }
 
 void ExpansionNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  ColorSpecVector co(1);
-  UmlColor itscolor;
-  
-  co[0].set(TR("expansion node color"), &itscolor);
-  
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
-  
-  dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    ColorSpecVector co(1);
+    UmlColor itscolor;
     
-    for (; it.current(); ++it) {
-      ((ExpansionNodeCanvas *) it.current())->itscolor = itscolor;
-      ((ExpansionNodeCanvas *) it.current())->modified();	// call package_modified()
+    co[0].set(TR("expansion node color"), &itscolor);
+    
+    SettingsDialog dialog(0, &co, FALSE, TRUE);
+    
+    dialog.raise();
+    if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	((ExpansionNodeCanvas *) it.current())->itscolor = itscolor;
+	((ExpansionNodeCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void ExpansionNodeCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  ExpansionNodeCanvas * x = (ExpansionNodeCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    ExpansionNodeCanvas * o =  (ExpansionNodeCanvas *) it.current();
+				 
+    o->itscolor = x->itscolor;
+    o->modified();	// call package_modified()
   }
 }
 

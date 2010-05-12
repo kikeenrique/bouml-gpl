@@ -398,6 +398,19 @@ void ClassData::get_class_spec(QString & templates,
   names = names_tmplop + t2;
 }
 
+void ClassData::addFormals(QStringList & l) {
+  for (int index = 0; index != nformals; index += 1) {
+    const char * s = formals[index].get_name();
+    
+    if (l.findIndex(s) == -1)
+      l.prepend(s);
+  }
+    
+  if (((BrowserNode *) browser_node->parent())->get_type() == UmlClass)
+    ((ClassData *) ((BrowserNode *) browser_node->parent())->get_data())
+      ->addFormals(l);
+}
+
 //
 
 QString ClassData::get_actualparam_name(int rank) {

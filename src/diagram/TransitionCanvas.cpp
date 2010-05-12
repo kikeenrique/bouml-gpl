@@ -333,19 +333,23 @@ void TransitionCanvas::apply_shortcut(QString s) {
 }
 
 void TransitionCanvas::edit_drawing_settings() {
-  StateSpecVector st(3);
-  
-  st[0].set("language", &drawing_language);
-  st[1].set("write horizontally", &write_horizontally);
-  st[2].set("show definition", &show_definition);
-  
-  SettingsDialog dialog(&st, 0, FALSE);
-  
-  dialog.setCaption("Transition Drawing Settings dialog");
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    propagate_drawing_settings();
-    modified();
+  for (;;) {
+    StateSpecVector st(3);
+    
+    st[0].set("language", &drawing_language);
+    st[1].set("write horizontally", &write_horizontally);
+    st[2].set("show definition", &show_definition);
+    
+    SettingsDialog dialog(&st, 0, FALSE);
+    
+    dialog.setCaption("Transition Drawing Settings dialog");
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      propagate_drawing_settings();
+      modified();
+    }
+    if (!dialog.redo())
+      break;
   }
 }
 
@@ -354,35 +358,55 @@ bool TransitionCanvas::has_drawing_settings() const {
 }
 
 void TransitionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  StateSpecVector st(3);
-  DrawingLanguage drawing_language;
-  Uml3States write_horizontally;
-  Uml3States show_definition;
-  
-  st[0].set("language", &drawing_language);
-  st[1].set("write horizontally", &write_horizontally);
-  st[2].set("show definition", &show_definition);
-  
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
-  
-  dialog.setCaption("Transition Drawing Settings dialog");
-  dialog.raise();
-  if (dialog.exec() == QDialog::Accepted) {
-    QListIterator<DiagramItem> it(l);
+  for (;;) {
+    StateSpecVector st(3);
+    DrawingLanguage drawing_language;
+    Uml3States write_horizontally;
+    Uml3States show_definition;
     
-    for (; it.current(); ++it) {
-      if (!st[0].name.isEmpty())
-	((TransitionCanvas *) it.current())->drawing_language =
-	  drawing_language;
-      if (!st[1].name.isEmpty())
-	((TransitionCanvas *) it.current())->write_horizontally =
-	  write_horizontally;
-      if (!st[2].name.isEmpty())
-	((TransitionCanvas *) it.current())->show_definition =
-	  show_definition;
-      ((TransitionCanvas *) it.current())->propagate_drawing_settings();
-      ((TransitionCanvas *) it.current())->modified();	// call package_modified()
+    st[0].set("language", &drawing_language);
+    st[1].set("write horizontally", &write_horizontally);
+    st[2].set("show definition", &show_definition);
+    
+    SettingsDialog dialog(&st, 0, FALSE, TRUE);
+    
+    dialog.setCaption("Transition Drawing Settings dialog");
+    dialog.raise();
+    if (dialog.exec() == QDialog::Accepted) {
+      QListIterator<DiagramItem> it(l);
+      
+      for (; it.current(); ++it) {
+	if (!st[0].name.isEmpty())
+	  ((TransitionCanvas *) it.current())->drawing_language =
+	    drawing_language;
+	if (!st[1].name.isEmpty())
+	  ((TransitionCanvas *) it.current())->write_horizontally =
+	    write_horizontally;
+	if (!st[2].name.isEmpty())
+	  ((TransitionCanvas *) it.current())->show_definition =
+	    show_definition;
+	((TransitionCanvas *) it.current())->propagate_drawing_settings();
+	((TransitionCanvas *) it.current())->modified();	// call package_modified()
+      }
     }
+    if (!dialog.redo())
+      break;
+  }
+}
+
+void TransitionCanvas::same_drawing_settings(QList<DiagramItem> & l) {
+  QListIterator<DiagramItem> it(l);
+  
+  TransitionCanvas * x = (TransitionCanvas *) it.current();
+  
+  while (++it, it.current() != 0) {
+    TransitionCanvas * o =  (TransitionCanvas *) it.current();
+				 
+    o->drawing_language = x->drawing_language;
+    o->write_horizontally = x->write_horizontally;
+    o->show_definition = x->show_definition;
+    o->propagate_drawing_settings();
+    o->modified();	// call package_modified()
   }
 }
 

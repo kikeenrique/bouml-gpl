@@ -39,29 +39,99 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
 static bool RootDirRead;
 static QCString RootDir;
 
-QCString UmlPackage::file_path(const QCString & f) {
-  if (!dir.read) {
-    dir.file = phpDir();
+static QCString relative_path(const QDir & destdir, QCString relto)
+{
+  QDir fromdir(relto);
+  QCString from = QCString(fromdir.absPath());
+  QCString to = QCString(destdir.absPath());
+  const char * cfrom = from;
+  const char * cto = to;
+  int lastsep = -1;
+  int index = 0;
+  
+  for (;;) {
+    char f = cfrom[index];
+    char t = cto[index];
     
-    if (! RootDirRead) {
-      RootDirRead = TRUE;
-      RootDir = PhpSettings::rootDir();
-
-      if (!RootDir.isEmpty() && // empty -> error
-	  QDir::isRelativePath(RootDir)) {
-	QFileInfo f(getProject()->supportFile());
-	QDir d(f.dirPath());
-
-	RootDir = d.filePath(RootDir);
+    if (f == 0) {
+      switch (t) {
+      case 0:
+	// same path
+	return "";
+      case '/':
+	// to = .../aze/qsd/wxc, from = .../aze => qsd/wxc/
+	return (cto + index + 1) + QCString("/");
+      default:
+	// to = .../aze/qsd/wxc, from = .../az => ../aze/qsd/wxc/
+	return "../" + QCString(cto + lastsep + 1) + "/";
       }
     }
+    else if (t == f) {
+      if (t == '/')
+	lastsep = index;
+      index += 1;
+    }
+    else if (t == 0) {
+      QCString r;
+      const char * p = cfrom+index;
+      
+      do {
+	if (*p == '/')
+	  r += "../";
+      } while (*++p != 0);
+      
+      if (f == '/')
+	// to = .../aze, from = .../aze/qsd/wxc => ../../
+	return r;
+      else
+	// to = .../az, from = .../aze/qsd/wxc => ../../../az/
+	return ("../"  + r + (cto + lastsep + 1)) + "/";
+    }
+    else {
+      // to = .../aze, from = .../iop/klm => ../../aze/
+      QCString r = "../";
+      const char * p = cfrom + lastsep + 1;
+      
+      while (*p != 0)
+	if (*p++ == '/')
+	  r += "../";
+      
+      return (r + (cto + lastsep + 1)) + "/";
+    }
+  }
+}
 
-    QDir d_root(RootDir);
+QCString UmlPackage::rootDir()
+{
+  if (! RootDirRead) {
+    RootDirRead = TRUE;
+    RootDir = PhpSettings::rootDir();
+    
+    if (!RootDir.isEmpty() && // empty -> error
+	QDir::isRelativePath(RootDir)) {
+      QFileInfo f(getProject()->supportFile());
+      QDir d(f.dirPath());
+      
+      RootDir = d.filePath(RootDir);
+    }
+  }
+
+  return RootDir;
+}
+
+QCString UmlPackage::file_path(const QCString & f, QCString relto) {
+  if (!dir.read) {
+    dir.file = phpDir();
+    dir.file_absolute = FALSE;
+    
+    QDir d_root(rootDir());
     
     if (dir.file.isEmpty())
       dir.file = RootDir;
     else if (QDir::isRelativePath(dir.file))
       dir.file = d_root.filePath(dir.file);
+    else
+      dir.file_absolute = TRUE;
    
     if (dir.file.isEmpty()) {
       UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
@@ -74,6 +144,9 @@ QCString UmlPackage::file_path(const QCString & f) {
     
     dir.read = TRUE;
   }
+  
+  if (f.isEmpty())
+    return dir.file;
   
   QDir d(dir.file);
   
@@ -109,8 +182,14 @@ QCString UmlPackage::file_path(const QCString & f) {
     }
   }
   
-  return QCString(d.filePath(f)) + QCString(".") + 
-    PhpSettings::sourceExtension();
+  QCString df = (dir.file_absolute || relto.isEmpty())
+    ? QCString(d.filePath(f))
+    : relative_path(d, relto) + f;
+  
+  if (PhpSettings::isRelativePath() && (df[0] != '/') && (df[0] != '.'))
+    df = "./" + df;
+  
+  return df + QCString(".") + PhpSettings::sourceExtension();
 }
 
 QCString UmlPackage::text_path(const QCString & f) {

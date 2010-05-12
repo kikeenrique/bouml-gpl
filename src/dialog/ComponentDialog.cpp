@@ -99,6 +99,8 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void ComponentDialog::polish() {
@@ -112,6 +114,8 @@ ComponentDialog::~ComponentDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
     
 void ComponentDialog::change_tabs(QWidget * w) {

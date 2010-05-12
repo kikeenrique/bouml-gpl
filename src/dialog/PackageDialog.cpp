@@ -444,6 +444,8 @@ is specified (through the project menu entry 'edit generation settings')\n\n"), 
 
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
+  
+  open_dialog(this);
 }
 
 void PackageDialog::polish() {
@@ -457,6 +459,8 @@ PackageDialog::~PackageDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  close_dialog(this);
 }
 
 void PackageDialog::edStereotypeActivated(const QString & s) {

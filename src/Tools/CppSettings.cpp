@@ -238,6 +238,58 @@ bool CppSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+QCString CppSettings::reverseRoundtripDirRegExp()
+{
+  read_if_needed_();
+
+  return _dir_regexp;
+}
+
+bool CppSettings::isReverseRoundtripDirRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+}
+
+bool CppSettings::set_ReverseRoundtripDirRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppDirRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _dir_regexp = s;
+    _dir_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::reverseRoundtripFileRegExp()
+{
+  read_if_needed_();
+
+  return _file_regexp;
+}
+
+bool CppSettings::isReverseRoundtripFileRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+}
+
+bool CppSettings::set_ReverseRoundtripFileRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppFileRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _file_regexp = s;
+    _file_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::includeWithPath()
 {
   read_if_needed_();
@@ -426,11 +478,11 @@ bool CppSettings::set_EnumReturn(QCString v)
 
 QCString CppSettings::builtinIn(QCString s)
 {
-    read_if_needed_();
-  
-    UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
-  
-    return (b) ? b->cpp_in : QCString();
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_in : QCString();
 }
 
 // set the default operation 'in' parameter specification
@@ -442,18 +494,18 @@ QCString CppSettings::builtinIn(QCString s)
 bool CppSettings::set_BuiltinIn(QCString type, QCString form)
 {
   read_if_needed_();
-    UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, type, form);
-    if (UmlCom::read_bool()) {
-      UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
-  
-      if (b == 0)
-        b = UmlSettings::add_type(type);
-      b->cpp_in = form;
-      
-      return TRUE;
-    }
-    else
-      return FALSE;
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_in = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 // returns the default operation 'out' parameter specification
@@ -462,11 +514,11 @@ bool CppSettings::set_BuiltinIn(QCString type, QCString form)
 
 QCString CppSettings::builtinOut(QCString s)
 {
-    read_if_needed_();
-  
-    UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
-  
-    return (b) ? b->cpp_out : QCString();
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_out : QCString();
 }
 
 // set the default operation 'out' parameter specification
@@ -478,18 +530,18 @@ QCString CppSettings::builtinOut(QCString s)
 bool CppSettings::set_BuiltinOut(QCString type, QCString form)
 {
   read_if_needed_();
-    UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, type, form);
-    if (UmlCom::read_bool()) {
-      UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
-  
-      if (b == 0)
-        b = UmlSettings::add_type(type);
-      b->cpp_out = form;
-      
-      return TRUE;
-    }
-    else
-      return FALSE;
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_out = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 // returns the default operation 'inout' parameter specification
@@ -498,11 +550,11 @@ bool CppSettings::set_BuiltinOut(QCString type, QCString form)
 
 QCString CppSettings::builtinInOut(QCString s)
 {
-    read_if_needed_();
-  
-    UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
-  
-    return (b) ? b->cpp_inout : QCString();
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_inout : QCString();
 }
 
 // set the default operation 'inout' parameter specification
@@ -514,18 +566,18 @@ QCString CppSettings::builtinInOut(QCString s)
 bool CppSettings::set_BuiltinInOut(QCString type, QCString form)
 {
   read_if_needed_();
-    UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, type, form);
-    if (UmlCom::read_bool()) {
-      UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
-  
-      if (b == 0)
-        b = UmlSettings::add_type(type);
-      b->cpp_inout = form;
-      
-      return TRUE;
-    }
-    else
-      return FALSE;
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_inout = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 // returns the default operation 'return' parameter specification
@@ -534,11 +586,11 @@ bool CppSettings::set_BuiltinInOut(QCString type, QCString form)
 
 QCString CppSettings::builtinReturn(QCString s)
 {
-    read_if_needed_();
-  
-    UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
-  
-    return (b) ? b->cpp_return : QCString();
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_return : QCString();
 }
 
 // set the default operation 'return' parameter specification
@@ -550,18 +602,18 @@ QCString CppSettings::builtinReturn(QCString s)
 bool CppSettings::set_BuiltinReturn(QCString type, QCString form)
 {
   read_if_needed_();
-    UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, type, form);
-    if (UmlCom::read_bool()) {
-      UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
-  
-      if (b == 0)
-        b = UmlSettings::add_type(type);
-      b->cpp_return = form;
-      
-      return TRUE;
-    }
-    else
-      return FALSE;
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_return = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & CppSettings::in()
@@ -1106,6 +1158,14 @@ QCString CppSettings::_h_ext;
 
 QCString CppSettings::_src_ext;
 
+QCString CppSettings::_dir_regexp;
+
+bool CppSettings::_dir_regexp_case_sensitive;
+
+QCString CppSettings::_file_regexp;
+
+bool CppSettings::_file_regexp_case_sensitive;
+
 bool CppSettings::_incl_with_path;
 
 bool CppSettings::_is_relative_path;
@@ -1205,6 +1265,12 @@ void CppSettings::read_()
   _is_root_relative_path = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
   _is_inline_force_header_in_h = UmlCom::read_bool();
+
+  _dir_regexp = UmlCom::read_string();
+  _dir_regexp_case_sensitive = UmlCom::read_bool();
+
+  _file_regexp = UmlCom::read_string();
+  _file_regexp_case_sensitive = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

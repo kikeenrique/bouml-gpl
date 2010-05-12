@@ -195,7 +195,7 @@ void TextCanvas::menu(const QPoint&) {
     the_canvas()->del(this);
     break;
   case 5:
-    {
+    for (;;) {
       ColorSpecVector co(2);
       
       co[0].set(TR("foreground"), &fg_c);
@@ -212,6 +212,11 @@ void TextCanvas::menu(const QPoint&) {
       hide();
       show();
       canvas()->update();
+      
+      if (!dialog.redo())
+	break;
+      else
+	package_modified();
     }
     break;
   default:
