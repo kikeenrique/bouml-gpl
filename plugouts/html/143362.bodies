@@ -6,7 +6,7 @@ class UmlParameterSet
 !!!207746.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<table><tr><td><div class=\"element\">Parameter set  <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   QCString s = description();
 
@@ -35,7 +35,7 @@ class UmlParameterSet
 !!!207746.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<table><tr><td><div class=\"element\">Parameter set <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   String s = description();
   

@@ -29,5 +29,6 @@
 extern void upgrade_states(UmlClass * base_item, UmlClass * user_item);
 extern void base_state_include_umlcom();
 extern void add_state_specification();
+extern void add_stateref();
 
 #endif

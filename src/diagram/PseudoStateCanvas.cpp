@@ -557,7 +557,7 @@ void PseudoStateCanvas::menu(const QPoint&) {
 	(BrowserNode *) the_canvas()->browser_diagram())
       m.insertItem(TR("Set associated diagram"),6);
   m.insertSeparator();*/
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
@@ -602,7 +602,7 @@ void PseudoStateCanvas::menu(const QPoint&) {
     select_associated();
     return;
   case 7:
-    //remove from view
+    //remove from diagram
     delete_it();
     break;
   case 8:

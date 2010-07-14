@@ -3,6 +3,9 @@
 #include "FileOut.h"
 #include "UmlItem.h"
 
+UmlCollaborationDiagramDefinition::~UmlCollaborationDiagramDefinition() {
+}
+
 void UmlCollaborationDiagramDefinition::write(FileOut & out, UmlItem * diag) {
   UmlMessage::write_connectors(out, diag, 
 			       (const QVector<UmlMessage>&) messages());

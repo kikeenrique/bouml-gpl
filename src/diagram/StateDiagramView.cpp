@@ -42,6 +42,7 @@
 #include "IconCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "BrowserState.h"
@@ -94,7 +95,8 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	DiagramItem * di;
 	bool specified = ((ci != 0) && 
 			  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-			  (di->type() == UmlState));
+			  (di->type() == UmlState) &&
+			  ((BrowserState *) ((StateCanvas *) di)->get_bn())->may_contains(action));
 	BrowserNode * parent;
 	
 	if (specified) {
@@ -139,7 +141,8 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if ((ci != 0) && 
 	    ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-	    (di->type() == UmlState)) {
+	    (di->type() == UmlState) &&
+	    ((BrowserState *) ((StateCanvas *) di)->get_bn())->may_contains(action)) {
 	  BrowserRegion::add_region(((StateCanvas *) di)->get_bn());
 	  window()->package_modified();
 	}
@@ -166,7 +169,8 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	DiagramItem * di;
 	bool specified = ((ci != 0) && 
 			  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-			  (di->type() == UmlState));
+			  (di->type() == UmlState) &&
+			  ((BrowserState *) ((StateCanvas *) di)->get_bn())->may_contains(action));
 	BrowserNode * parent;
 	
 	if (specified) {
@@ -203,7 +207,8 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	DiagramItem * di;
 	bool specified = ((ci != 0) && 
 			  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-			  (di->type() == UmlState));
+			  (di->type() == UmlState) &&
+			  ((BrowserState *) ((StateCanvas *) di)->get_bn())->may_contains(UmlStateAction));
 	BrowserNode * parent;
 	
 	if (specified) {
@@ -270,12 +275,16 @@ void StateDiagramView::dragEnterEvent(QDragEnterEvent * e) {
 }
 
 void StateDiagramView::dropEvent(QDropEvent * e) {
+  BrowserState * mach = 
+    BrowserState::get_machine(the_canvas()->browser_diagram());
   BrowserNode * bn;
   QPoint p = viewportToContents(e->pos());
   
   if ((bn = UmlDrag::decode(e, UmlState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
       msg_information("Bouml", TR("already drawn"));
+    else if (BrowserState::get_machine(bn) != mach)
+      msg_information("Bouml", TR("illegal"));
     else {
       history_save();
       
@@ -308,6 +317,8 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   else if ((bn = UmlDrag::decode(e, UmlPseudoState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
       msg_information("Bouml", TR("already drawn"));
+    else if (BrowserState::get_machine(bn) != mach)
+      msg_information("Bouml", TR("illegal"));
     else {
       history_save();
       
@@ -327,6 +338,8 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   else if ((bn = UmlDrag::decode(e, UmlStateAction, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
       msg_information("Bouml", TR("already drawn"));
+    else if (BrowserState::get_machine(bn) != mach)
+      msg_information("Bouml", TR("illegal"));
     else {
       history_save();
       
@@ -405,6 +418,7 @@ void StateDiagramView::save(QTextStream & st, QString & warning,
     case JoinPS:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlPackage:
     case UmlFragment:
     case UmlIcon:
@@ -444,7 +458,7 @@ void StateDiagramView::save(QTextStream & st, QString & warning,
 void StateDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first state package icons notes and text
+  // reads first state package icons notes text and images
   while (StateCanvas::read(st, canvas, k) ||
 	 StateActionCanvas::read(st, canvas, k) ||
 	 PseudoStateCanvas::read(st, canvas, k) ||
@@ -452,7 +466,8 @@ void StateDiagramView::read(char * st, char * k) {
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
-	 FragmentCanvas::read(st, canvas, k))
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

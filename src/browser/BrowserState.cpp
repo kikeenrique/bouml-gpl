@@ -122,6 +122,15 @@ void BrowserState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   if (! ondelete) {
     BrowserActivityAction::compute_referenced_by(l, this);
     BrowserStateDiagram::compute_referenced_by(l, this, "statecanvas", "state_ref");
+    
+    IdIterator<BrowserState> it(all);
+    
+    while (it.current()) {
+      if (!it.current()->deletedp() && 
+	  (it.current()->def->get_reference() == this))
+	l.append(it.current());
+      ++it;
+    }
   }
 }
 
@@ -136,6 +145,40 @@ void BrowserState::compute_referenced_by(QList<BrowserNode> & l,
 	(it.current()->def->get_specification() == op))
       l.append(it.current());
     ++it;
+  }
+}
+
+bool BrowserState::is_ref() const {
+  return (def->get_reference() != 0);
+}
+
+bool BrowserState::can_reference() const {
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling()) {
+    switch (((BrowserNode *) child)->get_type()) {
+    case UmlTransition:
+    case EntryPointPS:
+    case ExitPointPS:
+      break;
+    default:
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}
+
+bool BrowserState::can_reference(BrowserState * st) const {
+  const BrowserNode * p = this;
+  
+  for (;;) {
+    if (p == (BrowserNode *) st)
+      return FALSE;
+    
+    p = (BrowserNode *) p->parent();
+    if (p->get_type() != UmlState)
+      return TRUE;
   }
 }
 
@@ -236,9 +279,12 @@ void BrowserState::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   QString what;
+  bool ref = is_ref();
   bool mach = is_machine(this);
   
-  if (mach)
+  if (ref)
+    what = "state machine reference";
+  else if (mach)
     what = "state machine";
   else
     what = (!strcmp(get_stereotype(), "submachine"))
@@ -247,7 +293,7 @@ void BrowserState::menu() {
   m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    if (!is_read_only) {
+    if (!is_read_only && !ref) {
       m.setWhatsThis(m.insertItem(TR("New state diagram"), 0),
 		     TR("to add a <i>state diagram</i>"));
       if (mach) {
@@ -264,8 +310,8 @@ void BrowserState::menu() {
 		       TR("to add a <i>state</i> to the <i>submachine</i>"));
       m.setWhatsThis(m.insertItem(TR("New region"), 11),
 		     TR("to add a <i>region</i>"));
+      m.insertSeparator();
     }
-    m.insertSeparator();
     m.setWhatsThis(m.insertItem(TR("Edit"), 3),
 		   TR("to edit the <i>" + what + "</i>, \
 a double click with the left mouse button does the same thing"));
@@ -280,7 +326,7 @@ Note that you can undelete it after"));
     }
     m.setWhatsThis(m.insertItem(TR("Referenced by"), 10),
 		   TR("to know who reference the <i>state</i> \
-through a transition"));
+through a transition or a reference"));
     mark_menu(m, TR("the " + what), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
@@ -376,10 +422,11 @@ void BrowserState::exec_menu_choice(int rank,
 
 void BrowserState::apply_shortcut(QString s) {
   int choice = -1;
+  bool ref = is_ref();
   bool mach = is_machine(this);
   
   if (!deletedp()) {
-    if (!is_read_only) {
+    if (!is_read_only && !ref) {
       if (s == "New state diagram")
 	choice = 0;
       if (mach) {
@@ -446,7 +493,12 @@ UmlCode BrowserState::get_type() const {
 }
 
 QString BrowserState::get_stype() const {
-  return TR("state");
+  if (is_ref())
+    return TR("state machine reference");
+  else if (is_machine(this))
+    return TR("state machine");
+  else
+    return TR("state");
 }
 
 int BrowserState::get_identifier() const {
@@ -613,6 +665,7 @@ BrowserState * BrowserState::get_machine(const BrowserNode * bn)
     case ChoicePS:
     case ForkPS:
     case JoinPS:
+    case UmlStateAction:
       bn = (BrowserNode *) bn->parent();
       break;
     default:
@@ -628,27 +681,28 @@ bool BrowserState::may_contains_them(const QList<BrowserNode> & l,
   
   for (; it.current(); ++it) {
     switch (it.current()->get_type()) {
-    case UmlState:
-      if (get_machine(it.current()) != machine)
-	return FALSE;
-      break;
     case UmlTransition:
       // no break !
     case UmlRegion:
       duplicable = FALSE;
       // no break !
+    case UmlState:
     case UmlStateDiagram:
     case InitialPS:
-    case EntryPointPS:
     case FinalPS:
     case TerminatePS:
-    case ExitPointPS:
     case DeepHistoryPS:
     case ShallowHistoryPS:
     case JunctionPS:
     case ChoicePS:
     case ForkPS:
     case JoinPS:
+    case UmlStateAction:
+      if (is_ref())
+	return FALSE;
+      // no break
+    case EntryPointPS:
+    case ExitPointPS:
       if (get_machine(it.current()) != machine)
 	return FALSE;
       break;
@@ -656,10 +710,39 @@ bool BrowserState::may_contains_them(const QList<BrowserNode> & l,
       return FALSE;
     }
     
-    if (! may_contains(it.current(), TRUE))
+    if (! BrowserNode::may_contains(it.current(), TRUE))
       return FALSE;
     
     duplicable = may_contains_it(it.current());
+  }
+  
+  return TRUE;
+}
+
+
+bool BrowserState::may_contains(UmlCode k) const {
+  if (is_ref()) {
+    switch (k) {
+    case UmlTransition:
+    case UmlRegion:
+    case UmlState:
+    case UmlStateDiagram:
+    case InitialPS:
+    case FinalPS:
+    case TerminatePS:
+    case DeepHistoryPS:
+    case ShallowHistoryPS:
+    case JunctionPS:
+    case ChoicePS:
+    case ForkPS:
+    case JoinPS:
+    case UmlStateAction:
+      if (is_ref())
+	return FALSE;
+    default:
+      // exit and entry point
+      break;
+    }
   }
   
   return TRUE;
@@ -687,7 +770,8 @@ void BrowserState::DropEvent(QDropEvent * e) {
 
 void BrowserState::DragMoveInsideEvent(QDragMoveEvent * e) {
   if (!is_read_only &&
-      (UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
+      (UmlDrag::canDecode(e, UmlState) ||
+       UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserRegion::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserStateAction::drag_key(this)) ||
@@ -700,17 +784,19 @@ void BrowserState::DragMoveInsideEvent(QDragMoveEvent * e) {
 
 void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
   BrowserNode * bn;
+  bool free_move = TRUE;
   
-  if ((((bn = UmlDrag::decode(e, BrowserPseudoState::drag_key(this))) != 0) ||
+  if ((((bn = UmlDrag::decode(e, UmlState)) != 0) ||
+       (free_move = FALSE, (bn = UmlDrag::decode(e, BrowserState::drag_key(this))) != 0) ||
+       ((bn = UmlDrag::decode(e, BrowserPseudoState::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserStateAction::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserRegion::drag_key(this))) != 0) ||
-       ((bn = UmlDrag::decode(e, BrowserState::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserStateDiagram::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserTransition::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, TRUE))  {
+    if (may_contains(bn->get_type()) && BrowserNode::may_contains(bn, TRUE))  {
       if ((after == 0) &&
-	  (get_machine(this) != this) &&
+	  free_move &&
 	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
 	// have choice
 	QPopupMenu m(0);
@@ -733,6 +819,8 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	}
       }
       move(bn, after);
+      if (free_move && (!strcmp(bn->get_stereotype(), "machine")))
+	((BrowserState *) bn)->def->set_stereotype("submachine");
     }
     else {
       msg_critical(TR("Error"), TR("Forbidden"));
@@ -745,21 +833,67 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     e->ignore();
 }
 
-QString BrowserState::drag_key() const {
-  BrowserState * machine = get_machine(this);
+#if 0
+static void get_under(const BrowserNode * bn, QList<const BrowserNode> & l)
+{
+  l.append(bn);
   
-  return (machine == this)
+  for (QListViewItem * child = bn->firstChild(); 
+       child != 0;
+       child = child->nextSibling())
+    if (((BrowserNode *) child)->get_type() != UmlTransition)
+      get_under((BrowserNode *) child, l);
+}
+
+static bool check_trans(const BrowserNode * bn, QList<const BrowserNode> & l,
+			bool under, const BrowserNode * st)
+{  
+  under |= (bn == st);
+  
+  for (QListViewItem * child = bn->firstChild(); 
+       child != 0;
+       child = child->nextSibling()) {
+    if (((BrowserNode *) child)->get_type() == UmlTransition) {
+      if (under !=
+	  (l.find(((TransitionData *) (((BrowserNode *) child)->get_data()))->get_end_node()) != -1))
+	return FALSE;
+		 
+    }
+    else if (! check_trans((BrowserNode *) child, l, under, st))
+      return FALSE;
+  }
+  
+  return TRUE;
+}
+
+bool BrowserState::free_of_move() const {
+  BrowserState * m = get_machine(this);
+  
+  if (this == m)
+    return TRUE;
+  
+  QList<const BrowserNode> l;
+  
+  get_under(this, l);
+  return check_trans(m, l, FALSE, this);
+}
+#endif
+
+QString BrowserState::drag_key() const {
+  BrowserState * m = get_machine(this);
+  
+  return (m == this)
     ? QString::number(UmlState)
     : QString::number(UmlState)
-      + "#" + QString::number((unsigned long) machine);
+      + "#" + QString::number((unsigned long) m);
 }
 
 QString BrowserState::drag_postfix() const {
-  BrowserState * machine = get_machine(this);
+  BrowserState * m = get_machine(this);
   
-  return (machine == this)
+  return (m == this)
     ? QString::null
-    : "#" + QString::number((unsigned long) machine);
+    : "#" + QString::number((unsigned long) m);
 }
 
 QString BrowserState::drag_key(BrowserNode * p)

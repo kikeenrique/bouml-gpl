@@ -146,42 +146,47 @@ class UmlClass
       gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>\n");
   }
-  
-  fw.write("<p>Declaration :</p><ul>\n");
-  
-  s = cppDecl();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : ");
-    gen_cpp_decl(s, FALSE);
-    fw.write("</li>");
+  if (!cppDecl().isEmpty() ||
+      !javaDecl().isEmpty() ||
+      !phpDecl().isEmpty() ||
+      !pythonDecl().isEmpty()) {
+    fw.write("<p>Declaration :</p><ul>\n");
+    
+    s = cppDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>C++ : ");
+      gen_cpp_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = javaDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Java : ");
+      gen_java_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = phpDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Php : ");
+      gen_php_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = pythonDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Python : ");
+      gen_python_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = javaDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : ");
-    gen_java_decl(s, FALSE);
-    fw.write("</li>");
-  }
-
-  s = phpDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Php : ");
-    gen_php_decl(s, FALSE);
-    fw.write("</li>");
-  }
-
-  s = pythonDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Python : ");
-    gen_python_decl(s, FALSE);
-    fw.write("</li>");
-  }
-
-  fw.write("</ul>");
   
   if (subClasses.size() != 0) {
     sort(subClasses);
@@ -249,54 +254,63 @@ class UmlClass
   const QVector<UmlItem> ch = children();
   
   if (ch.size() != 0) {
-    fw.write("<div class=\"sub\">\n");
-    
     if (stereotype() == "enum_pattern") {
-
-      fw.write("<p>Items :</p><ul>\n");
-      
+      p = FALSE;
+            
       for (unsigned i = 0; i != ch.size(); i += 1) {
 	if (ch[i]->kind() == anAttribute) {
+	  if (!p) {
+	    p = TRUE;
+	    fw.write("<div class=\"sub\">\n<p>Items :</p><ul>\n");
+	  }
 	  fw.write("<li>");
 	  writeq(ch[i]->name());
 	  fw.write("</li>\n");
 	}
       }
-      
-      fw.write("</ul>\n");
+      if (p)
+	fw.write("</ul>\n</div>\n");
     }
-    else if (stereotype() == "enum") {
-      unsigned i;
-
-      fw.write("<p>Items :</p><ul>\n");
-      
-      for (i = 0; i != ch.size(); i += 1) {
-	if ((ch[i]->kind() == anAttribute) &&
-	    (ch[i]->stereotype() != "attribute")) {
-	  fw.write("<li>");
-	  writeq(ch[i]->name());
-	  fw.write("</li>\n");
-	}
-      }
-      
-      fw.write("</ul>\n");
-      
-      s = "";
-      for (i = 0; i != ch.size(); i += 1)
-	if ((ch[i]->kind() != anAttribute) ||
-	    (ch[i]->stereotype() == "attribute"))
-	  ch[i]->html(s, 0, 0);
-    }
-    else if (flat)
-      write_children(pfix, rank, level);
     else {
-      // non flat
-      s = "";
-      for (unsigned i = 0; i != ch.size(); i += 1)
-	ch[i]->html(s, 0, 0);
+      fw.write("<div class=\"sub\">\n");
+      
+      if (stereotype() == "enum") {
+	unsigned i;
+	
+	p = FALSE;
+	
+	for (i = 0; i != ch.size(); i += 1) {
+	  if ((ch[i]->kind() == anAttribute) &&
+	      (ch[i]->stereotype() != "attribute")) {
+	    if (!p) {
+	      p = TRUE;
+	      fw.write("<p>Items :</p><ul>\n");
+	    }
+	    fw.write("<li>");
+	    writeq(ch[i]->name());
+	    fw.write("</li>\n");
+	  }
+	}
+	if (p)
+	  fw.write("</ul>\n");
+	
+	s = "";
+	for (i = 0; i != ch.size(); i += 1)
+	  if ((ch[i]->kind() != anAttribute) ||
+	      (ch[i]->stereotype() == "attribute"))
+	    ch[i]->html(s, 0, 0);
+      }
+      else if (flat)
+	write_children(pfix, rank, level);
+      else {
+	// non flat
+	s = "";
+	for (unsigned i = 0; i != ch.size(); i += 1)
+	  ch[i]->html(s, 0, 0);
+      }
+      
+      fw.write("</div>\n");
     }
-    
-    fw.write("</div>\n");
   }
 
   sort(*inherited_opers);
@@ -337,42 +351,47 @@ class UmlClass
     fw.write("<br /></p>\n");
   }
   
-  fw.write("<p>Declaration :</p><ul>\n");
-  
-  s = cppDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>C++ : ");
-    gen_cpp_decl(s, false);
-    fw.write("</li>");
+  if ((cppDecl().length() != 0) || 
+      (javaDecl().length() != 0) || 
+      (phpDecl().length() != 0) || 
+      (pythonDecl().length() != 0)) {
+    fw.write("<p>Declaration :</p><ul>\n");
+    
+    s = cppDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>C++ : ");
+      gen_cpp_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = javaDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Java : ");
+      gen_java_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = phpDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Php : ");
+      gen_php_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = pythonDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Python : ");
+      gen_python_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = javaDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : ");
-    gen_java_decl(s, false);
-    fw.write("</li>");
-  }
-
-  s = phpDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>Php : ");
-    gen_php_decl(s, false);
-    fw.write("</li>");
-  }
-
-  s = pythonDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>Python : ");
-    gen_python_decl(s, false);
-    fw.write("</li>");
-  }
-
-  fw.write("</ul>");
-  
   if (subClasses.size() != 0) {
     sort(subClasses);
     fw.write("<p>Directly inherited by : ");
@@ -439,55 +458,65 @@ class UmlClass
   UmlItem[] ch = children();
   
   if (ch.length != 0) {
-    fw.write("<div class=\"sub\">\n");
-    
     if (stereotype().equals("enum_pattern")) {
-      fw.write("<p>Items :</p><ul>\n");
+      p = false;
       
       for (int i = 0; i != ch.length; i += 1) {
 	if (ch[i].kind() == anItemKind.anAttribute) {
+	  if (!p) {
+	    p = true;
+	    fw.write("<div class=\"sub\">\n<p>Items :</p><ul>\n");
+	  }
 	  fw.write("<li>");
 	  writeq(ch[i].name());
 	  fw.write("</li>\n");
 	}
       }
-      
-      fw.write("</ul>\n");
+      if (p)
+	fw.write("</ul>\n</div>\n");
     }
-    else if (stereotype().equals("enum")) {
-      int i;
-
-      fw.write("<p>Items :</p><ul>\n");
-      
-      for (i = 0; i != ch.length; i += 1) {
-	if ((ch[i].kind() == anItemKind.anAttribute) &&
-	    !ch[i].stereotype().equals("attribute")) {
-	  fw.write("<li>");
-	  writeq(ch[i].name());
-	  fw.write("</li>\n");
-	}
-      }
-      
-      fw.write("</ul>\n");
-      
-      s = "";
-      
-      for (i = 0; i != ch.length; i += 1)
-	if ((ch[i].kind() != anItemKind.anAttribute) ||
-	    ch[i].stereotype().equals("attribute"))
-	  ch[i].html(s, 0, 0);
-    }
-    else if (flat)
-      write_children(pfix, rank, level);
     else {
-      // non flat
-      s = "";
+      fw.write("<div class=\"sub\">\n");
       
-      for (int i = 0; i != ch.length; i += 1)
-	ch[i].html(s, 0, 0);
+      if (stereotype().equals("enum")) {
+	int i;
+	
+	p = false;
+	
+	for (i = 0; i != ch.length; i += 1) {
+	  if ((ch[i].kind() == anItemKind.anAttribute) &&
+	      !ch[i].stereotype().equals("attribute")) {
+	    if (!p) {
+	      p = true;
+	      fw.write("<p>Items :</p><ul>\n");
+	    }
+	    fw.write("<li>");
+	    writeq(ch[i].name());
+	    fw.write("</li>\n");
+	  }
+	}
+	if (p)
+	  fw.write("</ul>\n");
+	
+	s = "";
+	
+	for (i = 0; i != ch.length; i += 1)
+	  if ((ch[i].kind() != anItemKind.anAttribute) ||
+	      ch[i].stereotype().equals("attribute"))
+	    ch[i].html(s, 0, 0);
+      }
+      else if (flat)
+	write_children(pfix, rank, level);
+      else {
+	// non flat
+	s = "";
+	
+	for (int i = 0; i != ch.length; i += 1)
+	  ch[i].html(s, 0, 0);
+      }
+      
+      fw.write("</div>\n");
     }
-    
-    fw.write("</div>\n");
   }
 
   sort(inherited_opers);
@@ -613,7 +642,7 @@ class UmlClass
   
   start_file("classes_list", "Classes", FALSE);
   
-  fw.write("<table border=\"0\" width=\"100%\">\n<tr>\n<td nowrap>");
+  fw.write("<table border=\"0\" width=\"100%\">\n<tr>\n<td nowrap=\"nowrap\">");
   
   for (int i = 0; i != n; i += 1) {
     classes.elementAt(i)->write("projectFrame");
@@ -630,7 +659,7 @@ class UmlClass
   
   start_file("classes_list", "Classes", false);
   
-  fw.write("<table border=\"0\" width=\"100%\">\n<tr>\n<td nowrap>");
+  fw.write("<table border=\"0\" width=\"100%\">\n<tr>\n<td nowrap=\"nowrap\">");
   
   for (int i = 0; i != n; i += 1) {
     ((UmlItem) classes.elementAt(i)).write("projectFrame");

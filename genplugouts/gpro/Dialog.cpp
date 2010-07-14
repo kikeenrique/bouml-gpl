@@ -1,4 +1,8 @@
 
+#ifdef WIN32
+#include <stdlib.h>
+#endif
+
 #include "Dialog.h"
 #include "UmlArtifact.h"
 #include "SmallPushButton.h"
@@ -13,6 +17,7 @@
 #include <qlabel.h>
 #include <qgrid.h>
 #include <qhbox.h>
+#include <qdir.h>
 
 Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir, QCString & footer)
   : QDialog(0, 0, TRUE), _art(art), _pro(pro), _target(target), _tmplt(tmplt),
@@ -165,6 +170,55 @@ Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCS
   
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+}
+
+void Dialog::polish() {
+  QDialog::polish();
+  
+  // try to read .boumlrc
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
+
+#ifdef WIN32
+  if (fp == 0) {
+    QString hd = getenv("USERPROFILE");
+    
+    if (! hd.isEmpty()) {
+      QDir d(hd);
+      QString s2 = d.absFilePath(".boumlrc");
+      
+      fp = fopen((const char *) s2, "r");
+    }
+  }
+#endif
+  
+  if (fp != 0) {
+    char line[512];
+      
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      if (!strncmp(line, "DESKTOP ", 8)) {
+	int l, t, r, b;
+	
+	if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4) {
+	  if (!((r == 0) && (t == 0) && (r == 0) && (b == 0)) &&
+	      !((r < 0) || (t < 0) || (r < 0) || (b < 0)) &&
+	      !((r <= l) || (b <= t))) {
+	    int cx = (r + l) /2;
+	    int cy = (t + b) / 2;
+	    
+	    move(x() + cx - (x() + width() / 2), 
+		 y() + cy - (y() + height() / 2));
+	  }
+	}
+	  
+	break;
+      }
+    }
+    
+    fclose(fp);
+  }
 }
 
 void Dialog::accept() {

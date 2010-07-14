@@ -294,7 +294,7 @@ void SynchroWindow::windows_style() {
 }
 
 void SynchroWindow::about() {
-  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.3</b></p>" );
+  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.4</b></p>" );
 }
 
 void SynchroWindow::aboutQt() {

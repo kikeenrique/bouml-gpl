@@ -57,6 +57,7 @@ extern QString inheritText();
 extern QString noteText();
 extern QString anchorText();
 extern QString textText();
+extern QString imageText();
 
 // id is an old ident in case of an import
 DeploymentDiagramWindow::DeploymentDiagramWindow(const QString & s, BrowserDeploymentDiagram * b, int id)
@@ -149,7 +150,13 @@ DeploymentDiagramWindow::DeploymentDiagramWindow(const QString & s, BrowserDeplo
     new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText());  
+  QWhatsThis::add(text, textText());
+  
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());  
   
   toolbar->addSeparator();
   
@@ -214,6 +221,7 @@ void DeploymentDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -269,4 +277,8 @@ void DeploymentDiagramWindow::hit_anchor() {
 
 void DeploymentDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void DeploymentDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }

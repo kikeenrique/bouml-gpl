@@ -13,7 +13,7 @@ int main(int argc, char ** argv)
   QApplication a(argc, argv);
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    UmlCom::trace("<b>Class utilities</b> release 1.1.1<hr>");
+    UmlCom::trace("<b>Class utilities</b> release 1.1.2<hr>");
 
     try {
       UmlCom::targetItem()->utilities();

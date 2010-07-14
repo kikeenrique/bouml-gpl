@@ -98,6 +98,7 @@ void SdDurationCanvas::delete_available(BooL &, BooL & out_model) const {
 
 void SdDurationCanvas::change_scale() {
   DiagramCanvas::change_scale();
+  update_self();
   
   hide();
   update_hpos();
@@ -707,7 +708,7 @@ void SdDurationCanvas::menu(const QPoint & p) {
   m.insertSeparator();
   m.insertItem(TR("Select linked items"), 3);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 4);
+  m.insertItem(TR("Remove from diagram"), 4);
   m.insertSeparator();
   m.insertItem(TR("Cut here"), 5);
   if (!l.isEmpty())

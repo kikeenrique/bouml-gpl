@@ -45,6 +45,7 @@
 #include "SimpleRelationCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "BrowserClass.h"
@@ -490,6 +491,7 @@ void UseCaseDiagramView::save(QTextStream & st, QString & warning,
     case UmlUseCase:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlPackage:
     case UmlFragment:
     case UmlSubject:
@@ -528,7 +530,7 @@ void UseCaseDiagramView::save(QTextStream & st, QString & warning,
 void UseCaseDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first the class use_cases package icons and notes
+  // reads first the class use_cases package icons, notes text and image
   while (UcClassCanvas::read(st, canvas, k) ||
 	 UcUseCaseCanvas::read(st, canvas, k) ||
 	 NoteCanvas::read(st, canvas, k) ||
@@ -536,7 +538,8 @@ void UseCaseDiagramView::read(char * st, char * k) {
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
 	 FragmentCanvas::read(st, canvas, k) ||
-	 SubjectCanvas::read(st, canvas, k))
+	 SubjectCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

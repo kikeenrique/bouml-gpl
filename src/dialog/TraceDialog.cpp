@@ -31,6 +31,9 @@
 #include <qtextview.h> 
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qfiledialog.h>
+#include <qtextstream.h>
+#include <myio.h>
 
 #include "TraceDialog.h"
 #include "UmlDesktop.h"
@@ -56,17 +59,21 @@ TraceDialog::TraceDialog() : QDialog(0, "", FALSE, WDestructiveClose) {
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
   QPushButton * cl = new QPushButton(TR("Clear"), this);
+  QPushButton * save = new QPushButton(TR("Save"), this);
   QPushButton * close = new QPushButton(TR("Close"), this);
   QSize bs(cl->sizeHint());
   
   close->setDefault(TRUE);
   close->setFixedSize(bs);
+  save->setFixedSize(bs);
   cl->setFixedSize(bs);
   
   hbox->addWidget(close);
+  hbox->addWidget(save);
   hbox->addWidget(cl);
   
   connect(close, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(save, SIGNAL(clicked()), this, SLOT(save()));
   connect(cl, SIGNAL(clicked()), this, SLOT(clr()));
   
   // not done in polish else the initial size is too small
@@ -85,6 +92,27 @@ TraceDialog::~TraceDialog() {
 
 void TraceDialog::clr() {
   clear();
+}
+
+void TraceDialog::save() {
+  QString filename =
+    QFileDialog::getSaveFileName(last_used_directory(), "*.html", this);
+
+  if (!filename.isNull()) {
+    if (filename.right(5).lower() != ".html")
+      filename += ".html";
+    
+    set_last_used_directory(filename);
+
+    QFile file(filename);
+    
+    if (file.open(IO_WriteOnly)) {
+      QTextStream stream(&file);
+      
+      stream << "<html>\n" << txt->text() << "\n</html>\n";
+      file.close();
+    }
+  }
 }
 
 void TraceDialog::clear()

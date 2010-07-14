@@ -37,12 +37,13 @@
 #include "ToolCom.h"
 #include "mu.h"
 
-StateData::StateData() : is_active(FALSE), specification(0) {
+StateData::StateData() : is_active(FALSE), specification(0), reference(0) {
 }
 
 StateData::StateData(StateData * model, BrowserNode * bn)
     : SimpleData(model), specification(0) {
   browser_node = bn;
+  reference = model->reference;
   is_active = model->is_active;
   uml = model->uml;
   cpp = model->cpp;
@@ -76,11 +77,26 @@ void StateData::set_specification(BrowserOperation * op) {
   }
 }
 
+void StateData::set_reference(BrowserState * st) {
+  if (reference != 0)
+    disconnect(reference->get_data(), SIGNAL(deleted()),
+	       this, SLOT(on_delete()));
+  if ((reference = st) != 0) {
+    connect(reference->get_data(), SIGNAL(deleted()),
+	    this, SLOT(on_delete()));
+  }
+}
+
 void StateData::on_delete() {
   if ((specification != 0) && specification->deletedp()) {
     disconnect(specification->get_data(), SIGNAL(deleted()),
 	       this, SLOT(on_delete()));
     specification = 0;
+  }
+  if ((reference != 0) && reference->deletedp()) {
+    disconnect(reference->get_data(), SIGNAL(deleted()),
+	       this, SLOT(on_delete()));
+    reference = 0;
   }
 }
 
@@ -104,8 +120,16 @@ void StateData::send_uml_def(ToolCom * com, BrowserNode * bn,
     else
       specification->write_id(com);
   
-    if (api >= 48)
+    if (api >= 48) {
       com->write_bool(is_active);
+      
+      if (api >= 55) {
+	if (reference == 0)
+	  com->write_id(0);
+	else
+	  reference->write_id(com);
+      }
+    }
   }
 }
 
@@ -121,57 +145,110 @@ bool StateData::tool_cmd(ToolCom * com, const char * args,
 			 BrowserNode * bn,
 			 const QString & comment) {
   if (((unsigned char) args[-1]) >= firstSetCmd) {
+    bool ok = TRUE;
+    
     if (!bn->is_writable() && !root_permission())
-      com->write_ack(FALSE);
+      ok = FALSE;
     else {
       switch ((unsigned char) args[-1]) {
       case setUmlEntryBehaviorCmd:
-	uml.on_entry = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  uml.on_entry = args;
 	break;
       case setUmlExitBehaviorCmd:
-	uml.on_exit = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  uml.on_exit = args;
 	break;
       case setUmlActivityCmd:
-	uml.do_activity = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  uml.do_activity = args;
 	break;
       case setCppEntryBehaviorCmd:
-	cpp.on_entry = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  cpp.on_entry = args;
 	break;
       case setCppExitBehaviorCmd:
-	cpp.on_exit = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  cpp.on_exit = args;
 	break;
       case setCppActivityCmd:
-	cpp.do_activity = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  cpp.do_activity = args;
 	break;
       case setJavaEntryBehaviorCmd:
-	java.on_entry = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  java.on_entry = args;
 	break;
       case setJavaExitBehaviorCmd:
-	java.on_exit = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  java.on_exit = args;
 	break;
       case setJavaActivityCmd:
-	java.do_activity = args;
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  java.do_activity = args;
 	break;
       case setDefCmd:
-	set_specification((BrowserOperation *) com->get_id(args));
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  set_specification((BrowserOperation *) com->get_id(args));
         break;
       case setActiveCmd:
-	is_active = (*args != 0);
+	if (reference != 0)
+	  ok = FALSE;
+	else
+	  is_active = (*args != 0);
+	break;
+      case setDerivedCmd:
+	{
+	  BrowserState * st = (BrowserState *) com->get_id(args);
+
+	  if (st == reference) {
+	    com->write_ack(TRUE);
+	    return TRUE;
+	  }
+	  
+	  if ((st != 0) &&
+	      (!((BrowserState *) bn)->can_reference() ||
+	       !((BrowserState *) browser_node)->can_reference(st)))
+	    ok = FALSE;
+	  else
+	    set_reference(st);
+	}
 	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
-      
-      // ok case
+    }
+    
+    if (ok) {
       bn->package_modified();
       modified();
-      com->write_ack(TRUE);
     }
+    
+    com->write_ack(ok);  
+    return TRUE;
   }
   else
     return BasicData::tool_cmd(com, args, bn, comment);
-  
-  return TRUE;
 }
 
 //
@@ -193,10 +270,21 @@ void StateData::save(QTextStream & st, QString & warning) const {
   if (specification != 0) {
     if (nl)
       st << " ";
-    else
+    else {
       nl_indent(st);
+      nl = TRUE;
+    }
     st << "specification ";
     specification->save(st, TRUE, warning);
+  }
+  
+  if (reference != 0) {
+    if (nl)
+      st << " ";
+    else
+      nl_indent(st);
+    st << "reference ";
+    reference->save(st, TRUE, warning);
   }
 }
 
@@ -213,6 +301,11 @@ void StateData::read(char * & st, char * & k) {
   
   if (! strcmp(k, "specification")) {
     set_specification(BrowserOperation::read_ref(st));
+    k = read_keyword(st);
+  }
+  
+  if (! strcmp(k, "reference")) {
+    set_reference(BrowserState::read_ref(st));
     k = read_keyword(st);
   }
 }

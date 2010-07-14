@@ -20,6 +20,7 @@ HEADERS		= data/ActualParamData.h \
 		  data/SimpleRelationData.h \
 		  data/TransitionData.h \
 		  data/StateData.h \
+		  data/PseudoStateData.h \
 		  data/StateActionData.h \
 		  data/ActivityData.h \
 		  data/ParameterData.h \
@@ -51,6 +52,7 @@ HEADERS		= data/ActualParamData.h \
 		  diagram/SubjectCanvas.h \
 		  diagram/LabelCanvas.h \
 		  diagram/NoteCanvas.h \
+		  diagram/ImageCanvas.h \
 		  diagram/PackageCanvas.h \
 		  diagram/RelationCanvas.h \
 		  diagram/SimpleRelationCanvas.h \
@@ -150,6 +152,7 @@ HEADERS		= data/ActualParamData.h \
 		  dialog/RelationDialog.h \
 		  dialog/SimpleRelationDialog.h \
 		  dialog/StateDialog.h \
+		  dialog/PseudoStateDialog.h \
 		  dialog/StateActionDialog.h \
 		  dialog/TransitionDialog.h \
 		  dialog/InstanceDialog.h \
@@ -191,6 +194,7 @@ HEADERS		= data/ActualParamData.h \
 		  dialog/EnvDialog.h \
 		  dialog/GreetingsDialog.h \
 		  dialog/RelatedElementsDialog.h \
+		  dialog/ImageDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -199,6 +203,7 @@ HEADERS		= data/ActualParamData.h \
 		  misc/myio.h \
 		  misc/mu.h \
 		  misc/ProfiledStereotypes.h \
+		  misc/Images.h \
 		  tool/Tool.h \
 		  tool/Socket.h \
 		  tool/ToolCom.h \
@@ -267,6 +272,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  data/SimpleRelationData.cpp \
 		  data/TransitionData.cpp \
 		  data/StateData.cpp \
+		  data/PseudoStateData.cpp \
 		  data/StateActionData.cpp \
 		  data/ActivityData.cpp \
 		  data/ParameterData.cpp \
@@ -298,6 +304,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/SubjectCanvas.cpp \
 		  diagram/LabelCanvas.cpp \
 		  diagram/NoteCanvas.cpp \
+		  diagram/ImageCanvas.cpp \
 		  diagram/PackageCanvas.cpp \
 		  diagram/RelationCanvas.cpp \
 		  diagram/SimpleRelationCanvas.cpp \
@@ -401,6 +408,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ReferenceDialog.cpp \
 		  dialog/SimpleRelationDialog.cpp \
 		  dialog/StateDialog.cpp \
+		  dialog/PseudoStateDialog.cpp \
 		  dialog/StateActionDialog.cpp \
 		  dialog/TransitionDialog.cpp \
 		  dialog/InstanceDialog.cpp \
@@ -443,6 +451,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/EnvDialog.cpp \
 		  dialog/GreetingsDialog.cpp \
 		  dialog/RelatedElementsDialog.cpp \
+		  dialog/ImageDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \
@@ -455,6 +464,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  misc/strutil.cpp \
 		  misc/Shortcut.cpp \
 		  misc/ProfiledStereotypes.cpp \
+		  misc/Images.cpp \
 		  misc/translate.cpp \
 		  tool/Tool.cpp \
 		  tool/ToolCom.cpp \

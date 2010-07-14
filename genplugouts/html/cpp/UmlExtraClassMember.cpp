@@ -12,25 +12,29 @@ void UmlExtraClassMember::html(QCString, unsigned int, unsigned int) {
   writeq(name());
   fw.write("</b></div></td></tr></table>");
 
-  fw.write("<p>Definition :</p><ul>");
+  QCString s;
   
-  QCString s = cppDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (! cppDecl().isEmpty() || !javaDecl().isEmpty()) {
+    fw.write("<p>Definition :</p><ul>");
+  
+    s = cppDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    s = javaDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = javaDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
  
   s = description();
   

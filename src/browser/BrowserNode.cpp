@@ -1103,6 +1103,10 @@ bool BrowserNode::wrong_child_name(const QString & s, UmlCode type,
   if (str != fromUnicode(s))
     return true;
   
+  if (allow_empty)
+    // synonymous allowed
+    return FALSE;
+  
   switch (type) {
   case UmlOperation:
     switch (*str) {
@@ -1114,9 +1118,6 @@ bool BrowserNode::wrong_child_name(const QString & s, UmlCode type,
       // synonymous allowed
       return FALSE;
     }
-  case UmlExtraMember:
-    // always right, synonymous allowed
-    return FALSE;
   default:
     if (type <= UmlClass) {
       while (*str) {

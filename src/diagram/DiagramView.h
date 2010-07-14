@@ -149,6 +149,10 @@ class DiagramView : public QCanvasView {
     void moveSelected(int dx, int dy, bool first);
     void resizeSelected(int dx, int dy);
     void add_point(QMouseEvent * e);
+    bool multiple_selection_for_menu(BooL & in_model, BooL & out_model,
+				     BooL & alignable, int & n_resize,
+				     QList<DiagramItem> & l_drawing_settings,
+				     const QCanvasItemList & selected);
     
     void set_format(int);
     void init_format_menu(QPopupMenu &, QPopupMenu &, int) const;

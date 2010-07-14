@@ -400,6 +400,26 @@ bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
     return FALSE;
 }
 
+const QCString & CppSettings::visibilityIndent()
+{
+  read_if_needed_();
+  
+  return _visibility_indent;
+}
+
+bool CppSettings::set_VisibilityIndent(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIndentVisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _visibility_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+
+
 const QCString & CppSettings::enumIn()
 {
   read_if_needed_();
@@ -1178,6 +1198,8 @@ bool CppSettings::_is_generate_javadoc_comment;
 
 bool CppSettings::_is_inline_force_header_in_h;
 
+QCString CppSettings::_visibility_indent;
+
 QDict<QCString> CppSettings::_map_includes;
 
 void CppSettings::read_()
@@ -1271,6 +1293,8 @@ void CppSettings::read_()
 
   _file_regexp = UmlCom::read_string();
   _file_regexp_case_sensitive = UmlCom::read_bool();
+  
+  _visibility_indent = UmlCom::read_string();
 }
 
 void CppSettings::read_if_needed_()

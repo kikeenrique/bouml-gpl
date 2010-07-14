@@ -14,9 +14,7 @@ int main(int argc, char ** argv)
 
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      // does something on the target, here suppose that a virtual
-      // operation exist at UmlItem level (and probably sub_level !)
-      UmlCom::trace("<b>Uml projection</b> 1.1.2<br>");
+      UmlCom::trace("<b>Uml projection</b> 1.1.3<br>");
       UmlCom::targetItem()->projection();
       UmlCom::trace("Done");
     }

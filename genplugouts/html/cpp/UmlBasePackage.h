@@ -109,6 +109,19 @@ class UmlBasePackage : public UmlItem {
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_PhpDir(const QCString & s);
+    // return the namespace name associed to the package
+    
+    const QCString & phpNamespace();
+
+    // the namespace name associed to the package.
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpNamespace(const QCString & v);
+
+    // returns a sub package of the current one having the php namespace 'n'
+    // (including the current one), else 0/null
+    
+    UmlPackage * findPhpNamespace(const QCString & n);
 #endif
 
 #ifdef WITHPYTHON
@@ -211,6 +224,7 @@ class UmlBasePackage : public UmlItem {
 
 #ifdef WITHPHP
     QCString _php_dir;
+    QCString _php_namespace;
 #endif
 
 #ifdef WITHPYTHON

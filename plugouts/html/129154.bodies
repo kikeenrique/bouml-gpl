@@ -6,7 +6,7 @@ class UmlTransition
 !!!145282.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<table><tr><td><div class=\"element\">Transition  <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   if (parent() == target()) {
     fw.write("<p>Self relation of ");
@@ -29,89 +29,91 @@ class UmlTransition
     fw.write("<br /></p>");
   }
 
-  fw.write("<p>Trigger :</p><ul>");
+  QCString scpp, sjava;
   
   s = trigger();
+  scpp = cppTrigger();
+  sjava = javaTrigger();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((!s.isEmpty()) || (!scpp.isEmpty()) || (!sjava.isEmpty())) {
+    fw.write("<p>Trigger :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = cppTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Guard :</p><ul>");
-  
   s = guard();
+  scpp = cppGuard();
+  sjava = javaGuard();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((!s.isEmpty()) || (!scpp.isEmpty()) || (!sjava.isEmpty())) {
+    fw.write("<p>Guard :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = cppGuard();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaGuard();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Activity :</p><ul>");
-  
   s = activity();
+  scpp = cppActivity();
+  sjava = javaActivity();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((!s.isEmpty()) || (!scpp.isEmpty()) || (!sjava.isEmpty())) {
+    fw.write("<p>Activity :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppActivity();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaActivity();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
  
   write_properties();
 
@@ -119,7 +121,7 @@ class UmlTransition
 !!!145282.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<table><tr><td><div class=\"element\">Transition <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   if (parent() == target()) {
     fw.write("<p>Self relation of ");
@@ -142,89 +144,91 @@ class UmlTransition
     fw.write("<br /></p>");
   }
 
-  fw.write("<p>Trigger :</p><ul>");
-  
+  String scpp, sjava;
+
   s = trigger();
+  scpp = cppTrigger();
+  sjava = javaTrigger();
 
-  if (s.length() != 0) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((s.length() != 0) || (scpp.length() != 0) || (sjava.length() != 0)) {
+    fw.write("<p>Trigger :</p><ul>");
+    
+    if (s.length() != 0) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (scpp.length() != 0) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (sjava.length() != 0) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = cppTrigger();
-
-  if (s.length() != 0) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaTrigger();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Guard :</p><ul>");
-  
   s = cppGuard();
+  scpp = guard();
+  sjava = javaGuard();
 
-  if (s.length() != 0) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((s.length() != 0) || (scpp.length() != 0) || (sjava.length() != 0)) {
+    fw.write("<p>Guard :</p><ul>");
+    
+    if (s.length() != 0) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (scpp.length() != 0) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (sjava.length() != 0) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = guard();
-
-  if (s.length() != 0) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaGuard();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Activity :</p><ul>");
-  
   s = cppActivity();
+  scpp = activity();
+  sjava = javaActivity();
 
-  if (s.length() != 0) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if ((s.length() != 0) || (scpp.length() != 0) || (sjava.length() != 0)) {
+    fw.write("<p>Activity :</p><ul>");
+    
+    if (s.length() != 0) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (scpp.length() != 0) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (sjava.length() != 0) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = activity();
-
-  if (s.length() != 0) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaActivity();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
  
   write_properties();
 

@@ -23,8 +23,8 @@
 //
 // *************************************************************************
 
-#ifndef CLASSSETTINGSDIALOG_H
-#define CLASSSETTINGSDIALOG_H
+#ifndef REVSETTINGSDIALOG_H
+#define REVSETTINGSDIALOG_H
 
 #include <qdialog.h>
 

@@ -17,6 +17,12 @@ Q_OBJECT
                           bool have_assignment, bool have_const_assignment);
 
 public slots:
+
+  protected:
+    virtual void polish();
+
+
+  public:
     void accept();
 
 

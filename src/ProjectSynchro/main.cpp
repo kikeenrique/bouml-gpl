@@ -66,6 +66,11 @@ int main(int argc, char ** argv)
 
 
   
+  int cx = -1;
+  int cy = -1;
+  int w = QApplication::desktop()->width();
+  int h = QApplication::desktop()->height();
+  
   if (fp != 0) {
     char line[512];
  
@@ -75,6 +80,20 @@ int main(int argc, char ** argv)
       if (!strncmp(line, "ID ", 3)) {
 	sscanf(line+3, "%d", &uid);
 	break;
+      }
+      else if (!strncmp(line, "DESKTOP ", 8)) {
+	int l, t, r, b;
+	
+	if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4) {
+	  if (!((r == 0) && (t == 0) && (r == 0) && (b == 0)) &&
+	      !((r < 0) || (t < 0) || (r < 0) || (b < 0)) &&
+	      !((r <= l) || (b <= t))) {
+	    cx = (r + l) / 2;
+	    cy = (t + b) / 2;
+	    w = r - l;
+	    h = b - t;
+	  }
+	}
       }
     }
     
@@ -90,14 +109,18 @@ int main(int argc, char ** argv)
     app->connect(app, SIGNAL(lastWindowClosed()), SLOT(quit()) );
     init_pixmaps();
     
-    SynchroWindow * w = new SynchroWindow();
+    SynchroWindow * ww = new SynchroWindow();
     
-    w->resize((QApplication::desktop()->width() * 3)/5,
-	      (QApplication::desktop()->height() * 3)/5);
+    ww->resize((w * 3)/5, (h * 3)/5);
     
-    w->show();
+    if (cx != -1)
+      ww->move(ww->x() + cx - (ww->x() + ww->width() / 2), 
+	       ww->y() + cy - (ww->y() + ww->height() / 2));
+    
+    ww->show();
+    
     if (argc > 1)
-      w->load(argc - 1, argv + 1);
+      ww->load(argc - 1, argv + 1);
     
     app->exec();
   }

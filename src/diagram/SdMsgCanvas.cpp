@@ -247,7 +247,7 @@ void SdMsgCanvas::menu(const QPoint&) {
     }
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
 
   switch (m.exec(QCursor::pos())) {
   case 0:

@@ -43,7 +43,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     static QStringList its_default_stereotypes;
     
     SimpleData * def;
-    BrowserComponentDiagram * associated_diagram;
+    BrowserNode * associated_diagram;
     QValueList<BrowserClass *> realizing_classes;
     QValueList<BrowserClass *> provided_classes;
     QValueList<BrowserClass *> required_classes;
@@ -62,7 +62,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     virtual ~BrowserComponent();
     
     virtual BrowserNode * get_associated() const;
-    void set_associated_diagram(BrowserComponentDiagram *, bool on_read = FALSE);
+    void set_associated_diagram(BrowserNode *, bool on_read = FALSE);
     
     void set_associated_classes(const QValueList<BrowserClass *> & rz,
 				const QValueList<BrowserClass *> & pr,

@@ -129,6 +129,15 @@ void UmlArtifact::generate() {
 	if (*p == '\n')
 	  p += 1;
       }
+      else if (!strncmp(p, "${namespace}", 12)) {
+	p += 12;
+	
+	const QCString & nasp = 
+	  ((UmlPackage *) parent()->parent())->phpNamespace();
+	
+	if (!nasp.isEmpty())
+	  f << "namespace " << nasp << ";\n";
+      }
       else if (!strncmp(p, "${require_once}", 15)) {
 	QCString require_onces = "";
 	

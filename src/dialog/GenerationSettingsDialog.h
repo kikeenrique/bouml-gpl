@@ -35,7 +35,6 @@
 class QComboBox;
 class QCheckBox;
 class QRadioButton;
-class QSpinBox;
 
 class LineEdit;
 class MultiLineEdit;
@@ -97,6 +96,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edcpp_oper_def;
     QCheckBox * cpp_force_throw_cb;
     IncludeTable * cpp_include_table;
+    QComboBox * indentvisi_cb;
   
     // Java specific
     MultiLineEdit * edjava_src_content;
@@ -130,6 +130,7 @@ class GenerationSettingsDialog : public QTabDialog {
     QComboBox * edphp_extension;
     QCheckBox * php_javadoc_cb;
     QComboBox * php_require_with_path_cb;
+    QCheckBox * php_force_namespace_gen_cb;
     MultiLineEdit * edphp_class_decl;
     LineEdit * edphp_external_class_decl;
     MultiLineEdit * edphp_interface_decl;
@@ -148,7 +149,7 @@ class GenerationSettingsDialog : public QTabDialog {
     QCheckBox * php_set_final_cb;
   
     // Python specific
-    QSpinBox * indentstep_sb;
+    QComboBox * indentstep_cb;
     MultiLineEdit * edpython_src_content;
     QComboBox * edpython_extension;
     QCheckBox * python_2_2_cb;

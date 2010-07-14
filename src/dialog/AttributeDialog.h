@@ -51,7 +51,7 @@ class BodyDialog;
 class AttributeDialog : public QTabDialog {
   Q_OBJECT
     
-  protected:
+  private:
     bool visit;
     bool in_enum;
     bool new_in_st;
@@ -66,6 +66,7 @@ class AttributeDialog : public QTabDialog {
     QWidget * umltab;
     LineEdit * edname;
     QComboBox * multiplicity;
+    QString previous_multiplicity;
     LineEdit * edinit;
     QComboBox * edtype;
     QComboBox * edstereotype;
@@ -134,6 +135,13 @@ class AttributeDialog : public QTabDialog {
 
     static QSize previous_size;
   
+    void default_defs_if_needed();
+    void default_cpp_if_needed(QString prev_mult, QString new_mult);
+    void default_java_if_needed(QString prev_mult, QString new_mult);
+    void default_idl_if_needed(QString prev_mult, QString new_mult);
+    void default_php_if_needed(QString prev_mult, QString new_mult);
+    void default_python_if_needed(QString prev_mult, QString new_mult);
+    
     static void post_edit_init(AttributeDialog *, QString);
     static void post_edit_description(AttributeDialog *, QString);
     static void post_edit_constraint(AttributeDialog *, QString);

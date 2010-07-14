@@ -195,7 +195,7 @@ void Shortcut::init(bool conv)
     "Print",
     "Referenced by",
     "Redo",
-    "Remove from view",
+    "Remove from diagram",
     "Roundtrip C++ operation body",
     "Roundtrip Java operation body",
     "Roundtrip Php operation body",
@@ -382,7 +382,7 @@ static QString shortcut_file_path(bool conv)
 void Shortcut::load(bool conv)
 {
   // default shortcuts
-  add("Delete", FALSE, FALSE, FALSE, "Remove from view");
+  add("Delete", FALSE, FALSE, FALSE, "Remove from diagram");
   add("Left",	FALSE, FALSE, FALSE, "Move left");
   add("Right",	FALSE, FALSE, FALSE, "Move right");
   add("Down",	FALSE, FALSE, FALSE, "Move down");
@@ -450,6 +450,9 @@ void Shortcut::load(bool conv)
 	  if (s == "New collaboration diagram")
 	    // old
 	    s = "New communication diagram";
+	  else if (s == "Remove from view")
+	    // old
+	    s = "Remove from diagram";
 	  
 	  if (k == "Suppr")
 	    // old

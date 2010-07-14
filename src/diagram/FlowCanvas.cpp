@@ -243,7 +243,7 @@ void FlowCanvas::menu(const QPoint &) {
     }
     
     m.insertSeparator();
-    m.insertItem(TR("Remove from view"),7);
+    m.insertItem(TR("Remove from diagram"),7);
     if (data->get_start()->is_writable())
       m.insertItem(TR("Delete from model"), 8);
     

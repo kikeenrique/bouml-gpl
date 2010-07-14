@@ -147,6 +147,7 @@ void UmlBaseState::read_uml_() {
   _uml.read();
   _specification = (UmlOperation *) UmlBaseItem::read_();
   (void) UmlCom::read_bool(); // active
+  (void) UmlBaseItem::read_();	// reference
 }
 
 #ifdef WITHCPP

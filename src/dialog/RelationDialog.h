@@ -56,6 +56,7 @@ struct RoleDialog {
   // Uml
   LineEdit * edrole;
   QComboBox * multiplicity;
+  QString previous_multiplicity;
   LineEdit * edinit;
   VisibilityGroup uml_visibility;
   QCheckBox * classrelation_cb;
@@ -186,6 +187,18 @@ class RelationDialog : public QTabDialog {
     void python_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void idl_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void set_inherit_or_dependency(UmlCode type);
+    
+    void default_defs_if_needed(UmlCode prev_type);
+    void default_a_cpp_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_a_java_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_a_idl_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_a_php_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_a_python_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_b_cpp_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_b_java_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_b_idl_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_b_php_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
+    void default_b_python_if_needed(UmlCode prev_type, QString prev_mult, QString new_mult);
     
     static void post_edit_description_a(RelationDialog * d, QString s);
     static void post_edit_description_b(RelationDialog * d, QString s);

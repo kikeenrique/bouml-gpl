@@ -60,6 +60,14 @@ SdSelfMsgCanvas::SdSelfMsgCanvas(UmlCanvas * canvas, SdMsgSupport * d,
 SdSelfMsgCanvas::~SdSelfMsgCanvas() {
 }
 
+void SdSelfMsgCanvas::change_scale() {
+  if (!((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->is_overlapping_bars()) {
+    // else done by check_vpos called by SdDurationCanvas::change_scale()
+    SdMsgBaseCanvas::change_scale();
+  }
+}
+
 void SdSelfMsgCanvas::update_hpos() {
   LabelCanvas * lbl = label;
   int cy = center_y_scale100;
@@ -231,7 +239,7 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
       m.insertItem(TR("Go to parent bar"), 10);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
 
   switch (m.exec(QCursor::pos())) {
   case 0:

@@ -9,7 +9,7 @@ QCString UmlFlow::sKind() {
 void UmlFlow::html(QCString, unsigned int, unsigned int) {
   fw.write("<table><tr><td><div class=\"element\">Flow  <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
 
   fw.write("<p>From ");
   parent()->write();
@@ -25,117 +25,119 @@ void UmlFlow::html(QCString, unsigned int, unsigned int) {
     fw.write("<br /></p>");
   }
   
-  fw.write("<p>Weight :</p><ul>");
+  QCString scpp, sjava;
   
   s = weight();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = cppWeight();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaWeight();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Guard :</p><ul>");
+  scpp = cppWeight();
+  sjava = javaWeight();
   
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Weight :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
+  }
+
   s = guard();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = cppGuard();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaGuard();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Selection :</p><ul>");
+  scpp = cppGuard();
+  sjava = javaGuard();
   
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Guard :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
+  }
+
   s = selection();
+  scpp = cppSelection();
+  sjava = javaSelection();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Selection :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = cppSelection();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaSelection();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
-
-  fw.write("<p>Transformation :</p><ul>");
-  
   s = transformation();
+  scpp = cppTransformation();
+  sjava = javaTransformation();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Transformation :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppTransformation();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaTransformation();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
   
   write_properties();
 

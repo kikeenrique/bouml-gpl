@@ -1686,6 +1686,9 @@ bool BrowserPackage::tool_global_cmd(ToolCom * com, const char * args)
   case findJavaPackageCmd:
     pf = &PackageData::get_java_package;
     break;
+  case findPhpNamespaceCmd:
+    pf = &PackageData::get_php_namespace;
+    break;
   case findIdlModuleCmd:
     pf = &PackageData::get_idl_module;
     break;
@@ -2246,6 +2249,10 @@ void BrowserPackage::save_all(bool modified_only)
 	  st << "diagram_format "
 	    << stringify(UmlWindow::default_format()) << '\n';
 	  nl_indent(st);
+	  st << "image_root_dir ";
+	  save_string(fromUnicode(UmlWindow::images_root_dir()), st);
+	  st << '\n';
+	  nl_indent(st);
 	  st << "mark_for_import";
 	  nl_indent(st);
 	}
@@ -2545,6 +2552,7 @@ unsigned BrowserPackage::load(bool recursive, int id) {
       }
       
       if (in_import() && prj) {
+	result = read_file_format();
 	if (read_file_format() <= 21) {
 	  msg_critical(TR("Error"), 
 				TR("\
@@ -2672,12 +2680,19 @@ To change its format : load this project and save it."));
 	  else
 	    UmlWindow::set_default_format(IsoA4);
 	  
+	  if (!strcmp(k, "image_root_dir")) {
+	    UmlWindow::set_images_root_dir(toUnicode(read_string(st)));
+	    k = read_keyword(st);
+	  }
+	  else
+	    UmlWindow::set_images_root_dir("");
+	  
 	  if (strcmp(k, "mark_for_import"))
 	    wrong_keyword(k, "mark_for_import");
 	  k = read_keyword(st);
 	}
 	
-	def->read(st, k);			// updates k
+	def->read(st, k);			// updates k	
       }
       else if (prj)
 	init_font();

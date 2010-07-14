@@ -62,6 +62,7 @@ QString returnmsgText() { return TR("Click this button to add an <i>explicitly r
 QString selfreturnmsgText() { return TR("Click this button to add an <i>explicit reflexive return</i>"); }
 QString textText() { return TR("Click this button to add a <i>text</i>"); }
 QString addcontinuationText() { return TR("Click this button to add a <i>continuation</i>"); }
+extern QString imageText();
 
 // id is an old ident in case of an import
 SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int id)
@@ -198,6 +199,12 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -265,6 +272,7 @@ void SeqDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -336,5 +344,9 @@ void SeqDiagramWindow::hit_anchor() {
 
 void SeqDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void SeqDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

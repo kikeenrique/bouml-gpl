@@ -20,6 +20,9 @@ class UmlPseudoState : public UmlStateItem, public UmlItem {
     //import the initial pseudo state starting by 'tk' inside 'where'
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
+    //import the initial pseudo state starting by 'tk' inside 'where'
+    static void importRef(FileIn & in, Token & token, UmlItem * where);
+
 };
 
 #endif

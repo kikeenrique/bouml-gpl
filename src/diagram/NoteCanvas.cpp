@@ -204,7 +204,7 @@ void NoteCanvas::menu(const QPoint&) {
     m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),5);
+  m.insertItem(TR("Remove from diagram"),5);
 
   int index = m.exec(QCursor::pos());
   

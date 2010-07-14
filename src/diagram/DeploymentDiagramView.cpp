@@ -48,6 +48,7 @@
 #include "AssocContainCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "MenuTitle.h"
@@ -526,6 +527,7 @@ void DeploymentDiagramView::save(QTextStream & st, QString & warning,
     case UmlFragment:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlIcon:
     case UmlHub:
       if (!copy || di->copyable())
@@ -571,7 +573,7 @@ void DeploymentDiagramView::save(QTextStream & st, QString & warning,
 void DeploymentDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first deploymentnode component icons text and notes
+  // reads first deploymentnode component icons text notes and image
   while (DeploymentNodeCanvas::read(st, canvas, k) ||
 	 // reads artifact before component to manage component -> artifact
 	 ArtifactCanvas::read(st, canvas, k) ||
@@ -581,7 +583,8 @@ void DeploymentDiagramView::read(char * st, char * k) {
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
-	 FragmentCanvas::read(st, canvas, k))
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

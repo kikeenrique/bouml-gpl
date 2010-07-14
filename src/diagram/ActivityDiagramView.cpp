@@ -48,6 +48,7 @@
 #include "IconCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "BrowserActivity.h"
@@ -775,6 +776,7 @@ void ActivityDiagramView::save(QTextStream & st, QString & warning,
     case UmlActivityObject:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlPackage:
     case UmlFragment:
     case UmlIcon:
@@ -818,7 +820,7 @@ void ActivityDiagramView::save(QTextStream & st, QString & warning,
 }
 
 void ActivityDiagramView::read(char * st, char * k) {
-  // reads first state package icons notes and text
+  // reads first state package icons notes text and image
   UmlCanvas * canvas = the_canvas();
   
   while (ActivityCanvas::read(st, canvas, k) ||
@@ -832,7 +834,8 @@ void ActivityDiagramView::read(char * st, char * k) {
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
-	 FragmentCanvas::read(st, canvas, k))
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

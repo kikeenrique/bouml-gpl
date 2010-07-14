@@ -33,13 +33,14 @@
 #include <qobject.h>
 
 #include "DiagramCanvas.h"
+#include "MultipleDependency.h"
 #include "Settings.h"
 
 #define STATE_CANVAS_MIN_SIZE 40
 
 class BrowserRegion;
 
-class StateCanvas : public QObject, public DiagramCanvas {
+class StateCanvas : public QObject, public DiagramCanvas, public MultipleDependency<BasicData> {
   Q_OBJECT
     
   protected:

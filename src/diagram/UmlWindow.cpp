@@ -332,6 +332,9 @@ UmlWindow::UmlWindow(bool batch) : QMainWindow(0, "Bouml", WDestructiveClose) {
   
   miscMenu->insertItem(TR("Set environment"), this, SLOT(edit_env()));
   
+  img_root_dir_id = 
+    miscMenu->insertItem(TR("Set images root dir"), this, SLOT(edit_image_root_dir()));
+  
   QPopupMenu * help = new QPopupMenu(this);
   menuBar()->insertItem(TR("&Help"), help);
   
@@ -713,6 +716,16 @@ QWorkspace * UmlWindow::get_workspace()
 CanvasFormat UmlWindow::default_format()
 {
   return the->format;
+}
+
+QString UmlWindow::images_root_dir()
+{
+  return the->img_root_dir;
+}
+
+void UmlWindow::set_images_root_dir(QString s)
+{
+  the->img_root_dir = s;
 }
 
 void UmlWindow::newProject() {
@@ -1402,6 +1415,17 @@ void UmlWindow::edit_env() {
     read_boumlrc();
 }
 
+void UmlWindow::edit_image_root_dir() {
+  QString s = 
+    QFileDialog::getExistingDirectory(img_root_dir, 0, 0,
+				      TR("Select images root directory"));
+  
+  if (! s.isEmpty()) {
+    img_root_dir = s;
+    the->browser->get_project()->package_modified();
+  }
+}
+
 void UmlWindow::langMenuAboutToShow() {
   abort_line_construction();
   
@@ -1441,6 +1465,8 @@ void UmlWindow::miscMenuAboutToShow() {
   bool enabled = (prj != 0);
   
   miscMenu->setItemEnabled(shortcut_id, enabled);
+  miscMenu->setItemEnabled(img_root_dir_id, 
+			   enabled && browser->get_project()->is_writable());
   miscMenu->setItemEnabled(show_browser_stereotypes_id, enabled);
 }
 
@@ -1448,8 +1474,11 @@ void UmlWindow::fontSizeMenuAboutToShow() {
   abort_line_construction();
   
   int ps = NormalFont.pointSize();
+  BrowserNode * prj = browser->get_project();
+  bool enabled = (prj != 0) && prj->is_writable();
 
   for (int i = FONTSIZEMIN; i < FONTSIZESUP; i += 1) {
+    fontSizeMenu->setItemEnabled(i, enabled);
     fontSizeMenu->setItemChecked(i, i == ps);
     fontSizeMenu->setWhatsThis(i, fontSizeMenuText());
   }

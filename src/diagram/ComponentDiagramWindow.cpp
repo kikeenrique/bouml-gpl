@@ -54,6 +54,7 @@ extern QString anchorText();
 extern QString textText();
 static QString requiredText() { return TR("Click this button to show an interface required by a <i>component</i>."); }
 static QString providedText() { return TR("Click this button to show an interface provided by a <i>component</i>."); }
+extern QString imageText();
 
 // id is an old ident in case of an import
 ComponentDiagramWindow::ComponentDiagramWindow(const QString & s, BrowserComponentDiagram * b, int id)
@@ -130,6 +131,12 @@ ComponentDiagramWindow::ComponentDiagramWindow(const QString & s, BrowserCompone
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -190,6 +197,7 @@ void ComponentDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -233,5 +241,9 @@ void ComponentDiagramWindow::hit_anchor() {
 
 void ComponentDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void ComponentDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

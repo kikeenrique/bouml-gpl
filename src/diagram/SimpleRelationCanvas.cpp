@@ -204,7 +204,7 @@ void SimpleRelationCanvas::menu(const QPoint &) {
     }
     
     m.insertSeparator();
-    m.insertItem("Remove from view",7);
+    m.insertItem("Remove from diagram",7);
     if (data->get_start()->is_writable())
       m.insertItem("Delete from model", 8);
     

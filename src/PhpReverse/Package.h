@@ -26,10 +26,10 @@
 #ifndef PACKAGE_H
 #define PACKAGE_H
 
-#include <qdict.h>
 #include <qstringlist.h> 
 #include <qstack.h>
 
+#include "Namespace.h"
 #include "Class.h"
 #include "UmlClass.h"
 
@@ -98,7 +98,7 @@ class Package : public BrowserNode, public ClassContainer {
   private:
     UmlPackage * uml;
     QCString path;
-    QDict<Class> Undefined;
+    NDict<Class> Undefined;
   
     static bool scan;
     static Package * root;
@@ -106,9 +106,9 @@ class Package : public BrowserNode, public ClassContainer {
     static QRegExp * DirFilter;
     static QRegExp * FileFilter;
     static QString Ext;
-    static QDict<Class> classes;
-    static QDict<Class> php_classes;
-    static QDict<UmlClass> user_classes;
+    static NDict<Class> classes;
+    static NDict<Class> php_classes;
+    static NDict<UmlClass> user_classes;
     static Progress * progress;
     static QApplication * app;
     
@@ -124,6 +124,8 @@ class Package : public BrowserNode, public ClassContainer {
     
     Class * declare_if_needed(QCString name, char st);
     Class * new_class(const QCString & name, char st);
+    
+    void use();
 };
 
 #endif

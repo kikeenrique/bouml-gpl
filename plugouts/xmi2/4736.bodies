@@ -308,6 +308,66 @@ class CppSettings
   
   _src_ext = v;
 
+!!!276992.cpp!!!	reverseRoundtripDirRegExp() : string
+  read_if_needed_();
+
+  return _dir_regexp;
+!!!276992.java!!!	reverseRoundtripDirRegExp() : string
+  read_if_needed_();
+
+  return _dir_regexp;
+!!!277120.cpp!!!	isReverseRoundtripDirRegExpCaseSensitive() : bool
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+!!!277120.java!!!	isReverseRoundtripDirRegExpCaseSensitive() : bool
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+!!!277248.cpp!!!	set_ReverseRoundtripDirRegExp(in s : string, in cs : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppDirRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _dir_regexp = s;
+    _dir_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!277248.java!!!	set_ReverseRoundtripDirRegExp(in s : string, in cs : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppDirRevFilterCmd, s, cs);
+  UmlCom.check();
+  _dir_regexp = s;
+  _dir_regexp_case_sensitive = cs;
+!!!277376.cpp!!!	reverseRoundtripFileRegExp() : string
+  read_if_needed_();
+
+  return _file_regexp;
+!!!277376.java!!!	reverseRoundtripFileRegExp() : string
+  read_if_needed_();
+
+  return _file_regexp;
+!!!277504.cpp!!!	isReverseRoundtripFileRegExpCaseSensitive() : bool
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+!!!277504.java!!!	isReverseRoundtripFileRegExpCaseSensitive() : bool
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+!!!277632.cpp!!!	set_ReverseRoundtripFileRegExp(in s : string, in cs : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppFileRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _file_regexp = s;
+    _file_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!277632.java!!!	set_ReverseRoundtripFileRegExp(in s : string, in cs : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppFileRevFilterCmd, s, cs);
+  UmlCom.check();
+  _file_regexp = s;
+  _file_regexp_case_sensitive = cs;
 !!!47488.cpp!!!	includeWithPath() : bool
   read_if_needed_();
   
@@ -441,6 +501,27 @@ class CppSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_generate_javadoc_comment = v;
+!!!279936.cpp!!!	visibilityIndent() : string
+  read_if_needed_();
+
+  return _visibility_indent;
+!!!279936.java!!!	visibilityIndent() : string
+  read_if_needed_();
+
+  return _visibility_indent;
+!!!280064.cpp!!!	set_VisibilityIndent(in v : string) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppIndentVisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _visibility_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!280064.java!!!	set_VisibilityIndent(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIndentVisibilityCmd, v);
+  UmlCom.check();
+
+  _visibility_indent = v;
 !!!47744.cpp!!!	enumIn() : string
   read_if_needed_();
   
@@ -1336,6 +1417,14 @@ class CppSettings
   _is_root_relative_path = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
   _is_inline_force_header_in_h = UmlCom::read_bool();
+
+  _dir_regexp = UmlCom::read_string();
+  _dir_regexp_case_sensitive = UmlCom::read_bool();
+
+  _file_regexp = UmlCom::read_string();
+  _file_regexp_case_sensitive = UmlCom::read_bool();
+
+  _visibility_indent = UmlCom::read_string();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1419,6 +1508,14 @@ class CppSettings
   _is_root_relative_path = UmlCom.read_bool();
   _is_generate_javadoc_comment = UmlCom.read_bool();
   _is_inline_force_header_in_h = UmlCom.read_bool();
+
+  _dir_regexp = UmlCom.read_string();
+  _dir_regexp_case_sensitive = UmlCom.read_bool();
+
+  _file_regexp = UmlCom.read_string();
+  _file_regexp_case_sensitive = UmlCom.read_bool();
+
+  _visibility_indent = UmlCom.read_string();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

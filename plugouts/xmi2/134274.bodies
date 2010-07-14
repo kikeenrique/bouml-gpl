@@ -13,9 +13,13 @@ class UmlActivityNode
 !!!199554.cpp!!!	add_incoming_flow(inout flow : UmlFlow) : void
   _incoming_flows.append(flow);
 !!!202882.cpp!!!	write_incoming_flows(inout out : FileOut) : void
-  while (!_incoming_flows.isEmpty()) {
+  QListIterator<UmlFlow> it(_incoming_flows);
+  
+  while (it.current() != 0) {
     out.indent();
     out << "<incoming";
-    out.idref(_incoming_flows.take(0));
+    out.idref(it.current());
     out << "/>\n";
+    ++it;
   }
+

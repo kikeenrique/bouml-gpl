@@ -83,6 +83,13 @@ void DeploymentNodeCanvas::deleted() {
   canvas()->update();
 }
 
+void DeploymentNodeCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
+}
+
 QString DeploymentNodeCanvas::get_name() const {
   return iname;
 }
@@ -441,7 +448,7 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem(TR("Set node associated diagram"), 6);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlDeploymentNode, 20))
     m.insertItem(TR("Tool"), &toolm);
@@ -484,7 +491,7 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
 			       the_canvas()->browser_diagram());
     return;
   case 7:
-    // remove from view
+    // remove from diagram
     delete_it();
     break;
   case 10:

@@ -24,7 +24,6 @@
 // *************************************************************************
 
 #include <stdlib.h>
-#include <stdlib.h>
 
 #include <qapplication.h>
 #include <qlayout.h>

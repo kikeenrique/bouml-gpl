@@ -168,7 +168,8 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
     new QLabel(TR("    multiplicity :  "), htab);
     multiplicity = new QComboBox(!visit, htab);
     multiplicity->setSizePolicy(sp);
-    multiplicity->insertItem(a->get_multiplicity());
+    previous_multiplicity = a->get_multiplicity();
+    multiplicity->insertItem(previous_multiplicity);
     if (!visit) {
       multiplicity->insertItem("1");
       multiplicity->insertItem("0..1");
@@ -604,6 +605,20 @@ void AttributeDialog::polish() {
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
+void AttributeDialog::default_defs_if_needed() {
+  QString m = multiplicity->currentText().stripWhiteSpace();
+  
+  if (m != previous_multiplicity) {
+    default_cpp_if_needed(previous_multiplicity, m);
+    default_java_if_needed(previous_multiplicity, m);
+    default_idl_if_needed(previous_multiplicity, m);
+    default_php_if_needed(previous_multiplicity, m);
+    default_python_if_needed(previous_multiplicity, m);
+    
+    previous_multiplicity = m;
+  }
+}
+
 void AttributeDialog::menu_type() {
   QPopupMenu m(0);
 
@@ -684,7 +699,9 @@ void AttributeDialog::accept() {
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
     msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
-  else {  
+  else {
+    default_defs_if_needed();
+    
     bn->set_name(s);
 
     bool newst = FALSE;
@@ -777,6 +794,9 @@ void AttributeDialog::accept() {
 }
 
 void AttributeDialog::update_all_tabs(QWidget * w) {
+  if (!visit)
+    default_defs_if_needed();
+  
   edname->setText(edname->text().stripWhiteSpace());
   
   if (w == umltab) {
@@ -849,6 +869,15 @@ void AttributeDialog::cpp_default() {
 		     ? GenerationSettings::cpp_default_enum_item_decl()
 		     : GenerationSettings::cpp_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   cpp_update();
+}
+
+void AttributeDialog::default_cpp_if_needed(QString prev_mult, QString new_mult) {
+  if (!cpp_in_enum && !edcppdecl->text().isEmpty()) {
+    QString n = GenerationSettings::cpp_default_attr_decl(new_mult);
+    
+    if (n != GenerationSettings::cpp_default_attr_decl(prev_mult))
+      edcppdecl->setText(n);
+  }
 }
 
 void AttributeDialog::cpp_unmapped() {
@@ -1056,6 +1085,15 @@ void AttributeDialog::java_default() {
     edjavadecl->setText(GenerationSettings::java_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   }
   java_update();
+}
+
+void AttributeDialog::default_java_if_needed(QString prev_mult, QString new_mult) {
+  if (!java_in_enum_pattern && !edjavadecl->text().isEmpty()) {
+    QString n = GenerationSettings::java_default_attr_decl(new_mult);
+    
+    if (n != GenerationSettings::java_default_attr_decl(prev_mult))
+      edjavadecl->setText(n);
+  }
 }
 
 void AttributeDialog::java_unmapped() {
@@ -1302,6 +1340,10 @@ void AttributeDialog::php_default() {
   php_update();
 }
 
+void AttributeDialog::default_php_if_needed(QString, QString) {
+  // do nothing : no link with multiplicity
+}
+
 void AttributeDialog::php_unmapped() {
   edphpdecl->setText(QString::null);
   showphpdecl->setText(QString::null);
@@ -1490,6 +1532,15 @@ void AttributeDialog::python_default() {
   python_update();
 }
 
+void AttributeDialog::default_python_if_needed(QString prev_mult, QString new_mult) {
+  if (!python_in_enum && !java_in_enum_pattern && !edpythondecl->text().isEmpty()) {
+    QString n = GenerationSettings::python_default_attr_decl(new_mult);
+    
+    if (n != GenerationSettings::python_default_attr_decl(prev_mult))
+      edpythondecl->setText(n);
+  }
+}
+
 void AttributeDialog::python_unmapped() {
   edpythondecl->setText(QString::null);
   showpythondecl->setText(QString::null);
@@ -1641,6 +1692,25 @@ void AttributeDialog::idl_default() {
 		       ? GenerationSettings::idl_default_const_decl(multiplicity->currentText().stripWhiteSpace())
 		       : GenerationSettings::idl_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   idl_update();
+}
+
+void AttributeDialog::default_idl_if_needed(QString prev_mult, QString new_mult) {
+  if (!idl_in_enum && !idl_in_union && !edidldecl->text().isEmpty()) {
+    QString p;
+    QString n;
+    
+    if (constattribute_cb->isChecked() && !edinit->text().stripWhiteSpace().isEmpty()) {
+      p = GenerationSettings::idl_default_const_decl(prev_mult);
+      n = GenerationSettings::idl_default_const_decl(new_mult);
+    }
+    else {
+      p = GenerationSettings::idl_default_attr_decl(prev_mult);
+      n = GenerationSettings::idl_default_attr_decl(new_mult);
+    }
+    
+    if (n != p)
+      edidldecl->setText(n);
+  }
 }
 
 void AttributeDialog::idl_default_state() {
@@ -1831,4 +1901,3 @@ QString AttributeDialog::idl_decl(const BrowserAttribute * at,
 
   return s;
 }
-

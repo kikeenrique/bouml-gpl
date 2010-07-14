@@ -66,7 +66,9 @@ class Dialog : public QDialog {
 
     QMultiLineEdit * edfooter;
 
-  protected slots:    virtual void accept();
+  protected slots:    virtual void polish();
+
+    virtual void accept();
     void browse_pro();
     void browse_target();
     void compute_includepath();

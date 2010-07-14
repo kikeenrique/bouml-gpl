@@ -178,7 +178,7 @@ void ArrowPointCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(TR("Line break"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 0);
+  m.insertItem(TR("Remove from diagram"), 0);
   m.setItemEnabled(0, lines.at(0)->may_join());
   
   switch (m.exec(QCursor::pos())) {

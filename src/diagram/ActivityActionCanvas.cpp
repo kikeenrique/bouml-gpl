@@ -831,7 +831,7 @@ void ActivityActionCanvas::menu(const QPoint&) {
       m.insertItem(TR("Remove diagram association"),12);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 8);
+  m.insertItem(TR("Remove from diagram"), 8);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 9);
   m.insertSeparator();
@@ -883,7 +883,7 @@ void ActivityActionCanvas::menu(const QPoint&) {
       modified();	// call package_modified()
     break;
   case 8:
-    //remove from view
+    //remove from diagram
     delete_it();
     break;
   case 9:

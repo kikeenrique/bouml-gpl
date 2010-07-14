@@ -217,6 +217,24 @@ bool PhpSettings::set_IsRootRelativePath(bool v)
     return FALSE;
 }
 
+bool PhpSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool PhpSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool PhpSettings::isGenerateJavadocStyleComment()
 {
   read_if_needed_();
@@ -559,6 +577,8 @@ bool PhpSettings::_is_relative_path;
 
 bool PhpSettings::_is_root_relative_path;
 
+bool PhpSettings::_is_force_namespace_gen;
+
 void PhpSettings::read_()
 {
   _root = UmlCom::read_string();
@@ -604,6 +624,8 @@ void PhpSettings::read_()
 
   _file_regexp = UmlCom::read_string();
   _file_regexp_case_sensitive = UmlCom::read_bool();
+  
+  _is_force_namespace_gen = UmlCom::read_bool();
 }
 
 void PhpSettings::read_if_needed_()

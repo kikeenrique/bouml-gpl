@@ -48,6 +48,7 @@
 #include "SdLifeLineCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "myio.h"
@@ -377,6 +378,7 @@ void SeqDiagramView::save(QTextStream & st, QString & warning,
     case UmlClassInstance:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlIcon:
       if (!copy || di->copyable())
 	di->save(st, FALSE, warning);
@@ -440,13 +442,14 @@ void SeqDiagramView::save(QTextStream & st, QString & warning,
 void SeqDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first the actors, classes instances, notes, icons and text
+  // reads first the actors, classes instances, notes, icons text and images
   while (SdClassInstCanvas::read(st, canvas, k) ||
 	 NoteCanvas::read(st, canvas, k) ||
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 FragmentCanvas::read(st, canvas, k) ||
-	 SdContinuationCanvas::read(st, canvas, k))
+	 SdContinuationCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads durations

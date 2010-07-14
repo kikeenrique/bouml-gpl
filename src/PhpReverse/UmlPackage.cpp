@@ -41,66 +41,167 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
 #ifdef REVERSE
   deploymentview = 0;
 #endif
+  namespace_fixedp = FALSE;
 }
 
-UmlClassView * UmlPackage::get_classview() {
-  if (classview == 0) {
-    QVector<UmlItem> ch = UmlItem::children();
+UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
+  UmlPackage * pack;
+  
+  if (nmsp != phpNamespace()) {
+    if (namespace_fixedp) {
+      if ((pack = findPhpNamespace(nmsp)) == 0) {
+	QCString s = nmsp;
+	
+	if (s.isEmpty())
+	  s = name();
+	else {
+	  int index = 0;
+	  
+	  while ((index = s.find("::", index)) != -1)
+	    s.replace(index++, 2, " ");
+	}
+	
+	if (((pack = UmlBasePackage::create(this, s)) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0)) {
+#ifdef REVERSE
+	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+			+ s + "</i> under package <i>"
+			+ name() + "</b></font><br>");
+	  UmlCom::message("");
+	  throw 0;
+#else
+	  QMessageBox::critical(0, "Fatal Error", 
+				QCString("<font face=helvetica><b>cannot create package <i>")
+				+ s + "</i> under package <i>"
+				+ Name() + "</b></font><br>");
+	  QApplication::exit(1);
+#endif	  
+	}
+	
+	pack->set_PhpNamespace(nmsp);
+	pack->set_PhpDir(phpDir());
+	pack->namespace_fixedp = TRUE;
+      }
+    }
+    else {
+      pack = this;
+      pack->set_PhpNamespace(nmsp);
+      pack->namespace_fixedp = TRUE;
+    }
+  }
+  else
+    pack = this;
+  
+  if (pack->classview == 0) {
+    QVector<UmlItem> ch = pack->children();
     
     for (unsigned index = 0; index != ch.size(); index += 1)
       // return the first class view find
       if (ch[index]->kind() == aClassView)
-	return classview = (UmlClassView *) ch[index];
+	return pack->classview = (UmlClassView *) ch[index];
     
-    if ((classview = UmlBaseClassView::create(this, name())) == 0) {
+    if ((pack->classview = UmlBaseClassView::create(pack, name())) == 0) {
 #ifdef REVERSE
       UmlCom::trace(QCString("<font face=helvetica><b>cannot create class view <i>")
 		    + name() + "</i> under package <i>"
-		    + name() + "</b></font><br>");
+		    + pack->name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
 			    QCString("<font face=helvetica><b>cannot create class view <i>")
 			    + name() + "</i> under package <i>"
-			    + name() + "</b></font><br>");
+			    + pack->name() + "</b></font><br>");
       QApplication::exit(1);
 #endif
     }
   }
   
-  return classview;
+  return pack->classview;
 }
 
 #ifdef REVERSE
 
-UmlDeploymentView * UmlPackage::get_deploymentview() {
-  if (deploymentview == 0) {
-    QVector<UmlItem> ch = UmlItem::children();
+UmlDeploymentView * UmlPackage::get_deploymentview(const QCString & nmsp) {
+  UmlPackage * pack;
+  
+  if (nmsp != phpNamespace()) {
+    if (namespace_fixedp) {
+      if ((pack = findPhpNamespace(nmsp)) == 0) {
+	QCString s = nmsp;
+	
+	if (s.isEmpty())
+	  s = name();
+	else {
+	  int index = 0;
+	  
+	  while ((index = s.find("::", index)) != -1)
+	    s.replace(index++, 2, " ");
+	}
+	
+	if (((pack = UmlBasePackage::create(this, s)) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0)) {
+#ifdef REVERSE
+	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+			+ s + "</i> under package <i>"
+			+ name() + "</b></font><br>");
+	  UmlCom::message("");
+	  throw 0;
+#else
+	  QMessageBox::critical(0, "Fatal Error", 
+				QCString("<font face=helvetica><b>cannot create package <i>")
+				+ s + "</i> under package <i>"
+				+ Name() + "</b></font><br>");
+	  QApplication::exit(1);
+#endif	  
+	}
+	
+	pack->set_PhpNamespace(nmsp);
+	pack->set_PhpDir(phpDir());
+	pack->namespace_fixedp = TRUE;
+      }
+    }
+    else {
+      pack = this;
+      pack->set_PhpNamespace(nmsp);
+      pack->namespace_fixedp = TRUE;
+    }
+  }
+  else
+    pack = this;
+  
+  if (pack->deploymentview == 0) {
+    QVector<UmlItem> ch = pack->children();
     
     for (unsigned index = 0; index != ch.size(); index += 1)
       // return the first class view find
       if (ch[index]->kind() == aDeploymentView)
-	return deploymentview = (UmlDeploymentView *) ch[index];
+	return pack->deploymentview = (UmlDeploymentView *) ch[index];
     
-    if ((deploymentview = UmlBaseDeploymentView::create(this, name())) == 0) {
+    if ((pack->deploymentview = UmlBaseDeploymentView::create(pack, name())) == 0) {
 #ifdef REVERSE
       UmlCom::trace(QCString("<font face=helvetica><b>cannot create deployment view <i>")
 		    + name() + "</i> under package <i>"
-		    + name() + "</b></font><br>");
+		    + pack->name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
 			    QCString("<font face=helvetica><b>cannot create deployment view <i>")
 			    + name() + "</i> under package <i>"
-			    + name() + "</b></font><br>");
+			    + pack->name() + "</b></font><br>");
       QApplication::exit(1);
 #endif
     }
   }
   
-  return deploymentview;
+  return pack->deploymentview;
 }
 
 #endif

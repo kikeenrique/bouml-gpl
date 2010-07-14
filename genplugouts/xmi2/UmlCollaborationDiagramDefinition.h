@@ -11,6 +11,8 @@ class UmlItem;
 // you can modify it
 class UmlCollaborationDiagramDefinition : public UmlBaseCollaborationDiagramDefinition {
   public:
+    virtual ~UmlCollaborationDiagramDefinition();
+
     virtual void write(FileOut & out, UmlItem * diag);
 
 };

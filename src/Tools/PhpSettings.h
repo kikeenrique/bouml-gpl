@@ -121,6 +121,15 @@ class PhpSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsRootRelativePath(bool v);
 
+    // return if the namespace prefix must be
+    // always generated before class's names
+    static bool isForceNamespacePrefixGeneration();
+
+    // set if the namespace prefix must be always generated before class's names
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsForceNamespacePrefixGeneration(bool v);
+
     // return if  generate Javadoc style comment
     static bool isGenerateJavadocStyleComment();
 
@@ -316,6 +325,8 @@ class PhpSettings : public UmlSettings {
     static bool _is_relative_path;
 
     static bool _is_root_relative_path;
+
+    static bool _is_force_namespace_gen;
 
   protected:
     static void read_();

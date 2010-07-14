@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
     bool aborted = TRUE;
     
     try {
-      UmlCom::trace("<b>Java roundtrip</b> release 1.4<br><hr>");
+      UmlCom::trace("<b>Java roundtrip</b> release 1.5<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       char * argv = 0;

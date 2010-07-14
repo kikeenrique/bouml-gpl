@@ -123,6 +123,15 @@ class UmlBaseState : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_Specification(UmlOperation * v);
 
+    // return the the referenced sub machine state or 0/null
+    // if the state is not a sub machine state reference
+    UmlState * reference();
+
+    // set the referenced sub machine state (may be 0/null)
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Reference(UmlState * v);
+
     // returns the optional associated diagram
     UmlStateDiagram * associatedDiagram();
 
@@ -152,6 +161,8 @@ class UmlBaseState : public UmlItem {
 #endif
 
     bool _active;
+
+    UmlState * _reference;
 
     UmlOperation * _specification;
 

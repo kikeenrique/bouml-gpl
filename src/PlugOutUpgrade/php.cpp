@@ -935,7 +935,8 @@ void php_javadocstylecomment()
 
   // set
   
-  UmlOperation * op2 = php_settings->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  UmlOperation * op2 = 
+    php_settings->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
@@ -961,9 +962,13 @@ void php_javadocstylecomment()
   
   //
 
+  QCString s;
+  
   op = php_settings->get_operation("read_");
-  op->set_CppBody(op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   //
 
@@ -1032,7 +1037,7 @@ void php_add_require_once()
 
   // set_RequireOnceWithPath
   
-  op2 = php_settings->add_op("set_RequireOnceWithPath", PublicVisibility, "bool");
+  op2 = php_settings->add_op("set_RequireOnceWithPath", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" to indicates to the code generator if the require_once may specify\n"
@@ -1078,7 +1083,7 @@ void php_add_require_once()
 
   // set_IsRelativePath
   
-  op2 = php_settings->add_op("set_IsRelativePath", PublicVisibility, "bool");
+  op2 = php_settings->add_op("set_IsRelativePath", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if a relative path must be used when the path\n"
@@ -1126,7 +1131,7 @@ void php_add_require_once()
 
   // set_IsRootRelativePath
   
-  op2 = php_settings->add_op("set_IsRootRelativePath", PublicVisibility, "bool");
+  op2 = php_settings->add_op("set_IsRootRelativePath", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if a relative to the project root path must be used\n"
@@ -1155,15 +1160,19 @@ void php_add_require_once()
   
   //
 
+  QCString s;
+  
   op = php_settings->get_operation("read_");
-  op->set_CppBody(op->cppBody() + 
-		  "  _req_with_path = UmlCom::read_bool();\n"
-		  "  _is_relative_path = UmlCom::read_bool();\n"
-		  "  _is_root_relative_path = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() +
-		   "  _req_with_path = UmlCom.read_bool();\n"
-		   "  _is_relative_path = UmlCom.read_bool();\n"
-		   "  _is_root_relative_path = UmlCom.read_bool();\n");
+  s = op->cppBody() + 
+    "  _req_with_path = UmlCom::read_bool();\n"
+      "  _is_relative_path = UmlCom::read_bool();\n"
+	"  _is_root_relative_path = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() +
+    "  _req_with_path = UmlCom.read_bool();\n"
+      "  _is_relative_path = UmlCom.read_bool();\n"
+	"  _is_root_relative_path = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   //
 
@@ -1177,3 +1186,188 @@ void php_add_require_once()
   
   UmlCom::set_user_id(uid);
 }
+
+//
+//
+//
+
+void add_php_namespace(UmlClass * uml_base_package, UmlClass * phpsettings)
+{
+  UmlCom::trace("<b>Add Php namespace management</b><br>\n");
+
+  //
+  // changes on UmlBasePackage
+  //
+  
+  // att
+  
+  UmlAttribute * att = 
+    uml_base_package->add_attribute("_php_namespace", PrivateVisibility,
+				    "string", 0, "#endif");
+  UmlAttribute * att2 = 
+    uml_base_package->get_attribute("_php_dir");
+      
+  att->moveAfter(att2);
+  
+  QCString s = att2->cppDecl();
+  int index = s.find("\n#endif");
+  
+  if (index != -1)
+    att2->set_CppDecl(s.left(index));
+  
+  // read
+
+  UmlOperation * op = uml_base_package->get_operation("read_php_");
+  
+  s = op->cppBody() + "  _php_namespace = UmlCom::read_string();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _php_namespace = UmlCom.read_string();\n";
+  op->set_JavaBody(s);
+  
+  // get
+
+  op = uml_base_package->add_op("phpNamespace", PublicVisibility, "string");
+  op->set_Description(" return the namespace name associed to the package\n");
+  op->set_cpp("const ${type} &", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _php_namespace;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _php_namespace;\n",
+	       FALSE);
+  
+  UmlOperation * op2 = uml_base_package->get_operation("set_PhpDir");
+  
+  op->moveAfter(op2);
+  
+  s = op2->cppDecl();
+  index = s.find("\n#endif");
+  if (index != -1) op2->set_CppDecl(s.left(index));
+  
+  s = op2->cppDef();
+  index = s.find("\n#endif");
+  if (index != -1) op2->set_CppDef(s.left(index));
+  
+  // set
+  
+  op2 = uml_base_package->add_op("set_PhpNamespace", PublicVisibility, "bool", TRUE);
+  
+  op2->add_param(0, InputDirection, "v", "string");
+  op2->set_Description(" the namespace name associed to the package.\n"
+		      "\n"
+		      " On error : return FALSE in C++, produce a RuntimeException in Java");
+  
+  op2->set_cpp("${type}", "const ${t0} & ${p0}",
+	      "  return set_it_(_php_namespace, v, setPhpNamespaceCmd);\n",
+	      FALSE, 0, 0);
+
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpNamespaceCmd, v);\n"
+		"  UmlCom.check();\n"
+		"\n"
+		"  _php_namespace = v;\n",
+	      FALSE);
+  
+  op2->moveAfter(op);
+
+
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setPhpNamespaceCmd");
+  
+  // find
+  
+  UmlClass * pack = UmlClass::get("UmlPackage", 0);
+  
+  op = uml_base_package->add_op("findPhpNamespace", PublicVisibility, pack);
+  op->set_Description(" returns a sub package of the current one having the php namespace 'n'\n"
+		      " (including the current one), else 0/null\n");
+  op->add_param(0, InputDirection, "n", "string");
+  op->set_cpp("${type} *", "const ${t0} & ${p0}",
+	      "  UmlCom::send_cmd(packageGlobalCmd, findPhpNamespaceCmd, _identifier, n);\n"
+	      "\n"
+	      "  return (UmlPackage *) UmlBaseItem::read_();\n",
+	      FALSE, 0, "#endif");
+  op->set_java("${type}", "${t0} ${p0}",
+	       "  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findPhpNamespaceCmd, identifier_(), n);\n"
+	       "  return (UmlPackage) UmlBaseItem.read_();\n",
+	       FALSE);
+  
+  op->moveAfter(op2);  
+  
+  //
+  
+  UmlClass::get("PackageGlobalCmd", 0)->add_enum_item("findPhpNamespaceCmd");
+  
+  //
+  // changes on PhpSettings
+  //
+  
+  // read
+
+  op = phpsettings->get_operation("read_");
+  s = op->cppBody() + "\n  _is_force_namespace_gen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "\n  _is_force_namespace_gen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
+  
+  // att
+  
+  att = phpsettings->add_attribute("_is_force_namespace_gen", PrivateVisibility, "bool", 0, 0);
+
+  att->set_isClassMember(TRUE);
+  att->moveAfter(phpsettings->get_attribute("_is_root_relative_path"));
+
+  // get
+  
+  op = phpsettings->add_op("isForceNamespacePrefixGeneration", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if the namespace prefix must be\n"
+		      " always generated before class's names");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_force_namespace_gen;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_force_namespace_gen;\n",
+	       FALSE);
+  op->moveAfter(phpsettings->get_operation("set_IsRootRelativePath"));
+
+  // set
+  
+  op2 = phpsettings->add_op("set_IsForceNamespacePrefixGeneration", PublicVisibility, "bool", TRUE);
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if the namespace prefix must be always generated before class's names\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(phpSettingsCmd, setPhpForceNamespaceGenCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_force_namespace_gen = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpForceNamespaceGenCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_force_namespace_gen = v;\n",
+		FALSE);
+  op2->moveAfter(op);
+  
+  //
+
+  UmlClass * phpsettingscmd = UmlClass::get("PhpSettingsCmd", 0);
+  
+  phpsettingscmd->add_enum_item("setPhpForceNamespaceGenCmd");
+}
+

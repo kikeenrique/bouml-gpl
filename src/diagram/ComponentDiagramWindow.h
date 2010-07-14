@@ -49,6 +49,7 @@ class ComponentDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
   
   public:
     ComponentDiagramWindow(const QString & s, BrowserComponentDiagram * b, int id = -1);
@@ -69,6 +70,7 @@ class ComponentDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

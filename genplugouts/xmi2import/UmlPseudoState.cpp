@@ -18,6 +18,7 @@ void UmlPseudoState::init()
 {
   declareFct("connectionpoint", "uml:Pseudostate", &importIt);
   declareFct("subvertex", "uml:Pseudostate", &importIt);
+  declareFct("connection", "", &importRef);
 
   declareFct("connectionpoint", "", &importIt);// Borland Together 2006 for Eclipse
 }
@@ -71,6 +72,41 @@ void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)
 	       "' in '" + where->name() + "'");
 
     ps->addItem(token.xmiId(), in);
+    
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      while (in.read(), !token.close(kstr))
+	ps->UmlItem::import(in, token);
+    }
+  }
+}
+
+void UmlPseudoState::importRef(FileIn & in, Token & token, UmlItem * where)
+{
+  // search a container for any pseudo state
+  where = where->container(anInitialPseudoState, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");    
+    UmlPseudoState * ps;
+    QCString idref;
+    
+    if (!(idref = token.valueOf("entry")).isEmpty())
+      ps = UmlEntryPointPseudoState::create(where, s);
+    else {
+      idref = token.valueOf("exit");
+      ps = UmlExitPointPseudoState::create(where, s);
+    }
+
+    if (ps == 0)
+      in.error("cannot create connexion point reference in '" + where->name() + "'");
+
+    ps->addItem(token.xmiId(), in);
+    
+    if (!idref.isEmpty())
+      Unresolved::addRef(ps, idref);
     
     if (! token.closed()) {
       QCString k = token.what();

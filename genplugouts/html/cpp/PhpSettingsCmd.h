@@ -23,7 +23,13 @@ enum PhpSettingsCmd {
   setPhpIsGetFinalCmd,
   setPhpIsSetFinalCmd,
   setPhpIsSetParamFinalCmd,
-  setPhpJavadocStyleCmd
+  setPhpJavadocStyleCmd,
+  setPhpRequireOnceWithPathCmd,
+  setPhpRelativePathCmd,
+  setPhpRootRelativePathCmd,
+  setPhpDirRevFilterCmd,
+  setPhpFileRevFilterCmd,
+  setPhpForceNamespaceGenCmd
 
 };
 #endif

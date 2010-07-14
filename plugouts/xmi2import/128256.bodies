@@ -162,6 +162,25 @@ class UmlBaseState
   UmlCom.check();
 
   _specification = v;
+!!!313472.cpp!!!	reference() : UmlState
+  read_if_needed_();
+  return _reference;
+!!!313472.java!!!	reference() : UmlState
+  read_if_needed_();
+  return _reference;
+!!!313600.cpp!!!	set_Reference(in v : UmlState) : bool
+  UmlCom::send_cmd(_identifier, setDerivedCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _reference = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!313600.java!!!	set_Reference(in v : UmlState) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDerivedCmd, (v == null) ? (long) 0 : v.identifier_());
+  UmlCom.check();
+
+  _reference = v;
 !!!131456.cpp!!!	associatedDiagram() : UmlStateDiagram
   read_if_needed_();
 
@@ -203,6 +222,7 @@ class UmlBaseState
   _uml.read();
   _specification = (UmlOperation *) UmlBaseItem::read_();
   _active = UmlCom::read_bool();
+  _reference = (UmlState *) UmlBaseItem::read_();
 !!!131968.java!!!	read_uml_() : void
   _assoc_diagram = (UmlStateDiagram) UmlBaseItem.read_();
   super.read_uml_();
@@ -210,6 +230,7 @@ class UmlBaseState
   _uml.read();
   _specification = (UmlOperation) UmlBaseItem.read_();
   _active = UmlCom.read_bool();
+  _reference = (UmlState) UmlBaseItem.read_();
 !!!132096.cpp!!!	read_cpp_() : void
   _cpp.read();
 !!!132096.java!!!	read_cpp_() : void

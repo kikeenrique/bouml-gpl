@@ -55,6 +55,7 @@ class ExpansionNodeCanvas : public QObject, public DiagramCanvas {
     
     virtual UmlCode type() const;
     virtual bool copyable() const;
+    virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);
     virtual QString may_start(UmlCode &) const;

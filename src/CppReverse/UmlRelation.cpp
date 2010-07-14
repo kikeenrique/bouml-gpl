@@ -150,8 +150,8 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   
   Lex::finish_line();
   
-  comment = Lex::get_comments();
-  description = Lex::get_description();
+  comment = Lex::get_comments(comment);
+  description = Lex::get_description(description);
   
 #ifdef ROUNDTRIP
   if (roundtrip) {

@@ -51,6 +51,7 @@ extern QString noteText();
 extern QString anchorText();
 static QString linkText() { return TR("Click this button to add a <i>link</i> between instances"); }
 extern QString textText();
+extern QString imageText();
 
 // id is an old ident in case of an import
 ObjectDiagramWindow::ObjectDiagramWindow(const QString & s, BrowserObjectDiagram * b, int id)
@@ -116,6 +117,12 @@ ObjectDiagramWindow::ObjectDiagramWindow(const QString & s, BrowserObjectDiagram
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -174,6 +181,7 @@ void ObjectDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -209,5 +217,9 @@ void ObjectDiagramWindow::hit_anchor() {
 
 void ObjectDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void ObjectDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

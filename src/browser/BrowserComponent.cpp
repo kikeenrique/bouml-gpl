@@ -586,7 +586,7 @@ BrowserNode * BrowserComponent::get_associated() const {
   return associated_diagram;
 }
 
-void BrowserComponent::set_associated_diagram(BrowserComponentDiagram * dg,
+void BrowserComponent::set_associated_diagram(BrowserNode * dg,
 					      bool on_read) {
   if (associated_diagram != dg) {
     if (associated_diagram != 0)
@@ -896,7 +896,7 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
       else {
 	switch ((unsigned char) args[-1]) {
 	case setAssocDiagramCmd:
-	  set_associated_diagram((BrowserComponentDiagram *) com->get_id(args));
+	  set_associated_diagram((BrowserNode *) com->get_id(args));
 	  break;
 	case createCmd:
 	  {
@@ -1192,8 +1192,15 @@ BrowserComponent * BrowserComponent::read(char * & st, char * k,
       ((user_id() != 0) && result->is_api_base());
     
     if (!strcmp(k, "associated_diagram")) {
-      result->set_associated_diagram(BrowserComponentDiagram::read_ref(st, read_keyword(st)),
-				     TRUE);
+      k = read_keyword(st);
+
+      BrowserNode * diag;
+
+      if (((diag = BrowserComponentDiagram::read(st, k, 0)) == 0) &&
+	  ((diag = BrowserDeploymentDiagram::read(st, k, 0)) == 0))
+	wrong_keyword(k, "component/deployment diagram ref");
+
+      result->set_associated_diagram(diag, TRUE);
       k = read_keyword(st);
     }
     

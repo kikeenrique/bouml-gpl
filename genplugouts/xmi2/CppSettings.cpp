@@ -235,6 +235,58 @@ bool CppSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+QCString CppSettings::reverseRoundtripDirRegExp()
+{
+  read_if_needed_();
+
+  return _dir_regexp;
+}
+
+bool CppSettings::isReverseRoundtripDirRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+}
+
+bool CppSettings::set_ReverseRoundtripDirRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppDirRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _dir_regexp = s;
+    _dir_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::reverseRoundtripFileRegExp()
+{
+  read_if_needed_();
+
+  return _file_regexp;
+}
+
+bool CppSettings::isReverseRoundtripFileRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+}
+
+bool CppSettings::set_ReverseRoundtripFileRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppFileRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _file_regexp = s;
+    _file_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::includeWithPath()
 {
   read_if_needed_();
@@ -339,6 +391,24 @@ bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
   if (UmlCom::read_bool()) {
     _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+const QCString & CppSettings::visibilityIndent()
+{
+  read_if_needed_();
+
+  return _visibility_indent;
+}
+
+bool CppSettings::set_VisibilityIndent(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIndentVisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _visibility_indent = v;
     return TRUE;
   }
   else
@@ -1063,6 +1133,14 @@ QCString CppSettings::_h_ext;
 
 QCString CppSettings::_src_ext;
 
+QCString CppSettings::_dir_regexp;
+
+bool CppSettings::_dir_regexp_case_sensitive;
+
+QCString CppSettings::_file_regexp;
+
+bool CppSettings::_file_regexp_case_sensitive;
+
 bool CppSettings::_incl_with_path;
 
 bool CppSettings::_is_relative_path;
@@ -1074,6 +1152,8 @@ bool CppSettings::_is_force_namespace_gen;
 bool CppSettings::_is_generate_javadoc_comment;
 
 bool CppSettings::_is_inline_force_header_in_h;
+
+QCString CppSettings::_visibility_indent;
 
 QDict<QCString> CppSettings::_map_includes;
 
@@ -1162,6 +1242,14 @@ void CppSettings::read_()
   _is_root_relative_path = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
   _is_inline_force_header_in_h = UmlCom::read_bool();
+
+  _dir_regexp = UmlCom::read_string();
+  _dir_regexp_case_sensitive = UmlCom::read_bool();
+
+  _file_regexp = UmlCom::read_string();
+  _file_regexp_case_sensitive = UmlCom::read_bool();
+
+  _visibility_indent = UmlCom::read_string();
 }
 
 void CppSettings::read_if_needed_()

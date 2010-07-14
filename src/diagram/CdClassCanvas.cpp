@@ -1268,7 +1268,7 @@ void CdClassCanvas::menu(const QPoint&) {
       m.insertItem(TR("Remove diagram association"),18);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),12);
+  m.insertItem(TR("Remove from diagram"),12);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 13);
   m.insertSeparator();
@@ -1379,7 +1379,7 @@ void CdClassCanvas::menu(const QPoint&) {
       ->set_associated_diagram(0);
     return;
   case 12:
-    //remove from view
+    //remove from diagram
     delete_it();
     break;
   case 13:

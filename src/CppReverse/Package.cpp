@@ -413,7 +413,11 @@ void Package::scan_dirs(int & n) {
       
       d.cdUp();
       path = d.absPath();
-    }
+    }    
+    
+    // just to give a chance to Bouml to update trace window before the
+    // file dialog appears to not have it under the trace windows
+    UmlBasePackage::getProject();
   }
   
   if (dirs.isEmpty())

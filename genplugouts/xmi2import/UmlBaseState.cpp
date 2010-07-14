@@ -129,6 +129,21 @@ bool UmlBaseState::set_Specification(UmlOperation * v) {
     return FALSE;
 }
 
+UmlState * UmlBaseState::reference() {
+  read_if_needed_();
+  return _reference;
+}
+
+bool UmlBaseState::set_Reference(UmlState * v) {
+  UmlCom::send_cmd(_identifier, setDerivedCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _reference = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 UmlStateDiagram * UmlBaseState::associatedDiagram() {
   read_if_needed_();
 
@@ -163,6 +178,7 @@ void UmlBaseState::read_uml_() {
   _uml.read();
   _specification = (UmlOperation *) UmlBaseItem::read_();
   _active = UmlCom::read_bool();
+  _reference = (UmlState *) UmlBaseItem::read_();
 }
 
 #ifdef WITHCPP

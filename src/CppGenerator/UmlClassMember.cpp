@@ -46,16 +46,16 @@ void UmlClassMember::generate_visibility(aVisibility & current_visibility,
     current_visibility = v;
     if (!ahead)
       f_h << '\n';
-    f_h << indent;
+    f_h << indent << CppSettings::visibilityIndent();
     switch (v) {
     case PublicVisibility:
-      f_h << "  public:\n";
+      f_h << "public:\n";
       break;
     case ProtectedVisibility:
-      f_h << "  protected:\n";
+      f_h << "protected:\n";
       break;
     default:
-      f_h << "  private:\n";
+      f_h << "private:\n";
       break;
     }
   }

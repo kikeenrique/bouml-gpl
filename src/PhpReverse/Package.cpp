@@ -70,14 +70,14 @@ bool Package::scan;
 
 // all the classes presents in the environment, the
 // key is the full name including package
-QDict<Class> Package::classes(1001);
+NDict<Class> Package::classes(1001);
 
 // the php classes, the key are just the name without package
-QDict<Class> Package::php_classes(1001);
+NDict<Class> Package::php_classes(1001);
 
 // all the classes defined in bouml, not known through a .cat
 // nor reversed, the key is the full name including package
-QDict<UmlClass> Package::user_classes(1001);
+NDict<UmlClass> Package::user_classes(1001);
 
 // to show a progress bar
 Progress * Package::progress;
@@ -130,7 +130,7 @@ void Package::init(UmlPackage * r, QApplication * a)
 }
 
 void Package::new_class(Class * cl) {
-  php_classes.insert(cl->text(0), cl);
+  php_classes.insert((const char *) cl->text(0), cl);
 }
 
 Package * Package::scan_dir()
@@ -314,106 +314,213 @@ void Package::reverse_file(QCString path, QCString name) {
 		    + path + "</i></b></font><br>");
   }
   else {
-    UmlArtifact * art;
+    UmlArtifact * art = 0;
     QCString file_start;
     QCString file_end;
     
-#ifdef REVERSE
-    if (scan)
-      art = 0;
-    else {
-      UmlPackage * pack = get_uml(TRUE);
-      
-      if ((art = UmlBaseArtifact::create(pack->get_deploymentview(), name)) == 0) {
-	UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
-		      + name + "</i></b></font><br>"); 
-	return;
-      }
-      art->set_Stereotype("source");
-      art->set_PhpSource(PhpSettings::sourceContent());
-    }
-#else
-    art = 0;
-#endif
     UmlCom::message(((scan) ? "scan " : "reverse ") + path);
     
     // go after <?[php]
     Lex::mark();
     
-    QCString s;
-    char c = Lex::read_word_bis();
+    bool redo;
+    bool before_class;
     
-    while (c != 0) {
-      if (c == '<') {
-	c = Lex::read_word_bis();
-	if (c == '?') {
-	  if (art != 0) file_start = Lex::region();
-	  s = Lex::read_word();
-	  if (s.lower() == "php") {
-	    if (art != 0) file_start = Lex::region();
+    do {
+      redo = FALSE;
+      before_class = TRUE;
+      
+      QCString s;
+      char c = Lex::read_word_bis();
+      
+      while (c != 0) {
+	if (c == '<') {
+	  c = Lex::read_word_bis();
+	  if (c == '?') {
+	    if (!scan) file_start = Lex::region();
 	    s = Lex::read_word();
+	    if (s.lower() == "php") {
+	      if (!scan) file_start = Lex::region();
+	      s = Lex::read_word();
+	    }
+	    break;
 	  }
-	  break;
 	}
+	else
+	  c = Lex::read_word_bis();
       }
-      else
-	c = Lex::read_word_bis();
-    }
-    
-    aVisibility visibility = PackageVisibility;
-    bool abstractp = FALSE;
-    bool finalp = FALSE;
-    bool before_class = TRUE;
-    
-    while (!s.isEmpty()) {
-      if ((s == "class") || (s == "interface")) {
-	if (!Class::reverse(this, s, abstractp, finalp, visibility, path, art))
-	  break;
-	visibility = PackageVisibility;
-	abstractp = FALSE;
-	finalp = FALSE;
-	
-	before_class = FALSE;
-	Lex::mark();
-      }
-      else if (s == "public")
-	visibility = PublicVisibility;
-      else if (s == "protected")
-	visibility = ProtectedVisibility;
-      else if (s == "private")
-	visibility = PrivateVisibility;
-      else if (s == "final")
-	finalp = TRUE;
-      else if (s == "abstract")
-	abstractp = TRUE;
-      else if (s != ";") {
-	if (before_class) {
-	  UmlOperation::skip_body(0);
+      
+      aVisibility visibility = PackageVisibility;
+      bool abstractp = FALSE;
+      bool finalp = FALSE;
+      bool inside_namespace_brace = FALSE;
+      
+      while (!s.isEmpty()) {
+	if ((s == "class") || (s == "interface")) {
+#ifdef REVERSE
+	  if (!scan && (art == 0)) {
+	    UmlPackage * pack = get_uml(TRUE);
+	    
+	    if ((art = UmlBaseArtifact::create(pack->get_deploymentview(Namespace::current()), name)) == 0) {
+	      UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
+			    + name + "</i></b></font><br>");
+	      Namespace::exit();
+	      Lex::close(); 
+	      return;
+	    }
+	    art->set_Stereotype("source");
+	  }
+#endif	
+	  if (!Class::reverse(this, s, abstractp, finalp, path, art))
+	    break;
+	  visibility = PackageVisibility;
+	  abstractp = FALSE;
+	  finalp = FALSE;
+	  
+	  before_class = FALSE;
+	  Lex::mark();
+	}
+	else if (s == "public")
+	  visibility = PublicVisibility;
+	else if (s == "protected")
+	  visibility = ProtectedVisibility;
+	else if (s == "private")
+	  visibility = PrivateVisibility;
+	else if (s == "final")
+	  finalp = TRUE;
+	else if (s == "abstract")
+	  abstractp = TRUE;
+	else if ((s == "namespace") && before_class) {
+	  Namespace::exit();
+	  
+	  s = Lex::read_word();
+	  if (s == "{")
+	    inside_namespace_brace = TRUE;
+	  else if (s.isEmpty()) {
+	    if (!scan)
+	      Lex::premature_eof();
+	    break;
+	  }
+	  else {
+	    Namespace::enter(s);
+	    s = Lex::read_word();
+	    if (s == "{")
+	      inside_namespace_brace = TRUE;
+	    // else is ';'
+	  }
+	}
+	else if ((s == "use") && before_class) {
+	  if (!scan)
+	    use();
+	  else
+	    UmlOperation::skip_body(0);
 	  Lex::finish_line();
 	  Lex::clear_comments();
-	  if (art != 0) file_start = Lex::region();
 	}
-	else if (art != 0) {
-	  // go to end of file
-	  while (Lex::read_word_bis() != 0)
-	    ;
-	  file_end = Lex::region();
-	  break;
+	else if ((s == "}") && inside_namespace_brace) {
+	  inside_namespace_brace = FALSE;
+	  Namespace::exit();
 	}
+	else if (s != ";") {
+	  if (before_class) {
+	    if ((s == "?") && ((s = Lex::read_word()) == ">")) {
+	      // this <?php ..?> doesn't contains classes
+	      // search for a next <?php ..?>
+	      redo = TRUE;
+	      Lex::clear_comments();
+	      if (!scan)
+		file_start = Lex::region();
+	      break;
+	    }
+	    UmlOperation::skip_body(0);
+	    Lex::finish_line();
+	    Lex::clear_comments();
+	    if (!scan)
+	      file_start = Lex::region();
+	  }
+	  else if (!scan) {
+	    // go to end of file
+	    while (Lex::read_word_bis() != 0)
+	      ;
+	    file_end = Lex::region();
+	    break;
+	  }
+	  else
+	    break;
+	}
+	s = Lex::read_word();
       }
-      s = Lex::read_word();
-    }
+    } while (redo);
     
-    if (art != 0) {
+#ifdef REVERSE
+    if (! scan) {
+      if (art == 0) {
+	UmlPackage * pack = get_uml(TRUE);
+	
+	if ((art = UmlBaseArtifact::create(pack->get_deploymentview(Namespace::current()), name)) == 0) {
+	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
+			+ name + "</i></b></font><br>");
+	  Namespace::exit();
+	  Lex::close(); 
+	  return;
+	}
+	art->set_Stereotype("source");
+      }
+
       if (before_class)
 	art->set_PhpSource(file_start);
-      else
+      else if (!Namespace::current().isEmpty()) {
+	int p1 = file_start.findRev("namespace");
+	int p2 = file_start.find(';', p1);
+	int p3 = file_start.find('{', p1);
+	
+	if ((p3 != -1) && ((p3 < p2) || (p2 == -1)))
+	  file_start.replace(p1, p3 - p1 + 1, "${namespace}");
+	else
+	  file_start.replace(p1, p2 - p1 + 1, "${namespace}");
+	art->set_PhpSource(file_start + "\n${definition}\n\n" + file_end);
+      }
+      else		   
 	art->set_PhpSource(file_start + "\n${definition}\n\n" + file_end);
       
       art->unload();
     }
+#endif	
+    
+    Namespace::exit();
     
     Lex::close();
+  }
+}
+
+void Package::use() {	  
+  QCString s1;
+  
+  while (!(s1 = Lex::read_word()).isEmpty()) {
+    QCString s = Lex::read_word();
+    QCString s2;
+    
+    if (s == "as") {
+      s2 = Lex::read_word();
+      s = Lex::read_word();
+    }
+    else {
+      int p = s1.findRev('\\');
+      
+      s2 = (p == -1)
+	? QCString() // strange
+	: s1.mid(p + 1);
+    }
+    
+    if (! s2.isEmpty())
+      Namespace::add_alias(s2, s1);
+    
+    if ((s == ";") || s.isEmpty())
+      return;
+    else if (s != ",") {
+      UmlOperation::skip_body(0);
+      return;
+    }
   }
 }
 
@@ -450,8 +557,6 @@ Class * Package::define(const QCString & name, char st) {
   
   if (scan) {
     classes.insert(name, cl);
-    if (classes.count()/2 >= classes.size())
-      classes.resize(classes.size() * 2 - 1);
   }
   else {        
     Defined.insert(name, cl);

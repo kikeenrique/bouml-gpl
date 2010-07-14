@@ -73,6 +73,7 @@ static QString addactionText() { return TR("Click this button to add an <i>actio
 static QString addobjectText() { return TR("Click this button to add an <i>object node</i> in the diagram."); }
 QString addflowText() { return TR("Click this button to add a <i>flow</i> in the diagram. <br><br>"
 				  "You can also drop the <i>flow</i> from the <b>browser</b>."); }
+extern QString imageText();
 
 // id is an old ident in case of an import
 ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityDiagram * b, int id)
@@ -218,6 +219,12 @@ ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityD
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -288,6 +295,7 @@ void ActivityDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -376,3 +384,6 @@ void ActivityDiagramWindow::hit_text() {
   hit_button(UmlText, text);
 }
 
+void ActivityDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
+}

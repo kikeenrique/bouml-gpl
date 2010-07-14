@@ -1,8 +1,296 @@
+<h3>4.22.2</h3>July 14th 2010<br /><br />
+    <ul>
+	<li> When IDL was the alone selected language in the global menu <i>languages</i>
+		and you added parameter(s) through the UML tab when editing an operation,
+		random characters was inserted in the IDL declaration of the operation,
+		fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;atid=1022383&amp;aid=3025947&amp;group_id=212600" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> In the previous releases the default definition of a class in Php wrongly contained the
+		keywords <i>${visibility}</i> producing an invalid form in case
+		the visibility is not <i>package</i>. This keywords
+		isn't any more present when you create a new project, nor managed by code
+		generator and reverse.
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3025458&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> In the previous releases when you edited a relation the definition for the target languages
+		was implicitly reinitialized to the default definition specified through the generation
+		settings only when you changed the kind of the relation. Now this is the case each time
+		the default definition associated to the new couple kind/multiplicity is not
+		the same as the previous couple.
+		(<a href="https://sourceforge.net/tracker/?func=detail&amp;aid=3026862&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br />
+		In the previous releases when you edited an attribute the definition for the target languages
+		was never implicitly reinitialized. Now this is the case each time
+		the default definition associated to the new multiplicity is not the same as the previous.
+		<br /><br /></li>
+
+	<li> It is now possible to move a state machine into an other state machine or
+		a sub state of an other state machine. If the moved state machine is stereotyped
+		<i>machine</i> the stereotype becomes <i>submachine</i>.
+		(<a href="https://sourceforge.net/tracker/?func=detail&amp;atid=1022386&amp;aid=3028800&amp;group_id=212600" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> <b>Php Generator 1.10.1</b><br />
+		The generalizations / realizations and dependencies 
+		wasn't taken into account to compute the needed <i>required_once</i> list,
+		this is the case now (when they have a non empty definition in Php).
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3025651&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br />
+		Remove management of <i>${visibility}</i> at class level.
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3025458&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> <b>Php Reverse 1.8.1</b><br />
+		Remove management of <i>${visibility}</i> at class level.
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3025458&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.14.1</b><br />
+		In the previous releases the BOUML project-package produced both a XMI model and a package,
+		now an option allows you to not generate the model level.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3025535&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		</li>
+    </ul>
+<br /><br />
+
+
+
+<h3>4.22.1</h3>June 23th 2010<br /><br />
+    <ul>
+	<li> In release 4.22 the state activities wasn't written in the state diagrams,
+		fixed.
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3020421&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		</li>
+
+    </ul>
+<br /><br />
+
+<h3>4.22</h3>June 22th 2010<br /><br />
+    <ul>
+	<li> <font color="red">It was not possible to reload a project where
+		the associated diagram of a component is a deployment diagram</font>,
+		fixed.
+		<br /><br /></li>
+
+	<li> Each time you edited a dependency between a class and a package,
+		<i>import</i> was again added in the proposed list of
+		stereotypes, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3006228&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> Add Php 5.3 namespace management.
+		(<a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=2859822&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br />
+		Like for the other language the namespace is specified at package level.<br />
+		The generation of the namespace declaration in Php is done 
+		by an artifact containing <i>${namespace}</i> in its Php definition, looking
+		at the namespace may be specified in the package containing the deployment
+		view containing the artifact (this is the case for the new projects,
+		you have to add <i>${namespace}</i> by yourself if you want this feature
+		in your existing projects).<br />
+		By default the Php code generator try to not generate namespace prefixes,
+		if you want to always generate them set the generation setting option
+		<i>force namespace prefix generation</i>.
+		<br /><br /></li>
+
+	<li> Add <i>submachine state reference</i> management.</br>
+		Only states without child except transitions and entry or exit pseudo
+		states can be transformed into state reference
+		or allow to change the referenced state by an other one.
+		The referenced state is	set/changed/removed by editing the (future)
+		submachine state reference.<br />
+		To add a <i>connection point reference</i> to a
+		<i>submachine state reference</i> add an entry or exit
+		point then edit it to specify the reference.
+		<br /><br /></li>
+
+	<li> Enter and Exit points can now be placed on the border of their state.
+		<br /><br /></li>
+
+	<li> The profiles of the operations proposed in a list now contain the container
+		classes of the referenced nested classes. Previously it was not possible
+		to differentiate for instance the operations
+		<i>void C1::f(C2::C)</i> and <i>void C1::f(C3::C)</i>
+		because they was both written <i>void C1::f(C)</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3003940&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> The shortcuts associated to the commands <i>Edit</i> and <i>Menu</i>
+		are now active in diagrams. By default the shortcut to show the menu
+		is the key <i>return/enter</i>, so if you select one element in a diagram
+		and hit <i>return/enter</i> the menu associated to this element is shown,
+		and if you select several elements in a diagram and hit <i>return/enter</i>
+		the multiple selection menu is shown.<br />
+		Add the shortcut command <i>Diagram menu</i> to ask for the menu
+		of a diagram inside a diagram, this command do the same as if you
+		unselect all elements in the diagram by doing a left mouse click
+		out of any element then doing a right mouse click out of any element.<br />
+		This changes are mainly dedicated to persons working with
+		<a href="http://www.metrovision.fr/index.html" target="_blank">visioboard</a> and
+		having difficuties to do a double mouse click and to use the mouse right
+		click (left click directly usable).
+		<br /><br /></li>
+
+	<li> It was not allowed to have several <i>activity actions</i> or <i>activity nodes</i>
+		or <i>activity objects</i> or <i>activity partitions</i> or <i>class instances</i>
+		or <i>expansion nodes</i> or <i>expansion regions</i> or <i>flows</i> or
+		<i>interruptible activity regions</i> or <i>parameter sets</i> or <i>pins</i>
+		or <i>pseudo states</i> or <i>state actions</i> or <i>state regions</i> or
+		<i>transitions</i> having the same non empty name in the same
+		container, this limitation is removed.
+		(<a href="http://sourceforge.net/projects/bouml/forums/forum/764769/topic/3708095" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> In the previous releases in C++ the visibility specifiers was
+		indented with two spaces. Now you are able to set the expected
+		indent through the generation settings.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2914713&amp;group_id=212600&amp;atid=1022384" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> You can now save the content of the trace window in a HTML file.
+		<br /><br /></li>
+
+	<li> Through the global menu <i>miscellaneous</i> you can now specify a root directory
+		for the icons associated to the stereotypes or directly put in diagram.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3017067&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> Previously the icon associated to the stereotypes was specified through
+		an absolute path or had to be find through the current directory whose
+		depend on the way Bouml is started.<br />
+		Now you are able to specify a path relative to the root directory
+		for the icons or relative to the project directory. In case the path of an icon
+		is not absolute, the icon are searched first using the root directory
+		for the icons, then for compatibility reason using the current directory,
+		then using the project directory.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3017067&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> You can now put icons in diagram independently of the use of stereotypes.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3017068&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br /><br /></li>
+
+	<li> <b>Php Generator 1.10</b><br />
+		To manage <i>namespace</i>.
+		<br /><br /></li>
+
+	<li> <b>Php Reverse 1.8</b><br />
+		Previous releases didn't expect to read Php block(s)
+		before the block containing classes, fixed.<br />
+		To manage <i>namespace</i>, warning when a file define classes
+			in several namespaces only the classes of the first
+			namespace are reversed.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.18</b><br />
+		To produce the expected indent for the visibility specifiers.
+		Follow the new API.
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.15</b><br />
+		<b>C++ Roundtrip 1.3</b><br />
+		The comments placed before the definition
+		of an attribute in a class was lost, fixed.
+		Follow the new API.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.14</b><br />
+		Some activity flows was wrongly generated as object flow
+		rather than control flow, fixed.
+		(<a href="https://sourceforge.net/projects/bouml/forums/forum/764769/topic/3744891" target="_blank">cf.</a>)
+		<br />
+		To manage the <i>submachine state reference</i>
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.9</b><br />
+		To manage the <i>submachine state reference</i>
+		To manage virtual desktop (multiple screens configuration).
+		<br /><br /></li>
+	
+	<li> <b>Java Generator 2.22</b><br />
+		<b>Java Reverse 2.18</b><br />
+ 	     	<b>Java Roundtrip 1.5</b><br />
+		<b>Idl Generator 2.15</b><br />
+		<b>Python Generator 1.5</b><br />
+	     	<b>Roundtrip body 1.13</b><br />
+		Follow the new API.
+		<br /><br /></li>
+	
+	<li> <b>Java Catalog 2.17</b><br />
+		To manage virtual desktop (multiple screens configuration).
+		Follow the new API.
+		<br /><br /></li>
+	
+	<li> <b>Project control 1.2.5</b><br />
+		<b>Project synchro 1.2.4</b><br />
+		<b>Uml projection 1.1.3</b><br />
+		<b>.pro Generator 2.1.6</b><br />
+		<b>C++ utilities 1.1.2</b><br />
+		<b>Use case wizard 1.1.2 (C++ version)</b><br />
+		<b>File Control 1.0.6</b><br />
+		<b>Global change 1.2.1</b><br />
+		To manage virtual desktop (multiple screens configuration).
+		<br /><br /></li>
+
+	<li> <b>Html documentation Generator 2.20</b><br />
+		To produce a valid XHTML.
+		(<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=3018189&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>
+		and <a href="http://sourceforge.net/tracker/?func=detail&amp;aid=3018497&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br />
+		To manage <i>submachine state reference</i>.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.18</b><br />
+		Add operations <i>phpNamespace, set_PhpNamespace</i>
+		and <i>findPhpNamespace</i> on class <i>UmlBasePackage</i>.<br />
+		Add operations <i>isForceNamespacePrefixGeneration</i>
+		and <i>set_IsForceNamespacePrefixGeneration</i> on class
+		<i>PhpSettings</i>.<br />
+		Add operations <i>visibilityIndent</i> and
+		<i>set_VisibilityIndent</i> on class <i>CppSettings</i>.<br />
+		Add operations <i>reference</i> and
+		<i>set_Reference</i> on classes <i>UmlBaseState, UmlBaseEntryPointPseudoState</i>,
+		and <i>UmlBaseExitPointPseudoState</i>.
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> <i>fr.lang</i> updated.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.
+		</li>
+
+    </ul>
+<br /><br />
+
+
+<h3>Php Generator 1.9 patch (Windows)</h3>June 10th 2010<br /><br />
+    <ul>
+	<li> Under Windows the Php generator terminated its execution when
+		managing <i>${require_once}</i> because of a missing
+		compilation option.<br />
+		The Php generator compiled with the right options is available
+		<a href="https://sourceforge.net/projects/bouml/files/bouml/patch_4.21/" target="_blank">here</a>
+		(<a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=3013706&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		</li>
+    </ul>
+<br /><br />
+
+
 <h3>4.21</h3>May 12th 2010<br /><br />
     <ul>
 	<li> In the previous releases only the operations whose name started
 		by <i>operator</i> could contain non alphanumeric characters,
 		this restriction is removed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2996568&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <i>require_once</i> forms are now auto generated in Php when
@@ -21,20 +309,25 @@
 		to specify through a regular expression the files and/or directories
 		whose must not be taken into account during a reverse and roundtrip,
 		allowing for instance to not reverse test programs.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2997710&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> When you edit an attribute or an operation of a parametrized class
 		or nested in parametrized class(es) the name of the formal parameters
 		are now inserted in the list of proposed types.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2990817&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> When several elements of the same type are selected in a diagram
 		the multiple selection menu allows you to use the drawing settings
 		of the first selected element for the other selected elements.
 		Have associated shortcut command <i>Same drawing settings</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2990818&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
-	<li> Extension of the drawing setting <i>show context</i> :
+	<li> Extension of the drawing setting <i>show context</i>
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2991321&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		:
 	     <ul>
 
 		<li> In diagrams the context of nested classes now contains the
@@ -77,12 +370,14 @@
 			when you open an old diagram this setting is set to <i>no</i>
 			on the class intances.</font>
 			<br /><br /></li>
-	     </ul>
+	     </ul></li>
+		
 
 	<li> Add a button <i>Apply</i> in the drawing settings dialog
 		to apply the new settings without exiting the dialog.
 		Warning, the already applyied settings are not canceled through
 		the button <i>cancel</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2990819&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> The list of opened non modal dialogs is now given by the dynamic
@@ -104,6 +399,7 @@
 		<b>Php Reverse 1.7</b><br />
 		To not reverse/roundtrip unexpected directories and/or files
 		specified through regular expressions.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2997710&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>C++ Generator 2.17</b><br />
@@ -147,6 +443,7 @@
 		<br /><br /></li>
 
 	<li> Add constraint on activity and activity action.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2986509&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>Java Generator 2.20.1</b><br />
@@ -171,7 +468,9 @@
 
 	<li> <b>Plug-out upgrade 1.16.1</b><br />
 		Previous release missed to change the call of <i>UmlCom::bye</i>
-		in internal operation <i>UmlBaseItem::read_()</i>, fixed.<br />
+		in internal operation <i>UmlBaseItem::read_()</i>, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2982500&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br />
 		To manage constraint on activities and activity actions.
 		<br /><br /></li>
 
@@ -209,13 +508,16 @@
 		the trace window are produced on <i>stdout</i>.<br />
 		You have to kill the process Bouml by yourself if you use
 		<i>-execnogui</i> without <i>-exit</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2982500&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>Python Generator 1.4</b><br />
 		Extends the auto generated <i>import</i> to the classes referenced
 		by the attributes, associations and operations. Previously only
 		the inherited classes and dependencies stereotyped <i>import</i> or
-		<i>from</i> was taken into account.<br />
+		<i>from</i> was taken into account.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2981317&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
+		<br />
 		Returns the number of errors through <i>UmlCom::bye()</i>.
 		<br /><br /></li>
 
@@ -298,6 +600,7 @@
 	<li><b>C++ Roundtrip 1.0.4</b><br />
  	    <b>Java Roundtrip 1.2.3</b><br />
 		To not empty the stereotypes when this is possible.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2964232&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li><b>Java Generator 2.19.2</b><br />
@@ -313,6 +616,7 @@
     <ul>
 	<li> The message written to signal a message can't be added in a sequence diagram
 		contained wrong characters, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2954397&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> Add lost/found messages in sequence diagram.
@@ -331,6 +635,7 @@
 	<li> In a sequence diagram, when an instance doesn't send nor receive message
 		the menu of the instance proposes to hide/show the life line. To allow
 		to draw a multiple instance with only one visible life line.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2957895&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>XMI2 Generator 1.12.3</b><br />
@@ -358,6 +663,7 @@
     <ul>
 	<li> The class instances wasn't colored when you asked to
 		not draw the shadow in a sequence or communication diagrams, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2948518&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>C++ Reverse 2.12.4</b><br />
@@ -400,6 +706,7 @@
 	<li> <font color="red">A crash could occurred when you did some changes on relations
 		used by 'modeled' class instances (non pure graphical class instances)
 		or reload a project defining 'modeled' class instances</font>, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2946401&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> In a class diagram when the drawing setting <i>draw all relations</i> was false
@@ -407,6 +714,7 @@
 		to true, then to remove undesired shown relations. Now the menu of a nested
 		class proposes to show the nesting relation when it is not yet drawn and the container
 		class is present.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2944635&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>XMI2 Import 1.7.2</b><br />
@@ -435,6 +743,7 @@
 		diagram may crashed the memory under Windows because of a bug in
 		Microsoft Visual C++ compiler, this problem potentially also
 		existed in other cases</font>, bypassed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2938413&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> I was forbidden to add a flow from an action to an object whose
@@ -444,6 +753,7 @@
 	<li> When you added a shortcut the indications control/shift/alt was removed when
 		you specified the key in case the current line was the last (generally the case),
 		fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2931302&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> Add the new shortcut commands <i>Open project, Print</i> and
@@ -452,6 +762,7 @@
 		Also add default shortcut <i>control p</i> printing the active shown diagram.<br />
 		<font color="#C05800">Warning, the default shortcut to generate Php source is
 		now <i>control h</i> rather than <i>control p</i></font>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2931306&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>XMI2 Generator 1.12.2</b><br />
@@ -532,6 +843,7 @@
     <ul>
 	<li> A crash occurred when you load an inconsistent model where two
 		operations share the same internal identifier, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2919212&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> The optional parameters wasn't given to the init/check plug-outs
@@ -541,6 +853,7 @@
 	<li> The boxes representing the class instances was not produced in SVG
 		when you didn't ask for to draw the shadows and they aren't
 		transparent, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2911980&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 	
 	<li> Add the new shortcut commands <i>Optimal scale, Optimal window size,
@@ -570,12 +883,14 @@
 
 	<li> It is now possible to have a class diagram under a use case or a use case view,
 		this allows to define Iconix <i>robustness diagram</i> throw class diagram.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2917698&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>XMI2 Generator 1.12.1</b><br />
 		The post condition of an activity actions was not
 		exported, and the pre conditions wasn't exported
 		when the post condition was empty, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2909605&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>C++ Roundtrip 1.0</b><br />
@@ -641,6 +956,7 @@
 	<li> Facilitates the adding in a diagram of a incoming/outgoing
 		line (transition, flow ...) to/from a small item already
 		having lines.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2902077&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> When you moved a decentered line having a geometry (
@@ -650,6 +966,7 @@
 		<img src="doc/figs/linegeo4.png" alt="" border="0" />),
 		the attached labels (name, stereotype ...) could be moved
 		more than expected, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2902076&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		</li>
     </ul>
 <br /><br />
@@ -666,6 +983,7 @@
 		state container or region. When you add a state the already
 		draw sub elements are moved to be inside the added state, but
 		because the added state is small this poorly place them.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2897603&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> You can now decenter lines (relations, transition ...)
@@ -676,12 +994,14 @@
 		<img src="doc/figs/linegeo4.png" alt="" border="0" />),
 		when you change the geometry the line is first recentered
 		on both	extremities.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2897603&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>C++ Generator 2.15.1</b><br />
 		A space was missing between the two last &gt; in an inheritance
 		of a template class when the last actual is also a template class,
 		fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2899194&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		</li>
     </ul>
 <br /><br />
@@ -691,22 +1011,26 @@
     <ul>
 	<li> Except few exceptions when you resized element like classes
 		the edge didn't follow the cursor, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2889624&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 	
 	<li> It was difficult to select a line drawn between an element
 		to an other element placed inside the first one 
 		(for instance between a state machine and a sub state drawn
 		inside its state machine), fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2893254&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 	
 	<li> In activity diagrams the stereotype of an action is now written,
 		except for <i>opaque actions</i> when you ask for to show
 		their definition through the drawing settings.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2887336&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> You can now change the parent of a state, pseudo state and region
 		through drag&amp;drop in the browser while you stay inside the
 		container state	machine.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2893747&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <i>de.lang</i> added allowing to use the modeler in German,
@@ -731,6 +1055,7 @@
 		<i>import as library</i> or <i>import tools</i>
 		crashed the memory under Windows because of a bug in Microsoft Visual
 		C++ compiler</font>, bypassed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2885920&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> The tools dialog had wrong/random wording due to illegal memory
@@ -756,23 +1081,27 @@
 		an associated icon. Now like for in a class diagram the icon
 		associated to the stereotype is used when the drawing setting
 		values <i>natural</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2876643&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> It is now possible to show/hide the visibility of the relations between
 		classes depending on the value of the drawing settings
 		<i>show relation visibility</i>. By default the visibility
 		of the relations of not shown.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2881733&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> Messages in a sequence diagram can now be stereotyped (by textual
 		stereotype out of profile). Default message stereotypes can
 		be set through the default stereotype dialog.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2875724&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> It is now possible to ask for to draw a <i>decomposition indicator icon</i>
 		in a state in a state diagram. By default the icon is not shown. The fact
 		the icon is drawn or not is under your responsability, Bouml doesn't check
 		if this is consistent or not.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2877040&amp;group_id=212600&amp;atid=1022386" target="_blank">cf.</a>)
 		<br /><br /></li>
 	
 	<li> <b>Plug-out upgrade 1.15.1</b><br />
@@ -865,6 +1194,7 @@
 		the main window is closed but it is possible to have
 		the <i>bouml.exe</i> process still alive and looping
 		indefinitely (problem not reproducted signaled by only one user), bypassed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2832101&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 		
 	<li> In a class diagram it is now possible to resize the classes
@@ -892,7 +1222,9 @@
 		a default value being a template form (i.e. finishing by a &gt;)
 		and also in the instantiation of a template class where
 		the last actual is a template form but doesn't correspond
-		to the last formal (next formals having default value)<br />
+		to the last formal (next formals having default value)
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2819673&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
+		<br />
 		To manage new generation setting <i>inline force include in header</i><br />
 		To avoid a crash on exit when bouml exits before.<br />
 		Follow the new API.
@@ -922,6 +1254,7 @@
 
 	<li> <b>XMI2 Generator 1.11.1</b><br />
 		To export transition's description and <i>tagged values</i>.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2839028&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <i>Plug-out</i> <b>empty</b><br />
@@ -1059,7 +1392,8 @@
 
 	<li> <b>Plug-out upgrade 1.13</b><br />
 		A crash occurred when you upgraded an old <i>plug-out</i>
-			without	Python management, fixed.<br />			
+			without	Python management, fixed.
+			(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2794522&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)<br />			
 		Follow the new API.
 		<br /><br /></li>
 
@@ -1084,6 +1418,7 @@
 	<li> <b>XMI Generator 1.4.6</b><br />
 		When a parameter of an operation doesn't have type
 		the token <i>UML:Parameter</i> wasn't closed, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2799940&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> <b>XMI2 Generator 1.10.2</b><br />
@@ -1106,6 +1441,7 @@ New user contribution, please refer to <a href="contrib.html">contributions</a>
 		in diagrams it was difficult to select small elements connected
 		to a line in diagram and to connect required '(' and provided 'O'
 		representations in a component diagram, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2783447&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> You can now close all the opened diagrams through the entry
@@ -1120,6 +1456,7 @@ New user contribution, please refer to <a href="contrib.html">contributions</a>
     <ul>
 	<li> <font color="red">When you duplicated a state Bouml
 		could crash</font>, fixed.
+		(<a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2727112&amp;group_id=212600&amp;atid=1022383" target="_blank">cf.</a>)
 		<br /><br /></li>
 
 	<li> When you deleted attribute or operation of a class through a plug-out

@@ -1,4 +1,8 @@
 
+#ifdef WIN32
+#include <stdlib.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <qvbox.h>
@@ -44,6 +48,19 @@ TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
   QString s = QDir::home().absFilePath(".boumlrc");
   FILE * fp = fopen((const char *) s, "r");
 
+#ifdef WIN32
+  if (fp == 0) {
+    QString hd = getenv("USERPROFILE");
+    
+    if (! hd.isEmpty()) {
+      QDir d(hd);
+      QString s2 = d.absFilePath(".boumlrc");
+      
+      fp = fopen((const char *) s2, "r");
+    }
+  }
+#endif
+
   if (fp == 0)
     cs = getenv("BOUML_CHARSET");
   else {
@@ -62,7 +79,18 @@ TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
 	}
 	
 	cs = line+8;
-	break;
+      }
+      else if (!strncmp(line, "DESKTOP ", 8)) {
+	int l, t, r, b;
+	
+	if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4) {
+	  if (!((r == 0) && (t == 0) && (r == 0) && (b == 0)) &&
+	      !((r < 0) || (t < 0) || (r < 0) || (b < 0)) &&
+	      !((r <= l) || (b <= t))) {
+	    desktopCenter.setX((r + l) /2);
+	    desktopCenter.setY((t + b) / 2);
+	  }
+	}
       }
     }
     
@@ -99,6 +127,14 @@ TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
       addTab(vbox, Tabs[i].key);
     }
   }
+}
+
+void TabDialog::polish() {
+  QTabDialog::polish();
+  
+  if (! desktopCenter.isNull())
+    move(x() + desktopCenter.x() - (x() + width() / 2), 
+	 y() + desktopCenter.y() - (y() + height() / 2));
 }
 
 void TabDialog::accept() {

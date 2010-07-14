@@ -208,6 +208,14 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsGenerateJavadocStyleComment(bool v);
 
+    // return the indent of the visibility
+    static const QCString & visibilityIndent();
+
+    // set visibility indent
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_VisibilityIndent(QCString v);
+
     // returns the default operation 'in' parameter specification 
     // in case its type is an enum
     static const QCString & enumIn();
@@ -648,6 +656,8 @@ class CppSettings : public UmlSettings {
     static bool _is_generate_javadoc_comment;
 
     static bool _is_inline_force_header_in_h;
+    
+    static QCString _visibility_indent;
 
     static QDict<QCString> _map_includes;
 

@@ -32,6 +32,8 @@
 #include <qcursor.h>
 
 #include "BrowserPseudoState.h"
+#include "PseudoStateData.h"
+#include "StateData.h"
 #include "BrowserState.h"
 #include "BrowserTransition.h"
 #include "TransitionData.h"
@@ -54,22 +56,21 @@ IdDict<BrowserPseudoState> BrowserPseudoState::all(257, __FILE__);
 QStringList BrowserPseudoState::its_default_stereotypes;	// unicode
 
 BrowserPseudoState::BrowserPseudoState(UmlCode c, QString s, BrowserNode * p,
-				       SimpleData * d, int id)
+				       PseudoStateData * d, int id)
     : BrowserNode(s, p), Labeled<BrowserPseudoState>(all, id), kind(c), def(d) {
   def->set_browser_node(this);
 }
 
 BrowserPseudoState::BrowserPseudoState(int id)
     : BrowserNode(), Labeled<BrowserPseudoState>(all, id),
-      kind(UmlPseudoState), def(new SimpleData) {
+      kind(UmlPseudoState), def(new PseudoStateData) {
   // not yet read
   def->set_browser_node(this);
 }
 
 BrowserPseudoState::BrowserPseudoState(const BrowserPseudoState * model, BrowserNode * p)
     : BrowserNode(model->name, p), Labeled<BrowserPseudoState>(all, 0) {
-  def = new SimpleData(model->def);
-  def->set_browser_node(this);
+  def = new PseudoStateData(model->def, this);
   comment = model->comment;
   kind = model->kind;
 }
@@ -304,7 +305,7 @@ BrowserPseudoState *
 BrowserPseudoState::add_pseudostate(BrowserNode * future_parent,
 				    UmlCode c, const char * name)
 {
-  return new BrowserPseudoState(c, name, future_parent, new SimpleData());
+  return new BrowserPseudoState(c, name, future_parent, new PseudoStateData());
 }
 
 BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_parent, UmlCode c) {
@@ -349,7 +350,7 @@ BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_pa
     break;
   }
   
-  SimpleData * sd = new SimpleData();
+  PseudoStateData * sd = new PseudoStateData();
   BrowserPseudoState * r = new BrowserPseudoState(c, name, future_parent, sd);
   
   sd->set_browser_node(r);
@@ -474,18 +475,8 @@ void BrowserPseudoState::apply_shortcut(QString s) {
 }
 
 void BrowserPseudoState::open(bool) {
-  if (!is_edited) {
-    QString s = stringify(kind);
-    int index = s.find("_");
-    
-    if (index != -1)
-      s.replace(index, 1, " ");
-    
-    static QSize previous_size;
-    
-    (new BasicDialog(get_data(), s, its_default_stereotypes,
-		     previous_size, allow_empty()))->show();
-  }
+  if (!is_edited)
+    def->edit();
 }
 
 void BrowserPseudoState::modified() {
@@ -528,6 +519,20 @@ QString BrowserPseudoState::full_name(bool rev, bool) const {
     s = stringify(kind);
 
   return fullname(s, rev);
+}
+
+bool BrowserPseudoState::can_reference(BrowserNode * x) const {
+  if ((x->get_type() != get_type()) ||
+      (((BrowserNode *) parent())->get_type() != UmlState))
+    return FALSE;
+  
+  BrowserNode * ref =
+    ((StateData *) ((BrowserNode *) parent())->get_data())->get_reference();
+  
+  return ((ref != 0) && 
+	  ((x->parent() == ref) ||
+	   ((((BrowserNode *) x->parent())->get_type() == UmlRegion) &&
+	    (x->parent()->parent() == ref))));
 }
 
 void BrowserPseudoState::init()
@@ -733,12 +738,12 @@ BrowserPseudoState * BrowserPseudoState::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserPseudoState(c, (allow_empty(c)) ? "" : (const char *) read_string(st),
-				      parent, new SimpleData, id);
+				      parent, new PseudoStateData, id);
     else if (result->is_defined) {
       BrowserPseudoState * already_exist = result;
 
       result = new BrowserPseudoState(c, (allow_empty(c)) ? "" : (const char *) read_string(st),
-				      parent, new SimpleData, id);
+				      parent, new PseudoStateData, id);
 
       already_exist->must_change_id(all);
       already_exist->unconsistent_fixed("pseudo state", result);

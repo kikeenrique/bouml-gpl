@@ -45,6 +45,7 @@
 #include "IconCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "myio.h"
@@ -519,6 +520,7 @@ void ClassDiagramView::save(QTextStream & st, QString & warning,
     case UmlClass:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlPackage:
     case UmlFragment:
     case UmlIcon:
@@ -560,13 +562,14 @@ void ClassDiagramView::save(QTextStream & st, QString & warning,
 void ClassDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first the classes package icons text and notes
+  // reads first the classes package icons text notes and images
   while (CdClassCanvas::read(st, canvas, k) ||
 	 NoteCanvas::read(st, canvas, k) ||
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
-	 FragmentCanvas::read(st, canvas, k))
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

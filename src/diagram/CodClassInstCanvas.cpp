@@ -226,7 +226,7 @@ void CodClassInstCanvas::menu(const QPoint&) {
     m.insertItem(TR("Replace it"), 11);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   if (modelized && browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 8);
   

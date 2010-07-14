@@ -125,6 +125,7 @@ class GenerationSettings {
     static bool cpp_set_inline;
     static bool cpp_set_param_const;
     static bool cpp_set_param_ref;
+    static QCString cpp_indent_visibility;
     
     static bool java_default_defs;
     static bool java_javadoc_comment;
@@ -222,6 +223,7 @@ class GenerationSettings {
     static bool php_req_with_path;
     static bool php_relative_path;
     static bool php_root_relative_path;
+    static bool php_force_namespace_gen;
     static QString python_extension;
     static QString idl_extension;
     static IncludesSpec idl_includes;

@@ -127,6 +127,30 @@ void GenerationSettingsDialog::init_stereotypes() {
   addTab(grid, TR("Stereotypes"));
 }  
 
+static void init_indent(QComboBox * cb, const char * v)
+{
+  cb->insertItem(TR("empty"));
+  cb->insertItem(TR("1 space"));
+  
+  QCString f = "%1 spaces";
+  QCString s = "2";
+  
+  for (char c = '2'; c != '9'; c += 1) {
+    s[0] = c;
+    cb->insertItem(TR(f, s));
+  }
+  
+  cb->insertItem(TR("1 tab"));
+  
+  if (*v == '\t')
+    cb->setCurrentItem(9);
+  else {
+    int n = strlen(v);
+    
+    cb->setCurrentItem((n > 8) ? 8 : n);
+  }
+}
+
 void GenerationSettingsDialog::init_cpp1() {
   QVBox * vtab = new QVBox(this);
   QGrid * grid = new QGrid(2, vtab);
@@ -198,6 +222,10 @@ void GenerationSettingsDialog::init_cpp1() {
   htab->setStretchFactor(new QLabel(TR("            generate Javadoc \n            style comment : "), htab), 0);
   cpp_javadoc_cb = new QCheckBox(htab);
   cpp_javadoc_cb->setChecked(GenerationSettings::cpp_javadoc_comment);
+  
+  htab->setStretchFactor(new QLabel(TR("            visibility indent : "), htab), 0);
+  indentvisi_cb = new QComboBox(FALSE, htab);
+  init_indent(indentvisi_cb, GenerationSettings::cpp_indent_visibility);
   
   htab->setStretchFactor(new QLabel(htab), 1000);
   
@@ -775,7 +803,7 @@ void GenerationSettingsDialog::init_php1() {
   vtab->setMargin(3);
   htab2->setMargin(3);
 
-  new QLabel(TR("    generated / reversed \n    file extension : "), htab2);
+  new QLabel(TR("    generated / reversed file extension : "), htab2);
   edphp_extension = new QComboBox(TRUE, htab2);
   edphp_extension->insertItem(GenerationSettings::php_extension);
   edphp_extension->setCurrentItem(0);
@@ -783,7 +811,7 @@ void GenerationSettingsDialog::init_php1() {
 
   htab2 = new QHBox(vtab);
   htab2->setMargin(3);
-  new QLabel(TR("    generate Javadoc \n    style comment : "), htab2);
+  new QLabel(TR("    generate Javadoc style comment : "), htab2);
   php_javadoc_cb = new QCheckBox(htab2);
   php_javadoc_cb->setChecked(GenerationSettings::php_javadoc_comment);
 
@@ -803,6 +831,12 @@ void GenerationSettingsDialog::init_php1() {
     php_require_with_path_cb->setCurrentItem(3);
   else
     php_require_with_path_cb->setCurrentItem(1);
+  
+  htab2 = new QHBox(vtab);
+  htab2->setMargin(3);
+  new QLabel(TR("    force namespace prefix generation : "), htab2);
+  php_force_namespace_gen_cb = new QCheckBox(htab2);
+  php_force_namespace_gen_cb->setChecked(GenerationSettings::php_force_namespace_gen);
 
   new QLabel(TR("Class default \ndeclaration :"), grid);
   edphp_class_decl = new MultiLineEdit(grid);
@@ -940,9 +974,8 @@ void GenerationSettingsDialog::init_python1() {
   QHBox * htab = new QHBox(grid);
 
   htab->setMargin(3);
-  indentstep_sb = new QSpinBox(1, 8, 1, htab);
-  indentstep_sb->setSuffix(TR(" spaces"));
-  indentstep_sb->setValue(GenerationSettings::python_indent_step.length());
+  indentstep_cb = new QComboBox(FALSE, htab);
+  init_indent(indentstep_cb, GenerationSettings::python_indent_step);
   
   QLabel * lbl = new QLabel(htab);
   QSizePolicy sp = lbl->sizePolicy();
@@ -1522,12 +1555,12 @@ than absolute.\n"
   QLabel * lbl1 = new QLabel(TR("C++ root dir : "), htab);
   edcpproot = new LineEdit(GenerationSettings::cpp_root_dir, htab);
   new QLabel(" ", htab);
-  button = new QPushButton(TR("Browse"), htab);
+  button = new SmallPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(cpproot_browse()));
   new QLabel("", htab);
-  cpprelbutton = new QPushButton((GenerationSettings::cpp_root_dir.isEmpty() || 
-				  QDir::isRelativePath(GenerationSettings::cpp_root_dir))
-				 ? Absolute : Relative, htab);
+  cpprelbutton = new SmallPushButton((GenerationSettings::cpp_root_dir.isEmpty() || 
+				      QDir::isRelativePath(GenerationSettings::cpp_root_dir))
+				     ? Absolute : Relative, htab);
   connect(cpprelbutton, SIGNAL(clicked ()), this, SLOT(cpp_relative()));
   new QLabel("", htab);
   
@@ -1540,12 +1573,12 @@ than absolute.\n"
   QLabel * lbl2 = new QLabel(TR("Java root dir : "), htab);
   edjavaroot = new LineEdit(GenerationSettings::java_root_dir, htab);
   new QLabel(" ", htab);
-  button = new QPushButton(TR("Browse"), htab);
+  button = new SmallPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(javaroot_browse()));
   new QLabel("", htab);
-  javarelbutton = new QPushButton((GenerationSettings::java_root_dir.isEmpty() || 
-				   QDir::isRelativePath(GenerationSettings::java_root_dir))
-				  ? Absolute : Relative, htab);
+  javarelbutton = new SmallPushButton((GenerationSettings::java_root_dir.isEmpty() || 
+				       QDir::isRelativePath(GenerationSettings::java_root_dir))
+				      ? Absolute : Relative, htab);
   connect(javarelbutton, SIGNAL(clicked ()), this, SLOT(java_relative()));
   new QLabel("", htab);
   
@@ -1558,12 +1591,12 @@ than absolute.\n"
   QLabel * lbl3 = new QLabel(TR("Php root dir : "), htab);
   edphproot = new LineEdit(GenerationSettings::php_root_dir, htab);
   new QLabel(" ", htab);
-  button = new QPushButton(TR("Browse"), htab);
+  button = new SmallPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(phproot_browse()));
   new QLabel("", htab);
-  phprelbutton = new QPushButton((GenerationSettings::php_root_dir.isEmpty() || 
-				   QDir::isRelativePath(GenerationSettings::php_root_dir))
-				  ? Absolute : Relative, htab);
+  phprelbutton = new SmallPushButton((GenerationSettings::php_root_dir.isEmpty() || 
+				      QDir::isRelativePath(GenerationSettings::php_root_dir))
+				     ? Absolute : Relative, htab);
   connect(phprelbutton, SIGNAL(clicked ()), this, SLOT(php_relative()));
   new QLabel("", htab);
   
@@ -1576,12 +1609,12 @@ than absolute.\n"
   QLabel * lbl4 = new QLabel(TR("Python root dir : "), htab);
   edpythonroot = new LineEdit(GenerationSettings::python_root_dir, htab);
   new QLabel(" ", htab);
-  button = new QPushButton(TR("Browse"), htab);
+  button = new SmallPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(pythonroot_browse()));
   new QLabel("", htab);
-  pythonrelbutton = new QPushButton((GenerationSettings::python_root_dir.isEmpty() || 
-				     QDir::isRelativePath(GenerationSettings::python_root_dir))
-				    ? Absolute : Relative, htab);
+  pythonrelbutton = new SmallPushButton((GenerationSettings::python_root_dir.isEmpty() || 
+					 QDir::isRelativePath(GenerationSettings::python_root_dir))
+					? Absolute : Relative, htab);
   connect(pythonrelbutton, SIGNAL(clicked ()), this, SLOT(python_relative()));
   new QLabel("", htab);
   
@@ -1594,12 +1627,12 @@ than absolute.\n"
   QLabel * lbl5 = new QLabel(TR("Idl root dir : "), htab);
   edidlroot = new LineEdit(GenerationSettings::idl_root_dir, htab);
   new QLabel(" ", htab);
-  button = new QPushButton(TR("Browse"), htab);
+  button = new SmallPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(idlroot_browse()));
   new QLabel("", htab);
-  idlrelbutton = new QPushButton((GenerationSettings::idl_root_dir.isEmpty() || 
-				  QDir::isRelativePath(GenerationSettings::idl_root_dir))
-				 ? Absolute : Relative, htab);
+  idlrelbutton = new SmallPushButton((GenerationSettings::idl_root_dir.isEmpty() || 
+				      QDir::isRelativePath(GenerationSettings::idl_root_dir))
+				     ? Absolute : Relative, htab);
   connect(idlrelbutton, SIGNAL(clicked ()), this, SLOT(idl_relative()));
   new QLabel("", htab);
   
@@ -1715,6 +1748,15 @@ void GenerationSettingsDialog::follow_idl_set_name() {
     uml_follow_php_set_name->setChecked(FALSE);
     uml_follow_python_set_name->setChecked(FALSE);
   }
+}
+
+static const char * get_indent(QComboBox * cb)
+{
+  int n = cb->currentItem();
+  
+  return (n == 9)
+    ? "\t"
+    : "        " + (8 - n);
 }
 
 void GenerationSettingsDialog::accept() {
@@ -1841,6 +1883,7 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_oper_decl = edcpp_oper_decl->text();
     GenerationSettings::cpp_oper_def = edcpp_oper_def->text();
     GenerationSettings::cpp_force_throw = cpp_force_throw_cb->isChecked();
+    GenerationSettings::cpp_indent_visibility = get_indent(indentvisi_cb);
     
     GenerationSettings::java_class_decl = edjava_class_decl->text();
     GenerationSettings::java_external_class_decl = edjava_external_class_decl->text();
@@ -1887,7 +1930,10 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::php_root_relative_path = TRUE;
     }
     
-    GenerationSettings::python_indent_step = "        " + (8 - indentstep_sb->value());
+    GenerationSettings::php_force_namespace_gen = 
+      php_force_namespace_gen_cb->isChecked();
+    
+    GenerationSettings::python_indent_step = get_indent(indentstep_cb);
     GenerationSettings::python_2_2 = python_2_2_cb->isChecked();
     GenerationSettings::python_3_operation = python_3_operation_cb->isChecked();
     GenerationSettings::python_class_decl = edpython_class_decl->text();
@@ -2037,8 +2083,10 @@ void GenerationSettingsDialog::cpproot_browse() {
     QFileDialog::getExistingDirectory(edcpproot->text(), this, 0,
 				      TR("C++ root directory"));
   
-  if (! dir.isNull())
+  if (! dir.isNull()) {
     edcpproot->setText(dir);
+    cpprelbutton->setText(Relative);
+  }
 }
 
 void GenerationSettingsDialog::javaroot_browse() {
@@ -2046,8 +2094,10 @@ void GenerationSettingsDialog::javaroot_browse() {
     QFileDialog::getExistingDirectory(edjavaroot->text(), this, 0,
 				      TR("Java root directory"));
   
-  if (! dir.isNull())
+  if (! dir.isNull()) {
     edjavaroot->setText(dir);
+    javarelbutton->setText(Relative);
+  }
 }
 
 void GenerationSettingsDialog::phproot_browse() {
@@ -2055,8 +2105,10 @@ void GenerationSettingsDialog::phproot_browse() {
     QFileDialog::getExistingDirectory(edphproot->text(), this, 0,
 				      TR("Php root directory"));
   
-  if (! dir.isNull())
+  if (! dir.isNull()) {
     edphproot->setText(dir);
+    phprelbutton->setText(Relative);
+  }
 }
 
 void GenerationSettingsDialog::pythonroot_browse() {
@@ -2064,8 +2116,10 @@ void GenerationSettingsDialog::pythonroot_browse() {
     QFileDialog::getExistingDirectory(edpythonroot->text(), this, 0,
 				      TR("Python root directory"));
   
-  if (! dir.isNull())
+  if (! dir.isNull()) {
     edpythonroot->setText(dir);
+    pythonrelbutton->setText(Relative);
+  }
 }
 
 void GenerationSettingsDialog::idlroot_browse() {
@@ -2073,8 +2127,10 @@ void GenerationSettingsDialog::idlroot_browse() {
     QFileDialog::getExistingDirectory(edidlroot->text(), this, 0,
 				      TR("Idl root directory"));
   
-  if (! dir.isNull())
+  if (! dir.isNull()) {
     edidlroot->setText(dir);
+    idlrelbutton->setText(Relative);
+  }
 }
 
 void GenerationSettingsDialog::relative(LineEdit * ed, QPushButton * button) {

@@ -104,12 +104,12 @@ void UmlAttribute::generate_index()
     start_file("public_properties", "Public Properties Index", TRUE);
     
     fw.write("<table>\n");
-    fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Property</b></td><td align=center><b>Class</b></td><td align=center><b>Description</b></td></tr>\n");
+    fw.write("<tr bgcolor=\"#f0f0f0\"><td align=\"center\"><b>Property</b></td><td align=\"center\"><b>Class</b></td><td align=\"center\"><b>Description</b></td></tr>\n");
       
     for (unsigned i = 0; i != n; i += 1) {
       UmlItem * prop = attrs.elementAt(i);
       
-      fw.write("<tr bgcolor=#f0f0f0><td>");
+      fw.write("<tr bgcolor=\"#f0f0f0\"><td>");
       prop->write();
       fw.write("</td><td>");
       prop->parent()->write();

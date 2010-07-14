@@ -399,6 +399,8 @@ QString BrowserClass::contextual_name(ShowContextMode mode) const {
   QString sep;
   
   switch (mode) {
+  case noContext:
+    return get_name();
   case umlContext:
     return fullname(FALSE);
   case namespaceContext:
@@ -417,8 +419,10 @@ QString BrowserClass::contextual_name(ShowContextMode mode) const {
     f = &PackageData::get_idl_module;
     sep = "::";
     break;
-  default:
-    return get_name();
+  case DefaultShowContextMode:
+    f = 0;
+    sep = "::";
+    break;
   }
   
   QString s = get_name();
@@ -430,6 +434,9 @@ QString BrowserClass::contextual_name(ShowContextMode mode) const {
       s = cl->get_name() + sep + s;
     } while (cl->nestedp());
   }
+  
+  if (f == 0)
+    return s;
     
   if (((BrowserNode *) cl->parent())->get_type() == UmlClassView) {
     // not under a use case
@@ -1928,6 +1935,7 @@ const QStringList & BrowserClass::default_stereotypes(UmlCode arrow, const Brows
     {
       static QStringList l;
   
+      l.clear();
       if (arrow == UmlDependOn)
 	l.append("import");
       return l;

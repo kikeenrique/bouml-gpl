@@ -48,6 +48,7 @@ class ColDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
   
   public:
     ColDiagramWindow(const QString & s, BrowserColDiagram *, int id = -1);
@@ -67,6 +68,7 @@ class ColDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

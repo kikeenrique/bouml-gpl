@@ -6,33 +6,33 @@ class UmlOpaqueAction
 !!!202114.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   UmlActivityAction::html();
 
-  fw.write("<p>Behavior :</p><ul>");
-  
   QCString s = behavior();
+  QCString scpp = cppBehavior();
+  QCString sjava = javaBehavior();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Behavior :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppBehavior();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaBehavior();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 
@@ -40,35 +40,33 @@ class UmlOpaqueAction
 !!!202114.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   super.html();
 
-  String s;
+  String s = behavior();
+  String scpp = cppBehavior();
+  String sjava = javaBehavior();
   
+  if ((s.length() != 0) || (scpp.length() != 0) || (sjava.length() != 0)) {
     fw.write("<p>Behavior :</p><ul>");
-  
-  s = behavior();
-
-  if (s.length() != 0) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+    
+    if (s.length() != 0) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (scpp.length() != 0) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (sjava.length() != 0) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppBehavior();
-
-  if (s.length() != 0) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaBehavior();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 

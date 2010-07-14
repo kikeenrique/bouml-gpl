@@ -16,13 +16,15 @@ class QRadioButton;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(QCString & path, QCString & encoding, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang);
+    Dialog(QCString & path, QCString & encoding, QCString & nomodel, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang);
 
 
   protected:
     QCString & _path;
 
     QCString & _encoding;
+
+    QCString & _nomodel;
 
     QCString & _genview;
 
@@ -57,6 +59,8 @@ class Dialog : public QDialog {
 
     QComboBox * encoding_cb;
 
+    QCheckBox * nomodel_cb;
+
     QCheckBox * genview_cb;
 
     QCheckBox * pk_cb;
@@ -74,6 +78,8 @@ class Dialog : public QDialog {
     QCheckBox * linefeed_cb;
 
   protected slots:
+    virtual void polish();
+
     void browse();
 
     void accept_cpp();

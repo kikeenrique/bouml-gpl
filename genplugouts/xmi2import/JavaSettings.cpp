@@ -199,6 +199,58 @@ bool JavaSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+QCString JavaSettings::reverseRoundtripDirRegExp()
+{
+  read_if_needed_();
+
+  return _dir_regexp;
+}
+
+bool JavaSettings::isReverseRoundtripDirRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+}
+
+bool JavaSettings::set_ReverseRoundtripDirRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaDirRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _dir_regexp = s;
+    _dir_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString JavaSettings::reverseRoundtripFileRegExp()
+{
+  read_if_needed_();
+
+  return _file_regexp;
+}
+
+bool JavaSettings::isReverseRoundtripFileRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+}
+
+bool JavaSettings::set_ReverseRoundtripFileRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaFileRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _file_regexp = s;
+    _file_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool JavaSettings::isGenerateJavadocStyleComment()
 {
   read_if_needed_();
@@ -605,6 +657,14 @@ QCString JavaSettings::_src_content;
 
 QCString JavaSettings::_ext;
 
+QCString JavaSettings::_dir_regexp;
+
+bool JavaSettings::_dir_regexp_case_sensitive;
+
+QCString JavaSettings::_file_regexp;
+
+bool JavaSettings::_file_regexp_case_sensitive;
+
 bool JavaSettings::_is_generate_javadoc_comment;
 
 bool JavaSettings::_is_force_package_gen;
@@ -671,6 +731,12 @@ void JavaSettings::read_()
   _is_set_param_final = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
   _is_force_package_gen = UmlCom::read_bool();
+
+  _dir_regexp = UmlCom::read_string();
+  _dir_regexp_case_sensitive = UmlCom::read_bool();
+
+  _file_regexp = UmlCom::read_string();
+  _file_regexp_case_sensitive = UmlCom::read_bool();
 }
 
 void JavaSettings::read_if_needed_()

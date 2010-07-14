@@ -58,6 +58,7 @@ QString anchorText() { return TR("Click this button to create a connection betwe
 				 "<i>note</i> and any other item, or between an <i>association</i> "
 				 "and a <i>class</i> in case of an <i>association class</i>."); }
 extern QString textText();
+QString imageText() { return TR("Click this button to add an <i>image</i>"); }
 
 // id is an old ident in case of an import
 UseCaseDiagramWindow::UseCaseDiagramWindow(const QString & s, BrowserUseCaseDiagram * b, int id)
@@ -146,6 +147,12 @@ UseCaseDiagramWindow::UseCaseDiagramWindow(const QString & s, BrowserUseCaseDiag
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -208,6 +215,7 @@ void UseCaseDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -259,5 +267,9 @@ void UseCaseDiagramWindow::hit_anchor() {
 
 void UseCaseDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void UseCaseDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

@@ -106,10 +106,6 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
       manage_comment(p, pp, PhpSettings::isGenerateJavadocStyleComment());
     else if (!strncmp(p, "${description}", 14))
       manage_description(p, pp);
-    else if (!strncmp(p, "${visibility}", 13)) {
-      p += 13;
-      generate_visibility(f);
-    }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
       if (isPhpFinal())
@@ -291,6 +287,34 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
 }
 
 void UmlClass::write(QTextOStream & f) {
+  QCString nasp;
+  UmlArtifact * a = associatedArtifact();
+
+  if (a != 0)
+    // no nested class in Php
+    nasp = ((UmlPackage *) a->parent()->parent())->phpNamespace();
+  
+  if (PhpSettings::isForceNamespacePrefixGeneration()) {
+    f << '\\';
+    
+    if (!nasp.isEmpty())
+      f << nasp << '\\';
+  }
+  else {
+    const QCString & currentNasp =
+      UmlArtifact::generation_package()->phpNamespace();
+    
+    if (nasp != currentNasp) {    
+      if (nasp.isEmpty())
+	f << '\\';
+      else if ((strncmp(nasp, currentNasp, currentNasp.length()) == 0) &&
+	       (nasp.at(currentNasp.length()) == '\\'))
+	f << ((const char *) nasp) + currentNasp.length() + 1 << '\\';
+      else
+	f << '\\' << nasp << '\\';
+    }
+  }
+
   if (isPhpExternal()) {
     QCString s = phpDecl().stripWhiteSpace();
     int index;

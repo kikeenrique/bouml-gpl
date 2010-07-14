@@ -1,3 +1,28 @@
+// *************************************************************************
+//
+// Copyright 2004-2010 Bruno PAGES  .
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
 #include <qptrdict.h>
 #include <qdict.h>
 #include <qpopupmenu.h>
@@ -16,6 +41,7 @@
 #include "Tool.h"
 #include "ToolCom.h"
 #include "DialogUtil.h"
+#include "Images.h"
 #include "translate.h"
 
 struct ProfiledStereotype {
@@ -61,13 +87,6 @@ static QDict<ProfiledStereotype> All;
 
 // all the pixmap for browser, key = path
 static QDict<QPixmap> BrowserPixmap;
-
-// all the pixmap for diagram with scale 100, key = path,
-static QDict<QPixmap> DiagramPixmap;
-
-// all the pixmap for diagram, key = path,
-// value is QPtrDict with key = width
-static QDict<QPtrDict<QPixmap> > DiagramScaledPixmap;
 
 // to continue to apply check recursively
 struct CheckCell {
@@ -231,48 +250,37 @@ void ProfiledStereotype::setIcon() {
   if ((path == 0) || (*path == 0))
     return;
   
-  QPixmap * px = DiagramPixmap.find(path);
+  QPixmap * px = BrowserPixmap.find(path);
   
   if (px != 0) {
-    if (px->isNull())
-      return;
-    
-    browser_icon = BrowserPixmap[path];
-  }
-  
-  px = new QPixmap(path);
-    
-  DiagramPixmap.insert(path, px);
-    
-  if (px->isNull()) {
-    msg_critical(TR("Error"),
-		 QString(path) + TR("\ndoesn't exist or is not a know image format"));
-    return;
-  }
-    
-  //
-    
-  DiagramScaledPixmap.insert(path, new QPtrDict<QPixmap>());
-  
-  //
-  
-  int w = px->width();
-  int h = px->height();
-  
-  if (w > h) {
-    h = (int) (h * 16.0 / w);
-    w = 16;
+    if (!(px->isNull()))
+      browser_icon = BrowserPixmap[path];
   }
   else {
-    w = (int) (w * 16.0 / h);
-    h = 16;
+    px = get_pixmap(path);
+    
+    if (px == 0)
+      BrowserPixmap.insert(path, new QPixmap());
+    else {
+      int w = px->width();
+      int h = px->height();
+      
+      if (w > h) {
+	h = (int) (h * 16.0 / w);
+	w = 16;
+      }
+      else {
+	w = (int) (w * 16.0 / h);
+	h = 16;
+      }
+      
+      QImage img = px->convertToImage().smoothScale(w, h);
+      
+      browser_icon = new QPixmap();
+      browser_icon->convertFromImage(img);
+      BrowserPixmap.insert(path, browser_icon);
+    }
   }
-  
-  QImage img = px->convertToImage().smoothScale(w, h);
-  
-  browser_icon = new QPixmap();
-  browser_icon->convertFromImage(img);
-  BrowserPixmap.insert(path, browser_icon);
 }
 
 void ProfiledStereotype::updateStereotypedIcon() {
@@ -290,38 +298,15 @@ void ProfiledStereotype::updateStereotypedIcon() {
 const QPixmap * ProfiledStereotype::diagramPixmap(double zoom) {
   const char * path = cl->get_value("stereotypeIconPath");
   
-  if (path == 0)
-    return 0;
-  
-  QPixmap * px = DiagramPixmap.find(path);
-  
-  if ((px == 0) || px->isNull())
-    return 0;
-    
-  if (((int) (zoom * 100)) == 100)
-    return px;
-  
-  QPtrDict<QPixmap> * d = DiagramScaledPixmap[path]; // != 0
-  int scaled_w = (int) (px->width() * zoom);
-  void * k = (void *) scaled_w;
-  QPixmap * scaled_px = d->find(k);
-  
-  if (scaled_px == 0) {
-    QImage img = 
-      px->convertToImage().smoothScale(scaled_w, (int) (px->height() * zoom));
-
-    scaled_px = new QPixmap();
-    scaled_px->convertFromImage(img);
-    d->insert(k, scaled_px);
-  }
-  
-  return scaled_px;
+  return (path == 0) ? 0 : get_pixmap(path, zoom);
 }
 
 //
   
 void ProfiledStereotypes::init()
 {
+  init_images();
+  
   CheckStack.setAutoDelete(TRUE);
   CheckStack.clear();
   CheckStack.setAutoDelete(FALSE);
@@ -339,12 +324,6 @@ void ProfiledStereotypes::init()
   
   BrowserPixmap.setAutoDelete(TRUE);
   BrowserPixmap.clear();
-  
-  DiagramPixmap.setAutoDelete(TRUE);
-  DiagramPixmap.clear();
-  
-  DiagramScaledPixmap.setAutoDelete(TRUE);
-  DiagramScaledPixmap.clear();
   
   if (UnPretty2Code.isEmpty()) {
     UnPretty2Code.setAutoDelete(TRUE); // for valgrind

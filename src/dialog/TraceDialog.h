@@ -53,6 +53,7 @@ class TraceDialog : public QDialog {
     
   public slots:
     void clr();
+    void save();
 };
 
 #endif

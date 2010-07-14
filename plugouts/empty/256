@@ -1,6 +1,6 @@
-format 74
+format 75
 "API BASE" // API BASE
-  revision 61
+  revision 63
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -11083,13 +11083,9 @@ ${body}}
 	  param in name "s" explicit_type "string"
 	nexceptions 1
 	  explicit_exception "RuntimeException"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
-#endif
-"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};"
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
-${body}}
-#endif
-"
+${body}}"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
@@ -11101,6 +11097,68 @@ ${body}}
  (already) an absolute path
  
  On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 247296 "phpNamespace"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " return the namespace name associed to the package
+"
+      end
+
+      operation 247424 "set_PhpNamespace"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " the namespace name associed to the package.
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 247552 "findPhpNamespace"
+	public return_type class_ref 9217 // UmlPackage
+	nparams 1
+	  param in name "n" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+#endif
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " returns a sub package of the current one having the php namespace 'n'
+ (including the current one), else 0/null
+"
       end
 
       operation 230656 "pythonDir"
@@ -11498,10 +11556,20 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
       attribute 136448 "_php_dir"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHPHP
-${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 160000 "_php_namespace"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 #endif
 "
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	java_decl "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -14092,6 +14160,46 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 248192 "reference"
+	public return_type class_ref 128386 // UmlState
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 248320 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 128386 // UmlState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 131456 "associatedDiagram"
 	public return_type class_ref 128642 // UmlStateDiagram
 	nparams 0
@@ -14201,6 +14309,17 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 171264 // _reference (<unidirectional association>)
+	relation 171264 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 171264 // _reference (<unidirectional association>)
+	  b parent class_ref 128386 // UmlState
       end
 
       classrelation 171008 // _specification (<unidirectional association>)
@@ -15833,6 +15952,46 @@ ${body}}
 	comment " returns the kind of the item"
       end
 
+      operation 248448 "reference"
+	public return_type class_ref 130306 // UmlEntryPointPseudoState
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 248576 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 130306 // UmlEntryPointPseudoState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 139264 "UmlBaseEntryPointPseudoState"
 	protected explicit_return_type ""
 	nparams 2
@@ -15849,6 +16008,33 @@ ${body}}
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      classrelation 171392 // _reference (<unidirectional association>)
+	relation 171392 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 171392 // _reference (<unidirectional association>)
+	  b parent class_ref 130306 // UmlEntryPointPseudoState
+      end
+
+      operation 248704 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
       end
     end
 
@@ -16086,6 +16272,46 @@ ${body}}
 	comment " returns the kind of the item"
       end
 
+      operation 248832 "reference"
+	public return_type class_ref 131074 // UmlExitPointPseudoState
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 248960 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 131074 // UmlExitPointPseudoState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 140800 "UmlBaseExitPointPseudoState"
 	protected explicit_return_type ""
 	nparams 2
@@ -16102,6 +16328,33 @@ ${body}}
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      classrelation 171520 // _reference (<unidirectional association>)
+	relation 171520 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 171520 // _reference (<unidirectional association>)
+	  b parent class_ref 131074 // UmlExitPointPseudoState
+      end
+
+      operation 249088 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	java_def "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
+"
+	
+	
+	
       end
     end
 
@@ -27779,6 +28032,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -27857,6 +28111,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}

@@ -135,8 +135,8 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   
   Lex::finish_line();
   
-  comment = Lex::get_comments();
-  description = Lex::get_description();
+  comment = Lex::get_comments(comment);
+  description = Lex::get_description(description);
   
   bool pfunc = (type.find('$') != -1);
   UmlTypeSpec typespec;

@@ -173,7 +173,8 @@ enum OnInstanceCmd {
   applyStereotypeCmd,
   setDerivedCmd,
   importProjectCmd,
-  setActiveCmd
+  setActiveCmd,
+  setPhpNamespaceCmd
 
 };
 #endif

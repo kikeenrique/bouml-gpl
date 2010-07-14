@@ -113,13 +113,62 @@ StateDialog::StateDialog(StateData * d)
     edspecification->insertItem("");
     edspecification->setAutoCompletion(completion());
     BrowserOperation::instances(opers);
-    opers.full_names(list);
-    edspecification->insertStringList(list);
+    opers.full_names(speclist);
+    edspecification->insertStringList(speclist);
     edspecification->setCurrentItem((state->get_specification() == 0)
 				    ? 0
 				    : opers.findRef(state->get_specification()) + 1);
   }
   
+  switch (((BrowserNode *) bn->parent())->get_type()) {
+  case UmlState:
+  case UmlRegion:
+    if ((state->get_reference() != 0) || (bn->firstChild() == 0)) {
+      connect(new SmallPushButton(TR("reference :"), grid), SIGNAL(clicked()),
+	      this, SLOT(menu_reference()));    
+      edreference = new QComboBox(FALSE, grid);
+      edreference->setSizePolicy(sp);
+      if (visit) {
+	if (state->get_reference() == 0)
+	  edreference->insertItem("");
+	else
+	  edreference->insertItem(state->get_reference()->full_name(TRUE));
+      }
+      else {
+	edreference->insertItem("");
+	edreference->setAutoCompletion(completion());
+	if (((BrowserState *) bn)->can_reference()) {
+	  BrowserState::instances(states, TRUE);
+	  
+	  BrowserNode * st = states.first();
+	  
+	  while (st != 0) {
+	    if (!((BrowserState *) bn)->can_reference((BrowserState *) st) ||
+		((BrowserState *) st)->is_ref()) {
+	      states.remove();
+	      st = states.current();
+	    }
+	    else
+	      st = states.next();
+	  }
+	}
+	else
+	  states.append(state->get_reference());
+	states.full_names(reflist);
+	edreference->insertStringList(reflist);
+	edreference->setCurrentItem((state->get_reference() == 0)
+				    ? 0
+				    : states.findRef(state->get_reference()) + 1);
+	
+	connect(edreference, SIGNAL(activated(int)), this, SLOT(ed_ref_activated(int)));
+      }
+      break;
+    }
+    // no break
+  default:
+    edreference = 0;
+  }
+
   new QLabel(grid);
   QButtonGroup * bg = 
     new QButtonGroup(1, Qt::Horizontal, QString::null, grid);
@@ -164,6 +213,9 @@ StateDialog::StateDialog(StateData * d)
   addTab(grid, TR("Properties"));
   
   //
+  
+  if (edreference != 0)
+    ed_ref_activated(edreference->currentItem());
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
@@ -199,13 +251,26 @@ void StateDialog::polish() {
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
+void StateDialog::ed_ref_activated(int r) {
+  bool enabled = edreference->text(r).isEmpty();
+  
+  edspecification->setEnabled(enabled);
+  active_cb->setEnabled(enabled);
+  if (ocltab != 0)
+    ocltab->setEnabled(enabled);
+  if (cpptab != 0)
+    cpptab->setEnabled(enabled);
+  if (javatab != 0)
+    javatab->setEnabled(enabled);
+}
+
 void StateDialog::menu_specification() {
   QPopupMenu m(0);
 
   m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
-  int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
+  int index = speclist.findIndex(edspecification->currentText());
   
   if (index != -1)
     m.insertItem(TR("Select in browser"), 0);
@@ -230,22 +295,79 @@ void StateDialog::menu_specification() {
       {
 	QString s = bn->full_name(TRUE);
 	
-	if ((index = list.findIndex(s)) == -1) {
+	if ((index = speclist.findIndex(s)) == -1) {
 	  // new operation, may be created through an other dialog
 	  index = 0;
-	  QStringList::Iterator iter = list.begin();
-	  QStringList::Iterator iter_end = list.end();
+	  QStringList::Iterator iter = speclist.begin();
+	  QStringList::Iterator iter_end = speclist.end();
 	  
 	  while ((iter != iter_end) && (*iter < s)) {
 	    ++iter;
 	    index += 1;
 	  }
 	  opers.insert((unsigned) index, bn);
-	  list.insert(iter, s);
+	  speclist.insert(iter, s);
 	  edspecification->insertItem(s, index + 1);
 	}
       }
       edspecification->setCurrentItem(index + 1);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void StateDialog::menu_reference() {
+  QPopupMenu m(0);
+
+  m.insertItem(TR("Choose"), -1);
+  m.insertSeparator();
+  
+  int index = reflist.findIndex(edreference->currentText());
+  
+  if (index != -1)
+    m.insertItem(TR("Select in browser"), 0);
+  
+  BrowserNode * bn = 0;
+  
+  if (! visit) {
+    bn = BrowserView::selected_item();
+    
+    if ((bn != 0) &&
+	(bn->get_type() == UmlState) &&
+	!bn->deletedp() &&
+	((BrowserState *)state->browser_node)->can_reference((BrowserState *) bn))
+      m.insertItem(TR("Choose state selected in browser"), 1);
+    else
+      bn = 0;
+  }
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      states.at(index)->select_in_browser();
+      break;
+    case 1:
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = reflist.findIndex(s)) == -1) {
+	  // new state, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = reflist.begin();
+	  QStringList::Iterator iter_end = reflist.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  states.insert((unsigned) index, bn);
+	  reflist.insert(iter, s);
+	  edreference->insertItem(s, index + 1);
+	}
+      }
+      edreference->setCurrentItem(index + 1);
       break;
     default:
       break;
@@ -302,8 +424,10 @@ void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
   
   addTab(grid, lbl);
   
-  if (! enabled)
+  if (! enabled) {
     removePage(grid);
+    tab = 0;
+  }
 }
 
 void StateDialog::edit_description() {
@@ -356,11 +480,20 @@ void StateDialog::accept() {
     bn->set_name(s);
     
     bool newst = state->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
-    int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
+    int index;
     
+    index = speclist.findIndex(edspecification->currentText());
     state->set_specification((index != -1)
 			     ? (BrowserOperation *) opers.at(index)
 			     : 0);
+    
+    if (edreference != 0){
+      index = reflist.findIndex(edreference->currentText());
+      state->set_reference((index != -1)
+			   ? (BrowserState *) states.at(index)
+			   : 0);
+    }
+    
     state->is_active = active_cb->isChecked();
       
     uml.accept(state->uml);  

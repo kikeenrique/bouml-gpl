@@ -128,7 +128,7 @@ void IconCanvas::menu(const QPoint&) {
   m.insertItem(TR("Select diagram in browser"), 3);
   m.insertItem(TR("Select linked items"), 4);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),5);
+  m.insertItem(TR("Remove from diagram"),5);
 
   switch (m.exec(QCursor::pos())) {
   case 0:

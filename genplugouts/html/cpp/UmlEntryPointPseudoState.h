@@ -14,6 +14,10 @@ class UmlEntryPointPseudoState : public UmlBaseEntryPointPseudoState {
      UmlEntryPointPseudoState(void * id, const QCString & s) : UmlBaseEntryPointPseudoState(id, s) {
     }
 
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
 };
 
 #endif

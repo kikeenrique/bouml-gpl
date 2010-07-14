@@ -376,10 +376,6 @@ QCString Lex::read_character()
       return 0;
     case '\'':
       return QCString(result += c);
-    case '\\':
-      result += c;
-      result += get();
-      break;
     default:
       result += c;
     }

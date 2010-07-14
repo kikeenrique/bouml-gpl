@@ -34,6 +34,7 @@
 #include "BrowserStateAction.h"
 #include "BrowserTransition.h"
 #include "StateActionData.h"
+#include "BrowserState.h"
 #include "TransitionData.h"
 #include "ReferenceDialog.h"
 #include "UmlDrag.h"
@@ -443,17 +444,17 @@ void BrowserStateAction::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 
 QString BrowserStateAction::drag_key() const {
   return QString::number(UmlStateAction)
-    + "#" + QString::number((unsigned long) parent());
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserStateAction::drag_postfix() const {
-  return "#" + QString::number((unsigned long) parent());
+  return "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserStateAction::drag_key(BrowserNode * p)
 {
   return QString::number(UmlStateAction)
-    + "#" + QString::number((unsigned long) p);
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(p));
 }
 
 void BrowserStateAction::save_stereotypes(QTextStream & st)

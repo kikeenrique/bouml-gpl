@@ -145,6 +145,28 @@ class UmlBasePackage
   UmlCom.check();
 
   _php_dir = s;
+!!!279296.cpp!!!	phpNamespace() : string
+  read_if_needed_();
+
+  return _php_namespace;
+!!!279296.java!!!	phpNamespace() : string
+  read_if_needed_();
+
+  return _php_namespace;
+!!!279424.cpp!!!	set_PhpNamespace(in v : string) : bool
+  return set_it_(_php_namespace, v, setPhpNamespaceCmd);
+!!!279424.java!!!	set_PhpNamespace(in v : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpNamespaceCmd, v);
+  UmlCom.check();
+
+  _php_namespace = v;
+!!!279552.cpp!!!	findPhpNamespace(in n : string) : UmlPackage
+  UmlCom::send_cmd(packageGlobalCmd, findPhpNamespaceCmd, _identifier, n);
+
+  return (UmlPackage *) UmlBaseItem::read_();
+!!!279552.java!!!	findPhpNamespace(in n : string) : UmlPackage
+  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findPhpNamespaceCmd, identifier_(), n);
+  return (UmlPackage) UmlBaseItem.read_();
 !!!259584.cpp!!!	pythonDir() : string
   read_if_needed_();
   
@@ -309,8 +331,10 @@ class UmlBasePackage
   _java_package = UmlCom.read_string();
 !!!234752.cpp!!!	read_php_() : void
   _php_dir = UmlCom::read_string();
+  _php_namespace = UmlCom::read_string();
 !!!234752.java!!!	read_php_() : void
   _php_dir = UmlCom.read_string();
+  _php_namespace = UmlCom.read_string();
 !!!247040.cpp!!!	read_python_() : void
   _python_dir = UmlCom::read_string();
   _python_package = UmlCom::read_string();

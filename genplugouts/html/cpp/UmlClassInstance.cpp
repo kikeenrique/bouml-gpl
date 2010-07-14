@@ -14,7 +14,7 @@ void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
 
   fw.write("<table><tr><td><div class=\"element\">Class instance  <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   QCString s = description();
 
@@ -33,7 +33,7 @@ void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
   attributesValue(va);
   
   if (!va.isEmpty()) {
-    fw.write("<p>attributes :<ul>\n");
+    fw.write("<p>attributes :</p><ul>\n");
     
     QValueList<SlotAttribute>::Iterator it;
     
@@ -46,7 +46,7 @@ void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
       writeq(slot.value);
       fw.write("</li>\n");
     }
-    fw.write("</ul></p>");
+    fw.write("</ul>");
   }
   
   QValueList<SlotRelation> vr;
@@ -54,7 +54,7 @@ void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
   relationsValue(vr);
   
   if (!vr.isEmpty()) {
-    fw.write("<p>relations :<ul>\n");
+    fw.write("<p>relations :</p><ul>\n");
     
     QValueList<SlotRelation>::Iterator it;
     
@@ -67,7 +67,7 @@ void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
       slot.value->write();
       fw.write("</li>\n");
     }
-    fw.write("</ul></p>");
+    fw.write("</ul>");
   }
 
   write_properties();

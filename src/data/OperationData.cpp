@@ -441,8 +441,8 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
 
 QString OperationData::definition(bool full, bool with_kind) const {
   return (with_kind)
-    ? "["+ browser_node->get_stype() +"] " + definition(full, TRUE, TRUE)
-    : definition(full, TRUE, TRUE);
+    ? "["+ browser_node->get_stype() +"] " + definition(full, TRUE, TRUE, DefaultShowContextMode)
+    : definition(full, TRUE, TRUE, DefaultShowContextMode);
 }
 
 QString OperationData::definition(bool full, bool withdir,

@@ -430,7 +430,7 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   }
   
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),7);
+  m.insertItem(TR("Remove from diagram"),7);
   
   BooL in_model = FALSE;
   BooL out_model = FALSE;

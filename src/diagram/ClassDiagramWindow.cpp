@@ -59,6 +59,7 @@ QString directionalaggregationText() { return TR("Click this button to create a 
 QString directionalaggregationbyvalueText() { return TR("Click this button to create a <i>directional composition</i>"); }
 QString realizeText() { return TR("Click this button to create a <i>realization</i>"); }
 extern QString textText();
+extern QString imageText();
 
 // id is an old ident in case of an import
 ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * b, int id)
@@ -165,6 +166,12 @@ ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * 
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -230,6 +237,7 @@ void ClassDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -293,5 +301,9 @@ void ClassDiagramWindow::hit_anchor() {
 
 void ClassDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void ClassDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

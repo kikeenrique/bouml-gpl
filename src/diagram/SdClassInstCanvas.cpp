@@ -307,7 +307,7 @@ BrowserClass* SdClassInstCanvas::get_class() const {
 
 void SdClassInstCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
-  if (browser_node->get_type() == UmlClass)
+  if (browser_node->get_type() == UmlClassInstance)
     in_model |= browser_node->is_writable();
 }
 
@@ -360,7 +360,7 @@ void SdClassInstCanvas::menu(const QPoint&) {
     m.insertItem(TR("Replace it"), 12);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 8);
+  m.insertItem(TR("Remove from diagram"), 8);
   if ((browser_node->get_type() == UmlClassInstance) &&
       browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 9);

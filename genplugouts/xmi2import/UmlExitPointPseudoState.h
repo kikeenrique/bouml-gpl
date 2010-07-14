@@ -11,6 +11,10 @@ class UmlExitPointPseudoState : public UmlBaseExitPointPseudoState {
      UmlExitPointPseudoState(void * id, const QCString & s) : UmlBaseExitPointPseudoState(id, s) {
     }
 
+    //  call at end of import : try to solve referenced exit point
+    
+    virtual void solve(QCString idref);
+
 };
 
 #endif

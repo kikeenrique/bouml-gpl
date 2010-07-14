@@ -51,6 +51,7 @@ class UseCaseDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
   
   public:
     UseCaseDiagramWindow(const QString & s, BrowserUseCaseDiagram * b, int id = -1);
@@ -73,6 +74,7 @@ class UseCaseDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

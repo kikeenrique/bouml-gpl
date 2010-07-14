@@ -946,6 +946,17 @@ QString ArtifactDialog::compute_java_package() {
     : QString("package ") + pack + ";\n";
 }
 
+QString ArtifactDialog::compute_php_namespace() {
+  const QString nasp =  (const char *)
+    ((PackageData *) 
+     ((BrowserNode *) data->browser_node->parent()->parent())->get_data())
+      ->get_php_namespace();
+    
+  return (nasp.isEmpty())
+    ? nasp
+    : QString("namespace ") + nasp + ";\n";
+}
+
 void ArtifactDialog::compute_idl_module(QString & mod,
 					QString & mod_start,
 					QString & mod_end) {
@@ -1362,6 +1373,10 @@ void ArtifactDialog::php_update_src() {
 	p += 7;
 	s += edname->text().stripWhiteSpace().lower();
       }
+      else if (!strncmp(p, "${namespace}", 12)) {
+	p += 12;
+	s += compute_php_namespace();
+      }
       else if (!strncmp(p, "${require_once}", 15)) {
 	p += 15;
 	s += "...require_once 'a_needed_file.php'   // produced by the Php generator\n";
@@ -1382,8 +1397,7 @@ void ArtifactDialog::php_update_src() {
 	  
 	  ClassDialog::php_generate_decl(s, c, c->get_phpdecl(), bn->get_name(),
 					 c->get_stereotype(), bn->get_comment(),
-					 c->get_uml_visibility(), c->php_is_final(),
-					 c->get_is_abstract(), 0);
+					 c->php_is_final(), c->get_is_abstract(), 0);
 	  s += '\n';
 	}
       }

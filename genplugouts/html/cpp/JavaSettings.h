@@ -105,6 +105,32 @@ class JavaSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
+    // return the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    static QCString reverseRoundtripDirRegExp();
+
+    // return if the regular expression used to bypass
+    // dir s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripDirRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripDirRegExp(QCString s, bool cs);
+
+    // return the regular expression used to bypass
+    // file s on reverse/roundtrip
+    static QCString reverseRoundtripFileRegExp();
+
+    // return if the regular expression used to bypass
+    // file s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripFileRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // file s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripFileRegExp(QCString s, bool cs);
+
     // return if  generate Javadoc style comment
     static bool isGenerateJavadocStyleComment();
 
@@ -338,6 +364,14 @@ class JavaSettings : public UmlSettings {
     static QCString _src_content;
 
     static QCString _ext;
+
+    static QCString _dir_regexp;
+
+    static bool _dir_regexp_case_sensitive;
+
+    static QCString _file_regexp;
+
+    static bool _file_regexp_case_sensitive;
 
     static bool _is_generate_javadoc_comment;
 

@@ -227,7 +227,8 @@ void UmlItem::memo_ref() {
 
 void UmlItem::define() {
   fw.write("<a name=\"ref");
-  fw.write(sKind());
+  fw.write((unsigned) kind());
+  fw.write('_');
   fw.write((unsigned) getIdentifier());
   fw.write("\"></a>\n");
 }
@@ -235,13 +236,16 @@ void UmlItem::define() {
 void UmlItem::start_file(QCString f, QCString s, bool withrefs)
 {
   QCString filename = directory + f;
+  bool is_frame = (f == "index-withframe");
   
   if (! fw.open(filename + ".html"))
     throw 0;
   
-  fw.write("<!-- Documentation produced by the Html generator of Bouml (http://bouml.free.fr) -->\n");
   fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-  fw.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+  fw.write("<!-- Documentation produced by the Html generator of Bouml (http://bouml.free.fr) -->\n");
+  fw.write((is_frame)
+	   ? "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n"
+	   : "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
   fw.write((svg) ? "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n"
 		 : "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
   fw.write("\n");
@@ -252,7 +256,8 @@ void UmlItem::start_file(QCString f, QCString s, bool withrefs)
     fw.write("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" />\n");
     fw.write("</head>\n");
     if (withrefs) {
-      fw.write("<body bgcolor=\"#ffffff\">\n");
+      if (! is_frame)
+	fw.write("<body bgcolor=\"#ffffff\">\n");
       ref_indexes();
     }
   }
@@ -261,7 +266,8 @@ void UmlItem::start_file(QCString f, QCString s, bool withrefs)
     fw.write("<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" />\n");
     fw.write("</head>\n");
     fw.write("\n");
-    fw.write("<body bgcolor=\"#ffffff\">\n");
+    if (! is_frame)
+      fw.write("<body bgcolor=\"#ffffff\">\n");
     fw.write("\n");
     fw.write("<div class = \"title\">"); writeq(s); fw.write("</div>\n");
     fw.write("<p></p>\n");
@@ -282,8 +288,7 @@ void UmlItem::end_file()
 
 void UmlItem::ref_indexes()
 {
-  fw.write("<p><hr noshade></p>\n<p>");
-  fw.write("<a href=\"index.html\" target = \"projectFrame\"><b> -Top- </b></a>");
+  fw.write("<hr />\n<p><a href=\"index.html\" target = \"projectFrame\"><b> -Top- </b></a>");
   
   UmlClass::ref_index();
   UmlOperation::ref_index();
@@ -383,10 +388,10 @@ void UmlItem::generate_indexes()
 	start_file(QCString("index_") + sn, QCString("") + c, TRUE);
 	
 	fw.write("<table>\n");
-	fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Name</b></td><td align=center><b>Kind</b></td><td align=center><b>Description</b></td></tr>\n");
+	fw.write("<tr bgcolor=\"#f0f0f0\"><td align=\"center\"><b>Name</b></td><td align=\"center\"><b>Kind</b></td><td align=\"center\"><b>Description</b></td></tr>\n");
       }
       
-      fw.write("<tr bgcolor=#f0f0f0><td>");
+      fw.write("<tr bgcolor=\"#f0f0f0\"><td>");
       x->write("projectFrame");
       fw.write("</td><td>");
       fw.write(x->sKind());
@@ -406,22 +411,23 @@ void UmlItem::frame()
 {
   start_file("index-withframe", "", FALSE);
 
-  fw.write("<FRAMESET cols=\"20%,80%\">\n");
-  fw.write("  <FRAME src=\"classes_list.html\" name=\"classesListFrame\">\n");
-  fw.write("  <FRAMESET rows=\"150,*\">\n");
-  fw.write("    <FRAME src=\"navig.html\" name=\"navigFrame\">\n");
-  fw.write("    <FRAME src=\"index.html\" name=\"projectFrame\">\n");
-  fw.write("  </FRAMESET>\n");
-  fw.write("</FRAMESET>\n");
-  fw.write("<NOFRAMES>\n");
-  fw.write("<H2>");
-  fw.write("Frame Alert</H2>");
-  fw.write("<P>");
-  fw.write("This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.");
-  fw.write("<BR>");
-  fw.write("Link to <A HREF=\"index.html\">Non-frame version.</A></NOFRAMES>");
-  
-  end_file();
+  fw.write("<frameset cols=\"20%,80%\">\n");
+  fw.write("  <noframes>\n");
+  fw.write("    <body>\n");
+  fw.write("      <h2>Frame Alert</h2>\n");
+  fw.write("      <p>This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.</p>\n");
+  fw.write("      <p>Link to <a href=\"index.html\">Non-frame version.</a></p>\n");
+  fw.write("    </body>\n");
+  fw.write("  </noframes>\n");
+  fw.write("  <frame src=\"classes_list.html\" name=\"classesListFrame\" />\n");
+  fw.write("  <frameset rows=\"150,*\">\n");
+  fw.write("    <frame src=\"navig.html\" name=\"navigFrame\" />\n");
+  fw.write("    <frame src=\"index.html\" name=\"projectFrame\" />\n");
+  fw.write("  </frameset>\n");
+  fw.write("</frameset>\n");
+ 
+  fw.write("</html>");
+  fw.close();
 
   UmlCom::trace("document with frame produced in <i>"
 		+ directory + "index-withframe.html");
@@ -549,7 +555,7 @@ void UmlItem::write_properties() {
   const QDict<QCString> d = properties();
   
   if (! d.isEmpty()) {
-    fw.write("<p>Properties:<ul>\n");
+    fw.write("<p>Properties:</p><ul>\n");
     
     QDictIterator<QCString> it(d);
     
@@ -558,11 +564,11 @@ void UmlItem::write_properties() {
       writeq(it.currentKey().latin1());
       fw.write(":<br /><div class=\"sub\">");
       writeq(*(it.current()));
-      fw.write("</div></p></li>\n");
+      fw.write("</div></li>\n");
       ++it;
     }
     
-    fw.write("</ul></p>\n");
+    fw.write("</ul>\n");
   }
 }
 
@@ -674,7 +680,8 @@ void UmlItem::write() {
     else
       fw.write("index");
     fw.write(".html#ref");
-    fw.write(sKind());
+    fw.write((unsigned) kind());
+    fw.write('_');
     fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(pretty_name());
@@ -687,7 +694,8 @@ void UmlItem::write() {
 void UmlItem::write(QCString target) {
   if (known) {
     fw.write("<a href=\"index.html#ref");
-    fw.write(sKind());
+    fw.write((unsigned) kind());
+    fw.write('_');
     fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
@@ -718,6 +726,9 @@ void UmlItem::writeq(char c)
    break;
  case '&':
    fw.write("&amp;");
+   break;
+ case '@':
+   fw.write("&#64;");
    break;
  case '\n':
    fw.write("<br />");
@@ -878,7 +889,7 @@ void UmlItem::generate_index(Vector & v, QCString k, QCString r)
     for (int i = 0; i != n; i += 1) {
       UmlItem * x = v.elementAt(i);
       
-      fw.write("<tr bgcolor=#f0f0f0><td>");
+      fw.write("<tr bgcolor=\"#f0f0f0\"><td>");
       x->write("projectFrame");
       fw.write("</td><td>");
       writeq(x->stereotype());

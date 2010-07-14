@@ -93,6 +93,13 @@ void ExpansionNodeCanvas::deleted() {
   canvas()->update();
 }
 
+void ExpansionNodeCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
+}
+
 void ExpansionNodeCanvas::update() {
   used_color = (itscolor == UmlDefaultColor)
     ? the_canvas()->browser_diagram()->get_color(UmlExpansionNode)

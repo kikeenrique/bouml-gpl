@@ -97,7 +97,7 @@ void AssocContainCanvas::menu(const QPoint&) {
   }
   
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 6);
+  m.insertItem(TR("Remove from diagram"), 6);
   m.insertItem(TR("Delete from model"), 7);
 
   int rank = m.exec(QCursor::pos());

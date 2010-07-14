@@ -27,7 +27,7 @@
 #define BROWSER_PSEUDOSTATE_H
 
 class QPixmap;
-class SimpleData;
+class PseudoStateData;
 class BrowserTransition;
 
 #include "BrowserNode.h"
@@ -41,7 +41,7 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     static QStringList its_default_stereotypes;
   
     UmlCode kind;
-    SimpleData * def;
+    PseudoStateData * def;
     
   protected:
     BrowserPseudoState(int id);
@@ -49,7 +49,7 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     void exec_menu_choice(int rank);
     
   public:
-    BrowserPseudoState(UmlCode c, QString s, BrowserNode * p, SimpleData * d, int id = 0);
+    BrowserPseudoState(UmlCode c, QString s, BrowserNode * p, PseudoStateData * d, int id = 0);
     BrowserPseudoState(const BrowserPseudoState * model, BrowserNode * p);
     virtual ~BrowserPseudoState();
   
@@ -94,6 +94,8 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     bool allow_empty() const;
     static bool allow_empty(UmlCode c);
 
+    bool can_reference(BrowserNode *) const;
+    
     static void init();
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);

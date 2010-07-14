@@ -23,6 +23,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
   bool noarg = (argc == 0);
   QCString path;
   QCString encoding;
+  QCString nomodel;
   QCString genviews;
   QCString uml20;
   QCString pkprefix;
@@ -34,9 +35,11 @@ void UmlPackage::xmi(int argc, char ** argv) {
   QCString linefeed;
   
   bool comment_exporter = FALSE;  
+  bool no_model = FALSE;
 
   if (noarg) {
     propertyValue("gxmi path", path);
+    propertyValue("gxmi no model", nomodel);
     propertyValue("gxmi gen views", genviews);
     propertyValue("gxmi encoding", encoding);
     propertyValue("gxmi uml2.0", uml20);
@@ -48,7 +51,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
     propertyValue("gxmi comment exporter", commentexporter);
     propertyValue("gxmi linefeed", linefeed);
     
-    Dialog dialog(path, encoding, genviews, uml20, pkprefix, visprefix,
+    Dialog dialog(path, encoding, nomodel, genviews, uml20, pkprefix, visprefix,
 		  primitivetype, genextension, geneclipse, commentexporter, linefeed, _lang);
     
     if (dialog.exec() != QDialog::Accepted)
@@ -80,7 +83,9 @@ void UmlPackage::xmi(int argc, char ** argv) {
     _linefeed = FALSE;
     
     while (argc != 0) {
-      if (!strcmp(argv[0], "-view"))
+      if (! strcmp(argv[0], "-nomodel"))
+	no_model = TRUE;
+      else if (!strcmp(argv[0], "-view"))
 	_gen_views = TRUE;
       else if (! strcmp(argv[0], "-uml2.0"))
 	_uml_20 = TRUE;
@@ -121,6 +126,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
     else {
       if (noarg) {
 	set_PropertyValue("gxmi path", path);
+	set_PropertyValue("gxmi no model", nomodel);
 	set_PropertyValue("gxmi gen views", genviews);
 	set_PropertyValue("gxmi encoding", encoding);
 	set_PropertyValue("gxmi uml2.0", uml20);
@@ -131,6 +137,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	set_PropertyValue("gxmi gen eclipse", geneclipse);
 	set_PropertyValue("gxmi comment exporter", commentexporter);
 	set_PropertyValue("gxmi linefeed", linefeed);
+	no_model = (nomodel == "yes");
 	_gen_views = (genviews == "yes");
 	_uml_20 = (uml20 == "yes");
 	_pk_prefix = (pkprefix == "yes");
@@ -179,28 +186,41 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	out << ">\n\t";
 	if (comment_exporter)
 	  out << "<!-- ";
-	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.13\"/>";
+	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.14.1\"/>";
 	if (comment_exporter)
-	  out << " -->";
-	out << "\n\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""
-	  << name() << "\">\n";
+	  out << " -->\n";
+	else
+	  out << '\n';
+	
+	if (no_model)
+	  out.indent(+1);
+	else {
+	  out << "\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""
+	    << name() << "\">\n";
+	  out.indent(+2);
+	}
 	
 	for (prof = profiles.first(); prof != 0; prof = profiles.next()) {
-	  out << "\t\t<profileApplication xmi:type=\"uml:ProfileApplication\"";
+	  out.indent();
+	  out << "<profileApplication xmi:type=\"uml:ProfileApplication\"";
 	  out.id_prefix(prof, "PRFA_");
-	  out << ">\n\t\t\t<appliedProfile";
+	  out << ">\n";
+	  out.indent();
+	  out << "<appliedProfile";
 	  out.idref(prof);
-	  out << "/>\n\t\t</profileApplication>\n";
+	  out << "/>\n";
+	  out.indent();
+	  out << "</profileApplication>\n";
 	}
   
-	out.indent(+2);
 	search_class_assoc();
 	write(out);
 		
 	out.define_datatypes(_uml_20, _primitive_type, _gen_extension);
 	UmlOperation::write_events(out);
 	
-	out << "\t</uml:Model>\n";
+	if (! no_model)
+	  out << "\t</uml:Model>\n";
 	
 	write_stereotyped(out);
 

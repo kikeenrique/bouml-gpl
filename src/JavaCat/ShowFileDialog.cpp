@@ -23,12 +23,17 @@
 //
 // *************************************************************************
 
+
+
+
+
 #include <qmultilineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qapplication.h>
+#include <qdir.h>
  
 #include "ShowFileDialog.h"
  
@@ -56,9 +61,67 @@ ShowFileDialog::ShowFileDialog(const QCString & filename)
   e->setFont(font);
  
   vbox->addWidget(e);
+}
+
+void ShowFileDialog::polish() {
+  QDialog::polish();
   
-  resize(QApplication::desktop()->width() /2,
-	 QApplication::desktop()->height() /2);
+  int w = QApplication::desktop()->width();
+  int h = QApplication::desktop()->height();
+  int cx = w/2;
+  int cy = h/2;
+  bool virtual_desktop = FALSE;
+  
+  // try to read .boumlrc
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  if (fp != 0) {
+    char line[512];
+      
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      if (!strncmp(line, "DESKTOP ", 8)) {
+	int l, t, r, b;
+	
+	if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4) {
+	  if (!((r == 0) && (t == 0) && (r == 0) && (b == 0)) &&
+	      !((r < 0) || (t < 0) || (r < 0) || (b < 0)) &&
+	      !((r <= l) || (b <= t))) {
+	    w = r - l + 1;
+	    h = b - t + 1;
+	    cx = (r + l) /2;
+	    cy = (t + b) / 2;
+	    virtual_desktop = TRUE;
+	  }
+	}
+	
+	break;
+      }
+    }
+    
+    fclose(fp);
+  }
+  
+  resize(w/2, h/2);
+  
+  if (virtual_desktop) 
+    move(x() + cx - (x() + width() / 2), 
+	 y() + cy - (y() + height() / 2));
 }
 
 ShowFileDialog::~ShowFileDialog() {

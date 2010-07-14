@@ -24,7 +24,7 @@ int main(int argc, char ** argv)
     int r = 0;
 
     try {
-      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.8<br>");
+      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.9<br>");
       UmlCom::targetItem()->import(file);
     }
     catch (...) {

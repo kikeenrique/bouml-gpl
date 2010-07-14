@@ -9,7 +9,7 @@ QCString UmlParameterSet::sKind() {
 void UmlParameterSet::html(QCString, unsigned int, unsigned int) {
   fw.write("<table><tr><td><div class=\"element\">Parameter set  <b>");
   writeq(name());
-  fw.write("</div></td></tr></table>");
+  fw.write("</b></div></td></tr></table>");
   
   QCString s = description();
 

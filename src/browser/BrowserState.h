@@ -56,6 +56,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     BrowserState(const BrowserState * model, BrowserNode * p);
     virtual ~BrowserState();
   
+    bool may_contains(UmlCode k) const;
     virtual bool may_contains_them(const QList<BrowserNode> & l,
 				   BooL & duplicable) const;
     virtual BrowserNode * duplicate(BrowserNode * p,
@@ -100,6 +101,10 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     
     virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserOperation *);
+    
+    bool is_ref() const;
+    bool can_reference() const;
+    bool can_reference(BrowserState *) const;
     
     static void init();
     static const QStringList & default_stereotypes();

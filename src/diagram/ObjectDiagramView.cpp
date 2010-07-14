@@ -44,6 +44,7 @@
 #include "PackageCanvas.h"
 #include "FragmentCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "myio.h"
@@ -247,6 +248,7 @@ void ObjectDiagramView::save(QTextStream & st, QString & warning,
     case UmlClassInstance:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlIcon:
       if (!copy || di->copyable())
 	di->save(st, FALSE, warning);
@@ -286,13 +288,14 @@ void ObjectDiagramView::save(QTextStream & st, QString & warning,
 void ObjectDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first the instances, package, fragment notes, icons and text
+  // reads first the instances, package, fragment notes, icons text and image
   while (OdClassInstCanvas::read(st, canvas, k) ||
 	 NoteCanvas::read(st, canvas, k) ||
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
-	 FragmentCanvas::read(st, canvas, k))
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads links 

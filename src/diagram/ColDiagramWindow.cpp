@@ -52,6 +52,7 @@ extern QString anchorText();
 static QString linkText() { return TR("Click this button to add a <i>link</i>"); }
 static QString selflinkText() { return TR("Click this button to add a <i>self link</i>"); }
 extern QString textText();
+extern QString imageText();
 
 // id is an old ident in case of an import
 ColDiagramWindow::ColDiagramWindow(const QString & s, BrowserColDiagram * b, int id)
@@ -122,6 +123,12 @@ ColDiagramWindow::ColDiagramWindow(const QString & s, BrowserColDiagram * b, int
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -181,6 +188,7 @@ void ColDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -220,5 +228,9 @@ void ColDiagramWindow::hit_anchor() {
 
 void ColDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void ColDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

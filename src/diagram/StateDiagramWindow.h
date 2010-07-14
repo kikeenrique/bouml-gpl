@@ -62,6 +62,7 @@ class StateDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
   
   public:
     StateDiagramWindow(const QString & s, BrowserStateDiagram * b, int id = -1);
@@ -95,6 +96,7 @@ class StateDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

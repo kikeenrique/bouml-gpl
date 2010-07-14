@@ -47,6 +47,7 @@ class ObjectDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
   
   public:
     ObjectDiagramWindow(const QString & s, BrowserObjectDiagram *, int id = -1);
@@ -65,6 +66,7 @@ class ObjectDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

@@ -41,6 +41,7 @@
 #include "IconCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "ArrowJunctionCanvas.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
@@ -412,6 +413,7 @@ void ComponentDiagramView::save(QTextStream & st, QString & warning,
     case UmlComponent:
     case UmlNote:
     case UmlText:
+    case UmlImage:
     case UmlPackage:
     case UmlFragment:
     case UmlArrowJunction:
@@ -459,14 +461,15 @@ void ComponentDiagramView::save(QTextStream & st, QString & warning,
 void ComponentDiagramView::read(char * st, char * k) {
   UmlCanvas * canvas = the_canvas();
   
-  // reads first component package icons notes junctions and text
+  // reads first component package icons notes junctions text and images
   while (ComponentCanvas::read(st, canvas, k) ||
 	 NoteCanvas::read(st, canvas, k) ||
 	 TextCanvas::read(st, canvas, k) ||
 	 IconCanvas::read(st, canvas, k) ||
 	 PackageCanvas::read(st, canvas, k) ||
 	 FragmentCanvas::read(st, canvas, k) ||
-	 ArrowJunctionCanvas::read(st, canvas, k))
+	 ArrowJunctionCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
     k = read_keyword(st);
   
   // then reads relations and anchors

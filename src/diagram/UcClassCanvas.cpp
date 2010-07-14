@@ -556,7 +556,7 @@ void UcClassCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem(TR("Select linked items"), 3);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),5);
+  m.insertItem(TR("Remove from diagram"),5);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 6);
   m.insertSeparator();
@@ -587,7 +587,7 @@ void UcClassCanvas::menu(const QPoint&) {
     edit_drawing_settings();
     return;
   case 5:
-    // remove from view
+    // remove from diagram
     delete_it();
     break;
   case 6:

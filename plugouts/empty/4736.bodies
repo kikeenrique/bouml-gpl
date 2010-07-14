@@ -504,6 +504,27 @@ class CppSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_generate_javadoc_comment = v;
+!!!247936.cpp!!!	visibilityIndent() : string
+  read_if_needed_();
+
+  return _visibility_indent;
+!!!247936.java!!!	visibilityIndent() : string
+  read_if_needed_();
+
+  return _visibility_indent;
+!!!248064.cpp!!!	set_VisibilityIndent(in v : string) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppIndentVisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _visibility_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!248064.java!!!	set_VisibilityIndent(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIndentVisibilityCmd, v);
+  UmlCom.check();
+
+  _visibility_indent = v;
 !!!47744.cpp!!!	enumIn() : string
   read_if_needed_();
   
@@ -1405,6 +1426,8 @@ class CppSettings
 
   _file_regexp = UmlCom::read_string();
   _file_regexp_case_sensitive = UmlCom::read_bool();
+
+  _visibility_indent = UmlCom::read_string();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1494,6 +1517,8 @@ class CppSettings
 
   _file_regexp = UmlCom.read_string();
   _file_regexp_case_sensitive = UmlCom.read_bool();
+
+  _visibility_indent = UmlCom.read_string();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

@@ -87,6 +87,15 @@ void StateCanvas::delete_it() {
 	     this, SLOT(modified()));
   disconnect(browser_node->get_data(), 0, this, 0);
   
+  MultipleDependencyIterator<BasicData> it(this);
+  
+  while (it.current()) {
+    disconnect(it.current(), 0, this, 0);
+    ++it;
+  }
+  
+  unsubscribe_all();
+  
   DiagramCanvas::delete_it();
 }
 
@@ -105,14 +114,34 @@ void StateCanvas::remove(bool from_model) {
 void StateCanvas::compute_size() {
   double zoom = the_canvas()->zoom();
   QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
-  const BasicData * data = browser_node->get_data();
+  const StateData * data = (StateData *) browser_node->get_data();
+  BrowserState * ref = data->get_reference();
   StateDrawingSettings st = settings;
+  
+  // does not unsubscribe & disconnect signals because may be called
+  // during a signal management, and the signal connection list
+  // cannot be modified in this case
+  if ((ref != 0) && subscribe(ref->get_data()))
+    connect(ref->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   
   ((BrowserStateDiagram *) the_canvas()->browser_diagram())->get_statedrawingsettings(st);
   region_horizontally = (st.region_horizontally == UmlYes);
   
   min_height = 2*fm.height();
-  min_width = fm.width(browser_node->get_name());
+  
+  if (ref != 0) {
+    min_height = 3*fm.height();
+    min_width = fm.width(browser_node->get_name() + QString(":"));
+    
+    int w = fm.width(ref->get_name());
+
+    if (min_width < w)
+      min_width = w;
+  }
+  else {  
+    min_height = 2*fm.height();
+    min_width = fm.width(browser_node->get_name());
+  }
     
   if (data->get_stereotype()[0] != 0) {
     int w = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
@@ -124,7 +153,7 @@ void StateCanvas::compute_size() {
   }
     
   activities = QString::null;
-  if (st.show_activities == UmlYes) {
+  if ((ref == 0) && (st.show_activities == UmlYes)) {
     const StateBehavior & behavior = 
       ((StateData *) browser_node->get_data())
 	->get_behavior(st.drawing_language);
@@ -170,7 +199,7 @@ void StateCanvas::compute_size() {
     min_height += shadow;
   }
   
-  if (show_decomp_icon) {
+  if ((ref != 0) || show_decomp_icon) {
     int mw = ((int) (12 * the_canvas()->zoom())) * 5;
     
     if (min_width < mw)
@@ -183,6 +212,7 @@ void StateCanvas::compute_size() {
     
   DiagramCanvas::resize((width() > min_width) ? width() : min_width,
 			(height() > min_height) ? height() : min_height);
+  
   
   compute_regions();
 }
@@ -363,14 +393,18 @@ void StateCanvas::force_sub_inside(bool resize_it) {
 	DiagramItem * di = QCanvasItemToDiagramItem(*cit);
 	
 	if (di != 0) {
+	  bool border_allowed = FALSE;
+	  
 	  switch (di->type()) {
+	  case EntryPointPS:
+	  case ExitPointPS:
+	    border_allowed = TRUE;
+	    // no break
 	  case UmlState:
 	  case UmlStateAction:
 	  case InitialPS:
-	  case EntryPointPS:
 	  case FinalPS:
 	  case TerminatePS:      
-	  case ExitPointPS:
 	  case DeepHistoryPS:
 	  case ShallowHistoryPS:
 	  case JunctionPS:
@@ -384,7 +418,8 @@ void StateCanvas::force_sub_inside(bool resize_it) {
 	      
 	      if (parent == browser_node) {
 		nr = 1;
-		r = regions_rect[0];
+		
+		r = (border_allowed) ? rect() : regions_rect[0];
 	      }
 	      else if ((parent->get_type() == UmlRegion) &&
 		       (parent->parent() == browser_node)) {
@@ -404,9 +439,20 @@ void StateCanvas::force_sub_inside(bool resize_it) {
 	      
 	      need_sub_upper |= ((*cit)->z() <= z());
 	      
-	      QRect di_r = di->rect();
 	      int dx = 0;
 	      int dy = 0;
+	      QRect di_r = di->rect();
+	      
+	      if (border_allowed) {
+		QPoint c = di->center();
+		 
+		di_r.setLeft(c.x());
+		di_r.setTop(c.y());
+		di_r.setWidth(1);
+		di_r.setHeight(1);
+	      }
+	      else
+		di_r = di->rect();
 	      
 	      if (resize_it) {
 		if (di_r.left() < r.left()) {
@@ -573,10 +619,20 @@ void StateCanvas::force_inside(DiagramCanvas * elt, bool resize_it)
   BrowserNode * parent = (BrowserNode *) elt->get_bn()->parent();
   BrowserNode * container_state;
   bool container_shown = FALSE;
+  bool border_allowed = FALSE;
   
   switch (parent->get_type()) {
   case UmlState:
     container_state = parent;
+    
+    switch (elt->type()) {
+    case EntryPointPS:
+    case ExitPointPS:
+      border_allowed = TRUE;
+      break;
+    default:
+      break;
+    }
     break;
   case UmlRegion:
     container_state = (BrowserNode *) parent->parent();
@@ -596,17 +652,31 @@ void StateCanvas::force_inside(DiagramCanvas * elt, bool resize_it)
 	
 	if ((di != 0) && (di->get_bn() == container_state)) {
 	  StateCanvas * state = (StateCanvas *) di;
-	  
 	  QRect r;
-	  QRect elt_r = elt->rect();
+	  QRect elt_r;
+	  
+	  if (border_allowed) {
+	    QPoint c = elt->center();
+	    
+	    elt_r.setLeft(c.x());
+	    elt_r.setTop(c.y());
+	    elt_r.setWidth(1);
+	    elt_r.setHeight(1);
+	  }
+	  else
+	    elt_r = elt->rect();
 	  
 	  if (parent == container_state) {
-	    r = state->regions_rect[0];
-	    
-	    // to manage case where the state is too small to show legal areas
-	    if ((r.width() <= elt_r.width()) ||
-		(r.height() <= elt_r.height()))
+	    if (border_allowed)
 	      r = state->rect();
+	    else {
+	      r = state->regions_rect[0];
+	      
+	      // to manage case where the state is too small to show legal areas
+	      if ((r.width() <= elt_r.width()) ||
+		  (r.height() <= elt_r.height()))
+		r = state->rect();
+	    }
 	  }
 	  else if (state->regions.size() == 0) {
 	    // state too small to draw regions
@@ -746,7 +816,8 @@ void StateCanvas::draw(QPainter & p) {
   QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
   const int fnt_height = fm.height();
   const int half_fnt_height = fnt_height / 2;
-  const BasicData * data = browser_node->get_data();
+  const StateData * data = (StateData *) browser_node->get_data();
+  BrowserState * ref = data->get_reference();
   
   p.setBackgroundMode((used_color == UmlTransparent)
 		      ? ::Qt::TransparentMode
@@ -768,7 +839,7 @@ void StateCanvas::draw(QPainter & p) {
 	    r.left(), r.top(), r.width() - 1, r.height() - 1);
   }
   
-  if (show_decomp_icon) {
+  if ((ref != 0) || show_decomp_icon) {
     int ln = (int) (12 * the_canvas()->zoom());
     int to = r.bottom() - 2*ln;
     int mi = to + ln/2;
@@ -797,10 +868,21 @@ void StateCanvas::draw(QPainter & p) {
 
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   r.setTop(r.top() + half_fnt_height);
-  p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());  
+  
+  QString s = browser_node->get_name();
+  
+  if (ref != 0)
+    s += ":";
+  p.drawText(r, ::Qt::AlignHCenter, s);  
   if (fp != 0)
-    draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(),
-	      p.font(), fp);  
+    draw_text(r, ::Qt::AlignHCenter, s, p.font(), fp);  
+  if (ref != 0) {
+    s = ref->get_name();
+    r.setTop(r.top() + fnt_height);
+    p.drawText(r, ::Qt::AlignHCenter, s);  
+    if (fp != 0)
+      draw_text(r, ::Qt::AlignHCenter, s, p.font(), fp);  
+  }
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   r.setTop(r.top() + fnt_height);
   
@@ -819,7 +901,7 @@ void StateCanvas::draw(QPainter & p) {
   r.setLeft(r.left() + sixteen);
   r.setRight(r.right() - sixteen);
   
-  if (! activities.isEmpty()) {
+  if ((ref == 0) && !activities.isEmpty()) {
     r.setTop(r.top() + half_fnt_height);
     p.drawLine(r.topLeft(), r.topRight());
     if (fp != 0)
@@ -840,13 +922,16 @@ void StateCanvas::draw(QPainter & p) {
   r.setTop(r.top() + half_fnt_height);  
   
   int nregion = 0;
-  QListViewItem * child = browser_node->firstChild();
   
-  while (child != 0) {
-    if (!((BrowserNode *) child)->deletedp() &&
-	(((BrowserNode *) child)->get_type() == UmlRegion))
-      nregion += 1;
-    child = child->nextSibling();
+  if (ref == 0) {
+    QListViewItem * child = browser_node->firstChild();
+    
+    while (child != 0) {
+      if (!((BrowserNode *) child)->deletedp() &&
+	  (((BrowserNode *) child)->get_type() == UmlRegion))
+	nregion += 1;
+      child = child->nextSibling();
+    }
   }
   
   if (nregion != 0) {
@@ -865,7 +950,7 @@ void StateCanvas::draw(QPainter & p) {
 
       p.setPen(::Qt::DashLine);
       
-      child = browser_node->firstChild();
+      QListViewItem * child = browser_node->firstChild();
       
       for (;;) {
 	while (((BrowserNode *) child)->deletedp() ||
@@ -956,7 +1041,8 @@ void StateCanvas::compute_regions() {
   QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
   const int fnt_height = fm.height();
   const int half_fnt_height = fnt_height / 2;
-  const BasicData * data = browser_node->get_data();
+  const StateData * data = (StateData *) browser_node->get_data();
+  BrowserState * ref = data->get_reference();
   
   r.setTop(r.top() + half_fnt_height
 	   + fnt_height
@@ -971,22 +1057,28 @@ void StateCanvas::compute_regions() {
   r.setLeft(r.left() + sixteen);
   r.setRight(r.right() - sixteen);
   
-  if (! activities.isEmpty()) {
-    QSize sz = fm.size(0, activities);
-    
-    r.setTop(r.top() + half_fnt_height
-	     + half_fnt_height
-	     + sz.height());
-  } 
-  
   int nregion = 0;
-  QListViewItem * child = browser_node->firstChild();
   
-  while (child != 0) {
-    if (!((BrowserNode *) child)->deletedp() &&
-	(((BrowserNode *) child)->get_type() == UmlRegion))
-      nregion += 1;
-    child = child->nextSibling();
+  if (ref != 0)
+    r.setTop(r.top() + fnt_height);
+  else {
+    if (! activities.isEmpty()) {
+      QSize sz = fm.size(0, activities);
+      
+      r.setTop(r.top() + half_fnt_height
+	       + half_fnt_height
+	       + sz.height());
+    } 
+    
+    
+    QListViewItem * child = browser_node->firstChild();
+    
+    while (child != 0) {
+      if (!((BrowserNode *) child)->deletedp() &&
+	  (((BrowserNode *) child)->get_type() == UmlRegion))
+	nregion += 1;
+      child = child->nextSibling();
+    }
   }
   
   if (nregion != 0) {
@@ -997,7 +1089,7 @@ void StateCanvas::compute_regions() {
       regions.resize(nregion);
       regions_rect.resize(nregion);
       
-      child = browser_node->firstChild();
+      QListViewItem * child = browser_node->firstChild();
       
       for (;;) {
 	while (((BrowserNode *) child)->deletedp() ||
@@ -1088,23 +1180,29 @@ void StateCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   int index;
+  const StateData * data = (StateData *) browser_node->get_data();
+  BrowserState * ref = data->get_reference();
   
-  m.insertItem(new MenuTitle(browser_node->get_data()->definition(FALSE, TRUE), m.font()), -1);
+  m.insertItem(new MenuTitle(data->definition(FALSE, TRUE), m.font()), -1);
   m.insertSeparator();
   m.insertItem(TR("Upper"), 0);
   m.insertItem(TR("Lower"), 1);
   m.insertItem(TR("Go up"), 13);
   m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  if (show_decomp_icon)
-    m.insertItem(TR("Hide decomposition indicator"), 15);
-  else
-    m.insertItem(TR("Show decomposition indicator"), 15);
+  if (ref == 0) {
+    if (show_decomp_icon)
+      m.insertItem(TR("Hide decomposition indicator"), 15);
+    else
+      m.insertItem(TR("Show decomposition indicator"), 15);
+  }
   m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
   m.insertItem(TR("Edit state"), 3);
   m.insertSeparator();
   m.insertItem(TR("Select in browser"), 4);
+  if (ref != 0)
+    m.insertItem(TR("Select referenced state in browser"), 16);
   if (linked())
     m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
@@ -1117,7 +1215,7 @@ void StateCanvas::menu(const QPoint&) {
       m.insertItem(TR("Remove diagram association"),9);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
@@ -1164,7 +1262,7 @@ void StateCanvas::menu(const QPoint&) {
       ->set_associated_diagram(0);
     return;
   case 7:
-    //remove from view
+    //remove from diagram
     delete_it();
     break;
   case 8:
@@ -1174,6 +1272,9 @@ void StateCanvas::menu(const QPoint&) {
   case 15:
     show_decomp_icon = !show_decomp_icon;
     modified();	// call package_modified()
+  case 16:
+    ref->select_in_browser();
+    return;
   default:
     if (index >= 20)
       ToolCom::run(Tool::command(index - 20), browser_node);
@@ -1466,5 +1567,14 @@ void StateCanvas::history_hide() {
   disconnect(DrawingSettings::instance(), SIGNAL(changed()),
 	     this, SLOT(modified()));
   disconnect(browser_node->get_data(), 0, this, 0);
+  
+  MultipleDependencyIterator<BasicData> it(this);
+  
+  while (it.current()) {
+    disconnect(it.current(), 0, this, 0);
+    ++it;
+  }
+  
+  unsubscribe_all();
 }
 

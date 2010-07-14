@@ -331,7 +331,7 @@ void FragmentCanvas::menu(const QPoint&) {
     m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),5);
+  m.insertItem(TR("Remove from diagram"),5);
   if ((refer != 0) && !refer->deletedp()) {
     m.insertSeparator();
     m.insertItem(TR("Show referenced diagram"),9);

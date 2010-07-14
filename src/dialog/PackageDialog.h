@@ -68,6 +68,7 @@ class PackageDialog : public QTabDialog {
     // Php
     QWidget * phptab;
     LineEdit * edphpdir;
+    LineEdit * edphpnamespace;
     QPushButton * phpbutton;
 
     // Python

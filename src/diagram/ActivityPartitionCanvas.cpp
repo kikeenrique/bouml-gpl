@@ -396,7 +396,7 @@ void ActivityPartitionCanvas::menu(const QPoint&) {
       m.insertItem(TR("Remove diagram association"),9);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
@@ -439,7 +439,7 @@ void ActivityPartitionCanvas::menu(const QPoint&) {
 			       the_canvas()->browser_diagram());
     return;
   case 7:
-    //remove from view
+    //remove from diagram
     delete_it();
     break;
   case 8:

@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
     bool ok = FALSE;
     
     try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.17<br><hr>");
+      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.18<br><hr>");
       if (UmlPackage::getProject()->upgrade())
 	UmlCom::trace("<br><hr>Done<br>");
       ok = TRUE;

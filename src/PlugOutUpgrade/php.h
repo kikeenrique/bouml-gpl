@@ -27,9 +27,8 @@
 #define PHP_H
 
 extern void add_php();
-
 extern void php_javadocstylecomment();
-
 extern void php_add_require_once();
+extern void add_php_namespace(UmlClass * uml_base_package, UmlClass * phpsettings);
 
 #endif

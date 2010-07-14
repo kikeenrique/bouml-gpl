@@ -12,3 +12,7 @@ anItemKind UmlBaseEntryPointPseudoState::kind() {
   return anEntryPointPseudoState;
 }
 
+void UmlBaseEntryPointPseudoState::read_uml_() {
+  UmlBaseItem::read_uml_();
+  (void) UmlBaseItem::read_();	// reference
+}

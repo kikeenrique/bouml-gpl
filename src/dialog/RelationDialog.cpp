@@ -494,6 +494,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   sp = role.multiplicity->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   role.multiplicity->setSizePolicy(sp);
+  role.previous_multiplicity = (const char *) rel.multiplicity;
   role.multiplicity->insertItem(rel.multiplicity);
   if (!visit) {
     role.multiplicity->insertItem("1");
@@ -629,6 +630,31 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
       groupb.append(lbl);
       groupb.append(role.constraint);
     }
+  }
+}
+
+void RelationDialog::default_defs_if_needed(UmlCode prev_type) {
+  QString am = a.multiplicity->currentText().stripWhiteSpace();
+  QString bm = b.multiplicity->currentText().stripWhiteSpace();
+  
+  if ((prev_type != current_type) || (am != a.previous_multiplicity)) {
+    default_a_cpp_if_needed(prev_type, a.previous_multiplicity, am);
+    default_a_java_if_needed(prev_type, a.previous_multiplicity, am);
+    default_a_idl_if_needed(prev_type, a.previous_multiplicity, am);
+    default_a_php_if_needed(prev_type, a.previous_multiplicity, am);
+    default_a_python_if_needed(prev_type, a.previous_multiplicity, am);
+    
+    a.previous_multiplicity = am;
+  }
+  
+  if ((prev_type != current_type) || (bm != b.previous_multiplicity)) {
+    default_b_cpp_if_needed(prev_type, b.previous_multiplicity, bm);
+    default_b_java_if_needed(prev_type, b.previous_multiplicity, bm);
+    default_b_idl_if_needed(prev_type, b.previous_multiplicity, bm);
+    default_b_php_if_needed(prev_type, b.previous_multiplicity, bm);
+    default_b_python_if_needed(prev_type, b.previous_multiplicity, bm);
+    
+    b.previous_multiplicity = am;
   }
 }
 
@@ -1044,7 +1070,10 @@ void RelationDialog::edTypeActivated(int r)
   }
   
   if (current_type != type) {
+    UmlCode t = current_type;
+    
     current_type = type;
+    
     if (!visit) {
       edstereotype->clear();
       edstereotype->insertItem("");
@@ -1054,27 +1083,7 @@ void RelationDialog::edTypeActivated(int r)
       edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlRelations));
       edstereotype->setCurrentItem(0);
     
-      if (!a.edcppdecl->text().isEmpty())
-	cpp_default_a();
-      if (!a.edjavadecl->text().isEmpty())
-	java_default_a();
-      if (!a.edphpdecl->text().isEmpty())
-	php_default_a();
-      if (!a.edpythondecl->text().isEmpty())
-	python_default_a();
-      if (!a.edidldecl->text().isEmpty())
-	idl_default_a();
-
-      if (!b.edcppdecl->text().isEmpty())
-	cpp_default_b();
-      if (!b.edjavadecl->text().isEmpty())
-	java_default_b();
-      if (!b.edphpdecl->text().isEmpty())
-	php_default_b();
-      if (!b.edpythondecl->text().isEmpty())
-	python_default_b();
-      if (!b.edidldecl->text().isEmpty())
-	idl_default_b();
+      default_defs_if_needed(t);
     }
   }
   
@@ -1146,6 +1155,9 @@ void RelationDialog::menu_assoc() {
 }
 
 void RelationDialog::update_all_tabs(QWidget * w) {  
+  if (!visit)
+    default_defs_if_needed(current_type);
+  
   if (current_type == UmlDependency) {
     QString s = a.edcppdecl->text().stripWhiteSpace();
     
@@ -1420,6 +1432,24 @@ void RelationDialog::cpp_default_a() {
   cpp_update_a();
 }
 
+void RelationDialog::default_a_cpp_if_needed(UmlCode prev_type, 
+					     QString prev_mult,
+					     QString new_mult) {
+  if (!a.edcppdecl->text().isEmpty()) {
+    if (!RelationData::isa_association(prev_type) ||
+	!RelationData::isa_association(current_type)) {
+      if (prev_type != current_type)
+	cpp_default_a();
+    }
+    else {
+      QString n = GenerationSettings::cpp_default_rel_decl(current_type, new_mult);
+      
+      if (n != GenerationSettings::cpp_default_rel_decl(prev_type, prev_mult))
+	a.edcppdecl->setText(n);
+    }
+  }
+}
+
 void RelationDialog::cpp_include_in_header() {
   a.edcppdecl->setText(TR("#include in header"));
   if (! visit)
@@ -1442,6 +1472,17 @@ void RelationDialog::cpp_default_b() {
     b.edcppdecl->setText(GenerationSettings::cpp_default_rel_decl(UmlAssociation,
 								  b.multiplicity->currentText().stripWhiteSpace()));
   cpp_update_b();
+}
+
+void RelationDialog::default_b_cpp_if_needed(UmlCode prev_type, 
+					     QString prev_mult,
+					     QString new_mult) {
+  if (!b.edcppdecl->text().isEmpty()) {
+    QString n = GenerationSettings::cpp_default_rel_decl(current_type, new_mult);
+    
+    if (n != GenerationSettings::cpp_default_rel_decl(prev_type, prev_mult))
+      b.edcppdecl->setText(n);
+  }
 }
 
 void RelationDialog::cpp_unmapped_b() {
@@ -1623,6 +1664,24 @@ void RelationDialog::java_default_a() {
   java_update_a();
 }
 
+void RelationDialog::default_a_java_if_needed(UmlCode prev_type, 
+					      QString prev_mult,
+					      QString new_mult) {
+  if (!a.edjavadecl->text().isEmpty()) {
+    if (!RelationData::isa_association(prev_type) ||
+	!RelationData::isa_association(current_type)) {
+      if (prev_type != current_type)
+	java_default_a();
+    }
+    else {
+      QString n = GenerationSettings::java_default_rel_decl(new_mult);
+      
+      if (n != GenerationSettings::java_default_rel_decl(prev_mult))
+	a.edjavadecl->setText(n);
+    }
+  }
+}
+
 void RelationDialog::java_unmapped_a() {
   a.edjavadecl->setText(QString::null);
   a.showjavadecl->setText(QString::null);
@@ -1637,6 +1696,17 @@ void RelationDialog::java_default_b() {
   else 
     b.edjavadecl->setText(GenerationSettings::java_default_rel_decl(b.multiplicity->currentText().stripWhiteSpace()));
   java_update_b();
+}
+
+void RelationDialog::default_b_java_if_needed(UmlCode, 
+					     QString prev_mult,
+					     QString new_mult) {
+  if (!b.edjavadecl->text().isEmpty()) {
+    QString n = GenerationSettings::java_default_rel_decl(new_mult);
+    
+    if (n != GenerationSettings::java_default_rel_decl(prev_mult))
+      b.edjavadecl->setText(n);
+  }
 }
 
 void RelationDialog::java_unmapped_b() {
@@ -1810,6 +1880,19 @@ void RelationDialog::php_default_a() {
   php_update_a();
 }
 
+void RelationDialog::default_a_php_if_needed(UmlCode prev_type, 
+					     QString,
+					     QString) {
+  if (!a.edphpdecl->text().isEmpty()) {
+    if (!RelationData::isa_association(prev_type) ||
+	!RelationData::isa_association(current_type)) {
+      if (prev_type != current_type)
+	php_default_a();
+    }
+    // multiplicity unused
+  }
+}
+
 void RelationDialog::php_unmapped_a() {
   a.edphpdecl->setText(QString::null);
   a.showphpdecl->setText(QString::null);
@@ -1824,6 +1907,12 @@ void RelationDialog::php_default_b() {
   else 
     b.edphpdecl->setText(GenerationSettings::php_default_rel_decl());
   php_update_b();
+}
+
+void RelationDialog::default_b_php_if_needed(UmlCode, 
+					     QString,
+					     QString) {
+  // multiplicity unused
 }
 
 void RelationDialog::php_unmapped_b() {
@@ -1963,6 +2052,24 @@ void RelationDialog::python_default_a() {
   python_update_a();
 }
 
+void RelationDialog::default_a_python_if_needed(UmlCode prev_type, 
+						QString prev_mult,
+						QString new_mult) {
+  if (!a.edpythondecl->text().isEmpty()) {
+    if (!RelationData::isa_association(prev_type) ||
+	!RelationData::isa_association(current_type)) {
+      if (prev_type != current_type)
+	python_default_a();
+    }
+    else {
+      QString n = GenerationSettings::python_default_rel_decl(current_type, new_mult);
+      
+      if (n != GenerationSettings::python_default_rel_decl(prev_type, prev_mult))
+	a.edpythondecl->setText(n);
+    }
+  }
+}
+
 void RelationDialog::python_unmapped_a() {
   a.edpythondecl->setText(QString::null);
   a.showpythondecl->setText(QString::null);
@@ -1978,6 +2085,17 @@ void RelationDialog::python_default_b() {
     b.edpythondecl->setText(GenerationSettings::python_default_rel_decl(UmlAssociation,
 									b.multiplicity->currentText().stripWhiteSpace()));
   python_update_b();
+}
+
+void RelationDialog::default_b_python_if_needed(UmlCode prev_type, 
+						QString prev_mult,
+						QString new_mult) {
+  if (!b.edpythondecl->text().isEmpty()) {
+    QString n = GenerationSettings::python_default_rel_decl(current_type, new_mult);
+    
+    if (n != GenerationSettings::python_default_rel_decl(prev_type, prev_mult))
+      b.edpythondecl->setText(n);
+  }
 }
 
 void RelationDialog::python_unmapped_b() {
@@ -2151,6 +2269,38 @@ void RelationDialog::idl_default_a() {
   idl_update_a();
 }
 
+void RelationDialog::default_a_idl_if_needed(UmlCode prev_type, 
+					     QString prev_mult,
+					     QString new_mult) {
+  if (!a.edidldecl->text().isEmpty()) {
+    if (!RelationData::isa_association(prev_type) ||
+	!RelationData::isa_association(current_type)) {
+      if (prev_type != current_type)
+	idl_default_a();
+    }
+    else {
+      QString o;
+      QString n;
+      
+      if (a.idl_in_union) {
+	o = GenerationSettings::idl_default_union_rel_decl(prev_mult);
+	n = GenerationSettings::idl_default_union_rel_decl(new_mult);
+      }
+      else if (a.idl_in_valuetype) {
+	o = GenerationSettings::idl_default_valuetype_rel_decl(prev_mult);
+	n = GenerationSettings::idl_default_valuetype_rel_decl(new_mult);
+      }
+      else {
+	o = GenerationSettings::idl_default_rel_decl(prev_mult);
+	n = GenerationSettings::idl_default_rel_decl(new_mult);
+      }
+      
+      if (n != o)
+	a.edidldecl->setText(n);
+    }
+  }
+}
+
 void RelationDialog::idl_unmapped_a() {
   a.edidldecl->setText(QString::null);
   a.showidldecl->setText(QString::null);
@@ -2172,6 +2322,31 @@ void RelationDialog::idl_default_b() {
 			    : GenerationSettings::idl_default_rel_decl(mult)));
   }
   idl_update_b();
+}
+
+void RelationDialog::default_b_idl_if_needed(UmlCode, 
+					     QString prev_mult,
+					     QString new_mult) {
+  if (!b.edidldecl->text().isEmpty()) {
+    QString o;
+    QString n;
+    
+    if (b.idl_in_union) {
+      o = GenerationSettings::idl_default_union_rel_decl(prev_mult);
+      n = GenerationSettings::idl_default_union_rel_decl(new_mult);
+    }
+    else if (b.idl_in_valuetype) {
+      o = GenerationSettings::idl_default_valuetype_rel_decl(prev_mult);
+      n = GenerationSettings::idl_default_valuetype_rel_decl(new_mult);
+    }
+    else {
+      o = GenerationSettings::idl_default_rel_decl(prev_mult);
+      n = GenerationSettings::idl_default_rel_decl(new_mult);
+    }
+    
+    if (n != o)
+      b.edidldecl->setText(n);
+  }
 }
 
 void RelationDialog::idl_unmapped_b() {
@@ -2286,6 +2461,7 @@ void RelationDialog::accept() {
 	 (a.idl_truncatable_inheritance_cb != 0) &&
 	 a.idl_truncatable_inheritance_cb->isChecked());
       
+      default_defs_if_needed(rel->type);
       accept_role(a, rel->a, assoc, rel);
       accept_role(b, rel->b, assoc, rel);
     }

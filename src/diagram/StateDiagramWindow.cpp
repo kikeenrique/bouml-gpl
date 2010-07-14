@@ -78,6 +78,7 @@ QString addregionText() { return TR("Click this button to add a <i>region</i> in
 QString addactionText() { return TR("Click this button to add an <i>action</i> in a <i>state</i>."); }
 QString addsignalinText() { return TR("Click this button to add a <i>receive signal action</i> in a <i>state</i>."); }
 QString addsignaloutText() { return TR("Click this button to add a <i>send signal action</i> in a <i>state</i>."); }
+extern QString imageText();
 
 // id is an old ident in case of an import
 StateDiagramWindow::StateDiagramWindow(const QString & s, BrowserStateDiagram * b, int id)
@@ -234,6 +235,12 @@ StateDiagramWindow::StateDiagramWindow(const QString & s, BrowserStateDiagram * 
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText());
   
+  image =
+    new QToolButton(*imageButton, TR("Image"), QString::null,
+		    this, SLOT(hit_image()), toolbar, "image");
+  image->setToggleButton(TRUE);
+  QWhatsThis::add(image, imageText());
+  
   toolbar->addSeparator();
   
   add_scale_cmd(toolbar);
@@ -307,6 +314,7 @@ void StateDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
+  image->setOn(FALSE);
   
   b->setOn(TRUE);
   current_button = c;
@@ -404,5 +412,9 @@ void StateDiagramWindow::hit_anchor() {
 
 void StateDiagramWindow::hit_text() {
   hit_button(UmlText, text);
+}
+
+void StateDiagramWindow::hit_image() {
+  hit_button(UmlImage, image);
 }
 

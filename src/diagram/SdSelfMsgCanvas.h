@@ -36,6 +36,7 @@ class SdSelfMsgCanvas : public SdMsgBaseCanvas {
     
     virtual void draw(QPainter & p);
     
+    virtual void change_scale();
     virtual void update_hpos();
     virtual void check_vpos(const QRect &);
     virtual double min_y() const;

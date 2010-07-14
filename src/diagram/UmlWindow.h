@@ -72,10 +72,12 @@ class UmlWindow : public QMainWindow {
     int preserve_bodies_id;
     int add_operation_profile_id;
     int shortcut_id;
+    int img_root_dir_id;
     int show_browser_stereotypes_id;
     int completion_id;
     QStringList historic;
     CanvasFormat format;
+    QString img_root_dir;
     QSplitter * spl1;
     QSplitter * spl2;
     char style;	// '?' unknown, 'm' = motif, '+' = motif+, 'w' = windows
@@ -107,6 +109,8 @@ class UmlWindow : public QMainWindow {
     static void reload_it();
     static CanvasFormat default_format();
     static void set_default_format(CanvasFormat);
+    static QString images_root_dir();
+    static void set_images_root_dir(QString);
     static void abort_line_construction();
     static void clear_select_historic();
     static void browser_search_it();
@@ -147,6 +151,7 @@ class UmlWindow : public QMainWindow {
     void addoperationprofile();
     void edit_shortcuts();
     void edit_env();
+    void edit_image_root_dir();
     
     void motif_style();
     void motifplus_style();

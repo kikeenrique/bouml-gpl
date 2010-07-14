@@ -352,7 +352,7 @@ void DiagramItem::shift(QPoint & p, QPoint other, bool contains_other) const {
 //
 
 bool DiagramItem::has_drawing_settings() const {
-  return false;
+  return FALSE;
 }
 
 void DiagramItem::edit_drawing_settings(QList<DiagramItem> &) {

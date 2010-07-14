@@ -1,6 +1,6 @@
-format 74
+format 75
 "Diagram" // API USER::Diagram
-  revision 34
+  revision 36
   modified_by 2 "bruno"
   // class settings
   //class diagram settings

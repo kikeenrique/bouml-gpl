@@ -131,6 +131,8 @@ class ClassDialog : public QTabDialog {
     QComboBox * stereo_check_cb;
     LineEdit * edcheckparam;
     LineEdit * ediconpath;
+    QPushButton * iconpathrootbutton;
+    QPushButton * iconpathprjbutton;
     
     ApplicableOnTable * applicableon_table;
       
@@ -166,9 +168,8 @@ class ClassDialog : public QTabDialog {
   
     static void php_generate_decl(QString & s, ClassData * cl, QString def,
 				  QString name, QString stereotype,
-				  QString comment, UmlVisibility visibility,
-				  bool is_final, bool is_abstract,
-				  KeyValuesTable * kvt);
+				  QString comment, bool is_final,
+				  bool is_abstract, KeyValuesTable * kvt);
   
     static void python_generate_decl(QString & s, ClassData * cl, QString def,
 				     QString name, QString stereotype,
@@ -204,6 +205,8 @@ class ClassDialog : public QTabDialog {
     void edit_constraint();
     void edStereotypeActivated(const QString &);
     void icon_browse();
+    void icon_root_relative();
+    void icon_prj_relative();
     void update_all_tabs(QWidget *);
     void cpp_update_decl();
     void cpp_default_decl();

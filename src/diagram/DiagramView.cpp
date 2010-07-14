@@ -58,6 +58,7 @@
 #include "LabelCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
+#include "ImageCanvas.h"
 #include "BrowserPackage.h"
 #include "PackageCanvas.h"
 #include "FragmentCanvas.h"
@@ -132,6 +133,59 @@ void DiagramView::contentsMouseDoubleClickEvent(QMouseEvent * e) {
   }
 }
 
+bool DiagramView::multiple_selection_for_menu(BooL & in_model, BooL & out_model,
+					      BooL & alignable, int & n_resize,
+					      QList<DiagramItem> & l_drawing_settings,
+					      const QCanvasItemList & selected) {
+  QCanvasItemList::ConstIterator it;
+  int n_targets = 0;
+  UmlCode k = UmlCodeSup;
+
+  in_model = FALSE;
+  out_model = FALSE;
+  alignable = FALSE;
+  l_drawing_settings.clear();
+  n_resize = 0;
+
+  for (it = selected.begin(); it != selected.end(); ++it) {
+    if (! isa_label(*it)) {
+      n_targets += 1;
+      
+      DiagramItem * item = QCanvasItemToDiagramItem(*it);
+      
+      item->delete_available(in_model, out_model);
+      alignable |= item->alignable();
+      
+      if (item->has_drawing_settings()) {
+	// note : relations doesn't have drawing setting, transition and flow have
+	switch (k) {
+	case UmlCodeSup:
+	  // first case
+	  k = item->type();
+	  l_drawing_settings.append(item);
+	  break;
+	case UmlArrowPoint:
+	  // mark for several types
+	  break;
+	default:
+	  if (item->type() == k)
+	    l_drawing_settings.append(item);
+	  else {
+	    // several types
+	    l_drawing_settings.clear();
+	    k = UmlArrowPoint;	// mark for several types
+	  }
+	}
+      }
+      
+      if (item->on_resize_point(item->rect().topLeft()) != NoCorner)
+	n_resize += 1;
+    }	  
+  }
+  
+  return (n_targets > 1);
+}
+
 void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
   first_move = TRUE;
   pressedButton = e->button();
@@ -149,52 +203,14 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
   
       if (! draw_line) {
 	const QCanvasItemList selected = selection();
-	QCanvasItemList::ConstIterator it;
-	int n_targets = 0;
-	BooL in_model = FALSE;
-	BooL out_model = FALSE;
-	bool alignable = FALSE;
-	UmlCode k = UmlCodeSup;
+	BooL in_model;
+	BooL out_model;
+	BooL alignable;
 	QList<DiagramItem> l_drawing_settings;
-	int n_resize = 0;
+	int n_resize;
 	
-	for (it = selected.begin(); it != selected.end(); ++it) {
-	  if (! isa_label(*it)) {
-	    n_targets += 1;
-	    
-	    DiagramItem * item = QCanvasItemToDiagramItem(*it);
-	    
-	    item->delete_available(in_model, out_model);
-	    alignable |= item->alignable();
-	    
-	    if (item->has_drawing_settings()) {
-	      // note : relations doesn't have drawing setting, transition and flow have
-	      switch (k) {
-	      case UmlCodeSup:
-		// first case
-		k = item->type();
-		l_drawing_settings.append(item);
-		break;
-	      case UmlArrowPoint:
-		// mark for several types
-		break;
-	      default:
-		if (item->type() == k)
-		  l_drawing_settings.append(item);
-		else {
-		  // several types
-		  l_drawing_settings.clear();
-		  k = UmlArrowPoint;	// mark for several types
-		}
-	      }
-	    }
-	    
-	    if (item->on_resize_point(item->rect().topLeft()) != NoCorner)
-	      n_resize += 1;
-	  }	  
-	}
-	
-	if (n_targets > 1) {
+	if (multiple_selection_for_menu(in_model, out_model, alignable,
+					n_resize, l_drawing_settings, selected)) {
 	  multiple_selection_menu(in_model, out_model, alignable,
 				  n_resize, l_drawing_settings);
 	  return;
@@ -294,6 +310,22 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  text->upper();
 	  text->open();
 	  window()->package_modified();
+	}
+	break;
+      case UmlImage:
+	{
+	  unselect_all();
+	  window()->selectOn();
+	  
+	  history_save();
+	  
+	  ImageCanvas * image = ImageCanvas::add(the_canvas(), e->x(), e->y());
+	  
+	  if (image != 0) {
+	    image->show();
+	    image->upper();
+	    window()->package_modified();
+	  }
 	}
 	break;
       case UmlPackage:
@@ -978,7 +1010,7 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   m.insertItem(TR("Copy selected (Ctrl+c)"), 11);
   
   if (out_model) {
-    m.insertItem(TR("Cut selected (Ctrl+x, remove from view)"), 12);
+    m.insertItem(TR("Cut selected (Ctrl+x, remove from diagram)"), 12);
     m.insertItem(TR("Remove selected from view (Suppr)"), 2);
   }
   if (in_model)
@@ -1161,7 +1193,7 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	history_protected = FALSE;
 	delete_them(TRUE);
       }
-      else if (s == "Remove from view") {
+      else if (s == "Remove from diagram") {
 	history_protected = TRUE;
 	delete_them(FALSE);
       }
@@ -1284,10 +1316,20 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	window()->new_scale(100);
 	return;
       }
+      else if (s == "Diagram menu") {
+	if (! BrowserNode::popupMenuActive()) {	// Qt bug
+	  BrowserNode::setPopupMenuActive(TRUE);
+	  
+	  menu(QPoint(0, 0));
+	  BrowserNode::setPopupMenuActive(FALSE);
+	}
+	return;
+      }
       else {
 	const QCanvasItemList selected = selection();
+	int nselected = selected.count();
 
-	if (selected.count() > 1) {
+	if (nselected > 1) {
 	  if (s == "Select linked items") {
 	    history_protected = TRUE;
 	    unselect_all();
@@ -1396,8 +1438,22 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	    history_save();
 	    same_size(TRUE, TRUE);
 	  }
+	  else if (s == "Menu") {
+	    BooL in_model;
+	    BooL out_model;
+	    BooL alignable;
+	    QList<DiagramItem> l_drawing_settings;
+	    int n_resize;
+	    
+	    if (multiple_selection_for_menu(in_model, out_model, alignable,
+					    n_resize, l_drawing_settings, selected)) {
+	      multiple_selection_menu(in_model, out_model, alignable,
+				      n_resize, l_drawing_settings);
+	      return;
+	    }
+	  }
 	}
-	else if (selected .count() == 1) {
+	else if (nselected == 1) {
 	  DiagramItem * item = 
 	    QCanvasItemToDiagramItem(selected.first());
 	  
@@ -1407,11 +1463,43 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	      unselect_all();
 	      item->select_associated();
 	    }
+	    else if (s == "Menu") {
+	      if (! BrowserNode::popupMenuActive()) {	// Qt bug
+		BrowserNode::setPopupMenuActive(TRUE);
+    
+		item->menu(item->rect().center());
+		BrowserNode::setPopupMenuActive(FALSE);
+	      }
+	      return;
+	    }
+	    else if (s == "Edit") {
+	      unselect_all();
+	      item->open();
+	      return;
+	    }
 	    else {
 	      history_protected = FALSE;
 	      item->apply_shortcut(s);
 	    }
 	  }
+	  else if (s == "Menu") {
+	    if (! BrowserNode::popupMenuActive()) {	// Qt bug
+	      BrowserNode::setPopupMenuActive(TRUE);
+	      
+	      menu(QPoint(0, 0));
+	      BrowserNode::setPopupMenuActive(FALSE);
+	    }
+	    return;
+	  }
+	}
+	else if (s == "Menu") {
+	  if (! BrowserNode::popupMenuActive()) {	// Qt bug
+	    BrowserNode::setPopupMenuActive(TRUE);
+	    
+	    menu(QPoint(0,0));
+	    BrowserNode::setPopupMenuActive(FALSE);
+	  }
+	  return;
 	}
       }
       canvas()->update();

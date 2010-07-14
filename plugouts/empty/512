@@ -1,6 +1,6 @@
-format 74
+format 75
 "Com" // API BASE::Com
-  revision 61
+  revision 63
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -3366,6 +3366,17 @@ public static final ${class} ${name} = new ${class}(_${name});
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 160128 "setPhpNamespaceCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}${@}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 5760 "ClassGlobalCmd"
@@ -3530,6 +3541,17 @@ public static final ${class} ${name} = new ${class}(_${name});
 	public type class_ref 5888 // PackageGlobalCmd
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 160256 "findPhpNamespaceCmd"
+	public type class_ref 5888 // PackageGlobalCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}${@}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
 	php_decl ""
@@ -4245,6 +4267,17 @@ public static final ${class} ${name} = new ${class}(_${name});
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 160768 "setCppIndentVisibilityCmd"
+	public type class_ref 6144 // CppSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}${@}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 6272 "JavaSettingsCmd"
@@ -4933,6 +4966,17 @@ public static final ${class} ${name} = new ${class}(_${name});
       end
 
       attribute 159616 "setPhpFileRevFilterCmd"
+	public type class_ref 146688 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}${@}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 160512 "setPhpForceNamespaceGenCmd"
 	public type class_ref 146688 // PhpSettingsCmd
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}${@}public static final int _${name}${value};

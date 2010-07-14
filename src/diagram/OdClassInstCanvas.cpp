@@ -534,7 +534,7 @@ void OdClassInstCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem(TR("Select linked items"), 6);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 7);
+  m.insertItem(TR("Remove from diagram"), 7);
   if (browser_node->is_writable())
     m.insertItem(TR("Delete from model"), 8);
   

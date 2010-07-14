@@ -254,6 +254,27 @@ class PhpSettings
   UmlCom.check();
   _is_root_relative_path = v;
   if (v) _is_relative_path = false;
+!!!247680.cpp!!!	isForceNamespacePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+!!!247680.java!!!	isForceNamespacePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+!!!247808.cpp!!!	set_IsForceNamespacePrefixGeneration(in v : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!247808.java!!!	set_IsForceNamespacePrefixGeneration(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpForceNamespaceGenCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_force_namespace_gen = v;
 !!!216704.cpp!!!	isGenerateJavadocStyleComment() : bool
   read_if_needed_();
 
@@ -626,6 +647,8 @@ class PhpSettings
 
   _file_regexp = UmlCom::read_string();
   _file_regexp_case_sensitive = UmlCom::read_bool();
+
+  _is_force_namespace_gen = UmlCom::read_bool();
 !!!202368.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -664,6 +687,8 @@ class PhpSettings
 
   _file_regexp = UmlCom.read_string();
   _file_regexp_case_sensitive = UmlCom.read_bool();
+
+  _is_force_namespace_gen = UmlCom.read_bool();
 !!!202496.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

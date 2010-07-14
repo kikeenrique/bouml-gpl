@@ -12,7 +12,8 @@ enum PackageGlobalCmd {
   saveProjectCmd,
   findPythonPackageCmd,
   updateProfileCmd,
-  findStereotypeCmd
+  findStereotypeCmd,
+  findPhpNamespaceCmd
 
 };
 #endif

@@ -86,6 +86,13 @@ void ParameterSetCanvas::deleted() {
   canvas()->update();
 }
 
+void ParameterSetCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
+}
+
 void ParameterSetCanvas::disconnect_pins() {
   QValueList<PinCanvas *>::Iterator iter;
 

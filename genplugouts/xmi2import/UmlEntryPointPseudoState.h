@@ -11,6 +11,10 @@ class UmlEntryPointPseudoState : public UmlBaseEntryPointPseudoState {
      UmlEntryPointPseudoState(void * id, const QCString & s) : UmlBaseEntryPointPseudoState(id, s) {
     }
 
+    //  call at end of import : try to solve referenced entry point
+    
+    virtual void solve(QCString idref);
+
 };
 
 #endif

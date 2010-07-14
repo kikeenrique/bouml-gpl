@@ -123,6 +123,7 @@ class ArtifactDialog : public QTabDialog {
   
     void compute_cpp_namespace(QString & nasp, QString & nasp_start, QString & nasp_end);
     QString compute_java_package();
+    QString compute_php_namespace();
     void compute_idl_module(QString & mod, QString & mod_start, QString & mod_end);
     
     static void post_edit_description(ArtifactDialog * d, QString s);

@@ -4011,7 +4011,7 @@ void OperationDialog::force_param(int rank, bool recompute) {
     if ((s.find(t) == -1) && (s.find(p) == -1)) {
       char d[16];
   
-      sprintf(t, "${d%d}", rank);
+      sprintf(d, "${d%d}", rank);
       add_param(s, rank, QString(d) + " " + t + " " + p);
       edidldecl->setText(s);
     }

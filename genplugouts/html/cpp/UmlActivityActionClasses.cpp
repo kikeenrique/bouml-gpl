@@ -41,33 +41,33 @@ QCString UmlValueSpecificationAction::sKind() {
 void UmlValueSpecificationAction::html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlActivityAction::html();
 
-  fw.write("<p>Value :</p><ul>");
-  
   QCString s = value();
+  QCString scpp = cppValue();
+  QCString sjava = javaValue();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Value :</p><ul>");
+  
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppValue();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaValue();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 
@@ -81,33 +81,33 @@ QCString UmlOpaqueAction::sKind() {
 void UmlOpaqueAction::html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlActivityAction::html();
 
-  fw.write("<p>Behavior :</p><ul>");
-  
   QCString s = behavior();
+  QCString scpp = cppBehavior();
+  QCString sjava = javaBehavior();
 
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Behavior :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppBehavior();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaBehavior();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 
@@ -131,32 +131,32 @@ void UmlAcceptEventAction::html(QCString pfix, unsigned int rank, unsigned int l
     fw.write("<p>Event is a time event</p>");
   
   QCString s = trigger();
+  QCString scpp = cppTrigger();
+  QCString sjava = javaTrigger();
 
-  fw.write("<p>Trigger :</p><ul>");
-  
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Trigger :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 
@@ -265,34 +265,34 @@ QCString UmlAcceptCallAction::sKind() {
 
 void UmlAcceptCallAction::html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlActivityAction::html();
-
-  QCString s = trigger();
-
-  fw.write("<p>Trigger :</p><ul>");
   
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  QCString s = trigger();
+  QCString scpp = cppTrigger();
+  QCString sjava = javaTrigger();
+
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>Trigger :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+    
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+    
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaTrigger();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 
@@ -307,32 +307,32 @@ void UmlReplyAction::html(QCString pfix, unsigned int rank, unsigned int level) 
   UmlActivityAction::html();
 
   QCString s = replyToCall();
+  QCString scpp = cppReplyToCall();
+  QCString sjava = javaReplyToCall();
 
-  fw.write("<p>replyToCall :</p><ul>");
-  
-  if (!s.isEmpty()) {
-    fw.write("<li>OCL : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
+  if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
+    fw.write("<p>replyToCall :</p><ul>");
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>OCL : <pre>\n");
+      writeq(s);
+      fw.write("</pre></li>");
+    }
+
+    if (!scpp.isEmpty()) {
+      fw.write("<li>C++ : <pre>\n");
+      writeq(scpp);
+      fw.write("</pre></li>");
+    }
+
+    if (!sjava.isEmpty()) {
+      fw.write("<li>Java : <pre>\n");
+      writeq(sjava);
+      fw.write("</pre></li>");
+    }
+    
+    fw.write("</ul>");
   }
-
-  s = cppReplyToCall();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  s = javaReplyToCall();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : <pre>\n");
-    writeq(s);
-    fw.write("</pre></li>");
-  }
-
-  fw.write("</ul>");
 
   write_children(pfix, rank, level);
 

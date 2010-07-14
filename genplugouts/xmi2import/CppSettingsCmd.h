@@ -51,7 +51,10 @@ enum CppSettingsCmd {
   setCppForceNamespaceGenCmd,
   setCppRootRelativePathCmd,
   setCppJavadocStyleCmd,
-  setCppInlineOperForceInclInHeaderCmd
+  setCppInlineOperForceInclInHeaderCmd,
+  setCppDirRevFilterCmd,
+  setCppFileRevFilterCmd,
+  setCppIndentVisibilityCmd
 
 };
 #endif

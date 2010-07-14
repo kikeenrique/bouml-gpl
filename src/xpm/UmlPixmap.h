@@ -73,6 +73,7 @@ extern QPixmap * mergeButton;
 extern QPixmap * pinButton;
 extern QPixmap * expansionregionButton;
 extern QPixmap * expansionnodeButton;
+extern QPixmap * imageButton;
 
 // browser icons
 

@@ -78,6 +78,7 @@ class ActivityObjectCanvas : public QObject, public DiagramCanvas {
     virtual void delete_available(BooL & in_model, BooL & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
+    virtual void remove(bool from_model);
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);

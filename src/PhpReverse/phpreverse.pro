@@ -15,7 +15,7 @@ SOURCES	      = main.cpp \
 		UmlUseCase.cpp UmlUseCaseDiagram.cpp \
 		UmlUseCaseView.cpp Lex.cpp Statistic.cpp \
 		ClassContainer.cpp Package.cpp BrowserNode.cpp \
-		Class.cpp UmlClassMember.cpp \
+		Class.cpp Namespace.cpp UmlClassMember.cpp \
 		UmlChoicePseudoState.cpp UmlDeepHistoryPseudoState.cpp \
 		UmlEntryPointPseudoState.cpp UmlExitPointPseudoState.cpp \
 		UmlFinalState.cpp UmlForkPseudoState.cpp \

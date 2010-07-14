@@ -39,6 +39,9 @@ class ShowFileDialog : public QDialog {
   public:
     ShowFileDialog(const QCString & fn);
     ~ShowFileDialog();
+
+  protected slots:
+    virtual void polish();
 };
  
 #endif

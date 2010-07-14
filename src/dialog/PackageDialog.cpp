@@ -286,6 +286,14 @@ is specified (through the project menu entry 'edit generation settings')\n\n"), 
   htab = new QHBox(vtab);
   htab->setMargin(5);
   new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl2 = new QLabel("namespace : ", htab);
+  edphpnamespace = new LineEdit(pa->php_namespace, htab);
+  edphpnamespace->setReadOnly(visit);
+  
+  same_width(lbl1, lbl2);
     
   vtab->setStretchFactor(new QHBox(vtab), 1000);
   
@@ -551,6 +559,7 @@ void PackageDialog::accept() {
   pa->java_dir = edjavadir->text().simplifyWhiteSpace();
   pa->java_package = edjavapackage->text().simplifyWhiteSpace();
   pa->php_dir = edphpdir->text().simplifyWhiteSpace();
+  pa->php_namespace = edphpnamespace->text().simplifyWhiteSpace();
   pa->python_dir = edpythondir->text().simplifyWhiteSpace();
   pa->python_package = edpythonpackage->text().simplifyWhiteSpace();
   pa->idl_dir = edidldir->text().simplifyWhiteSpace();

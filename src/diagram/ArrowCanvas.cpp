@@ -966,7 +966,7 @@ void ArrowCanvas::menu(const QPoint&) {
   }
   
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 6);
+  m.insertItem(TR("Remove from diagram"), 6);
   
   int choice = m.exec(QCursor::pos());
   

@@ -166,7 +166,7 @@ void FragmentSeparatorCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(TR("Separator"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"), 1);
+  m.insertItem(TR("Remove from diagram"), 1);
   
   if (m.exec(QCursor::pos()) == 1) {
     delete_it();

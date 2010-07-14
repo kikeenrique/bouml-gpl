@@ -1036,3 +1036,69 @@ void add_state_specification()
   
   UmlCom::set_user_id(uid);
 }
+
+//
+//
+//
+
+static void add_ref(const char * scl, const char * sucl, const char * aa, const char * ao)
+{
+  UmlClass * cl = UmlClass::get(scl, 0);
+  UmlClass * ucl = UmlClass::get(sucl, 0);
+
+  // att
+  
+  UmlRelation * rel =
+    cl->add_relation(aDirectionalAssociation, "_reference", PrivateVisibility, ucl, 0, 0);
+  
+  if (aa != 0)
+    rel->moveAfter(cl->get_attribute(aa));
+  
+  // get
+  
+  UmlOperation * op;
+  
+  defGetPtr(cl, _reference, reference, ucl, 0, 0,
+	    "the referenced sub machine state or 0/null\n"
+	    " if the state is not a sub machine state reference");
+
+  op->moveAfter(cl->get_operation(ao));
+  
+  UmlOperation * get = op;
+  
+  defSetPtr(cl, _reference, set_Reference, ucl, setDerivedCmd, 0, 0, 
+	    "referenced sub machine state (may be 0/null)");
+  op->moveAfter(get);
+  
+  // read
+    
+  QCString s;
+  
+  op = cl->get_operation("read_uml_");
+  if (op != 0) {
+    s = op->cppBody() + "  _reference = (" + sucl +  " *) UmlBaseItem::read_();\n";
+    op->set_CppBody(s);
+    s = op->javaBody() + "  _reference = (" + sucl +  ") UmlBaseItem.read_();\n";
+    op->set_JavaBody(s);
+  }
+  else {
+    op = cl->add_op("read_uml_", ProtectedVisibility, "void");
+    
+    op->set_isCppVirtual(TRUE);
+    s = QCString("  UmlBaseItem::read_uml_();\n  _reference = (") + sucl +  " *) UmlBaseItem::read_();\n";
+    op->set_CppBody(s);
+    s = QCString("  super.read_uml_();\n  _reference = (") + sucl +  ") UmlBaseItem.read_();\n";
+    op->set_JavaBody(s);
+    
+    include_umlcom(cl);
+  }
+}
+
+void add_stateref()
+{
+  UmlCom::trace("<b>Add sub state machine reference</b><br>\n");
+
+  add_ref("UmlBaseState", "UmlState", "_active", "set_Specification");
+  add_ref("UmlBaseEntryPointPseudoState", "UmlEntryPointPseudoState", 0, "kind");
+  add_ref("UmlBaseExitPointPseudoState", "UmlExitPointPseudoState", 0, "kind");
+}

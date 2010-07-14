@@ -3,15 +3,15 @@
 
 void UmlClassMember::annotation_constraint() {
   if (! javaAnnotations().isEmpty()) {
-    fw.write("<p> Java annotation(s) :<ul>");
+    fw.write("<p> Java annotation(s) :</p><div class=\"sub\"><p>");
     writeq(javaAnnotations());
-    fw.write("</ul>");
+    fw.write("</p></div>");
   }
   
   if (! constraint().isEmpty()) {
-    fw.write("<p> Constraint :<ul>");
+    fw.write("<p> Constraint :</p><div class=\"sub\"><p>");
     writeq(constraint());
-    fw.write("</ul>");
+    fw.write("</p></div>");
   }
 }
 

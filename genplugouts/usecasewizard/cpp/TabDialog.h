@@ -38,7 +38,15 @@ class TabDialog : public QTabDialog {
 
     QMultiLineEdit * exceptions;
 
-protected slots:    void accept();
+
+  protected:
+    QPoint desktopCenter;
+
+protected slots:    virtual void polish();
+
+
+  public:
+    void accept();
 
     void reject();
 

@@ -196,11 +196,11 @@ void ColMsgTable::refresh() {
 }
 
 void ColMsgTable::refresh(ColMsgList & m) {
-    ColMsg * msg;
-    QListIterator<ColMsg> it(m);
+  ColMsg * msg;
+  QListIterator<ColMsg> it(m);
   
   for ( ; (msg = it.current()) != 0; ++it) {
-    QString def = msg->def(FALSE, TRUE, UmlView, umlContext);
+    QString def = msg->def(FALSE, TRUE, UmlView, DefaultShowContextMode);
     CodObjCanvas * from;
     CodObjCanvas * to;
     int r = numRows();
@@ -229,7 +229,7 @@ void ColMsgTable::edit_msg(int row) {
   CodChangeMsgDialog d(this, msg);
   
   if (d.exec() == QDialog::Accepted) {
-    QString def = msg->def(FALSE, TRUE, UmlView, umlContext);
+    QString def = msg->def(FALSE, TRUE, UmlView, DefaultShowContextMode);
     
     msg->in->update_msgs();
     item(row, MSG_COL)->setText(def.mid(def.find(' ') + 1));

@@ -353,7 +353,7 @@ void upgrade_CppSettings()
     }
     
     // add set
-    UmlOperation * op = cl->add_op(s[i].set, PublicVisibility, "bool");
+    UmlOperation * op = cl->add_op(s[i].set, PublicVisibility, "bool", TRUE);
    
     op->set_isClassMember(TRUE);
     op->set_Description(" set the default operation value type form\n\
@@ -1598,9 +1598,12 @@ void add_cpp_set_param_ref(UmlClass * cppsetting)
   //
 
   UmlOperation * op = cppsetting->get_operation("read_");
-
-  op->set_CppBody(op->cppBody() + "  _is_set_param_ref = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _is_set_param_ref = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + "  _is_set_param_ref = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_set_param_ref = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   //
 
@@ -1718,16 +1721,22 @@ void upgrade_setter_getter()
   //
 
   op = baseoper->get_operation("read_cpp_");
-  op->set_CppBody(op->cppBody() + "  _cpp_get_set_frozen = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _cpp_get_set_frozen = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _cpp_get_set_frozen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _cpp_get_set_frozen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   op = baseoper->get_operation("read_java_");
-  op->set_CppBody(op->cppBody() + "  _java_get_set_frozen = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _java_get_set_frozen = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _java_get_set_frozen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _java_get_set_frozen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   op = baseoper->get_operation("read_idl_");
-  op->set_CppBody(op->cppBody() + "  _idl_get_set_frozen = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _idl_get_set_frozen = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _idl_get_set_frozen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _idl_get_set_frozen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   //
 
@@ -1749,13 +1758,16 @@ void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
   //
 
   UmlOperation * op = cppsetting->get_operation("read_");
-
-  op->set_CppBody(op->cppBody() + 
-		  "  _is_relative_path = UmlCom::read_bool();\n"
-		  "  _is_force_namespace_gen = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _is_relative_path = UmlCom.read_bool();\n"
-		   "  _is_force_namespace_gen = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + 
+    "  _is_relative_path = UmlCom::read_bool();\n"
+      "  _is_force_namespace_gen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + 
+    "  _is_relative_path = UmlCom.read_bool();\n"
+      "  _is_force_namespace_gen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   //
   // add missing operation isSetParamRef()
@@ -1809,7 +1821,7 @@ void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
 
   // set
   
-  UmlOperation * op2 = cppsetting->add_op("set_IsRelativePath", PublicVisibility, "bool");
+  UmlOperation * op2 = cppsetting->add_op("set_IsRelativePath", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if a relative path must be used when the path\n"
@@ -1865,7 +1877,7 @@ void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
 
   // set
   
-  op2 = cppsetting->add_op("set_IsForceNamespacePrefixGeneration", PublicVisibility, "bool");
+  op2 = cppsetting->add_op("set_IsForceNamespacePrefixGeneration", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if the namespace prefix must be always generated before class's names\n"
@@ -1946,13 +1958,16 @@ void add_getter_setter_rules(UmlClass * umlsetting)
   //
 
   UmlOperation * op = umlsetting->get_operation("read_");
-
-  op->set_CppBody(op->cppBody() + 
-		  "  _uml_get_name = (aLanguage) UmlCom::read_char();\n"
-		  "  _uml_set_name = (aLanguage) UmlCom::read_char();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _uml_get_name = aLanguage.fromInt(UmlCom.read_char());\n"
-		   "  _uml_set_name = aLanguage.fromInt(UmlCom.read_char());\n");
+  QCString s;
+  
+  s = op->cppBody() + 
+    "  _uml_get_name = (aLanguage) UmlCom::read_char();\n"
+      "  _uml_set_name = (aLanguage) UmlCom::read_char();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + 
+    "  _uml_get_name = aLanguage.fromInt(UmlCom.read_char());\n"
+      "  _uml_set_name = aLanguage.fromInt(UmlCom.read_char());\n";
+  op->set_JavaBody(s);
   
   // get getter name
   
@@ -1976,7 +1991,7 @@ void add_getter_setter_rules(UmlClass * umlsetting)
   
   UmlOperation * op2;
   
-  op2 = umlsetting->add_op("set_UmlGetName", PublicVisibility, "bool");
+  op2 = umlsetting->add_op("set_UmlGetName", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set the language from which the getter's name rule must be followed at Uml level\n"
@@ -2020,7 +2035,7 @@ void add_getter_setter_rules(UmlClass * umlsetting)
 
   // set setter name
   
-  op2 = umlsetting->add_op("set_UmlSetName", PublicVisibility, "bool");
+  op2 = umlsetting->add_op("set_UmlSetName", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set the language from which the setter's name rule must be followed at Uml level\n"
@@ -2073,12 +2088,13 @@ void add_extension_points()
   
   UmlClass * base_usecase = UmlClass::get("UmlBaseUseCase", 0);
   UmlOperation * op;
+  QCString s;
   
   op = base_usecase->get_operation("read_uml_");
-  op->set_CppBody(op->cppBody() + 
-		  "  _extension_points = UmlCom::read_string();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _extension_points = UmlCom.read_string();\n");
+  s = op->cppBody() + "  _extension_points = UmlCom::read_string();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _extension_points = UmlCom.read_string();\n";
+  op->set_JavaBody(s);
 
   //
   
@@ -2189,7 +2205,7 @@ void add_cpp_root_relative_path(UmlClass * cppsetting)
 
   // set
   
-  UmlOperation * op2 = cppsetting->add_op("set_IsRootRelativePath", PublicVisibility, "bool");
+  UmlOperation * op2 = cppsetting->add_op("set_IsRootRelativePath", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if a relative to the project root path must be used\n"
@@ -2247,10 +2263,12 @@ void add_cpp_root_relative_path(UmlClass * cppsetting)
   
   op = cppsetting->get_operation("read_");
 
-  op->set_CppBody(op->cppBody() + 
-		  "  _is_root_relative_path = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _is_root_relative_path = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + "  _is_root_relative_path = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_root_relative_path = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   //
   
@@ -2299,7 +2317,7 @@ void add_cpp_generate_javadoc_comment(UmlClass * cppsetting)
 
   // set
   
-  UmlOperation * op2 = cppsetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  UmlOperation * op2 = cppsetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
@@ -2333,10 +2351,12 @@ void add_cpp_generate_javadoc_comment(UmlClass * cppsetting)
   
   op = cppsetting->get_operation("read_");
 
-  op->set_CppBody(op->cppBody() + 
-		  "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   //
   
@@ -2381,7 +2401,7 @@ void add_java_generate_javadoc_comment(UmlClass * javasetting)
 
   // set
   
-  UmlOperation * op2 = javasetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  UmlOperation * op2 = javasetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool", TRUE);
   
   op2->set_isClassMember(TRUE);
   op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
@@ -2415,10 +2435,12 @@ void add_java_generate_javadoc_comment(UmlClass * javasetting)
   
   op = javasetting->get_operation("read_");
 
-  op->set_CppBody(op->cppBody() + 
-		  "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + 
-		   "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   //
   
@@ -2455,8 +2477,13 @@ void add_constraint(UmlClass * baseclassmember)
   op->moveAfter(op1);
   
   op = baseclassmember->get_operation("read_uml_");
-  op->set_CppBody(op->cppBody() + "  _constraint = UmlCom::read_string();\n");
-  op->set_JavaBody(op->javaBody() + "  _constraint = UmlCom.read_string();\n");
+  
+  QCString s;
+  
+  s = op->cppBody() + "  _constraint = UmlCom::read_string();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _constraint = UmlCom.read_string();\n";
+  op->set_JavaBody(s);
   
   //
   
@@ -3239,7 +3266,7 @@ void add_missing_opers()
   UmlClass * basestate = UmlClass::get("UmlBaseState", 0);
   
   if (basestate->get_operation("set_AssociatedDiagram") == 0) {
-    op = basestate->add_op("set_AssociatedDiagram", PublicVisibility, "bool");
+    op = basestate->add_op("set_AssociatedDiagram", PublicVisibility, "bool", TRUE);
     op->add_param(0, InputDirection, "d", UmlClass::get("UmlStateDiagram", 0));
     op->set_cpp("${type}", "${t0} * ${p0}", 
 		"  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);\n"
@@ -3511,17 +3538,25 @@ void add_contextual_body_indent()
 
   //
 
+  QCString s;
+  
   op = baseoper->get_operation("read_cpp_");
-  op->set_CppBody(op->cppBody() + "  _cpp_contextual_body_indent = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _cpp_contextual_body_indent = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _cpp_contextual_body_indent = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _cpp_contextual_body_indent = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   op = baseoper->get_operation("read_java_");
-  op->set_CppBody(op->cppBody() + "  _java_contextual_body_indent = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _java_contextual_body_indent = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _java_contextual_body_indent = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _java_contextual_body_indent = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   op = baseoper->get_operation("read_php_");
-  op->set_CppBody(op->cppBody() + "  _php_contextual_body_indent = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _php_contextual_body_indent = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _php_contextual_body_indent = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _php_contextual_body_indent = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
 
   //
   
@@ -3898,7 +3933,7 @@ void add_javasettings_forcepackageprefixgeneration(UmlClass * javasettings)
   UmlAttribute * att;
   UmlOperation * op;
   UmlOperation * op2;
-  QString s;
+  QCString s;
   
   //
   
@@ -3948,8 +3983,10 @@ void add_javasettings_forcepackageprefixgeneration(UmlClass * javasettings)
 		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
   
   op = javasettings->get_operation("read_");
-  op->set_CppBody(op->cppBody() + "  _is_force_package_gen = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _is_force_package_gen = UmlCom.read_bool();\n");
+  s = op->cppBody() + "  _is_force_package_gen = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_force_package_gen = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
     
   UmlClass * javasettingcmd = UmlClass::get("JavaSettingsCmd", 0);
   
@@ -4216,7 +4253,7 @@ void add_cppsettings_builtindir()
 
   //
  
-  QString s;
+  QCString s;
   
   op = cppsettings->get_operation("set_In");
   s = op->cppBody();
@@ -4467,7 +4504,7 @@ void add_property_modifiers()
 void add_read(UmlClass * cl, const char * opname)
 {
   UmlOperation * op = cl->get_operation(opname);
-  QString s;
+  QCString s;
   
   s = "  read_if_needed_();\n" + op->cppBody();
   op->set_CppBody(s);
@@ -4924,15 +4961,18 @@ void add_cpp_inline_oper_force_incl_in_h(UmlClass * cppsetting)
   //
 
   UmlOperation * op = cppsetting->get_operation("read_");
-
-  op->set_CppBody(op->cppBody() + "  _is_inline_force_header_in_h = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _is_inline_force_header_in_h = UmlCom.read_bool();\n");
+  QCString s;
+  
+  s = op->cppBody() + "  _is_inline_force_header_in_h = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _is_inline_force_header_in_h = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
   
   // get
 
   UmlOperation * op2 = cppsetting->get_operation("set_IsForceNamespacePrefixGeneration");
 
-  op = cppsetting->add_op("isInlineOperationForceIncludesInHeader", PublicVisibility, "bool", TRUE);
+  op = cppsetting->add_op("isInlineOperationForceIncludesInHeader", PublicVisibility, "bool");
   op->set_isClassMember(TRUE);
   op->set_Description(" return if the fact an operation is inline force the header of the\n"
 		      " types referenced in the profile to be included in the header\n");
@@ -5023,12 +5063,16 @@ void add_constraint2(UmlClass * basecl, const char *afterop, const char * aftera
   op->moveAfter(op1);
   
   op = basecl->get_operation("read_uml_");
-  op->set_CppBody(op->cppBody() + "  _constraint = UmlCom::read_string();\n");
-  op->set_JavaBody(op->javaBody() + "  _constraint = UmlCom.read_string();\n");
+  s = op->cppBody() + "  _constraint = UmlCom::read_string();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _constraint = UmlCom.read_string();\n";
+  op->set_JavaBody(s);
   
   op = basecl->get_operation("unload");
-  op->set_CppBody(op->cppBody() + "  _constraint = 0;\n");
-  op->set_JavaBody(op->javaBody() + "  _constraint = null;\n");
+  s = op->cppBody() + "  _constraint = 0;\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "  _constraint = null;\n";
+  op->set_JavaBody(s);
   
   //
   
@@ -5116,7 +5160,7 @@ void add_rev_filter()
 		   FALSE);
 
       s = "set_ReverseRoundtrip" + what + "RegExp";
-      op = settings->add_op(s, PublicVisibility, "bool");
+      op = settings->add_op(s, PublicVisibility, "bool", TRUE);
       op->moveAfter(op2);
       op2 = op;
       op->set_isClassMember(TRUE);
@@ -5170,6 +5214,83 @@ void add_rev_filter()
 //
 //
 
+void add_cppvisi_indent(UmlClass * cppsetting)
+{
+  
+  // already root
+  
+  UmlCom::trace("<b>update CppSettings to manage visibility indent</b><br>\n");
+
+  UmlAttribute * att = 
+    cppsetting->add_attribute("_visibility_indent", PrivateVisibility, "string", 0, 0);
+
+  att->set_isClassMember(TRUE);
+  att->moveAfter(cppsetting->get_attribute("_is_inline_force_header_in_h"));
+
+  //
+
+  UmlOperation * op = cppsetting->get_operation("read_");
+  QCString s;
+
+  s = op->cppBody() + "\n  _visibility_indent = UmlCom::read_string();\n";
+  op->set_CppBody(s);
+  s = op->javaBody() + "\n  _visibility_indent = UmlCom.read_string();\n";
+  op->set_JavaBody(s);
+  
+  // get
+
+  op = cppsetting->add_op("visibilityIndent", PublicVisibility, "string");
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return the indent of the visibility specifiers\n");
+  op->set_cpp("const ${type} &", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _visibility_indent;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _visibility_indent;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IsGenerateJavadocStyleComment"));
+  
+  // set
+  
+  UmlOperation * op2 = cppsetting->add_op("set_VisibilityIndent", PublicVisibility, "bool", TRUE);
+  
+  op2->set_isClassMember(TRUE);
+  op2->add_param(0, InputDirection, "v", "string");
+  op2->set_Description(" set visibility specifiers indent\n"
+		      "\n"
+		      " On error : return FALSE in C++, produce a RuntimeException in Java");
+  
+  op2->set_cpp("${type}", "${t0} ${p0}",
+	      "  UmlCom::send_cmd(cppSettingsCmd, setCppIndentVisibilityCmd, v);\n"
+	      "  if (UmlCom::read_bool()) {\n"
+	      "    _visibility_indent = v;\n"
+	      "    return TRUE;\n"
+	      "  }\n"
+	      "  else\n"
+	      "    return FALSE;\n",
+	      FALSE, 0, 0);
+
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIndentVisibilityCmd, v);\n"
+		"  UmlCom.check();\n"
+		"\n"
+		"  _visibility_indent = v;\n",
+	      FALSE);
+  
+  op2->moveAfter(op);
+
+  //
+
+  UmlClass::get("CppSettingsCmd", 0)->add_enum_item("setCppIndentVisibilityCmd");
+}
+
+//
+//
+//
 
 bool ask_for_upgrade()
 {
@@ -5792,11 +5913,28 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    if (cppsettings->get_attribute("_rev_dir_regexp") == 0)  {
+    if (cppsettings->get_attribute("_dir_regexp") == 0)  {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_rev_filter();
 
+      work = TRUE;
+    }
+    
+    if (uml_base_package->get_operation("phpNamespace") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      unsigned uid = UmlCom::user_id();
+      
+      UmlCom::set_user_id(0);
+  
+      add_php_namespace(uml_base_package, phpsettings);
+      add_cppvisi_indent(cppsettings);
+      add_stateref();
+      
+      UmlCom::set_user_id(uid);
+      
       work = TRUE;
     }
     
@@ -5805,7 +5943,7 @@ bool UmlPackage::upgrade() {
       JavaSettings::set_UseDefaults(java_default);
 
       UmlCom::trace("update api version<br>\n");
-      update_api_version("54");
+      update_api_version("55");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

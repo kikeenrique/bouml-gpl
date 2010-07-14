@@ -126,7 +126,7 @@ void CodLinkCanvas::menu(const QPoint&) {
     m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
     m.insertSeparator();
   }
-  m.insertItem(TR("Remove from view"), 6);
+  m.insertItem(TR("Remove from diagram"), 6);
   
   int rank = m.exec(QCursor::pos());
   

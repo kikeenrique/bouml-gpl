@@ -35,9 +35,9 @@ class UmlPackage : public UmlBasePackage {
   public:
     UmlPackage(void * id, const QCString & n);
   
-    UmlClassView * get_classview();
+    UmlClassView * get_classview(const QCString & nmsp);
 #ifdef REVERSE
-    UmlDeploymentView * get_deploymentview();
+    UmlDeploymentView * get_deploymentview(const QCString & nmsp);
 #endif
   
   private:
@@ -45,6 +45,7 @@ class UmlPackage : public UmlBasePackage {
 #ifdef REVERSE
     UmlDeploymentView * deploymentview;
 #endif
+    bool namespace_fixedp;
 };
 
 #endif

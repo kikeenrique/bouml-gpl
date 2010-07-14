@@ -20,11 +20,15 @@ void UmlActivityNode::add_incoming_flow(UmlFlow * flow) {
 }
 
 void UmlActivityNode::write_incoming_flows(FileOut & out) {
-  while (!_incoming_flows.isEmpty()) {
+  QListIterator<UmlFlow> it(_incoming_flows);
+  
+  while (it.current() != 0) {
     out.indent();
     out << "<incoming";
-    out.idref(_incoming_flows.take(0));
+    out.idref(it.current());
     out << "/>\n";
+    ++it;
   }
+
 }
 

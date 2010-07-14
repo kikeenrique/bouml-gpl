@@ -91,6 +91,13 @@ void PinCanvas::deleted() {
   canvas()->update();
 }
 
+void PinCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
+}
+
 void PinCanvas::delete_available(BooL & in_model, BooL & out_model) const {
   out_model |= TRUE;
   in_model |= browser_node->is_writable();

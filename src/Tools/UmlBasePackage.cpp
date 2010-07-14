@@ -107,6 +107,22 @@ const QCString & UmlBasePackage::phpDir() {
 bool UmlBasePackage::set_PhpDir(const QCString & s) {
   return set_it_(_php_dir, s, setPhpDirCmd);
 }
+
+QCString UmlBasePackage::phpNamespace() {
+  read_if_needed_();
+  
+  return _php_namespace;
+}
+
+bool UmlBasePackage::set_PhpNamespace(const QCString & s) {
+  return set_it_(_php_namespace, s, setPhpNamespaceCmd);
+}
+
+UmlPackage * UmlBasePackage::findPhpNamespace(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findPhpNamespaceCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
 #endif
 
 #ifdef WITHPYTHON
@@ -202,6 +218,7 @@ void UmlBasePackage::unload(bool rec, bool del) {
 #endif
 #ifdef WITHPHP
   _php_dir = 0;
+  _php_namespace = 0;
 #endif
 #ifdef WITHPYTHON
   _python_dir = 0;
@@ -237,6 +254,7 @@ void UmlBasePackage::read_java_() {
 #ifdef WITHPHP
 void UmlBasePackage::read_php_() {
   _php_dir = UmlCom::read_string();
+  _php_namespace = UmlCom::read_string();
 }
 #endif
 

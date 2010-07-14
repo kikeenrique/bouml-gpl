@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Html generator</b> release 2.19 (C++ version)<br />");
+      UmlCom::trace("<b>Html generator</b> release 2.20 (C++ version)<br />");
 
       UmlItem * target = UmlCom::targetItem();
 

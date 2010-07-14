@@ -59,11 +59,14 @@ class StateDialog : public QTabDialog {
     QWidget * umltab;
     bool visit;
     StateData * state;
-    QStringList list;
+    QStringList speclist;
     BrowserNodeList opers;
+    QStringList reflist;
+    BrowserNodeList states;
     LineEdit * edname;
     QComboBox * edstereotype;
     QComboBox * edspecification;
+    QComboBox * edreference;
     QCheckBox * active_cb;
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
@@ -104,6 +107,7 @@ class StateDialog : public QTabDialog {
     virtual void accept();
   
     void menu_specification();
+    void menu_reference();
     void edit_description();
     void edit_uml_entry();
     void edit_uml_exit();
@@ -116,6 +120,8 @@ class StateDialog : public QTabDialog {
     void edit_java_activity();
 
     void change_tabs(QWidget *);
+    
+    void ed_ref_activated(int);
 };
 
 #endif

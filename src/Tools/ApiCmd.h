@@ -274,6 +274,9 @@ enum OnInstanceCmd {
   
   // api 48
   setActiveCmd,
+  
+  // api 55
+  setPhpNamespaceCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -299,7 +302,10 @@ enum PackageGlobalCmd {
   // Api 40 a faire
   findPythonPackageCmd,
   updateProfileCmd,
-  findStereotypeCmd
+  findStereotypeCmd,
+  
+  // api 55
+  findPhpNamespaceCmd
 };
 
 enum UmlSettingsCmd {
@@ -376,7 +382,10 @@ enum CppSettingsCmd {
   
   // api 54
   setCppDirRevFilterCmd,
-  setCppFileRevFilterCmd
+  setCppFileRevFilterCmd,
+  
+  //api 55
+  setCppIndentVisibilityCmd
 };
 
 enum JavaSettingsCmd {
@@ -456,7 +465,10 @@ enum PhpSettingsCmd {
   
   // api 54
   setPhpDirRevFilterCmd,
-  setPhpFileRevFilterCmd
+  setPhpFileRevFilterCmd,
+  
+  // api 55
+  setPhpForceNamespaceGenCmd
 };
 
 // api 39

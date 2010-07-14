@@ -1,21 +1,21 @@
 class UmlClassMember
 !!!148098.cpp!!!	annotation_constraint() : void
 if (! javaAnnotations().isEmpty()) {
-  fw.write("<p> Java annotation(s) :<ul>");
+  fw.write("<p> Java annotation(s) :</p><div class=\"sub\"><p>");
   writeq(javaAnnotations());
-  fw.write("</ul>");
+  fw.write("</p></div>");
 }
 
 if (! constraint().isEmpty()) {
-  fw.write("<p> Constraint :<ul>");
+  fw.write("<p> Constraint :</p><div class=\"sub\"><p>");
   writeq(constraint());
-  fw.write("</ul>");
+  fw.write("</p></div>");
 }
 !!!148098.java!!!	annotation_constraint() : void
 String s = javaAnnotations();
   
 if (s.length() != 0) {
-  fw.write("<p> Java annotation(s) :<ul>");
+  fw.write("<p> Java annotation(s) :</p><ul>");
   writeq(s);
   fw.write("</ul>");
 }
@@ -23,7 +23,7 @@ if (s.length() != 0) {
 s = constraint();
   
 if (s.length() != 0) {
-  fw.write("<p> Constraint :<ul>");
+  fw.write("<p> Constraint :</p><ul>");
   writeq(s);
   fw.write("</ul>");
 }

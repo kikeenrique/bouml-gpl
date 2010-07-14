@@ -57,6 +57,7 @@ class StateData : public SimpleData {
     StateBehavior cpp;
     StateBehavior java;
     BrowserOperation * specification;
+    BrowserState * reference;
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
 			      const QString & comment);
@@ -72,6 +73,8 @@ class StateData : public SimpleData {
     bool get_is_active() const { return is_active; }
     BrowserOperation * get_specification() const { return specification; }
     void set_specification(BrowserOperation *);
+    BrowserState * get_reference() const { return reference; }
+    void set_reference(BrowserState *);
     
     void edit();
     

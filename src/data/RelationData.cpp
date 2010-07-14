@@ -292,6 +292,8 @@ BrowserRelation * RelationData::set_start_end(BrowserRelation * s, BrowserClass 
     case UmlDependency:
       if (GenerationSettings::cpp_get_default_defs())
 	a.cpp_decl = "#include in source";
+      if (GenerationSettings::php_get_default_defs())
+	a.php_decl = "${type}";
       if (GenerationSettings::python_get_default_defs())
 	a.python_decl = "${type}";
       break;

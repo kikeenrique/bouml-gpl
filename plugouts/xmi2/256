@@ -1,16 +1,16 @@
-format 73
+format 75
 "API BASE" // API BASE
-  revision 25
+  revision 27
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
    write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
@@ -32,13 +32,13 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default show_stereotype_properties default
@@ -11082,13 +11082,9 @@ ${body}}
 	  param in name "s" explicit_type "string"
 	nexceptions 1
 	  explicit_exception "RuntimeException"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
-#endif
-"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};"
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
-${body}}
-#endif
-"
+${body}}"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
@@ -11100,6 +11096,68 @@ ${body}}
  (already) an absolute path
  
  On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 279296 "phpNamespace"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the namespace name associed to the package
+"
+      end
+
+      operation 279424 "set_PhpNamespace"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " the namespace name associed to the package.
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 279552 "findPhpNamespace"
+	public return_type class_ref 9217 // UmlPackage
+	nparams 1
+	  param in name "n" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns a sub package of the current one having the php namespace 'n'
+ (including the current one), else 0/null
+"
       end
 
       operation 259584 "pythonDir"
@@ -11497,10 +11555,20 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
       attribute 159616 "_php_dir"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHPHP
-${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 183168 "_php_namespace"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 #endif
 "
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -14091,6 +14159,46 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 280192 "reference"
+	public return_type class_ref 128386 // UmlState
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 280320 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 128386 // UmlState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 131456 "associatedDiagram"
 	public return_type class_ref 128642 // UmlStateDiagram
 	nparams 0
@@ -14198,6 +14306,17 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 172416 // _reference (<unidirectional association>)
+	relation 172416 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 172416 // _reference (<unidirectional association>)
+	  b parent class_ref 128386 // UmlState
       end
 
       classrelation 172160 // _specification (<unidirectional association>)
@@ -15830,6 +15949,46 @@ ${body}}
 	comment " returns the kind of the item"
       end
 
+      operation 280448 "reference"
+	public return_type class_ref 130306 // UmlEntryPointPseudoState
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 280576 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 130306 // UmlEntryPointPseudoState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 139264 "UmlBaseEntryPointPseudoState"
 	protected explicit_return_type ""
 	nparams 2
@@ -15846,6 +16005,33 @@ ${body}}
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      classrelation 172544 // _reference (<unidirectional association>)
+	relation 172544 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 172544 // _reference (<unidirectional association>)
+	  b parent class_ref 130306 // UmlEntryPointPseudoState
+      end
+
+      operation 280704 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
       end
     end
 
@@ -16083,6 +16269,46 @@ ${body}}
 	comment " returns the kind of the item"
       end
 
+      operation 280832 "reference"
+	public return_type class_ref 131074 // UmlExitPointPseudoState
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the the referenced sub machine state or 0/null
+ if the state is not a sub machine state reference"
+      end
+
+      operation 280960 "set_Reference"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 131074 // UmlExitPointPseudoState
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the referenced sub machine state (may be 0/null)
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 140800 "UmlBaseExitPointPseudoState"
 	protected explicit_return_type ""
 	nparams 2
@@ -16099,6 +16325,33 @@ ${body}}
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      classrelation 172672 // _reference (<unidirectional association>)
+	relation 172672 --->
+	  a role_name "_reference" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 172672 // _reference (<unidirectional association>)
+	  b parent class_ref 131074 // UmlExitPointPseudoState
+      end
+
+      operation 281088 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
       end
     end
 
@@ -16777,7 +17030,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 
       attribute 175744 "python"
 	public explicit_type "string"
-	cpp_decl "    #ifdef WITHPHP
+	cpp_decl "    #ifdef WITHPYTHON
 ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 #endif
 "
@@ -27780,6 +28033,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -27858,6 +28112,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}

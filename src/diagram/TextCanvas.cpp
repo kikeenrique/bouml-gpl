@@ -150,7 +150,7 @@ void TextCanvas::menu(const QPoint&) {
     m.insertItem(TR("Select linked items"), 3);
   }
   m.insertSeparator();
-  m.insertItem(TR("Remove from view"),4);
+  m.insertItem(TR("Remove from diagram"),4);
 
   int index = m.exec(QCursor::pos());
   

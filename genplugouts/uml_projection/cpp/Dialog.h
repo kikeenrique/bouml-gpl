@@ -22,7 +22,9 @@ class Dialog : public QDialog {
 
     QCheckBox * rec_cb;
 
-  protected slots:    void accept_cpp();
+  protected slots:    virtual void polish();
+
+    void accept_cpp();
     void accept_java();
     void accept_idl();
     void accept_php();

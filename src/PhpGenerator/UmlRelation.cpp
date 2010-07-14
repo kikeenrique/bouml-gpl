@@ -250,13 +250,6 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
 }
 
 void UmlRelation::generate_require_onces(QTextOStream & f, QCString & made) {
-  switch (relationKind()) {
-  case aDependency:
-  case aGeneralisation:
-  case aRealization:
-    break;
-  default:
-    if (!phpDecl().isEmpty())
-      roleType()->generate_require_onces(f, made, ((UmlClass *) parent())->assocArtifact());
-  }
+  if (!phpDecl().isEmpty())
+    roleType()->generate_require_onces(f, made, ((UmlClass *) parent())->assocArtifact());
 }

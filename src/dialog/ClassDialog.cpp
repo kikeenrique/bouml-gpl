@@ -49,6 +49,7 @@
 #include "ComboItem.h"
 #include "UmlWindow.h"
 #include "UmlDesktop.h"
+#include "BrowserView.h"
 #include "DialogUtil.h"
 #include "GenerationSettings.h"
 #include "BrowserRelation.h"
@@ -63,12 +64,16 @@
 #include "AnnotationDialog.h"
 #include "ProfiledStereotypes.h"
 #include "Tool.h"
+#include "Images.h"
 #include "translate.h"
 
 QSize ClassDialog::previous_size;
 
-ClassDialog::ClassDialog(ClassData * c)
-    : QTabDialog(0, 0, TRUE), cl(c) {
+static QString RelativeRoot;
+static QString RelativePrj;
+static QString Absolute;
+
+ClassDialog::ClassDialog(ClassData * c) : QTabDialog(0, 0, TRUE), cl(c) {
   // take time in case of many classes and artifacts
   if (c->browser_node->is_writable()) {
     setOkButton(TR("OK"));
@@ -713,15 +718,33 @@ ClassDialog::ClassDialog(ClassData * c)
     edcheckparam = new LineEdit(bn->get_value("stereotypeCheckParameters"), htab);
     edcheckparam->setReadOnly(visit);
     
+    QString ip = bn->get_value("stereotypeIconPath");
+    
     new QLabel(TR("Icon path :"), grid);
     htab = new QHBox(grid);
-    ediconpath = new LineEdit(bn->get_value("stereotypeIconPath"), htab);
-    if (visit)
+    ediconpath = new LineEdit(ip, htab);
+    if (visit) {
       ediconpath->setReadOnly(TRUE);
+      iconpathrootbutton = iconpathprjbutton = 0;
+    }
     else {
+      RelativeRoot = TR("Set it relative to image root");
+      RelativePrj = TR("Set it relative to project");
+      Absolute = TR("Set it absolute");
+
       new QLabel("", htab);
-      QPushButton * button = new QPushButton(TR("Browse"), htab);
-      connect(button, SIGNAL(clicked ()), this, SLOT(icon_browse()));
+      connect(new SmallPushButton(TR("Browse"), htab),
+	      SIGNAL(clicked ()), this, SLOT(icon_browse()));
+      new QLabel("", htab);
+      vtab = new QVBox(htab);
+      iconpathrootbutton = new SmallPushButton((ip.isEmpty() || QDir::isRelativePath(ip))
+					       ? Absolute : RelativeRoot, vtab);
+      connect(iconpathrootbutton, SIGNAL(clicked ()), this, SLOT(icon_root_relative()));
+      iconpathprjbutton = new SmallPushButton((ip.isEmpty() || QDir::isRelativePath(ip))
+					      ? Absolute : RelativePrj, vtab);
+      connect(iconpathprjbutton, SIGNAL(clicked ()), this, SLOT(icon_prj_relative()));
+      iconpathrootbutton->setEnabled(!UmlWindow::images_root_dir().isEmpty());
+      new QLabel("", htab);
     }
 
     new QLabel(TR("Apply on : "), grid);
@@ -918,10 +941,77 @@ void ClassDialog::icon_browse() {
   QString s = ediconpath->text().simplifyWhiteSpace();
   const QString ns = QFileDialog::getOpenFileName(s, "", this, 0, TR("Select image"));
 
-  if (! ns.isEmpty())
+  if (! ns.isEmpty()) {
     ediconpath->setText(ns);
+    iconpathrootbutton->setText(RelativeRoot);
+    iconpathprjbutton->setText(RelativePrj);
+  }
 }
 
+void ClassDialog::icon_root_relative() {
+  QString root = UmlWindow::images_root_dir();
+  
+  if (root.isEmpty()) {
+    iconpathrootbutton->setEnabled(FALSE);
+    return;
+  }
+  
+  const QString s = ediconpath->text();
+
+  if (root.at(root.length() - 1) != QChar('/'))
+    root += '/';
+    
+  if (iconpathrootbutton->text() == RelativeRoot) {
+    unsigned len = root.length();
+      
+    if (
+
+
+
+	(s.find(root) == 0) &&
+
+	(s.length() >= len)) {
+      ediconpath->setText(s.mid(len));
+      iconpathrootbutton->setText(Absolute);
+      iconpathprjbutton->setText(Absolute);
+    }
+  }
+  else {
+    ediconpath->setText(root + s);
+    iconpathrootbutton->setText(RelativeRoot);
+    iconpathprjbutton->setText(RelativePrj);
+  }
+}
+
+void ClassDialog::icon_prj_relative() {
+  QString root = BrowserView::get_dir().absPath();
+  const QString s = ediconpath->text();
+
+  if (root.at(root.length() - 1) != QChar('/'))
+    root += '/';
+    
+  if (iconpathprjbutton->text() == RelativePrj) {
+    unsigned len = root.length();
+      
+    if (
+
+
+
+	(s.find(root) == 0) &&
+
+	(s.length() >= len)) {
+      ediconpath->setText(s.mid(len));
+      iconpathrootbutton->setText(Absolute);
+      iconpathprjbutton->setText(Absolute);
+    }
+  }
+  else {
+    ediconpath->setText(root + s);
+    iconpathrootbutton->setText(RelativeRoot);
+    iconpathprjbutton->setText(RelativePrj);
+  }
+  iconpathrootbutton->setEnabled(!UmlWindow::images_root_dir().isEmpty());
+}
 
 void ClassDialog::update_all_tabs(QWidget * w) {
   formals_table->forceUpdateCells();
@@ -1825,9 +1915,8 @@ static void php_generate_implements(QString & s, const QString & stereotype,
 
 void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
 				    QString name, QString stereotype,
-				    QString comment, UmlVisibility visibility,
-				    bool is_final, bool is_abstract,
-				    KeyValuesTable * kvt)
+				    QString comment, bool is_final,
+				    bool is_abstract, KeyValuesTable * kvt)
 {
   const char * p = def;
   
@@ -1861,16 +1950,6 @@ void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
 		     GenerationSettings::php_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment, p, pp);
-    else if (!strncmp(p, "${public}", 9)) {
-      p += 9;
-      if (visibility == UmlPublic)
-	s += "public ";
-    }
-    else if (!strncmp(p, "${visibility}", 13)) {
-      p += 13;
-      if (visibility != UmlPackageVisibility)
-	s += stringify(visibility) + QString(" ");
-    }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
       if (is_final)
@@ -1938,7 +2017,7 @@ void ClassDialog::php_update_decl() {
     php_generate_decl(s, cl, edphpdecl->text(), 
 		       edname->text().stripWhiteSpace(),
 		       current_php_stereotype, comment->text(),
-		       uml_visibility.value(), php_final_cb->isChecked(),
+		       php_final_cb->isChecked(),
 		       abstract_cb->isChecked(), kvtable);
   }
   
@@ -2408,15 +2487,11 @@ void ClassDialog::accept() {
     else if (stereotypetab != 0) {
       QCString path = fromUnicode(ediconpath->text().simplifyWhiteSpace());
       
-      if (! path.isEmpty()) {
-	QString spath = (const char *) path;
-	QPixmap  px(spath);
-	
-	if (px.isNull()) {
-	  msg_critical(TR("Error"),
-		       spath + TR("\ndoesn't exist or is not a know image format"));
-	  return;
-	}
+      if (!path.isEmpty() && (get_pixmap((const char *) path) == 0)) {
+	msg_critical(TR("Error"),
+		     ((const char *) path) +
+		     TR("\ndoesn't exist or is not a know image format"));
+	return;
       }
     }
   }

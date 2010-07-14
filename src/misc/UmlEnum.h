@@ -101,6 +101,7 @@ enum UmlCode {
   UmlConstraint,
   UmlInner,
   UmlStereotypeProperties,
+  UmlImage,
 
   UmlCodeSup
 };

@@ -42,6 +42,7 @@ class QColorGroup;
 class Class : public BrowserNode {
   protected:
     QCString filename;
+    QCString its_namespace;
     UmlClass * uml;
     char stereotype;	// 'c' : class, 'i' : interface, '@' @interface, 'e' : enum
     bool abstractp;
@@ -71,6 +72,7 @@ class Class : public BrowserNode {
   
     void compute_type(QCString type, UmlTypeSpec & typespec,
 		      Class ** need_object = 0);
+    const QCString & get_namespace() const { return its_namespace; }
     UmlClass * get_uml();
     bool reversed() const { return reversedp; };
     bool already_in_bouml();
@@ -96,7 +98,7 @@ class Class : public BrowserNode {
 #endif
     
     static bool reverse(Package * container, QCString stereotype,
-			bool abstractp, bool finalp, aVisibility visibility,
+			bool abstractp, bool finalp, 
 			QCString & f, UmlArtifact * art);
     
 #ifndef REVERSE

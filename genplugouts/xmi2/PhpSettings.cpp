@@ -109,6 +109,132 @@ bool PhpSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+QCString PhpSettings::reverseRoundtripDirRegExp()
+{
+  read_if_needed_();
+
+  return _dir_regexp;
+}
+
+bool PhpSettings::isReverseRoundtripDirRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _dir_regexp_case_sensitive;
+}
+
+bool PhpSettings::set_ReverseRoundtripDirRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpDirRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _dir_regexp = s;
+    _dir_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString PhpSettings::reverseRoundtripFileRegExp()
+{
+  read_if_needed_();
+
+  return _file_regexp;
+}
+
+bool PhpSettings::isReverseRoundtripFileRegExpCaseSensitive()
+{
+  read_if_needed_();
+
+  return _file_regexp_case_sensitive;
+}
+
+bool PhpSettings::set_ReverseRoundtripFileRegExp(QCString s, bool cs)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpFileRevFilterCmd, s, cs);
+  if (UmlCom::read_bool()) {
+    _file_regexp = s;
+    _file_regexp_case_sensitive = cs;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool PhpSettings::requireOnceWithPath()
+{
+  read_if_needed_();
+
+  return _req_with_path;
+}
+
+bool PhpSettings::set_RequireOnceWithPath(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpRequireOnceWithPathCmd, v);
+  if (UmlCom::read_bool()) {
+    _req_with_path = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool PhpSettings::isRelativePath()
+{
+  read_if_needed_();
+
+  return _is_relative_path;
+}
+
+bool PhpSettings::set_IsRelativePath(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool PhpSettings::isRootRelativePath()
+{
+  read_if_needed_();
+
+  return _is_root_relative_path;
+}
+
+bool PhpSettings::set_IsRootRelativePath(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool PhpSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool PhpSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool PhpSettings::isGenerateJavadocStyleComment()
 {
   read_if_needed_();
@@ -435,7 +561,23 @@ QCString PhpSettings::_src_content;
 
 QCString PhpSettings::_ext;
 
+QCString PhpSettings::_dir_regexp;
+
+bool PhpSettings::_dir_regexp_case_sensitive;
+
+QCString PhpSettings::_file_regexp;
+
+bool PhpSettings::_file_regexp_case_sensitive;
+
 bool PhpSettings::_is_generate_javadoc_comment;
+
+bool PhpSettings::_req_with_path;
+
+bool PhpSettings::_is_relative_path;
+
+bool PhpSettings::_is_root_relative_path;
+
+bool PhpSettings::_is_force_namespace_gen;
 
 void PhpSettings::read_()
 {
@@ -473,6 +615,17 @@ void PhpSettings::read_()
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
+  _req_with_path = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
+
+  _dir_regexp = UmlCom::read_string();
+  _dir_regexp_case_sensitive = UmlCom::read_bool();
+
+  _file_regexp = UmlCom::read_string();
+  _file_regexp_case_sensitive = UmlCom::read_bool();
+
+  _is_force_namespace_gen = UmlCom::read_bool();
 }
 
 void PhpSettings::read_if_needed_()

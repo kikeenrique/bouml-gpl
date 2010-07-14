@@ -79,7 +79,8 @@ void PackageData::send_java_def(ToolCom * com) {
 
 void PackageData::send_php_def(ToolCom * com) {
   com->write_string(php_dir);
-  //com->write_string(php_namespace);
+  if (com->api_format() >= 55)
+    com->write_string(php_namespace);
 }
 
 void PackageData::send_python_def(ToolCom * com) {
@@ -120,9 +121,9 @@ bool PackageData::tool_cmd(ToolCom * com, const char * args,
       case setPhpDirCmd:
 	php_dir = args;
 	break;
-      //case setPhpNamespaceCmd:
-	//php_namespace = args;
-	//break;
+      case setPhpNamespaceCmd:
+	php_namespace = args;
+	break;
       case setPythonDirCmd:
 	python_dir = args;
 	break;

@@ -87,7 +87,7 @@ void UmlState::solve(int context, QCString idref) {
   
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))
-      UmlCom::trace("state : unknown operation reference '" + idref + "'<br>");
+      UmlCom::trace("state : unknown reference '" + idref + "'<br>");
   }
   else if ((*it)->kind() == anOperation) {
     if (context == 3)
@@ -108,6 +108,8 @@ void UmlState::solve(int context, QCString idref) {
       }
     }
   }
+  else if (((*it)->kind() == aState) && (context == 4))
+    set_Reference((UmlState *) *it);
 }
 
 void UmlState::init()
@@ -154,6 +156,7 @@ void UmlState::importIt(FileIn & in, Token & token, UmlItem * where)
     if (token.valueOf("isactive") == "true")
       st->set_isActive(TRUE);
     
+    QCString ref = token.valueOf("submachine");
     QCString spec = token.valueOf("specification");
     
     if (! token.closed()) {
@@ -177,6 +180,15 @@ void UmlState::importIt(FileIn & in, Token & token, UmlItem * where)
     
     if (machine)
       st->set_Stereotype("machine");
+    
+    if (! ref.isEmpty()) {
+      QMap<QCString, UmlItem *>::Iterator it = All.find(ref);
+      
+      if (it == All.end())
+	UnresolvedWithContext::add(st, ref, 4);
+      else if ((*it)->kind() == aState)
+	st->set_Reference((UmlState *) *it);
+    }
     
     if (! spec.isEmpty()) {
       QMap<QCString, UmlItem *>::Iterator it = All.find(spec);

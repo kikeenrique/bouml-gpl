@@ -52,6 +52,7 @@ class DeploymentDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
     
   public:
     DeploymentDiagramWindow(const QString & s, BrowserDeploymentDiagram * b, int id = -1);
@@ -75,6 +76,7 @@ class DeploymentDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif

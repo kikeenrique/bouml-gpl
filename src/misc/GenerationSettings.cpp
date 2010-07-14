@@ -80,6 +80,7 @@ SharedStr GenerationSettings::cpp_set_name;
 bool GenerationSettings::cpp_set_inline;
 bool GenerationSettings::cpp_set_param_const;
 bool GenerationSettings::cpp_set_param_ref;
+QCString GenerationSettings::cpp_indent_visibility;
 
 bool GenerationSettings::java_default_defs;
 bool GenerationSettings::java_javadoc_comment;
@@ -182,6 +183,7 @@ bool GenerationSettings::php_root_relative_path;
 bool GenerationSettings::cpp_force_namespace_gen;
 bool GenerationSettings::cpp_inline_force_incl_in_h;
 bool GenerationSettings::java_force_package_gen;
+bool GenerationSettings::php_force_namespace_gen;
     
 int GenerationSettings::nrelattrstereotypes;
 Stereotype * GenerationSettings::relattr_stereotypes;
@@ -286,6 +288,7 @@ ${definition}";
 
 #define PHP_SRC_CONTENT "<?php\n\
 ${comment}\n\
+${namespace}\n\
 ${require_once}\n\
 ${definition}\n\
 ?>\n";
@@ -392,6 +395,8 @@ ${module_end}\n\
   cpp_force_namespace_gen = FALSE;
   cpp_inline_force_incl_in_h = FALSE;
   cpp_javadoc_comment = FALSE;
+#define CPP_INDENT_VISIBILITY "  "
+  cpp_indent_visibility = CPP_INDENT_VISIBILITY;
   
   java_class_decl = "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
   java_external_class_decl = "${name}";
@@ -433,12 +438,12 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_javadoc_comment = TRUE;
   java_force_package_gen = TRUE;
 
-#define PHP_CLASS "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {\n${members}}\n"
+#define PHP_CLASS "${comment}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n"
   php_class_decl = PHP_CLASS;
   php_external_class_decl = "${name}";
 #define PHP_ENUM "${comment}${visibility}final class ${name} {\n${items}}\n"
   php_enum_decl = PHP_ENUM;
-#define PHP_INTERFACE "${comment}${visibility}interface ${name} {\n${members}}\n"
+#define PHP_INTERFACE "${comment}interface ${name} {\n${members}}\n"
   php_interface_decl = PHP_INTERFACE;
 #define PHP_ATTR "  ${comment}${visibility}${const}${static}${var}${name}${value};\n"
   php_attr_decl = PHP_ATTR;
@@ -457,6 +462,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_req_with_path = FALSE;
   php_relative_path = FALSE;
   php_root_relative_path = FALSE;
+  php_force_namespace_gen = FALSE;
 
   python_2_2 = TRUE;
   python_3_operation = FALSE;
@@ -1071,6 +1077,9 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
 	    if (api_version >= 54) {
 	      cpp_dir_filter.send_def(com);
 	      cpp_file_filter.send_def(com);
+	      if (api_version >= 55) {
+		com->write_string(cpp_indent_visibility);
+	      }
 	    }
 	  }
 	}
@@ -1220,6 +1229,10 @@ void GenerationSettings::send_php_def(ToolCom * com)
       com->write_bool(php_root_relative_path);
       php_dir_filter.send_def(com);
       php_file_filter.send_def(com);
+      
+      if (api_version >= 55) {
+	com->write_bool(php_force_namespace_gen);
+      }
     }
   }
 }
@@ -1730,6 +1743,9 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
       case setCppFileRevFilterCmd:
 	cpp_file_filter.receive_def(args);
 	break;
+      case setCppIndentVisibilityCmd:
+	cpp_indent_visibility = args;
+	break;
       default:
 	return FALSE;
       }
@@ -1993,6 +2009,9 @@ bool GenerationSettings::tool_global_php_cmd(ToolCom * com,
 	break;
       case setPhpFileRevFilterCmd:
 	php_file_filter.receive_def(args);
+	break;
+      case setPhpForceNamespaceGenCmd:
+	php_force_namespace_gen = (*args != 0);
 	break;
       default:
 	return FALSE;
@@ -2428,6 +2447,10 @@ void GenerationSettings::save()
     nl_indent(st);
     st << "php_root_relative_path";
   }
+  if (php_force_namespace_gen) {
+    nl_indent(st);
+    st << "php_force_namespace_gen";
+  }
 
   st << '\n';
   nl_indent(st);
@@ -2612,6 +2635,8 @@ void GenerationSettings::save()
   }
   cpp_dir_filter.save("cpp_dir_filter", st);
   cpp_file_filter.save("cpp_file_filter", st);
+  st << "cpp_indent_visibility ";
+  save_string(cpp_indent_visibility, st);
 
   save_includes_imports(cpp_includes, "cpp_includes");
     
@@ -3183,6 +3208,12 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     php_root_relative_path = FALSE;
+  if (!strcmp(k, "php_force_namespace_gen")) {
+    php_force_namespace_gen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_force_namespace_gen = FALSE;
 
   bool old_types = !strcmp(k, "types");
   bool new_types = !strcmp(k, "type_forms");
@@ -3392,6 +3423,12 @@ void GenerationSettings::read(char * & st, char * & k)
       cpp_force_throw = FALSE;
     cpp_dir_filter.read("cpp_dir_filter", st, k);
     cpp_file_filter.read("cpp_file_filter", st, k);
+    if (!strcmp(k, "cpp_indent_visibility")) {
+      cpp_indent_visibility = read_string(st);
+      k = read_keyword(st);
+    }
+    else
+      cpp_indent_visibility = CPP_INDENT_VISIBILITY;
     
     if (!strcmp(k, "cpp_includes")) {
       // old version

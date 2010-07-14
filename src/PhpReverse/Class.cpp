@@ -76,7 +76,8 @@ UmlClass * Class::get_uml() {
   if (uml != 0)
     return uml;
 
-  UmlItem * p = (UmlItem *) ((Package *) parent())->get_uml()->get_classview();
+  UmlItem * p = // no nested classe in php
+    (UmlItem *) ((Package *) parent())->get_uml()->get_classview(get_namespace());
   QCString str = QCString(text(0));
 			  
   uml = UmlBaseClass::create(p, str);
@@ -138,8 +139,7 @@ bool Class::already_in_bouml() {
 
 bool Class::reverse(Package * container, QCString stereotype,
 		    bool abstractp, bool finalp,
-		    aVisibility visibility, QCString & path,
-		    UmlArtifact * art)
+		    QCString & path, UmlArtifact * art)
 {
   QCString comment = Lex::get_comments();
   QCString description = Lex::get_description();
@@ -157,6 +157,7 @@ bool Class::reverse(Package * container, QCString stereotype,
   if (Package::scanning()) {
     cl->abstractp = abstractp;
     cl->filename = path;
+    cl->its_namespace = Namespace::current();
 #ifndef REVERSE
     cl->description = comment;
 #endif
@@ -177,8 +178,6 @@ bool Class::reverse(Package * container, QCString stereotype,
     if (! comment.isEmpty())
       cl_uml->set_Description((cl_uml->phpDecl().find("${description}") != -1)
 			      ? description : comment);
-    
-    cl_uml->set_Visibility(visibility);
     
     if (abstractp)
       cl_uml->set_isAbstract(abstractp);
@@ -466,6 +465,7 @@ bool Class::manage_member(QCString s) {
 
 void Class::compute_type(QCString name, UmlTypeSpec & typespec,
 			 Class ** need_object) {
+   // no nested classe in php
   ((Package *) parent())->compute_type(name, typespec, need_object);
 }
 

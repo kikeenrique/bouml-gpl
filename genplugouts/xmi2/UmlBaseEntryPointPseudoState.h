@@ -21,11 +21,28 @@ class UmlBaseEntryPointPseudoState : public UmlPseudoState {
     // returns the kind of the item
     virtual anItemKind kind();
 
+    // return the the referenced sub machine state or 0/null
+    // if the state is not a sub machine state reference
+    UmlEntryPointPseudoState * reference();
+
+    // set the referenced sub machine state (may be 0/null)
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Reference(UmlEntryPointPseudoState * v);
+
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlBaseEntryPointPseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
     }
+
+
+  private:
+    UmlEntryPointPseudoState * _reference;
+
+
+  protected:
+    virtual void read_uml_();
 
 };
 

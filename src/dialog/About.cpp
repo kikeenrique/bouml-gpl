@@ -56,13 +56,13 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
 
-  const char * htmltext = ("BOUML release <b>4.21</b><br>\n"
+  const char * htmltext = ("BOUML release <b>4.22.2</b><br>\n"
 			   "<br>\n"
 			   "<i>http://bouml.free.fr</i><br>\n"
 			   "<i>http://bouml.sourceforge.net/</i><br>\n"
 			   "<br>\n"
 			   "Bruno Pages (<i>bouml@free.fr</i>)");
-  const char * sizetext = ("BOUML release <b>4.8 patch 1</b>\n"
+  const char * sizetext = ("BOUML release <b>4.88.88 patch 1</b>\n"
 			   "\n"
 			   "http://bouml.free.fr\n"
 			   "http://bouml.sourceforge.net/____\n"

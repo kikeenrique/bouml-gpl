@@ -125,6 +125,32 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
+    // return the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    static QCString reverseRoundtripDirRegExp();
+
+    // return if the regular expression used to bypass
+    // dir s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripDirRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // dir s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripDirRegExp(QCString s, bool cs);
+
+    // return the regular expression used to bypass
+    // file s on reverse/roundtrip
+    static QCString reverseRoundtripFileRegExp();
+
+    // return if the regular expression used to bypass
+    // file s on reverse/roundtrip is case sensitive
+    static bool isReverseRoundtripFileRegExpCaseSensitive();
+
+    // set the regular expression used to bypass
+    // file s on reverse/roundtrip
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_ReverseRoundtripFileRegExp(QCString s, bool cs);
+
     // indicates to the code generator if the #include may specify
     // the path of just the file's name
     static bool includeWithPath();
@@ -182,6 +208,15 @@ class CppSettings : public UmlSettings {
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsGenerateJavadocStyleComment(bool v);
+
+    // return the indent of the visibility specifiers
+    
+    static const QCString & visibilityIndent();
+
+    // set visibility specifiers indent
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_VisibilityIndent(QCString v);
 
     // returns the default operation 'in' parameter specification 
     // in case its type is an enum
@@ -604,6 +639,14 @@ class CppSettings : public UmlSettings {
 
     static QCString _src_ext;
 
+    static QCString _dir_regexp;
+
+    static bool _dir_regexp_case_sensitive;
+
+    static QCString _file_regexp;
+
+    static bool _file_regexp_case_sensitive;
+
     static bool _incl_with_path;
 
     static bool _is_relative_path;
@@ -615,6 +658,8 @@ class CppSettings : public UmlSettings {
     static bool _is_generate_javadoc_comment;
 
     static bool _is_inline_force_header_in_h;
+
+    static QCString _visibility_indent;
 
     static QDict<QCString> _map_includes;
 

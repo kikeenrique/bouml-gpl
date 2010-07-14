@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
     bool aborted = TRUE;
     
     try {
-      UmlCom::trace("<b>C++ roundtrip</b> release 1.2<br>");
+      UmlCom::trace("<b>C++ roundtrip</b> release 1.3<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       char * argv = 0;

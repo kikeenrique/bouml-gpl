@@ -55,6 +55,7 @@ class ClassDiagramWindow : public DiagramWindow {
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
+    QToolButton * image;
     
   public:
     ClassDiagramWindow(const QString & s, BrowserClassDiagram *, int id = -1);
@@ -80,6 +81,7 @@ class ClassDiagramWindow : public DiagramWindow {
     void hit_note();
     void hit_anchor();
     void hit_text();
+    void hit_image();
 };
 
 #endif
