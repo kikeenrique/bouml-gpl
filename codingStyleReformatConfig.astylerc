@@ -1,0 +1,10 @@
+--indent-classes
+--indent-switches
+--indent-namespaces
+--indent-preprocessor
+--indent-col1-comments
+--pad-paren-out
+--unpad-paren
+--add-brackets
+-A8
+--lineend=linux
