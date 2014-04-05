@@ -27,7 +27,7 @@
 #define BROWSER_NODE_H
 
 #include <qtextstream.h> 
-#include <qlist.h> 
+#include <qptrlist.h> 
 #include <qlistview.h> 
 #include <qstringlist.h>
 #include <qdict.h>

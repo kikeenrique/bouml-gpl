@@ -26,7 +26,7 @@
 #ifndef CLASSLISTDIALOG_H
 #define CLASSLISTDIALOG_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qdialog.h>
 
 class QComboBox;

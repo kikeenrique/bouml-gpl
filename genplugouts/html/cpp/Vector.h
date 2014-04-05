@@ -2,7 +2,7 @@
 #define _VECTOR_H
 
 
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlItem;
 

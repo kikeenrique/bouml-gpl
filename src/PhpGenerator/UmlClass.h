@@ -26,7 +26,7 @@
 #ifndef UMLCLASS_H
 #define UMLCLASS_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"

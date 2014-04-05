@@ -1,7 +1,7 @@
 #ifndef UMLCLASSITEM_H
 #define UMLCLASSITEM_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlBaseClassItem.h"
 

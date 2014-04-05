@@ -4,7 +4,7 @@
 
 #include "UmlItem.h"
 #include "anItemKind.h"
-#include <qvector.h>
+#include <qptrvector.h>
 
 #include <qcstring.h>
 

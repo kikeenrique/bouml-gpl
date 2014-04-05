@@ -6,7 +6,7 @@
 #include "UmlCollaborationMessage.h"
 #include "UmlClassInstanceReference.h"
 
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlClassInstanceReference;
 class UmlCollaborationMessage;

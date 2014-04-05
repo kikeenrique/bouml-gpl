@@ -6,7 +6,7 @@
 #include <qcstring.h>
 #include "UmlItem.h"
 #include "UmlStateItem.h"
-#include <qlist.h>
+#include <qptrlist.h>
 
 class UmlTransition;
 class FileOut;

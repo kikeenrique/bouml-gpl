@@ -7,11 +7,11 @@
 #include "OnInstanceCmd.h"
 #include "anItemKind.h"
 #include "aRelationKind.h"
-#include <qvector.h>
+#include <qptrvector.h>
 
 #include <qcstring.h>
 
-#include <qvector.h>
+#include <qptrvector.h>
 #include <qstring.h>
 
 class UmlItem;

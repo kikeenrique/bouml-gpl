@@ -62,7 +62,7 @@ class BrowserNode : public TreeItem {
 
 // a sortable list of BrowserNode
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 class BrowserNodeList : public QList<BrowserNode> {
   public:

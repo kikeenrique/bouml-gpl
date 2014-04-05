@@ -26,7 +26,7 @@
 #ifndef CPPREFTYPE_H
 #define CPPREFTYPE_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlTypeSpec.h"
 

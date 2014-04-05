@@ -26,7 +26,7 @@
 #ifndef CLASSITEM_H
 #define CLASSITEM_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlBaseClassItem.h"
 

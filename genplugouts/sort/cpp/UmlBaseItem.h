@@ -4,7 +4,7 @@
 
 #include "anItemKind.h"
 #include <qcstring.h>
-#include <qvector.h>
+#include <qptrvector.h>
 
 #include <qdict.h>
 #include <qptrdict.h>

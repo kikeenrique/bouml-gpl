@@ -30,7 +30,7 @@
 
 
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qtabdialog.h>
 
 class QComboBox;

@@ -27,7 +27,7 @@
 #define PACKAGE_H
 
 #include <qstringlist.h> 
-#include <qstack.h>
+#include <qptrstack.h>
 
 #include "Namespace.h"
 #include "Class.h"

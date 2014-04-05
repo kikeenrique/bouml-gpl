@@ -29,7 +29,7 @@
 #include "UmlBaseItem.h"
 
 #ifdef ROUNDTRIP
-#include <qlist.h>
+#include <qptrlist.h>
 
 class ClassContainer;
 #endif

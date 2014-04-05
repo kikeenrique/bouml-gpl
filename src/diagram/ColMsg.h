@@ -27,7 +27,7 @@
 #define COLMSG_H
 
 #include <qstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlEnum.h"
 

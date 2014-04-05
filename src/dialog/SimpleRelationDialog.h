@@ -26,7 +26,7 @@
 #ifndef SIMPLERELATIONDIALOG_H
 #define SIMPLERELATIONDIALOG_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qtabdialog.h>
 
 #include "UmlEnum.h"

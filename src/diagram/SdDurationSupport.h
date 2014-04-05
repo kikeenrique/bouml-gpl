@@ -26,7 +26,7 @@
 #ifndef SDDURATIONSUPPORT_H
 #define SDDURATIONSUPPORT_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 class SdDurationCanvas;
 class SdLifeLineCanvas;

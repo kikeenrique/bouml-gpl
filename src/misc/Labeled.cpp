@@ -30,7 +30,7 @@
 #include <qintdict.h> 
 #include <qdatetime.h> 
 #include <qmessagebox.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "mu.h"
 #include "Labeled.h"

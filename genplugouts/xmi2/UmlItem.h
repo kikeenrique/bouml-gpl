@@ -6,7 +6,7 @@
 #include "UmlBaseItem.h"
 #include <qcstring.h>
 #include "Language.h"
-#include <qlist.h>
+#include <qptrlist.h>
 
 class FileOut;
 class FileOut;

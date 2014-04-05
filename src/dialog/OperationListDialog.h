@@ -26,7 +26,7 @@
 #ifndef OPERATIONLISTDIALOG_H
 #define OPERATIONLISTDIALOG_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qdialog.h>
 
 class QComboBox;

@@ -3,7 +3,7 @@
 
 
 #include "UmlBaseFragmentCompartment.h"
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qcstring.h>
 
 class FileOut;

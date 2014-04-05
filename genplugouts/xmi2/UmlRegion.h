@@ -5,7 +5,7 @@
 #include "UmlBaseRegion.h"
 #include "UmlStateItem.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class UmlTransition;
 class FileOut;

@@ -26,7 +26,7 @@
 #ifndef OBJECTLINKDIALOG_H
 #define OBJECTLINKDIALOG_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qdialog.h>
 
 class MyTable;

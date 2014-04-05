@@ -6,7 +6,7 @@
 #include "anItemKind.h"
 #include "UmlTypeSpec.h"
 #include <qvaluelist.h>
-#include <qvector.h>
+#include <qptrvector.h>
 
 #include <qcstring.h>
 #include <qdict.h>

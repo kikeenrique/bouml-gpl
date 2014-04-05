@@ -28,7 +28,7 @@
 
 #include <qdict.h>
 #include <qstringlist.h> 
-#include <qstack.h>
+#include <qptrstack.h>
 
 #include "Class.h"
 #include "UmlClass.h"

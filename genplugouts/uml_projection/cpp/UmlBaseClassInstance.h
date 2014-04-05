@@ -7,7 +7,7 @@
 #include "UmlItem.h"
 #include "anItemKind.h"
 #include <qvaluelist.h>
-#include <qvector.h>
+#include <qptrvector.h>
 #include <qcstring.h>
 
 class UmlClassInstance;

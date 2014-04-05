@@ -5,7 +5,7 @@
 #include "UmlBaseState.h"
 #include "UmlStateItem.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qmap.h>
 
 class FileOut;

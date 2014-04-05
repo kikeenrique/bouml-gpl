@@ -2,7 +2,7 @@
 #define _CLASSINSTANCE_H
 
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qcstring.h>
 #include <qvaluelist.h>
 

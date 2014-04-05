@@ -8,7 +8,7 @@
 #include "UmlClassInstanceReference.h"
 #include "UmlSequenceMessage.h"
 
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlClassInstanceReference;
 class UmlSequenceMessage;

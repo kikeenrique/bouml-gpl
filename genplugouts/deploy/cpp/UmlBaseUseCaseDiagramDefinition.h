@@ -10,7 +10,7 @@
 #include "UmlUseCaseReference.h"
 #include "UmlUseCaseAssociation.h"
 
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlUseCaseReference;
 class UmlClass;

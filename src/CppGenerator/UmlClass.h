@@ -27,7 +27,7 @@
 #define UMLCLASS_H
 
 #include <qdict.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"

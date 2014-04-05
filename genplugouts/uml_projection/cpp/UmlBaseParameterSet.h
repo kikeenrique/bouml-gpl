@@ -5,7 +5,7 @@
 #include "UmlItem.h"
 #include "anItemKind.h"
 #include <qcstring.h>
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlActivityParameter;
 class UmlActivityAction;

@@ -2,7 +2,7 @@
 #include "UmlTransition.h"
 #include "UmlClass.h"
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlCom.h"
 #include "UmlState.h"

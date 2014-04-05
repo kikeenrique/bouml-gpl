@@ -3,8 +3,8 @@
 
 
 #include "UmlBaseSequenceMessage.h"
-#include <qvector.h>
-#include <qlist.h>
+#include <qptrvector.h>
+#include <qptrlist.h>
 
 class FileOut;
 class UmlItem;

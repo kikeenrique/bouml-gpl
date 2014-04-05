@@ -5,7 +5,7 @@
 #include "UmlBaseTransition.h"
 #include "UmlStateItem.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class UmlClass;
 class UmlState;

@@ -26,7 +26,7 @@
 #include <qptrdict.h>
 #include <qdict.h>
 #include <qpopupmenu.h>
-#include <qstack.h>
+#include <qptrstack.h>
 #include <qimage.h>
 
 #include "ProfiledStereotypes.h"

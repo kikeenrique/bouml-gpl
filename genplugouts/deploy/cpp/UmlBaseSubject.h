@@ -3,7 +3,7 @@
 
 
 #include <qcstring.h>
-#include <qvector.h>
+#include <qptrvector.h>
 
 class UmlSubject;
 

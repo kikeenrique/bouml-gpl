@@ -2,7 +2,7 @@
 #define _FLOWCONTAINER_H
 
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 class UmlFlow;
 class FileOut;

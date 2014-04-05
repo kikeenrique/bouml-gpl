@@ -26,7 +26,7 @@
 #ifndef CODEDITMSGDIALOG_H
 #define CODEDITMSGDIALOG_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 
 class ColMsgList;
 class ColDiagramView;

@@ -26,7 +26,7 @@
 #ifndef DIAGRAMITEM_H
 #define DIAGRAMITEM_H
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qstring.h>
 #include <qpoint.h>
 #include <qtextstream.h>

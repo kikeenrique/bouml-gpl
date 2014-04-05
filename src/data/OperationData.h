@@ -26,7 +26,7 @@
 #ifndef OPERATIONDATA_H
 #define OPERATIONDATA_H
 
-#include <qarray.h> 
+#include <qpointarray.h> 
 
 #include "UmlEnum.h"
 #include "AType.h"

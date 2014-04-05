@@ -5,7 +5,7 @@
 // to avoid compiler warning
 #include "UmlFragment.h"
 
-#include <qvector.h>
+#include <qptrvector.h>
 #include <qcstring.h>
 
 class UmlFragment;

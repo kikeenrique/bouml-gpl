@@ -4,7 +4,7 @@
 #include "UmlItem.h"
 
 #include <qptrdict.h>
-#include <qstack.h>
+#include <qptrstack.h>
 #include "UmlPackage.h"
 #include "UmlOperation.h"
 #include "UmlFragmentCompartment.h"

@@ -10,7 +10,7 @@
 #include "aRelationKind.h"
 #include <qcstring.h>
 
-#include <qvector.h>
+#include <qptrvector.h>
 #include <qstring.h>
 
 class UmlItem;

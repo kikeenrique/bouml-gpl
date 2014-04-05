@@ -4,7 +4,7 @@
 
 #include "UmlBaseDeploymentView.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class FileOut;
 class UmlItem;

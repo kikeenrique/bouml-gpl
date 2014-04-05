@@ -3,7 +3,7 @@
 
 
 #include "UmlBaseFragment.h"
-#include <qlist.h>
+#include <qptrlist.h>
 
 class FileOut;
 class UmlItem;

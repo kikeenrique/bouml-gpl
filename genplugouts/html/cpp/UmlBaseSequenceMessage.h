@@ -5,7 +5,7 @@
 #include "aMessageKind.h"
 #include <qcstring.h>
 #include <qptrdict.h>
-#include <qvector.h>
+#include <qptrvector.h>
 #include "UmlMessage.h"
 
 class UmlFragmentCompartment;

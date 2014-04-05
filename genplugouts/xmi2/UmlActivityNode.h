@@ -6,7 +6,7 @@
 #include "UmlBaseActivityNode.h"
 #include "UmlActivityItem.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class UmlFlow;
 class FileOut;

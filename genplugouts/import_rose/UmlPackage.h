@@ -4,7 +4,7 @@
 
 #include "UmlBasePackage.h"
 #include <qcstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "UmlDeploymentView.h"
 class UmlArtifact;

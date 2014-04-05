@@ -2,7 +2,7 @@
 #define _BINDING_H
 
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qcstring.h>
 
 class FileIn;

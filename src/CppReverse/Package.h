@@ -27,7 +27,7 @@
 #define PACKAGE_H
 
 #include <qdict.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "BrowserNode.h"
 #include "ClassContainer.h"

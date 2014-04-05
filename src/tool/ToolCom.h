@@ -27,7 +27,7 @@
 #define TOOLCOM_H
 
 #include <qobject.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include "BrowserNode.h"
 #include "../Tools/ApiCmd.h"

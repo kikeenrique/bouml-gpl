@@ -27,8 +27,8 @@
 #define DEFAULTSDIALOG_H
 
 #include <qtabdialog.h>
-#include <qarray.h> 
-#include <qvector.h> 
+#include <qpointarray.h> 
+#include <qptrvector.h> 
 
 #include "StateSpec.h"
 

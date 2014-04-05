@@ -4,7 +4,7 @@
 
 #include "UmlBaseStateAction.h"
 #include "UmlStateItem.h"
-#include <qlist.h>
+#include <qptrlist.h>
 
 class FileOut;
 class UmlTransition;

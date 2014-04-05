@@ -4,7 +4,7 @@
 
 #include "UmlBaseItem.h"
 #include <qcstring.h>
-#include <qvector.h>
+#include <qptrvector.h>
 
 
 // This class is a mother class for all the other Uml* classes, this
