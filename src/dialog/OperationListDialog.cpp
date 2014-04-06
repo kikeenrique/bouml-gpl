@@ -29,7 +29,7 @@
 
 #include <qcursor.h>
 #include <qlayout.h>
-#include <qcombobox.h> 
+#include <qcombobox.h>
 #include <qpushbutton.h>
 
 #include "OperationListDialog.h"
@@ -40,53 +40,57 @@
 
 QSize OperationListDialog::previous_size;
 
-OperationListDialog::OperationListDialog(const char * m,
-					 QList<BrowserOperation> & l)
-    : QDialog(0, m, TRUE) {
-  setCaption(m);
-  move(QCursor::pos());
- 
-  QVBoxLayout * vbox = new QVBoxLayout(this);
-  QHBoxLayout * hbox;
- 
-  vbox->setMargin(5);
- 
-  cb = new QComboBox(FALSE, this);
-  vbox->addWidget(cb);
-  
-  for (BrowserOperation * oper = l.first(); oper; oper = l.next()) {
-    QString s = ((BrowserNode *) oper->parent())->get_name() +
-      QString("::") + oper->get_data()->definition(TRUE, FALSE);
-    
-    if (((OperationData *) oper->get_data())->get_is_abstract())
-      cb->insertItem("[a] " + s);
-    else
-      cb->insertItem(s);
-  }
-  
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  QPushButton * ok = new QPushButton(TR("&OK"), this);
-  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
-  QSize bs(cancel->sizeHint());
-  
-  ok->setDefault(TRUE);
-  ok->setFixedSize(bs);
-  cancel->setFixedSize(bs);
-  
-  hbox->addWidget(ok);
-  hbox->addWidget(cancel);
+OperationListDialog::OperationListDialog (const char * m,
+        QList<BrowserOperation> & l)
+    : QDialog (0, m, TRUE)
+{
+    setCaption (m);
+    move (QCursor::pos());
 
-  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
-  
-  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+    QVBoxLayout * vbox = new QVBoxLayout (this);
+    QHBoxLayout * hbox;
+
+    vbox->setMargin (5);
+
+    cb = new QComboBox (FALSE, this);
+    vbox->addWidget (cb);
+
+    for (BrowserOperation * oper = l.first(); oper; oper = l.next()) {
+        QString s = ( (BrowserNode *) oper->parent())->get_name() +
+                    QString ("::") + oper->get_data()->definition (TRUE, FALSE);
+
+        if ( ( (OperationData *) oper->get_data())->get_is_abstract()) {
+            cb->insertItem ("[a] " + s);
+        } else {
+            cb->insertItem (s);
+        }
+    }
+
+    hbox = new QHBoxLayout (vbox);
+    hbox->setMargin (5);
+    QPushButton * ok = new QPushButton (TR ("&OK"), this);
+    QPushButton * cancel = new QPushButton (TR ("&Cancel"), this);
+    QSize bs (cancel->sizeHint());
+
+    ok->setDefault (TRUE);
+    ok->setFixedSize (bs);
+    cancel->setFixedSize (bs);
+
+    hbox->addWidget (ok);
+    hbox->addWidget (cancel);
+
+    UmlDesktop::limitsize_center (this, previous_size, 0.8, 0.8);
+
+    connect (ok, SIGNAL (clicked()), this, SLOT (accept()));
+    connect (cancel, SIGNAL (clicked()), this, SLOT (reject()));
 }
 
-OperationListDialog::~OperationListDialog() {
-  previous_size = size();
+OperationListDialog::~OperationListDialog()
+{
+    previous_size = size();
 }
 
-int OperationListDialog::choosen() {
-  return cb->currentItem();
+int OperationListDialog::choosen()
+{
+    return cb->currentItem();
 }

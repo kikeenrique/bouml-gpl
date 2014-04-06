@@ -32,17 +32,18 @@
 class QComboBox;
 class BrowserOperation;
 
-class OperationListDialog : public QDialog {
-  protected:
-    QComboBox * cb;
-  
-    static QSize previous_size;
-  
-  public:
-    OperationListDialog(const char * m, QList<BrowserOperation> & l);
-    virtual ~OperationListDialog();
-  
-    int choosen();
+class OperationListDialog : public QDialog
+{
+    protected:
+        QComboBox * cb;
+
+        static QSize previous_size;
+
+    public:
+        OperationListDialog (const char * m, QList<BrowserOperation> & l);
+        virtual ~OperationListDialog();
+
+        int choosen();
 };
 
 #endif

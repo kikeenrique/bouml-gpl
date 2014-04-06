@@ -33,17 +33,18 @@
 
 class QComboBox;
 
-class CharSetDialog : public QDialog {
-  protected:
-    QComboBox * cb;
-  
-    static QSize previous_size;  
-  
-  public:
-    CharSetDialog(QString cs);
-    virtual ~CharSetDialog();
-  
-    QString choosen();
+class CharSetDialog : public QDialog
+{
+    protected:
+        QComboBox * cb;
+
+        static QSize previous_size;
+
+    public:
+        CharSetDialog (QString cs);
+        virtual ~CharSetDialog();
+
+        QString choosen();
 };
 
 #endif

@@ -28,12 +28,13 @@
 
 #include <qcanvas.h>
 
-class SelectAreaCanvas : public QCanvasRectangle {
-  public:
-    SelectAreaCanvas(int x, int y, int width, int height, QCanvas * canvas);
-    
-  protected:
-    virtual void drawShape(QPainter & p);
+class SelectAreaCanvas : public QCanvasRectangle
+{
+    public:
+        SelectAreaCanvas (int x, int y, int width, int height, QCanvas * canvas);
+
+    protected:
+        virtual void drawShape (QPainter & p);
 };
 
 #endif

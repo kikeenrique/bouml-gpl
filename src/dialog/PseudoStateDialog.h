@@ -42,34 +42,35 @@ class PseudoStateData;
 class KeyValuesTable;
 class BodyDialog;
 
-class PseudoStateDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    PseudoStateData * pst;
-    bool visit;
-    QStringList reflist;
-    BrowserNodeList pseudostates;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    QComboBox * edreference;
-    MultiLineEdit * comment;
-    KeyValuesTable * kvtable;
-    QList<BodyDialog> edits;
-    
-    static QSize previous_size;
-    
-    static void post_edit_description(PseudoStateDialog * d, QString s);
-      
-  public:
-    PseudoStateDialog(PseudoStateData * u);
-    virtual ~PseudoStateDialog();
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-    void menu_reference();
-    void edit_description();
+class PseudoStateDialog : public QTabDialog
+{
+        Q_OBJECT
+
+    protected:
+        PseudoStateData * pst;
+        bool visit;
+        QStringList reflist;
+        BrowserNodeList pseudostates;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        QComboBox * edreference;
+        MultiLineEdit * comment;
+        KeyValuesTable * kvtable;
+        QList<BodyDialog> edits;
+
+        static QSize previous_size;
+
+        static void post_edit_description (PseudoStateDialog * d, QString s);
+
+    public:
+        PseudoStateDialog (PseudoStateData * u);
+        virtual ~PseudoStateDialog();
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+        void menu_reference();
+        void edit_description();
 };
 
 #endif

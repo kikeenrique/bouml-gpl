@@ -30,12 +30,13 @@
 
 class BrowserNode;
 
-class ListBoxBrowserNode : public QListBoxText {
-  public:
-    BrowserNode * browser_node;
-  
-    ListBoxBrowserNode(BrowserNode * b, const QString & s)
-      : QListBoxText(s), browser_node(b) {};
+class ListBoxBrowserNode : public QListBoxText
+{
+    public:
+        BrowserNode * browser_node;
+
+        ListBoxBrowserNode (BrowserNode * b, const QString & s)
+            : QListBoxText (s), browser_node (b) {};
 };
 
 #endif

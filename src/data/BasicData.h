@@ -40,12 +40,13 @@ class ToolCom;
 // and during a close() they are probably deleted in the opposite
 // order => removed in O(n*n) !!!!
 
-class BasicParent : public QObject {
-  public:
-    virtual void insertChild(QObject *);	// does nothing !
-    virtual void removeChild(QObject *);	// does nothing !
-    
-    static BasicParent the;
+class BasicParent : public QObject
+{
+    public:
+        virtual void insertChild (QObject *);	// does nothing !
+        virtual void removeChild (QObject *);	// does nothing !
+
+        static BasicParent the;
 };
 
 
@@ -54,64 +55,71 @@ class BasicParent : public QObject {
 // Notes than the two BrowserNodes corresponding to a relation extremities
 // share the same BasicData
 
-class BasicData : public QObject {
-  Q_OBJECT
-    
-  protected:
-    static QList<BasicData> removed;
-  
-    SharedStr stereotype;
-    BrowserNode * browser_node;
+class BasicData : public QObject
+{
+        Q_OBJECT
 
-    void redelete_it() { emit deleted(); };
-  
-  public:
-    BasicData() : QObject(&BasicParent::the), browser_node(0) {};
-    BasicData(const BasicData * model);
-    virtual ~BasicData();
-  
-    virtual bool deletedp() const = 0;
-    virtual void set_deletedp(bool y) = 0;
-    virtual void delete_it();
-    virtual void undelete(QString & warning, QString & renamed);
-    static void resignal_deleted();
-        
-    const char * get_stereotype() const { return stereotype; };
-    const char * get_short_stereotype() const;
-    virtual bool set_stereotype(const QString &);
-    virtual bool set_stereotype(const QCString &);
-    virtual bool set_stereotype(const char *);
-    
-    virtual void set_browser_node(BrowserNode * bn);
-    BrowserNode * get_browser_node() const { return browser_node; };
-    
-    virtual QString definition(bool full, bool with_kind) const;
-    
-    virtual bool decldefbody_contain(const QString & s, bool cs,
-				     BrowserNode *);
-        
-    void save(QTextStream &, QString & warning) const;
-    void read(char * & st, char * & k);
-        
-    // tools
-    virtual bool tool_cmd(ToolCom * com, const char * args,
-			  BrowserNode * bn, const QString & comment);
-    virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
-			      const QString & comment);
-    virtual void send_cpp_def(ToolCom * com);
-    virtual void send_java_def(ToolCom * com);
-    virtual void send_php_def(ToolCom * com);
-    virtual void send_python_def(ToolCom * com);
-    virtual void send_idl_def(ToolCom * com);
-    
-  protected slots:
-    void on_delete();
-  public slots:
-    void modified();
-    
-  signals:
-    void changed();	// the object is modified
-    void deleted();	// the object is deleted
+    protected:
+        static QList<BasicData> removed;
+
+        SharedStr stereotype;
+        BrowserNode * browser_node;
+
+        void redelete_it() {
+            emit deleted();
+        };
+
+    public:
+        BasicData() : QObject (&BasicParent::the), browser_node (0) {};
+        BasicData (const BasicData * model);
+        virtual ~BasicData();
+
+        virtual bool deletedp() const = 0;
+        virtual void set_deletedp (bool y) = 0;
+        virtual void delete_it();
+        virtual void undelete (QString & warning, QString & renamed);
+        static void resignal_deleted();
+
+        const char * get_stereotype() const {
+            return stereotype;
+        };
+        const char * get_short_stereotype() const;
+        virtual bool set_stereotype (const QString &);
+        virtual bool set_stereotype (const QCString &);
+        virtual bool set_stereotype (const char *);
+
+        virtual void set_browser_node (BrowserNode * bn);
+        BrowserNode * get_browser_node() const {
+            return browser_node;
+        };
+
+        virtual QString definition (bool full, bool with_kind) const;
+
+        virtual bool decldefbody_contain (const QString & s, bool cs,
+                                          BrowserNode *);
+
+        void save (QTextStream &, QString & warning) const;
+        void read (char * & st, char * & k);
+
+        // tools
+        virtual bool tool_cmd (ToolCom * com, const char * args,
+                               BrowserNode * bn, const QString & comment);
+        virtual void send_uml_def (ToolCom * com, BrowserNode * bn,
+                                   const QString & comment);
+        virtual void send_cpp_def (ToolCom * com);
+        virtual void send_java_def (ToolCom * com);
+        virtual void send_php_def (ToolCom * com);
+        virtual void send_python_def (ToolCom * com);
+        virtual void send_idl_def (ToolCom * com);
+
+    protected slots:
+        void on_delete();
+    public slots:
+        void modified();
+
+    signals:
+        void changed();	// the object is modified
+        void deleted();	// the object is deleted
 };
 
 #endif

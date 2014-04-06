@@ -38,61 +38,68 @@
 
 #define isa_label(x) ((x)->rtti() == RTTI_LABEL)
 
-class LabelCanvas : public QCanvasText, public DiagramItem {
-  public:
-    static const char * Triangle;
-    static const char * Zigzag;
-  
-  protected:
-    bool multi_lines_centered;
-    int center_x_scale100;
-    int center_y_scale100;
-    
-  public:
-    LabelCanvas(const QString & n, UmlCanvas * canvas, int x, int y,
-		bool bold = FALSE, bool italic = FALSE,
-		bool underlined = FALSE, bool mlcentered = TRUE);
-    virtual ~LabelCanvas();
-    
-    virtual void delete_it();
+class LabelCanvas : public QCanvasText, public DiagramItem
+{
+    public:
+        static const char * Triangle;
+        static const char * Zigzag;
 
-    const QString get_name() const { return text(); };
-    virtual QRect rect() const;
-    int width() const { return boundingRect().width(); };
-    int height() const { return boundingRect().height(); };
-    void set_name(const QString &);
-    
-    void set_strikeout(bool yes);
-    void set_underlined(bool yes);
-    
-    void move_outside(QRect r, double angle);
-    
-    virtual void draw(QPainter & p);
-    
-    virtual UmlCode type() const;
-    virtual int rtti() const;
-    void moveBy(double dx, double dy);
-    virtual QPoint center() const;
-    void recenter();
-    void set_center100();
-    virtual bool contains(int, int) const;
-    virtual void change_scale();
-    virtual void open();
-    void menu(const QPoint&);
-    virtual QString may_start(UmlCode &) const;
-    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-    virtual double get_z() const;
-    virtual void set_z(double z);	// only called by upper() & lower()
-    virtual UmlCanvas * the_canvas() const;
-    virtual bool isSelected() const;
-    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
-    static LabelCanvas * read(char * & st, UmlCanvas * canvas, char *);
-    virtual void history_save(QBuffer &) const;
-    virtual void history_load(QBuffer &);
-    virtual void history_hide();
-    
-    virtual void check_stereotypeproperties();
+    protected:
+        bool multi_lines_centered;
+        int center_x_scale100;
+        int center_y_scale100;
+
+    public:
+        LabelCanvas (const QString & n, UmlCanvas * canvas, int x, int y,
+                     bool bold = FALSE, bool italic = FALSE,
+                     bool underlined = FALSE, bool mlcentered = TRUE);
+        virtual ~LabelCanvas();
+
+        virtual void delete_it();
+
+        const QString get_name() const {
+            return text();
+        };
+        virtual QRect rect() const;
+        int width() const {
+            return boundingRect().width();
+        };
+        int height() const {
+            return boundingRect().height();
+        };
+        void set_name (const QString &);
+
+        void set_strikeout (bool yes);
+        void set_underlined (bool yes);
+
+        void move_outside (QRect r, double angle);
+
+        virtual void draw (QPainter & p);
+
+        virtual UmlCode type() const;
+        virtual int rtti() const;
+        void moveBy (double dx, double dy);
+        virtual QPoint center() const;
+        void recenter();
+        void set_center100();
+        virtual bool contains (int, int) const;
+        virtual void change_scale();
+        virtual void open();
+        void menu (const QPoint&);
+        virtual QString may_start (UmlCode &) const;
+        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
+        virtual void connexion (UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+        virtual double get_z() const;
+        virtual void set_z (double z);	// only called by upper() & lower()
+        virtual UmlCanvas * the_canvas() const;
+        virtual bool isSelected() const;
+        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
+        static LabelCanvas * read (char * & st, UmlCanvas * canvas, char *);
+        virtual void history_save (QBuffer &) const;
+        virtual void history_load (QBuffer &);
+        virtual void history_hide();
+
+        virtual void check_stereotypeproperties();
 };
 
 #endif

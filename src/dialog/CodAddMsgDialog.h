@@ -36,30 +36,31 @@ class ColDiagramView;
 class OperationData;
 class BrowserClass;
 
-class CodAddMsgDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    CodMsgSupport * in;
-    ColDiagramView * view;
-    bool forward;
-    BrowserClass * cl;
-    QComboBox * cbrank;
-    QStringList list;
-    QValueList<const OperationData *> opers;
-    QComboBox * edoper;    
-    
-    static QSize previous_size;
-  
-  public:
-    CodAddMsgDialog(CodObjCanvas * fr, CodObjCanvas * t, CodMsgSupport * i,
-		    ColDiagramView * v, bool f);
-    virtual ~CodAddMsgDialog();
-  
-  protected slots:
-    void menu_op();
-    virtual void polish();
-    void accept();
+class CodAddMsgDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        CodMsgSupport * in;
+        ColDiagramView * view;
+        bool forward;
+        BrowserClass * cl;
+        QComboBox * cbrank;
+        QStringList list;
+        QValueList<const OperationData *> opers;
+        QComboBox * edoper;
+
+        static QSize previous_size;
+
+    public:
+        CodAddMsgDialog (CodObjCanvas * fr, CodObjCanvas * t, CodMsgSupport * i,
+                         ColDiagramView * v, bool f);
+        virtual ~CodAddMsgDialog();
+
+    protected slots:
+        void menu_op();
+        virtual void polish();
+        void accept();
 };
 
 #endif

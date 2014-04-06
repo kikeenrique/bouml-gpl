@@ -34,26 +34,27 @@ class ColMsg;
 class OperationData;
 class BrowserClass;
 
-class CodChangeMsgDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    ColMsg * msg;
-    BrowserClass * cl;
-    QStringList list;
-    QValueList<const OperationData *> opers;
-    QComboBox * edoper;    
-    
-    static QSize previous_size;
-  
-  public:
-    CodChangeMsgDialog(QWidget * parent, ColMsg * m);
-    virtual ~CodChangeMsgDialog();
-  
-  protected slots:
-    void menu_op();
-    virtual void polish();
-    void accept();
+class CodChangeMsgDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        ColMsg * msg;
+        BrowserClass * cl;
+        QStringList list;
+        QValueList<const OperationData *> opers;
+        QComboBox * edoper;
+
+        static QSize previous_size;
+
+    public:
+        CodChangeMsgDialog (QWidget * parent, ColMsg * m);
+        virtual ~CodChangeMsgDialog();
+
+    protected slots:
+        void menu_op();
+        virtual void polish();
+        void accept();
 };
 
 #endif

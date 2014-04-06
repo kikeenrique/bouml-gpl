@@ -35,31 +35,32 @@ class DiagramItem;
 class UmlCanvas;
 class BrowserNode;
 
-class ClassDiagramView : public DiagramView {
-  public:
-    ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
+class ClassDiagramView : public DiagramView
+{
+    public:
+        ClassDiagramView (QWidget * parent, UmlCanvas * canvas, int id);
 
-    virtual void menu(const QPoint&);
-    virtual void add_related_elements(DiagramItem *, QString what,
-				      bool inh, bool assoc);
-    virtual void read(char *, char * k);
-    virtual void save(QTextStream & st, QString & warning, bool copy) const;
-    
-  private:
-    ClassDiagramWindow * window() {
-      return (ClassDiagramWindow *) parent();
-    };
-    void add_classview_classes(BrowserNode *, const QPoint& p,
-			       QPtrDict<DiagramItem> & drawn);
-    void add_classview_classes(BrowserNode *, QPtrDict<DiagramItem> & drawn,
-			       int & x, int & y, int & future_y);
-    void add_marked_elements(const QPoint& p,
-			     QPtrDict<DiagramItem> & drawn);
-  
-  protected:
-    virtual void contentsMousePressEvent(QMouseEvent *);
-    virtual void dragEnterEvent(QDragEnterEvent *);
-    virtual void dropEvent(QDropEvent *);
+        virtual void menu (const QPoint&);
+        virtual void add_related_elements (DiagramItem *, QString what,
+                                           bool inh, bool assoc);
+        virtual void read (char *, char * k);
+        virtual void save (QTextStream & st, QString & warning, bool copy) const;
+
+    private:
+        ClassDiagramWindow * window() {
+            return (ClassDiagramWindow *) parent();
+        };
+        void add_classview_classes (BrowserNode *, const QPoint& p,
+                                    QPtrDict<DiagramItem> & drawn);
+        void add_classview_classes (BrowserNode *, QPtrDict<DiagramItem> & drawn,
+                                    int & x, int & y, int & future_y);
+        void add_marked_elements (const QPoint& p,
+                                  QPtrDict<DiagramItem> & drawn);
+
+    protected:
+        virtual void contentsMousePressEvent (QMouseEvent *);
+        virtual void dragEnterEvent (QDragEnterEvent *);
+        virtual void dropEvent (QDropEvent *);
 };
 
 #endif

@@ -28,32 +28,33 @@
 
 #include "MyTable.h"
 
-class StringTable : public MyTable {
-  Q_OBJECT
+class StringTable : public MyTable
+{
+        Q_OBJECT
 
-  protected:
-    QString * copy;		// buffer for copy/cut/paste
+    protected:
+        QString * copy;		// buffer for copy/cut/paste
 
-  public:
-    StringTable(int numRows, int numCols, QWidget * parent, bool visit);
-    virtual ~StringTable();
-  
-    virtual void init_row(int index) = 0;
-  
-  protected:
-    virtual void activateNextCell();
-  
-    void insert_row_before(int row);
-    void insert_row_after(int row);
-    void delete_row(int row);
-    void copy_row(int row);
-    void cut_row(int row);
-    void paste_row(int row);
-    void move_row(int from, int to);
-  
-  protected slots:
-    virtual void button_pressed(int row, int col, int button, const QPoint & mousePos);
-    void value_changed(int row, int col);
+    public:
+        StringTable (int numRows, int numCols, QWidget * parent, bool visit);
+        virtual ~StringTable();
+
+        virtual void init_row (int index) = 0;
+
+    protected:
+        virtual void activateNextCell();
+
+        void insert_row_before (int row);
+        void insert_row_after (int row);
+        void delete_row (int row);
+        void copy_row (int row);
+        void cut_row (int row);
+        void paste_row (int row);
+        void move_row (int from, int to);
+
+    protected slots:
+        virtual void button_pressed (int row, int col, int button, const QPoint & mousePos);
+        void value_changed (int row, int col);
 };
 
 #endif

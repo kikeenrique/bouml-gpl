@@ -3,12 +3,13 @@
 #include "UmlRegion.h"
 #include "UmlState.h"
 
-UmlRegion * UmlBaseRegion::create(UmlState * parent, const char * s)
+UmlRegion * UmlBaseRegion::create (UmlState * parent, const char * s)
 {
-  return (UmlRegion *) parent->create_(aRegion, s);
+    return (UmlRegion *) parent->create_ (aRegion, s);
 }
 
-anItemKind UmlBaseRegion::kind() {
-  return aRegion;
+anItemKind UmlBaseRegion::kind()
+{
+    return aRegion;
 }
 

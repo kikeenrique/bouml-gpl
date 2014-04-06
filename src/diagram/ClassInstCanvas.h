@@ -40,33 +40,34 @@ class QTextStream;
 class BrowserClass;
 class UmlCanvas;
 
-class ClassInstCanvas : public Instance {
-  friend class ClassInstDialog;
-  
-  protected:
-    UmlColor itscolor;
-    UmlColor used_color;
-    Uml3States write_horizontally;
-    bool horiz;
-    Uml3States show_stereotype_properties;
-    bool show_properties;
-    ShowContextMode show_context_mode;
-    ShowContextMode used_show_context_mode;
-  
-  public:
-    ClassInstCanvas();
-    virtual ~ClassInstCanvas();
-    
-    QString full_name() const;
-    
-    virtual BrowserNode * new_type();
-    virtual bool new_type_available();
-    virtual BrowserNode * container(UmlCode) const = 0;
-    void compute_size(int & w, int & h, UmlCanvas *);
-    void draw(QPainter & p, UmlCanvas * canvas, QRect r);
-    
-    void save(QTextStream & st) const;
-    void read(char *& st, char *& k);
+class ClassInstCanvas : public Instance
+{
+        friend class ClassInstDialog;
+
+    protected:
+        UmlColor itscolor;
+        UmlColor used_color;
+        Uml3States write_horizontally;
+        bool horiz;
+        Uml3States show_stereotype_properties;
+        bool show_properties;
+        ShowContextMode show_context_mode;
+        ShowContextMode used_show_context_mode;
+
+    public:
+        ClassInstCanvas();
+        virtual ~ClassInstCanvas();
+
+        QString full_name() const;
+
+        virtual BrowserNode * new_type();
+        virtual bool new_type_available();
+        virtual BrowserNode * container (UmlCode) const = 0;
+        void compute_size (int & w, int & h, UmlCanvas *);
+        void draw (QPainter & p, UmlCanvas * canvas, QRect r);
+
+        void save (QTextStream & st) const;
+        void read (char *& st, char *& k);
 };
 
 #endif

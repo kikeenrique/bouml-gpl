@@ -35,28 +35,29 @@ class QComboBox;
 class LineEdit;
 class Instance;
 
-class InstanceDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    Instance * inst;
-    QString what;
-    UmlCode kind;
-    QStringList list;
-    BrowserNodeList nodes;
-    LineEdit * edname;
-    QComboBox * edtype;
-    
-    static QSize previous_size;
-  
-  public:
-    InstanceDialog(Instance * a, QString w, UmlCode k);
-    virtual ~InstanceDialog();
-  
-  protected slots:
-    void menu_type();
-    virtual void polish();
-    void accept();
+class InstanceDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        Instance * inst;
+        QString what;
+        UmlCode kind;
+        QStringList list;
+        BrowserNodeList nodes;
+        LineEdit * edname;
+        QComboBox * edtype;
+
+        static QSize previous_size;
+
+    public:
+        InstanceDialog (Instance * a, QString w, UmlCode k);
+        virtual ~InstanceDialog();
+
+    protected slots:
+        void menu_type();
+        virtual void polish();
+        void accept();
 };
 
 #endif

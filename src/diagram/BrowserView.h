@@ -26,7 +26,7 @@
 #ifndef BROWSERVIEW_H
 #define BROWSERVIEW_H
 
-#include <qlistview.h> 
+#include <qlistview.h>
 #include <qdir.h>
 
 class QDragEnterEvent;
@@ -40,60 +40,61 @@ class BrowserPackage;
 
 // in fact it is a singleton => static members (except slots !)
 
-class BrowserView : public QListView  {
-  Q_OBJECT
-    
-  private:
-    static BrowserView * the;
-    static BrowserPackage * project;
-    static QDir dir;
-    static BrowserPackage * imported_project;
-    static QDir import_dir;
-    
-    QPoint presspos;
-    bool mousePressed;
-  
-  public:
-    BrowserView(QWidget * parent = 0);
-    virtual ~BrowserView();
-  
-    virtual void clear();
-  
-    void set_project(const QDir & d);
-    bool save_as(const QDir & new_dir);
+class BrowserView : public QListView
+{
+        Q_OBJECT
 
-    static BrowserPackage * get_project() {
-      return project;
-    }
-    static QDir get_dir() {
-      return dir;
-    }
-    static void set_imported_project(const QDir &, BrowserPackage *);
-    static BrowserPackage * get_imported_project() {
-      return imported_project;
-    }
-    static QDir get_import_dir() {
-      return import_dir;
-    }
-    static void select(QListViewItem *);
-    static BrowserNode * selected_item();
-    static void force_visible(QListViewItem *);
-    static void remove_temporary_files();
-      
-  protected:
-    void keyPressEvent(QKeyEvent * e);
+    private:
+        static BrowserView * the;
+        static BrowserPackage * project;
+        static QDir dir;
+        static BrowserPackage * imported_project;
+        static QDir import_dir;
 
-  protected slots:
-    void selected(QListViewItem *);
-    void rightPressed(QListViewItem *);
-    void doubleClick(QListViewItem *);
-    void menu();
+        QPoint presspos;
+        bool mousePressed;
 
-    void contentsDragMoveEvent(QDragMoveEvent * e);
-    void contentsDropEvent(QDropEvent * e);
-    void contentsMouseMoveEvent(QMouseEvent * e);
-    void contentsMousePressEvent(QMouseEvent * e);
-    void contentsMouseReleaseEvent(QMouseEvent * e);
+    public:
+        BrowserView (QWidget * parent = 0);
+        virtual ~BrowserView();
+
+        virtual void clear();
+
+        void set_project (const QDir & d);
+        bool save_as (const QDir & new_dir);
+
+        static BrowserPackage * get_project() {
+            return project;
+        }
+        static QDir get_dir() {
+            return dir;
+        }
+        static void set_imported_project (const QDir &, BrowserPackage *);
+        static BrowserPackage * get_imported_project() {
+            return imported_project;
+        }
+        static QDir get_import_dir() {
+            return import_dir;
+        }
+        static void select (QListViewItem *);
+        static BrowserNode * selected_item();
+        static void force_visible (QListViewItem *);
+        static void remove_temporary_files();
+
+    protected:
+        void keyPressEvent (QKeyEvent * e);
+
+    protected slots:
+        void selected (QListViewItem *);
+        void rightPressed (QListViewItem *);
+        void doubleClick (QListViewItem *);
+        void menu();
+
+        void contentsDragMoveEvent (QDragMoveEvent * e);
+        void contentsDropEvent (QDropEvent * e);
+        void contentsMouseMoveEvent (QMouseEvent * e);
+        void contentsMousePressEvent (QMouseEvent * e);
+        void contentsMouseReleaseEvent (QMouseEvent * e);
 };
 
 #endif

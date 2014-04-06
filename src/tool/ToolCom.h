@@ -37,82 +37,85 @@ class AType;
 class QRect;
 class QTimer;
 
-class ToolCom  :public QObject {
-  Q_OBJECT
-    
-  protected:
-    static QList<ToolCom> used;
-    static QList<ToolCom> unused;
-    static int exitvalue;
-  
-    bool start;
-    //bool with_ack;
-    bool exit_bouml;
-    BrowserNode * target;
-    void (*cont)();
-    Socket * listen_sock;
-    Socket * sock;
-    QTimer * timer;
-    char * cmd;
-    unsigned api_version;
-    int id;		// for UmlBaseItem::isToolRunning
-    unsigned wanted;
-    int already_read;
-    char * buffer_in;
-    unsigned buffer_in_size;
-    char * buffer_out;
-    char * p_buffer_out;
-    unsigned buffer_out_size;
-  
-    ToolCom();
-    
-    void check_size_out(unsigned n);
-    const char * read_buffer();
+class ToolCom  :public QObject
+{
+        Q_OBJECT
 
-    unsigned bind(unsigned port);
-    void close();
-    
-    static bool is_running(int id);
-    
-  public:
-    unsigned api_format() const { return api_version; }
-  
-    static int run(const char * cmd, BrowserNode *,
-		   bool exit = FALSE, bool clr = TRUE,
-		   void (*pf)() = 0);
-    friend int exit_value();
-  
-    void data_received(Socket * who);
-    
-    unsigned get_unsigned(const char *& p);
-    bool get_bool(const char *& p);
-    void * get_id(const char *& p);
-    UmlCode get_kind(const char *& p);
-    const char * get_string(const char *& p);
-    bool get_relation_kind(UmlCode & v, const char *& p);
-    bool get_visibility(UmlVisibility & v, const char *& p);
-    bool get_extended_visibility(UmlVisibility & v, const char *& p);
-    bool get_direction(UmlParamDirection & v, const char *& p);
-    void get_type(AType & t, const char *& p);
-    void skip_type(const char *& p);
+    protected:
+        static QList<ToolCom> used;
+        static QList<ToolCom> unused;
+        static int exitvalue;
 
-    void write_unsigned(unsigned u);
-    void write_bool(bool);
-    void write_id(BrowserNode * bn, char kind, const char * name);
-    void write_id(void * id);
-    void write_string(const char * p);
-    void write_char(char c);
-    void write(QRect r);
-    void write_ack(bool);
-    void fatal_error(const char * msg);
-    
-    static void close_all();
-    
-  signals:
-    void closed();
-  
-  public slots:
-    void connexion_timeout();
+        bool start;
+        //bool with_ack;
+        bool exit_bouml;
+        BrowserNode * target;
+        void (*cont) ();
+        Socket * listen_sock;
+        Socket * sock;
+        QTimer * timer;
+        char * cmd;
+        unsigned api_version;
+        int id;		// for UmlBaseItem::isToolRunning
+        unsigned wanted;
+        int already_read;
+        char * buffer_in;
+        unsigned buffer_in_size;
+        char * buffer_out;
+        char * p_buffer_out;
+        unsigned buffer_out_size;
+
+        ToolCom();
+
+        void check_size_out (unsigned n);
+        const char * read_buffer();
+
+        unsigned bind (unsigned port);
+        void close();
+
+        static bool is_running (int id);
+
+    public:
+        unsigned api_format() const {
+            return api_version;
+        }
+
+        static int run (const char * cmd, BrowserNode *,
+                        bool exit = FALSE, bool clr = TRUE,
+                        void (*pf) () = 0);
+        friend int exit_value();
+
+        void data_received (Socket * who);
+
+        unsigned get_unsigned (const char *& p);
+        bool get_bool (const char *& p);
+        void * get_id (const char *& p);
+        UmlCode get_kind (const char *& p);
+        const char * get_string (const char *& p);
+        bool get_relation_kind (UmlCode & v, const char *& p);
+        bool get_visibility (UmlVisibility & v, const char *& p);
+        bool get_extended_visibility (UmlVisibility & v, const char *& p);
+        bool get_direction (UmlParamDirection & v, const char *& p);
+        void get_type (AType & t, const char *& p);
+        void skip_type (const char *& p);
+
+        void write_unsigned (unsigned u);
+        void write_bool (bool);
+        void write_id (BrowserNode * bn, char kind, const char * name);
+        void write_id (void * id);
+        void write_string (const char * p);
+        void write_char (char c);
+        void write (QRect r);
+        void write_ack (bool);
+        void fatal_error (const char * msg);
+
+        static void close_all();
+
+    signals:
+        void closed();
+
+    public slots:
+        void connexion_timeout();
 };
 
 #endif

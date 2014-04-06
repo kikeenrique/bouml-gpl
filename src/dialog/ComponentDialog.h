@@ -47,73 +47,74 @@ class FormalParamsTable;
 class ActualParamsTable;
 class BodyDialog;
 
-class ComponentDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    QWidget * umltab;
-    SimpleData * data;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-        
-    // required classes
-    QVBox * rq_page;
-    QComboBox * rq_stereotypefilter;
-    QListBox * lb_rq_available;
-    QListBox * lb_rq;
-    QValueList<BrowserClass *> rqs;
-        
-    // provided classes
-    QVBox * pr_page;
-    QComboBox * pr_stereotypefilter;
-    QListBox * lb_pr_available;
-    QListBox * lb_pr;
-    QValueList<BrowserClass *> prs;
-        
-    // realization classes
-    QVBox * rz_page;
-    QComboBox * rz_stereotypefilter;
-    QListBox * lb_rz_available;
-    QListBox * lb_rz;
-    QValueList<BrowserClass *> rzs;
-    
-    // user
-    KeyValuesTable * kvtable;
-  
-    static QSize previous_size;
-    
-    void init_uml_tab();
-    void init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
-		    void (ComponentDialog::* filteractivated)(const QString & st),
-		    const char * filter_slt,
-		    const char * add_slt, const char * remove_slt,
-		    QListBox *& lb_available, QListBox *& lb,
-		    const QValueList<BrowserClass *> & cls,
-		    const char * lbl);
-    
-    static void post_edit_description(ComponentDialog * d, QString s);
-    
-  public:
-    ComponentDialog(SimpleData * nd);
-    virtual ~ComponentDialog();
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-    void edit_description();
-    void rq_stereotypeFilterActivated(const QString & st);
-    void pr_stereotypeFilterActivated(const QString & st);
-    void rz_stereotypeFilterActivated(const QString & st);
-    void require_cls();
-    void unrequire_cls();
-    void provide_cls();
-    void unprovide_cls();
-    void realize_cls();
-    void unrealize_cls();
+class ComponentDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    void change_tabs(QWidget *);
+    protected:
+        QWidget * umltab;
+        SimpleData * data;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
+
+        // required classes
+        QVBox * rq_page;
+        QComboBox * rq_stereotypefilter;
+        QListBox * lb_rq_available;
+        QListBox * lb_rq;
+        QValueList<BrowserClass *> rqs;
+
+        // provided classes
+        QVBox * pr_page;
+        QComboBox * pr_stereotypefilter;
+        QListBox * lb_pr_available;
+        QListBox * lb_pr;
+        QValueList<BrowserClass *> prs;
+
+        // realization classes
+        QVBox * rz_page;
+        QComboBox * rz_stereotypefilter;
+        QListBox * lb_rz_available;
+        QListBox * lb_rz;
+        QValueList<BrowserClass *> rzs;
+
+        // user
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        void init_uml_tab();
+        void init_l_tab (QVBox *& page, QComboBox *& stereotypefilter,
+                         void (ComponentDialog::* filteractivated) (const QString & st),
+                         const char * filter_slt,
+                         const char * add_slt, const char * remove_slt,
+                         QListBox *& lb_available, QListBox *& lb,
+                         const QValueList<BrowserClass *> & cls,
+                         const char * lbl);
+
+        static void post_edit_description (ComponentDialog * d, QString s);
+
+    public:
+        ComponentDialog (SimpleData * nd);
+        virtual ~ComponentDialog();
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+        void edit_description();
+        void rq_stereotypeFilterActivated (const QString & st);
+        void pr_stereotypeFilterActivated (const QString & st);
+        void rz_stereotypeFilterActivated (const QString & st);
+        void require_cls();
+        void unrequire_cls();
+        void provide_cls();
+        void unprovide_cls();
+        void realize_cls();
+        void unrealize_cls();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

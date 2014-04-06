@@ -34,19 +34,20 @@ class MLEDialog;
 class QMultiLineEdit;
 #endif
 
-class MLinesItem : public TableItem {
-  protected:
+class MLinesItem : public TableItem
+{
+    protected:
 #if QT_VERSION == 230
-    MLEDialog * mle;
+        MLEDialog * mle;
 #else
-    QMultiLineEdit * mle;
+        QMultiLineEdit * mle;
 #endif
-  
-  public:
-    MLinesItem(QTable * t, const QString & s);
-  
-    virtual QWidget * createEditor() const;
-    virtual void setContentFromEditor(QWidget * w);
+
+    public:
+        MLinesItem (QTable * t, const QString & s);
+
+        virtual QWidget * createEditor() const;
+        virtual void setContentFromEditor (QWidget * w);
 };
 
 #endif

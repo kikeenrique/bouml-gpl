@@ -26,20 +26,21 @@
 #ifndef MENUITAL_H
 #define MENUITAL_H
 
-#include <qmenudata.h> 
+#include <qmenudata.h>
 
-class MenuItalic : public QCustomMenuItem {
-  protected:
-    QString str;
-    QFont font;
-  
-  public:
-    MenuItalic(const QString & s, QFont f);
-    virtual ~MenuItalic(){};
+class MenuItalic : public QCustomMenuItem
+{
+    protected:
+        QString str;
+        QFont font;
 
-    virtual void paint(QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
-		       bool /*enabled*/, int x, int y, int w, int h);
-    virtual QSize sizeHint();
+    public:
+        MenuItalic (const QString & s, QFont f);
+        virtual ~MenuItalic() {};
+
+        virtual void paint (QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
+                            bool /*enabled*/, int x, int y, int w, int h);
+        virtual QSize sizeHint();
 };
 
 #endif

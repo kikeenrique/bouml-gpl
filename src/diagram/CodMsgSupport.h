@@ -37,26 +37,29 @@ class QTextStream;
 class CodObjCanvas;
 class BrowserNode;
 
-class CodMsgSupport {
-  protected:
-    ColMsgList msgs;
-    CollaborationDiagramSettings settings;
-  
-  public:
-    CodMsgSupport(){};
-    virtual ~CodMsgSupport();
-    
-    ColMsgList & get_msgs() { return msgs; };
-    
-    void delete_it(ColMsgList & top);
-    virtual void remove_it(ColMsg * msg) = 0;
-    virtual void save(QTextStream & st, bool ref, QString & warning) const = 0;
-    virtual void get_from_to(CodObjCanvas *& from, CodObjCanvas *& to,
-			     bool forward) = 0;
-    virtual void update_msgs() = 0;
-    virtual bool copyable() const = 0;
-    
-    bool supports(BrowserNode *);
+class CodMsgSupport
+{
+    protected:
+        ColMsgList msgs;
+        CollaborationDiagramSettings settings;
+
+    public:
+        CodMsgSupport() {};
+        virtual ~CodMsgSupport();
+
+        ColMsgList & get_msgs() {
+            return msgs;
+        };
+
+        void delete_it (ColMsgList & top);
+        virtual void remove_it (ColMsg * msg) = 0;
+        virtual void save (QTextStream & st, bool ref, QString & warning) const = 0;
+        virtual void get_from_to (CodObjCanvas *& from, CodObjCanvas *& to,
+                                  bool forward) = 0;
+        virtual void update_msgs() = 0;
+        virtual bool copyable() const = 0;
+
+        bool supports (BrowserNode *);
 };
 
 #endif

@@ -34,33 +34,34 @@ class QCheckBox;
 class BrowserNode;
 class BrowserNodeList;
 
-class HideShowDialog : public QDialog {
-  Q_OBJECT
- 
-  protected:
-    const BrowserNodeList & all;
-    QValueList<BrowserNode *> & hidden_visible;
-    BooL & on_visible;
-    QListBox * lb_visible;
-    QListBox * lb_hidden;
-    QCheckBox * cb_visible;
- 
-    static QSize previous_size;
-  
-  public:
-    HideShowDialog(const BrowserNodeList & a,
-		   QValueList<BrowserNode *> & h, BooL & visible);
-    virtual ~HideShowDialog();
-    
-  protected slots:
-    virtual void polish();
-    void hide_them();
-    void show_them();
-    void show_all();
-    void hide_all();
-    void hide_private();
-    void hide_private_protected();
-    virtual void accept();
+class HideShowDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        const BrowserNodeList & all;
+        QValueList<BrowserNode *> & hidden_visible;
+        BooL & on_visible;
+        QListBox * lb_visible;
+        QListBox * lb_hidden;
+        QCheckBox * cb_visible;
+
+        static QSize previous_size;
+
+    public:
+        HideShowDialog (const BrowserNodeList & a,
+                        QValueList<BrowserNode *> & h, BooL & visible);
+        virtual ~HideShowDialog();
+
+    protected slots:
+        virtual void polish();
+        void hide_them();
+        void show_them();
+        void show_all();
+        void hide_all();
+        void hide_private();
+        void hide_private_protected();
+        virtual void accept();
 };
 
 #endif

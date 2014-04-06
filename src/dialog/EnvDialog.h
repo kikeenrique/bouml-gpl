@@ -33,36 +33,37 @@ class QComboBox;
 
 // singleton
 
-class EnvDialog : public QDialog {
-  Q_OBJECT
-    
-  public:
-    static void edit(bool conv, bool noid = FALSE);
-    
-  private:
-    EnvDialog(bool conv, bool noid);
-  
-    bool conversion;
-    QLineEdit * ed_id;
-    QLineEdit * ed_doc;
-    QLineEdit * ed_navigator; 
-    QLineEdit * ed_template;
-    QLineEdit * ed_editor;
-    QLineEdit * ed_lang;
-    QComboBox * cb_charset;
-    QLineEdit * ed_xmin;
-    QLineEdit * ed_xmax;
-    QLineEdit * ed_ymin;
-    QLineEdit * ed_ymax;
-    
-  private slots:
-    virtual void accept();
-    virtual void reject();
-    void doc_browse();
-    void navigator_browse();
-    void template_browse();
-    void editor_browse();
-    void lang_browse();
+class EnvDialog : public QDialog
+{
+        Q_OBJECT
+
+    public:
+        static void edit (bool conv, bool noid = FALSE);
+
+    private:
+        EnvDialog (bool conv, bool noid);
+
+        bool conversion;
+        QLineEdit * ed_id;
+        QLineEdit * ed_doc;
+        QLineEdit * ed_navigator;
+        QLineEdit * ed_template;
+        QLineEdit * ed_editor;
+        QLineEdit * ed_lang;
+        QComboBox * cb_charset;
+        QLineEdit * ed_xmin;
+        QLineEdit * ed_xmax;
+        QLineEdit * ed_ymin;
+        QLineEdit * ed_ymax;
+
+    private slots:
+        virtual void accept();
+        virtual void reject();
+        void doc_browse();
+        void navigator_browse();
+        void template_browse();
+        void editor_browse();
+        void lang_browse();
 };
 
 extern int read_boumlrc();

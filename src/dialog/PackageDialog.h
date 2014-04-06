@@ -40,89 +40,90 @@ class BrowserNode;
 class KeyValuesTable;
 class BodyDialog;
 
-class PackageDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    QWidget * umltab;
-    PackageData * pa;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-    
-    // C++
-    QWidget * cpptab;
-    LineEdit * edcppsrcdir;
-    LineEdit * edcpphdir;
-    LineEdit * edcppnamespace;
-    QPushButton * cppsrcbutton;
-    QPushButton * cpphbutton;
+class PackageDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    // Java
-    QWidget * javatab;
-    LineEdit * edjavadir;
-    LineEdit * edjavapackage;
-    QPushButton * javabutton;
+    protected:
+        QWidget * umltab;
+        PackageData * pa;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
 
-    // Php
-    QWidget * phptab;
-    LineEdit * edphpdir;
-    LineEdit * edphpnamespace;
-    QPushButton * phpbutton;
+        // C++
+        QWidget * cpptab;
+        LineEdit * edcppsrcdir;
+        LineEdit * edcpphdir;
+        LineEdit * edcppnamespace;
+        QPushButton * cppsrcbutton;
+        QPushButton * cpphbutton;
 
-    // Python
-    QWidget * pythontab;
-    LineEdit * edpythondir;
-    LineEdit * edpythonpackage;
-    QPushButton * pythonbutton;
+        // Java
+        QWidget * javatab;
+        LineEdit * edjavadir;
+        LineEdit * edjavapackage;
+        QPushButton * javabutton;
 
-    // Idl
-    QWidget * idltab;
-    LineEdit * edidldir;
-    LineEdit * edidlmodule;
-    QPushButton * idlbutton;
-    
-    // Profile
-    QWidget * profiletab;
-    LineEdit * edmetamodelReference;
-    LineEdit * edmetaclassreference;
+        // Php
+        QWidget * phptab;
+        LineEdit * edphpdir;
+        LineEdit * edphpnamespace;
+        QPushButton * phpbutton;
 
-    // User
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-  
-  public:
-    PackageDialog(PackageData * d);
-    virtual ~PackageDialog();
-  
-  protected:
-    void browse(LineEdit * ed, QPushButton * button, const char * caption,
-		QString root);
-    void relative(LineEdit * ed, QPushButton * button, QString root);
-    
-    static void post_edit_description(PackageDialog * d, QString s);
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-    void edit_description();
-    void edStereotypeActivated(const QString &);
-    void cppsrc_browse();
-    void cpph_browse();
-    void java_browse();
-    void php_browse();
-    void python_browse();
-    void idl_browse();
-    void cppsrc_relative();
-    void cpph_relative();
-    void java_relative();
-    void php_relative();
-    void python_relative();
-    void idl_relative();
+        // Python
+        QWidget * pythontab;
+        LineEdit * edpythondir;
+        LineEdit * edpythonpackage;
+        QPushButton * pythonbutton;
 
-    void change_tabs(QWidget *);
+        // Idl
+        QWidget * idltab;
+        LineEdit * edidldir;
+        LineEdit * edidlmodule;
+        QPushButton * idlbutton;
+
+        // Profile
+        QWidget * profiletab;
+        LineEdit * edmetamodelReference;
+        LineEdit * edmetaclassreference;
+
+        // User
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+    public:
+        PackageDialog (PackageData * d);
+        virtual ~PackageDialog();
+
+    protected:
+        void browse (LineEdit * ed, QPushButton * button, const char * caption,
+                     QString root);
+        void relative (LineEdit * ed, QPushButton * button, QString root);
+
+        static void post_edit_description (PackageDialog * d, QString s);
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+        void edit_description();
+        void edStereotypeActivated (const QString &);
+        void cppsrc_browse();
+        void cpph_browse();
+        void java_browse();
+        void php_browse();
+        void python_browse();
+        void idl_browse();
+        void cppsrc_relative();
+        void cpph_relative();
+        void java_relative();
+        void php_relative();
+        void python_relative();
+        void idl_relative();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

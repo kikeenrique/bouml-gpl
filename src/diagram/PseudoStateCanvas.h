@@ -35,52 +35,53 @@
 #include "DiagramCanvas.h"
 #include "Settings.h"
 
-class PseudoStateCanvas : public QObject, public DiagramCanvas {
-  Q_OBJECT
-    
-  protected:
-    QPixmap * xpm;
-    bool horiz;
-    bool manual_size;
+class PseudoStateCanvas : public QObject, public DiagramCanvas
+{
+        Q_OBJECT
 
-    PseudoStateCanvas(UmlCanvas * canvas, int id);
-    void set_xpm();
-  
-  public:
-    PseudoStateCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y);
-    virtual ~PseudoStateCanvas();
-    
-    virtual void delete_it();
-    
-    virtual void draw(QPainter & p);
-    virtual void change_scale();
-    
-    virtual UmlCode type() const;
-    virtual void delete_available(BooL & in_model, BooL & out_model) const;
-    virtual bool alignable() const;
-    virtual bool copyable() const;
-    virtual void remove(bool from_model);
-    virtual void open();
-    virtual void menu(const QPoint&);
-    virtual QString may_start(UmlCode &) const;
-    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-    virtual aCorner on_resize_point(const QPoint & p);
-    virtual void resize(aCorner c, int dx, int dy, QPoint &);
-    virtual void resize(const QSize & sz, bool w, bool h);
-    virtual void history_load(QBuffer &);
-    virtual void history_save(QBuffer & b) const;
-    virtual void history_hide();
-        
-    virtual void apply_shortcut(QString s);
+    protected:
+        QPixmap * xpm;
+        bool horiz;
+        bool manual_size;
 
-    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
-    static PseudoStateCanvas * read(char * &, UmlCanvas *, char *);
-    virtual void post_loaded();
-    
-  private slots:
-    void modified();	// canvas must be updated
-    void deleted();
+        PseudoStateCanvas (UmlCanvas * canvas, int id);
+        void set_xpm();
+
+    public:
+        PseudoStateCanvas (BrowserNode * bn, UmlCanvas * canvas, int x, int y);
+        virtual ~PseudoStateCanvas();
+
+        virtual void delete_it();
+
+        virtual void draw (QPainter & p);
+        virtual void change_scale();
+
+        virtual UmlCode type() const;
+        virtual void delete_available (BooL & in_model, BooL & out_model) const;
+        virtual bool alignable() const;
+        virtual bool copyable() const;
+        virtual void remove (bool from_model);
+        virtual void open();
+        virtual void menu (const QPoint&);
+        virtual QString may_start (UmlCode &) const;
+        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
+        virtual void connexion (UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+        virtual aCorner on_resize_point (const QPoint & p);
+        virtual void resize (aCorner c, int dx, int dy, QPoint &);
+        virtual void resize (const QSize & sz, bool w, bool h);
+        virtual void history_load (QBuffer &);
+        virtual void history_save (QBuffer & b) const;
+        virtual void history_hide();
+
+        virtual void apply_shortcut (QString s);
+
+        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
+        static PseudoStateCanvas * read (char * &, UmlCanvas *, char *);
+        virtual void post_loaded();
+
+    private slots:
+        void modified();	// canvas must be updated
+        void deleted();
 };
 
 #endif

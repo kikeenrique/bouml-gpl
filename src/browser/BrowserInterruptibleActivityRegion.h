@@ -34,79 +34,80 @@ class SimpleData;
 
 class BrowserActivityDiagram;
 
-class BrowserInterruptibleActivityRegion : public BrowserNode, public Labeled<BrowserInterruptibleActivityRegion> {
-  friend class StereotypesDialog;
-  
-  protected:
-    static IdDict<BrowserInterruptibleActivityRegion> all;
-    static QStringList its_default_stereotypes;
-  
-    SimpleData * def;
-    BrowserActivityDiagram * associated_diagram;
-    
-  protected:
-    BrowserInterruptibleActivityRegion(int id);
-  
-    void exec_menu_choice(int rank);
-    
-  public:
-    BrowserInterruptibleActivityRegion(QString s, BrowserNode * p, int id = 0);
-    BrowserInterruptibleActivityRegion(const BrowserInterruptibleActivityRegion * model, BrowserNode * p);
-    virtual ~BrowserInterruptibleActivityRegion();
-  
-    virtual bool may_contains_them(const QList<BrowserNode> & l,
-				   BooL & duplicable) const;
-    virtual BrowserNode * duplicate(BrowserNode * p,
-				    QString name = QString::null);
-    static BrowserInterruptibleActivityRegion * add_interruptibleactivityregion(BrowserNode * future_parent);
-    static BrowserInterruptibleActivityRegion * add_interruptibleactivityregion(BrowserNode * future_parent, const char * name);
-    static BrowserInterruptibleActivityRegion * get_interruptibleactivityregion(BrowserNode * parent);
-    
-    virtual const QPixmap* pixmap (int) const;
+class BrowserInterruptibleActivityRegion : public BrowserNode, public Labeled<BrowserInterruptibleActivityRegion>
+{
+        friend class StereotypesDialog;
 
-    virtual void menu();
-    virtual void apply_shortcut(QString s);
-    virtual void open(bool);
-    virtual UmlCode get_type() const;
-    virtual QString get_stype() const;
-    virtual int get_identifier() const;
-    virtual const char * help_topic() const;
-    virtual void modified();
-    virtual void on_delete();
-    virtual BasicData * get_data() const;
-    virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
-    virtual bool allow_empty() const;
+    protected:
+        static IdDict<BrowserInterruptibleActivityRegion> all;
+        static QStringList its_default_stereotypes;
 
-    virtual BrowserNode * get_associated() const;
-    void set_associated_diagram(BrowserActivityDiagram *, bool on_read = FALSE);
-    
-    virtual void save(QTextStream &, bool ref, QString & warning);
-    static BrowserInterruptibleActivityRegion * read(char * &, char *, BrowserNode *);
-    static BrowserInterruptibleActivityRegion * read_ref(char * & st);
-    static BrowserNode * get_it(const char * k, int id);
+        SimpleData * def;
+        BrowserActivityDiagram * associated_diagram;
 
-    static void clear(bool old);
-    static void update_idmax_for_root();
-    virtual void renumber(int phase);
-    virtual void prepare_update_lib() const;
-    
-    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
-    
-    virtual bool tool_cmd(ToolCom * com, const char * args);
-    virtual bool api_compatible(unsigned v) const;
-    
-    static void init();
-    static const QStringList & default_stereotypes();
-    static void read_stereotypes(char * &, char * & k);
-    static void save_stereotypes(QTextStream &);
-    
-    static QString drag_key(BrowserNode * p);
-    virtual QString drag_key() const;
-    virtual QString drag_postfix() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
-    virtual void DragMoveInsideEvent(QDragMoveEvent * e);
-    virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    protected:
+        BrowserInterruptibleActivityRegion (int id);
+
+        void exec_menu_choice (int rank);
+
+    public:
+        BrowserInterruptibleActivityRegion (QString s, BrowserNode * p, int id = 0);
+        BrowserInterruptibleActivityRegion (const BrowserInterruptibleActivityRegion * model, BrowserNode * p);
+        virtual ~BrowserInterruptibleActivityRegion();
+
+        virtual bool may_contains_them (const QList<BrowserNode> & l,
+                                        BooL & duplicable) const;
+        virtual BrowserNode * duplicate (BrowserNode * p,
+                                         QString name = QString::null);
+        static BrowserInterruptibleActivityRegion * add_interruptibleactivityregion (BrowserNode * future_parent);
+        static BrowserInterruptibleActivityRegion * add_interruptibleactivityregion (BrowserNode * future_parent, const char * name);
+        static BrowserInterruptibleActivityRegion * get_interruptibleactivityregion (BrowserNode * parent);
+
+        virtual const QPixmap* pixmap (int) const;
+
+        virtual void menu();
+        virtual void apply_shortcut (QString s);
+        virtual void open (bool);
+        virtual UmlCode get_type() const;
+        virtual QString get_stype() const;
+        virtual int get_identifier() const;
+        virtual const char * help_topic() const;
+        virtual void modified();
+        virtual void on_delete();
+        virtual BasicData * get_data() const;
+        virtual QString full_name (bool rev = FALSE, bool itself = TRUE) const;
+        virtual bool allow_empty() const;
+
+        virtual BrowserNode * get_associated() const;
+        void set_associated_diagram (BrowserActivityDiagram *, bool on_read = FALSE);
+
+        virtual void save (QTextStream &, bool ref, QString & warning);
+        static BrowserInterruptibleActivityRegion * read (char * &, char *, BrowserNode *);
+        static BrowserInterruptibleActivityRegion * read_ref (char * & st);
+        static BrowserNode * get_it (const char * k, int id);
+
+        static void clear (bool old);
+        static void update_idmax_for_root();
+        virtual void renumber (int phase);
+        virtual void prepare_update_lib() const;
+
+        virtual void referenced_by (QList<BrowserNode> & l, bool ondelete);
+
+        virtual bool tool_cmd (ToolCom * com, const char * args);
+        virtual bool api_compatible (unsigned v) const;
+
+        static void init();
+        static const QStringList & default_stereotypes();
+        static void read_stereotypes (char * &, char * & k);
+        static void save_stereotypes (QTextStream &);
+
+        static QString drag_key (BrowserNode * p);
+        virtual QString drag_key() const;
+        virtual QString drag_postfix() const;
+        virtual void DragMoveEvent (QDragMoveEvent * e);
+        virtual void DropEvent (QDropEvent * e);
+        virtual void DragMoveInsideEvent (QDragMoveEvent * e);
+        virtual void DropAfterEvent (QDropEvent * e, BrowserNode * after);
 };
 
 #endif

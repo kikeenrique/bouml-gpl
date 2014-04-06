@@ -32,38 +32,39 @@ class ToolCom;
 
 #define TEXT_CANVAS_MIN_SIZE 15
 
-class TextCanvas : public DiagramCanvas {
-  protected:
-    UmlFont itsfont;
-    UmlColor fg_c;
-    UmlColor bg_c;
-    QString text;
-  
-  public:
-    TextCanvas(UmlCanvas * canvas, int x, int y, int id);
-    virtual ~TextCanvas();
+class TextCanvas : public DiagramCanvas
+{
+    protected:
+        UmlFont itsfont;
+        UmlColor fg_c;
+        UmlColor bg_c;
+        QString text;
 
-    virtual void draw(QPainter & p);
-    
-    virtual UmlCode type() const;
-    virtual void open();
-    virtual void menu(const QPoint&);
-    virtual QString may_start(UmlCode &) const;
-    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void delete_available(BooL & in_model, BooL & out_model) const;
-    virtual bool alignable() const;
-    virtual bool copyable() const;
-    virtual bool move_with(UmlCode) const;
-    virtual aCorner on_resize_point(const QPoint &);
-    virtual void resize(aCorner c, int dx, int dy, QPoint &);
-    virtual void resize(const QSize & sz, bool w, bool h);
-    virtual void apply_shortcut(QString s);
-    virtual void history_save(QBuffer &) const;
-    virtual void history_load(QBuffer &);
-    virtual void save(QTextStream &, bool ref, QString & warning) const;
-    static TextCanvas * read(char * &, UmlCanvas *, char *);
-    
-    static void send(ToolCom * com, QCanvasItemList & all);
+    public:
+        TextCanvas (UmlCanvas * canvas, int x, int y, int id);
+        virtual ~TextCanvas();
+
+        virtual void draw (QPainter & p);
+
+        virtual UmlCode type() const;
+        virtual void open();
+        virtual void menu (const QPoint&);
+        virtual QString may_start (UmlCode &) const;
+        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
+        virtual void delete_available (BooL & in_model, BooL & out_model) const;
+        virtual bool alignable() const;
+        virtual bool copyable() const;
+        virtual bool move_with (UmlCode) const;
+        virtual aCorner on_resize_point (const QPoint &);
+        virtual void resize (aCorner c, int dx, int dy, QPoint &);
+        virtual void resize (const QSize & sz, bool w, bool h);
+        virtual void apply_shortcut (QString s);
+        virtual void history_save (QBuffer &) const;
+        virtual void history_load (QBuffer &);
+        virtual void save (QTextStream &, bool ref, QString & warning) const;
+        static TextCanvas * read (char * &, UmlCanvas *, char *);
+
+        static void send (ToolCom * com, QCanvasItemList & all);
 };
 
 #endif

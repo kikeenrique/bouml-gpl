@@ -27,8 +27,8 @@
 
 
 
-#include <qlabel.h> 
-#include <qlayout.h> 
+#include <qlabel.h>
+#include <qlayout.h>
 #include <qtabdialog.h>
 
 #include "BodyDialog.h"
@@ -39,59 +39,64 @@
 
 QSize BodyDialog::previous_size;
 
-BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
-		       EditType k, QString what, QList<BodyDialog> & edits)
-    : QDialog(d, what, d->isModal(), WDestructiveClose), dlg(d), f(pf), eds(edits) {
-  eds.append(this);
-  what.replace(what.findRev('_'), 1, " ");
-  switch (k) {
-  case CppEdit:
-    setCaption(what + " (C++)");
-    break;
-  case JavaEdit:
-    setCaption(what + " (Java)");
-    break;
-  case PhpEdit:
-    setCaption(what + " (Php)");
-    break;
-  case PythonEdit:
-    setCaption(what + " (Python)");
-    break;
-  default:
-    setCaption(what);
-  }
-  
-  QVBoxLayout * vbox = new QVBoxLayout(this);
+BodyDialog::BodyDialog (QString t, QTabDialog * d, post_edit pf,
+                        EditType k, QString what, QList<BodyDialog> & edits)
+    : QDialog (d, what, d->isModal(), WDestructiveClose), dlg (d), f (pf), eds (edits)
+{
+    eds.append (this);
+    what.replace (what.findRev ('_'), 1, " ");
+    switch (k) {
+        case CppEdit:
+            setCaption (what + " (C++)");
+            break;
+        case JavaEdit:
+            setCaption (what + " (Java)");
+            break;
+        case PhpEdit:
+            setCaption (what + " (Php)");
+            break;
+        case PythonEdit:
+            setCaption (what + " (Python)");
+            break;
+        default:
+            setCaption (what);
+    }
 
-  vbox->addWidget(new QLabel((f == 0) ? TR("Note : operation bodies preserved")
-				      : TR("You can specify the editor through the environment dialog"),
-			     this));
-  
-  e = new MultiLineEdit(this);
-  e->setText(t);
-  e-> setReadOnly(f == 0);
-  
-  QFont font = e->font();
-  
-  if (! hasCodec())
-    font.setFamily("Courier");
-  font.setFixedPitch(TRUE);
-  e->setFont(font);
-  
-  vbox->addWidget(e);
-  e->setFocus();
-  
-  UmlDesktop::setsize_center(this, previous_size, 0.5, 0.5);
-  
-  open_dialog(this);
+    QVBoxLayout * vbox = new QVBoxLayout (this);
+
+    vbox->addWidget (new QLabel ( (f == 0) ? TR ("Note : operation bodies preserved")
+                                  : TR ("You can specify the editor through the environment dialog"),
+                                  this));
+
+    e = new MultiLineEdit (this);
+    e->setText (t);
+    e-> setReadOnly (f == 0);
+
+    QFont font = e->font();
+
+    if (! hasCodec()) {
+        font.setFamily ("Courier");
+    }
+    font.setFixedPitch (TRUE);
+    e->setFont (font);
+
+    vbox->addWidget (e);
+    e->setFocus();
+
+    UmlDesktop::setsize_center (this, previous_size, 0.5, 0.5);
+
+    open_dialog (this);
 }
 
-BodyDialog::~BodyDialog() {
-  previous_size = size();
-  
-  if (eds.remove(this) && (f != 0))
-    // dialog still active
-    f(dlg, e->text());
-  
-  close_dialog(this);
+BodyDialog::~BodyDialog()
+{
+    previous_size = size();
+
+    if (eds.remove (this) && (f != 0))
+        // dialog still active
+    {
+        f (dlg, e->text());
+    }
+
+    close_dialog (this);
 }

@@ -37,34 +37,35 @@ class BasicData;
 class KeyValuesTable;
 class BodyDialog;
 
-class ClassViewDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    QWidget * umltab;
-    BasicData * data;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    QComboBox * deploymentview;
-    BrowserNodeList deploymentviews;
-    MultiLineEdit * comment;
-    KeyValuesTable * kvtable;
-    QList<BodyDialog> edits;
-  
-    static QSize previous_size;
-    
-    static void post_edit_description(ClassViewDialog * d, QString s);
-    
-  public:
-    ClassViewDialog(BasicData * nd);
-    virtual ~ClassViewDialog();
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-    void edit_description();
+class ClassViewDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    void change_tabs(QWidget *);
+    protected:
+        QWidget * umltab;
+        BasicData * data;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        QComboBox * deploymentview;
+        BrowserNodeList deploymentviews;
+        MultiLineEdit * comment;
+        KeyValuesTable * kvtable;
+        QList<BodyDialog> edits;
+
+        static QSize previous_size;
+
+        static void post_edit_description (ClassViewDialog * d, QString s);
+
+    public:
+        ClassViewDialog (BasicData * nd);
+        virtual ~ClassViewDialog();
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+        void edit_description();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

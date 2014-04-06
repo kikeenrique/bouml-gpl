@@ -39,65 +39,66 @@ class InfoCanvas;
 
 #define ACTIVITYOBJECT_MIN_SIZE 31
 
-class ActivityObjectCanvas : public QObject, public DiagramCanvas {
-  Q_OBJECT
-    
-  protected:
-    UmlColor itscolor;
-    UmlColor used_color;
-    Uml3States write_horizontally;
-    bool horiz;
-    QString str;
-    InfoCanvas * selection;
-    ActivityDrawingSettings settings;
-    ActivityDrawingSettings used_settings;
+class ActivityObjectCanvas : public QObject, public DiagramCanvas
+{
+        Q_OBJECT
 
-    ActivityObjectCanvas(UmlCanvas * canvas, int id);
-    void check_selection();
+    protected:
+        UmlColor itscolor;
+        UmlColor used_color;
+        Uml3States write_horizontally;
+        bool horiz;
+        QString str;
+        InfoCanvas * selection;
+        ActivityDrawingSettings settings;
+        ActivityDrawingSettings used_settings;
 
-  public:
-    ActivityObjectCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y);
-    virtual ~ActivityObjectCanvas();
-    
-    virtual void delete_it();
-    
-    virtual void draw(QPainter & p);
-    virtual void change_scale();
-    
-    void compute_size();
-    bool force_inside();
+        ActivityObjectCanvas (UmlCanvas * canvas, int id);
+        void check_selection();
 
-    virtual UmlCode type() const;
-    virtual void open();
-    virtual void menu(const QPoint&);
-    virtual QString may_start(UmlCode &) const;
-    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
-    virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-    virtual bool move_with_its_package() const;
-    virtual void moveBy(double dx, double dy);
-    virtual void delete_available(BooL & in_model, BooL & out_model) const;
-    virtual bool alignable() const;
-    virtual bool copyable() const;
-    virtual void remove(bool from_model);
-    
-    virtual bool has_drawing_settings() const;
-    virtual void edit_drawing_settings(QList<DiagramItem> &);
-    virtual void same_drawing_settings(QList<DiagramItem> &);
-    
-    virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
-    virtual bool get_show_stereotype_properties() const;
-  
-    virtual void history_load(QBuffer &);
-    virtual void history_hide();
+    public:
+        ActivityObjectCanvas (BrowserNode * bn, UmlCanvas * canvas, int x, int y);
+        virtual ~ActivityObjectCanvas();
 
-    virtual void save(QTextStream &, bool ref, QString & warning) const;
-    static ActivityObjectCanvas * read(char * &, UmlCanvas * canvas, char *);
-    virtual void post_loaded();
-    
-  private slots:
-    void modified();	// canvas must be updated
-    void deleted();	// the class is deleted
+        virtual void delete_it();
+
+        virtual void draw (QPainter & p);
+        virtual void change_scale();
+
+        void compute_size();
+        bool force_inside();
+
+        virtual UmlCode type() const;
+        virtual void open();
+        virtual void menu (const QPoint&);
+        virtual QString may_start (UmlCode &) const;
+        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
+        virtual void connexion (UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+        virtual bool move_with_its_package() const;
+        virtual void moveBy (double dx, double dy);
+        virtual void delete_available (BooL & in_model, BooL & out_model) const;
+        virtual bool alignable() const;
+        virtual bool copyable() const;
+        virtual void remove (bool from_model);
+
+        virtual bool has_drawing_settings() const;
+        virtual void edit_drawing_settings (QList<DiagramItem> &);
+        virtual void same_drawing_settings (QList<DiagramItem> &);
+
+        virtual void apply_shortcut (QString s);
+        void edit_drawing_settings();
+        virtual bool get_show_stereotype_properties() const;
+
+        virtual void history_load (QBuffer &);
+        virtual void history_hide();
+
+        virtual void save (QTextStream &, bool ref, QString & warning) const;
+        static ActivityObjectCanvas * read (char * &, UmlCanvas * canvas, char *);
+        virtual void post_loaded();
+
+    private slots:
+        void modified();	// canvas must be updated
+        void deleted();	// the class is deleted
 };
 
 #endif

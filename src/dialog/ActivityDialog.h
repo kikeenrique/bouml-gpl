@@ -45,57 +45,58 @@ struct InfoData;
 class BodyDialog;
 
 struct CondDialog {
-  MultiLineEdit * edpre;
-  MultiLineEdit * edpost;
-  
-  void accept(InfoData &);
+    MultiLineEdit * edpre;
+    MultiLineEdit * edpost;
+
+    void accept (InfoData &);
 };
 
-class ActivityDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    bool visit;
-    ActivityData * activity;
-    QStringList list;
-    BrowserNodeList opers;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    QComboBox * edspecification;
-    MultiLineEdit * comment;
-    MultiLineEdit * constraint;
-    QList<BodyDialog> edits;
-    QCheckBox * readonly_cb;
-    QCheckBox * singlexec_cb;
-    QCheckBox * active_cb;
-    CondDialog uml;
-    CondDialog cpp;
-    CondDialog java;
-        
-    // User
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-  
-    static void post_edit_description(ActivityDialog * d, QString s);
-    static void post_edit_constraint(ActivityDialog * d, QString s);
-  
-  public:
-    ActivityDialog(ActivityData * r);
-    virtual ~ActivityDialog();
-  
-  protected:
-    void init_tab(CondDialog &, InfoData & cond, const char * lbl, bool enabled);
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-  
-    void menu_specification();
-    void edit_description();
-    void edit_constraint();
+class ActivityDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    void change_tabs(QWidget *);
+    protected:
+        bool visit;
+        ActivityData * activity;
+        QStringList list;
+        BrowserNodeList opers;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        QComboBox * edspecification;
+        MultiLineEdit * comment;
+        MultiLineEdit * constraint;
+        QList<BodyDialog> edits;
+        QCheckBox * readonly_cb;
+        QCheckBox * singlexec_cb;
+        QCheckBox * active_cb;
+        CondDialog uml;
+        CondDialog cpp;
+        CondDialog java;
+
+        // User
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        static void post_edit_description (ActivityDialog * d, QString s);
+        static void post_edit_constraint (ActivityDialog * d, QString s);
+
+    public:
+        ActivityDialog (ActivityData * r);
+        virtual ~ActivityDialog();
+
+    protected:
+        void init_tab (CondDialog &, InfoData & cond, const char * lbl, bool enabled);
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+
+        void menu_specification();
+        void edit_description();
+        void edit_constraint();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

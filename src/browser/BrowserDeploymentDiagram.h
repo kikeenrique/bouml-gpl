@@ -33,82 +33,83 @@ class QPixmap;
 class DeploymentDiagramWindow;
 class SimpleData;
 
-class BrowserDeploymentDiagram : public BrowserDiagram {
-  friend class StereotypesDialog;
-  
-  protected:
-    static QList<BrowserDeploymentDiagram> imported;
-    static QValueList<int> imported_ids;
-    static QStringList its_default_stereotypes;
-  
-    SimpleData * def;
-    DeploymentDiagramWindow * window;
-    DeploymentDiagramSettings settings;
-    DeploymentDiagramSettings * used_settings;
-    UmlColor deploymentnode_color;
-    UmlColor component_color;
-    UmlColor artifact_color;
-    UmlColor package_color;
-    UmlColor note_color;
-    UmlColor fragment_color;
-    
-    BrowserDeploymentDiagram(BrowserDeploymentDiagram * model, BrowserNode * p);
-    BrowserDeploymentDiagram(int id);
-    void make();
-    void exec_menu_choice(int rank);
-  
-  public:
-    BrowserDeploymentDiagram(QString s, BrowserNode * p, int id = 0);
-    virtual ~BrowserDeploymentDiagram();
-      
-    virtual void delete_it();
-    virtual BrowserNode * duplicate(BrowserNode * p,
-				    QString name = QString::null);
-  
-    virtual const QPixmap* pixmap (int) const;
-    virtual void draw_svg() const;
-      
-    virtual void menu();
-    virtual void apply_shortcut(QString s);
-    virtual void open(bool);
-    virtual void on_close();
-    virtual void read_session(char * & st);
-    virtual UmlCode get_type() const;
-    virtual QString get_stype() const;
-    virtual int get_identifier() const;
-    virtual const char * help_topic() const;
-    virtual BasicData * get_data() const;
-    virtual void set_name(const char * s);
-    virtual void package_settings(BooL & name_in_tab, ShowContextMode & show_context) const;
-    virtual UmlColor get_color(UmlCode) const;
-    virtual void update_drawing_settings();
-    virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const;
-    virtual bool get_auto_label_position() const;
-    virtual bool get_shadow() const;
-    virtual bool get_draw_all_relations() const;
-    virtual void dont_draw_all_relations();
-    virtual bool get_show_stereotype_properties() const;
-    virtual void get_componentdrawingsettings(ComponentDrawingSettings & r) const;
-    virtual bool tool_cmd(ToolCom * com, const char * args);
-    virtual void save(QTextStream &, bool ref, QString & warning);
-    static BrowserDeploymentDiagram * read(char * &, char *, BrowserNode *);
-    static BrowserDeploymentDiagram * read_ref(char * &, const char *);
-    static BrowserNode * get_it(const char * k, int id);
-    
-    void edit_settings();
+class BrowserDeploymentDiagram : public BrowserDiagram
+{
+        friend class StereotypesDialog;
 
-    static BrowserDeploymentDiagram * add_deployment_diagram(BrowserNode * future_parent);
-    
-    static const QStringList & default_stereotypes();
-    static void read_stereotypes(char * &, char * & k);
-    static void save_stereotypes(QTextStream &);
-    
-    virtual void renumber(int phase);
-    static void open_all();
-    static void import();
-    
-    static void compute_referenced_by(QList<BrowserNode> & l, BrowserNode *,
-				      const char * kc, char const * kr);
+    protected:
+        static QList<BrowserDeploymentDiagram> imported;
+        static QValueList<int> imported_ids;
+        static QStringList its_default_stereotypes;
+
+        SimpleData * def;
+        DeploymentDiagramWindow * window;
+        DeploymentDiagramSettings settings;
+        DeploymentDiagramSettings * used_settings;
+        UmlColor deploymentnode_color;
+        UmlColor component_color;
+        UmlColor artifact_color;
+        UmlColor package_color;
+        UmlColor note_color;
+        UmlColor fragment_color;
+
+        BrowserDeploymentDiagram (BrowserDeploymentDiagram * model, BrowserNode * p);
+        BrowserDeploymentDiagram (int id);
+        void make();
+        void exec_menu_choice (int rank);
+
+    public:
+        BrowserDeploymentDiagram (QString s, BrowserNode * p, int id = 0);
+        virtual ~BrowserDeploymentDiagram();
+
+        virtual void delete_it();
+        virtual BrowserNode * duplicate (BrowserNode * p,
+                                         QString name = QString::null);
+
+        virtual const QPixmap* pixmap (int) const;
+        virtual void draw_svg() const;
+
+        virtual void menu();
+        virtual void apply_shortcut (QString s);
+        virtual void open (bool);
+        virtual void on_close();
+        virtual void read_session (char * & st);
+        virtual UmlCode get_type() const;
+        virtual QString get_stype() const;
+        virtual int get_identifier() const;
+        virtual const char * help_topic() const;
+        virtual BasicData * get_data() const;
+        virtual void set_name (const char * s);
+        virtual void package_settings (BooL & name_in_tab, ShowContextMode & show_context) const;
+        virtual UmlColor get_color (UmlCode) const;
+        virtual void update_drawing_settings();
+        virtual void get_deploymentdiagramsettings (DeploymentDiagramSettings & r) const;
+        virtual bool get_auto_label_position() const;
+        virtual bool get_shadow() const;
+        virtual bool get_draw_all_relations() const;
+        virtual void dont_draw_all_relations();
+        virtual bool get_show_stereotype_properties() const;
+        virtual void get_componentdrawingsettings (ComponentDrawingSettings & r) const;
+        virtual bool tool_cmd (ToolCom * com, const char * args);
+        virtual void save (QTextStream &, bool ref, QString & warning);
+        static BrowserDeploymentDiagram * read (char * &, char *, BrowserNode *);
+        static BrowserDeploymentDiagram * read_ref (char * &, const char *);
+        static BrowserNode * get_it (const char * k, int id);
+
+        void edit_settings();
+
+        static BrowserDeploymentDiagram * add_deployment_diagram (BrowserNode * future_parent);
+
+        static const QStringList & default_stereotypes();
+        static void read_stereotypes (char * &, char * & k);
+        static void save_stereotypes (QTextStream &);
+
+        virtual void renumber (int phase);
+        static void open_all();
+        static void import();
+
+        static void compute_referenced_by (QList<BrowserNode> & l, BrowserNode *,
+                                           const char * kc, char const * kr);
 };
 
 #endif

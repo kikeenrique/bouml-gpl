@@ -34,69 +34,70 @@ class QSpinBox;
 class StateDiagramView;
 class BrowserStateDiagram;
 
-class StateDiagramWindow : public DiagramWindow {
-  Q_OBJECT
-    
-  protected:
-    StateDiagramView * view;
-    QToolButton * addState;
-    QToolButton * addEntryPoint;
-    QToolButton * addExitPoint;
-    QToolButton * addInitial;
-    QToolButton * addFinal;
-    QToolButton * addTerminate;
-    QToolButton * addDeepHistory;
-    QToolButton * addShallowHistory; 
-    QToolButton * addJunction;
-    QToolButton * addChoice;
-    QToolButton * addFork;
-    QToolButton * addJoin;
-    QToolButton * addTransition;
-    QToolButton * addPackage;
-    QToolButton * addFragment;
-    QToolButton * addRegion;
-    QToolButton * addAction;
-    QToolButton * addSignalIn;
-    QToolButton * addSignalOut;
-    //QToolButton * dependency;
-    QToolButton * note;
-    QToolButton * anchor;
-    QToolButton * text;
-    QToolButton * image;
-  
-  public:
-    StateDiagramWindow(const QString & s, BrowserStateDiagram * b, int id = -1);
-    ~StateDiagramWindow();
+class StateDiagramWindow : public DiagramWindow
+{
+        Q_OBJECT
 
-    virtual DiagramView * get_view() const;
-    
-    virtual void hit_button(UmlCode, QToolButton *);
-    
-  protected slots:
-    void hit_state();
-    void hit_package();
-    void hit_fragment();
-    void hit_entryPoint();
-    void hit_exitPoint();
-    void hit_initial();
-    void hit_final();
-    void hit_terminate();
-    void hit_deepHistory();
-    void hit_shallowHistory(); 
-    void hit_junction();
-    void hit_choice();
-    void hit_fork();
-    void hit_join();
-    void hit_region();
-    void hit_action();
-    void hit_signalin();
-    void hit_signalout();
-    void hit_transition();
-    //void hit_dependency();
-    void hit_note();
-    void hit_anchor();
-    void hit_text();
-    void hit_image();
+    protected:
+        StateDiagramView * view;
+        QToolButton * addState;
+        QToolButton * addEntryPoint;
+        QToolButton * addExitPoint;
+        QToolButton * addInitial;
+        QToolButton * addFinal;
+        QToolButton * addTerminate;
+        QToolButton * addDeepHistory;
+        QToolButton * addShallowHistory;
+        QToolButton * addJunction;
+        QToolButton * addChoice;
+        QToolButton * addFork;
+        QToolButton * addJoin;
+        QToolButton * addTransition;
+        QToolButton * addPackage;
+        QToolButton * addFragment;
+        QToolButton * addRegion;
+        QToolButton * addAction;
+        QToolButton * addSignalIn;
+        QToolButton * addSignalOut;
+        //QToolButton * dependency;
+        QToolButton * note;
+        QToolButton * anchor;
+        QToolButton * text;
+        QToolButton * image;
+
+    public:
+        StateDiagramWindow (const QString & s, BrowserStateDiagram * b, int id = -1);
+        ~StateDiagramWindow();
+
+        virtual DiagramView * get_view() const;
+
+        virtual void hit_button (UmlCode, QToolButton *);
+
+    protected slots:
+        void hit_state();
+        void hit_package();
+        void hit_fragment();
+        void hit_entryPoint();
+        void hit_exitPoint();
+        void hit_initial();
+        void hit_final();
+        void hit_terminate();
+        void hit_deepHistory();
+        void hit_shallowHistory();
+        void hit_junction();
+        void hit_choice();
+        void hit_fork();
+        void hit_join();
+        void hit_region();
+        void hit_action();
+        void hit_signalin();
+        void hit_signalout();
+        void hit_transition();
+        //void hit_dependency();
+        void hit_note();
+        void hit_anchor();
+        void hit_text();
+        void hit_image();
 };
 
 #endif

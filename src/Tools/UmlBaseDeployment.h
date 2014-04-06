@@ -6,9 +6,10 @@
 #include <qcstring.h>
 
 //  Manage the deployments
-class UmlBaseDeployment : public UmlItem {
-  protected:
-    UmlBaseDeployment(void * id, QCString n) : UmlItem(id, n){};
+class UmlBaseDeployment : public UmlItem
+{
+    protected:
+        UmlBaseDeployment (void * id, QCString n) : UmlItem (id, n) {};
 
 };
 

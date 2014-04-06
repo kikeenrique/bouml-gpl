@@ -26,12 +26,13 @@
 #ifndef SAVE_PROGRESS_H
 #define SAVE_PROGRESS_H
 
-#include <qprogressdialog.h> 
+#include <qprogressdialog.h>
 
-class SaveProgress : public QProgressDialog {
-  public:
-    SaveProgress(int);
-    virtual ~SaveProgress();
+class SaveProgress : public QProgressDialog
+{
+    public:
+        SaveProgress (int);
+        virtual ~SaveProgress();
 };
 
 #endif

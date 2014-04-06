@@ -3,12 +3,13 @@
 #include "UmlTerminatePseudoState.h"
 #include "UmlItem.h"
 
-UmlTerminatePseudoState * UmlBaseTerminatePseudoState::create(UmlItem * parent)
+UmlTerminatePseudoState * UmlBaseTerminatePseudoState::create (UmlItem * parent)
 {
-  return (UmlTerminatePseudoState *) parent->create_(aTerminatePseudoState, "");
+    return (UmlTerminatePseudoState *) parent->create_ (aTerminatePseudoState, "");
 }
 
-anItemKind UmlBaseTerminatePseudoState::kind() {
-  return aTerminatePseudoState;
+anItemKind UmlBaseTerminatePseudoState::kind()
+{
+    return aTerminatePseudoState;
 }
 

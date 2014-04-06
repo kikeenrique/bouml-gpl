@@ -31,16 +31,19 @@
 
 #include "MenuTitle.h"
 
-MenuTitle::MenuTitle(const QString & s, QFont f) : str(s), font(f) {
-  font.setBold(TRUE);
+MenuTitle::MenuTitle (const QString & s, QFont f) : str (s), font (f)
+{
+    font.setBold (TRUE);
 }
 
-void MenuTitle::paint(QPainter * p, const QColorGroup& /*cg*/, bool /*act*/,
-		      bool /*enabled*/, int x, int y, int w, int h) {
-  p->setFont (font);
-  p->drawText( x, y, w, h, AlignCenter | ShowPrefix | DontClip, str);
+void MenuTitle::paint (QPainter * p, const QColorGroup& /*cg*/, bool /*act*/,
+                       bool /*enabled*/, int x, int y, int w, int h)
+{
+    p->setFont (font);
+    p->drawText (x, y, w, h, AlignCenter | ShowPrefix | DontClip, str);
 }
 
-QSize MenuTitle::sizeHint() {
-  return QFontMetrics(font).size(AlignCenter | ShowPrefix | DontClip, str);
+QSize MenuTitle::sizeHint()
+{
+    return QFontMetrics (font).size (AlignCenter | ShowPrefix | DontClip, str);
 }

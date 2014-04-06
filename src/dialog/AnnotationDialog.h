@@ -34,26 +34,27 @@
 class QComboBox;
 class MultiLineEdit;
 
-class AnnotationDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    QString & value;
-    MultiLineEdit * e;
-    QComboBox * cb;
-    BrowserNodeList annotations;
-    
-    static QSize previous_size;
-  
-  public:
-    AnnotationDialog(QWidget * parent, QString & s, bool visit);
-    virtual ~AnnotationDialog();
-  
-  protected slots:
-    virtual void accept();
-    void add_annotation();
+class AnnotationDialog : public QDialog
+{
+        Q_OBJECT
 
-  
+    protected:
+        QString & value;
+        MultiLineEdit * e;
+        QComboBox * cb;
+        BrowserNodeList annotations;
+
+        static QSize previous_size;
+
+    public:
+        AnnotationDialog (QWidget * parent, QString & s, bool visit);
+        virtual ~AnnotationDialog();
+
+    protected slots:
+        virtual void accept();
+        void add_annotation();
+
+
 };
 
 #endif

@@ -37,30 +37,31 @@ class SdMsgBaseCanvas;
 class OperationData;
 class BrowserClass;
 
-class SdMsgDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    SdMsgBaseCanvas * mc;
-    BrowserClass * cl;
-    QStringList list;
-    QValueList<const OperationData *> opers;
-    QComboBox * edoper;
-    QComboBox * edst;
-    MultiLineEdit * edargs;
-    QRadioButton * synchronous_rb;
-    QRadioButton * asynchronous_rb;
-    
-    static QSize previous_size;
-  
-  public:
-    SdMsgDialog(SdMsgBaseCanvas * m, const QStringList &);
-    virtual ~SdMsgDialog();
-  
-  protected slots:
-    void menu_op();
-    virtual void polish();
-    void accept();
+class SdMsgDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        SdMsgBaseCanvas * mc;
+        BrowserClass * cl;
+        QStringList list;
+        QValueList<const OperationData *> opers;
+        QComboBox * edoper;
+        QComboBox * edst;
+        MultiLineEdit * edargs;
+        QRadioButton * synchronous_rb;
+        QRadioButton * asynchronous_rb;
+
+        static QSize previous_size;
+
+    public:
+        SdMsgDialog (SdMsgBaseCanvas * m, const QStringList &);
+        virtual ~SdMsgDialog();
+
+    protected slots:
+        void menu_op();
+        virtual void polish();
+        void accept();
 };
 
 #endif

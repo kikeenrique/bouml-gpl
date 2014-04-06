@@ -33,26 +33,27 @@ class DiagramItem;
 class UmlCanvas;
 class BrowserNode;
 
-class ActivityDiagramView : public DiagramView {
-  Q_OBJECT
+class ActivityDiagramView : public DiagramView
+{
+        Q_OBJECT
 
-  public:
-    ActivityDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
-  
-    BrowserNode * container(const QPoint & p, bool part = FALSE);
-    virtual void menu(const QPoint&);
-    virtual void read(char *, char * k);
-    virtual void save(QTextStream & st, QString & warning, bool copy) const;
-    
-  private:
-    ActivityDiagramWindow * window() {
-      return (ActivityDiagramWindow *) parent();
-    };
-  
-  protected:
-    virtual void contentsMousePressEvent(QMouseEvent *);
-    virtual void dragEnterEvent(QDragEnterEvent *);
-    virtual void dropEvent(QDropEvent *);
+    public:
+        ActivityDiagramView (QWidget * parent, UmlCanvas * canvas, int id);
+
+        BrowserNode * container (const QPoint & p, bool part = FALSE);
+        virtual void menu (const QPoint&);
+        virtual void read (char *, char * k);
+        virtual void save (QTextStream & st, QString & warning, bool copy) const;
+
+    private:
+        ActivityDiagramWindow * window() {
+            return (ActivityDiagramWindow *) parent();
+        };
+
+    protected:
+        virtual void contentsMousePressEvent (QMouseEvent *);
+        virtual void dragEnterEvent (QDragEnterEvent *);
+        virtual void dropEvent (QDropEvent *);
 };
 
 #endif

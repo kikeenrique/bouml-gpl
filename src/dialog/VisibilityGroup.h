@@ -33,30 +33,31 @@
 class QRadioButton;
 class QButtonGroup;
 
-class VisibilityGroup {
-  protected:
-    QButtonGroup * bgroup;
-    QRadioButton * public_rb;
-    QRadioButton * protected_rb;
-    QRadioButton * private_rb;
-    QRadioButton * package_rb;
-    
-    QString default_pfix;
-    QRadioButton * default_visibility_rb;
-    
-  public:
-    VisibilityGroup() {};
-  
-    QButtonGroup * init(QWidget * parent, UmlVisibility v,
-			bool pack_allowed,
-			const char * title = 0,
-			const char * default_string = 0);
-    void update_default(const VisibilityGroup & default_grp);
-    void connect(const char *, QWidget *, const char *);
-    void follow(const VisibilityGroup & other);
-    UmlVisibility value();
-    
-    QString state();
+class VisibilityGroup
+{
+    protected:
+        QButtonGroup * bgroup;
+        QRadioButton * public_rb;
+        QRadioButton * protected_rb;
+        QRadioButton * private_rb;
+        QRadioButton * package_rb;
+
+        QString default_pfix;
+        QRadioButton * default_visibility_rb;
+
+    public:
+        VisibilityGroup() {};
+
+        QButtonGroup * init (QWidget * parent, UmlVisibility v,
+                             bool pack_allowed,
+                             const char * title = 0,
+                             const char * default_string = 0);
+        void update_default (const VisibilityGroup & default_grp);
+        void connect (const char *, QWidget *, const char *);
+        void follow (const VisibilityGroup & other);
+        UmlVisibility value();
+
+        QString state();
 };
 
 #endif

@@ -40,57 +40,59 @@ class MultiLineEdit;
 class BodyDialog;
 struct SlotRel;
 
-class RelTable : public MyTable {
-  Q_OBJECT
-    
-  public:
-    RelTable(QWidget * parent, ClassInstanceData * inst, bool visit);
-  
-    void init_row(const SlotRel & sr, int row, QString a, bool visit);
-  
-  protected slots:
-    virtual void button_pressed(int row, int col, int button, const QPoint & mousePos);
+class RelTable : public MyTable
+{
+        Q_OBJECT
+
+    public:
+        RelTable (QWidget * parent, ClassInstanceData * inst, bool visit);
+
+        void init_row (const SlotRel & sr, int row, QString a, bool visit);
+
+    protected slots:
+        virtual void button_pressed (int row, int col, int button, const QPoint & mousePos);
 };
 
-class ClassInstanceDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    void init_table();
-  
-    bool visit;
-    ClassInstanceData * inst;
-    QStringList list;
-    BrowserNodeList nodes;
-    LineEdit * edname;
-    QComboBox * edtype;
-    QComboBox * edstereotype;
-    BrowserNodeList attributes;
-    BrowserNode * cl_container;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-    MyTable * atbl;
-    RelTable * rtbl;
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-    
-    void init_rels();
-    
-    static void post_edit_description(ClassInstanceDialog *, QString);
-  
-  public:
-    ClassInstanceDialog(ClassInstanceData * i);
-    virtual ~ClassInstanceDialog();
-  
-  protected slots:
-    virtual void polish();
-    void accept();
-    
-    void edit_description();
-    void type_changed(int);
-    void menu_class();
-    void update_all_tabs(QWidget *);
+class ClassInstanceDialog : public QTabDialog
+{
+        Q_OBJECT
+
+    protected:
+        void init_table();
+
+        bool visit;
+        ClassInstanceData * inst;
+        QStringList list;
+        BrowserNodeList nodes;
+        LineEdit * edname;
+        QComboBox * edtype;
+        QComboBox * edstereotype;
+        BrowserNodeList attributes;
+        BrowserNode * cl_container;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
+        MyTable * atbl;
+        RelTable * rtbl;
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        void init_rels();
+
+        static void post_edit_description (ClassInstanceDialog *, QString);
+
+    public:
+        ClassInstanceDialog (ClassInstanceData * i);
+        virtual ~ClassInstanceDialog();
+
+    protected slots:
+        virtual void polish();
+        void accept();
+
+        void edit_description();
+        void type_changed (int);
+        void menu_class();
+        void update_all_tabs (QWidget *);
 };
 
 #endif

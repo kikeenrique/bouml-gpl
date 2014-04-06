@@ -47,65 +47,66 @@ class MultiLineEdit;
 class KeyValuesTable;
 class BodyDialog;
 
-class ActivityObjectDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    bool visit;
-    ActivityObjectData * data;
-    QStringList list;
-    BrowserNodeList nodes;
-    QList<BodyDialog> edits;
-    int offset;
-    BrowserNode * view;
-    
-    QWidget * umltab;
-    QWidget * ocltab;
-    QWidget * cpptab;
-    QWidget * javatab;
+class ActivityObjectDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    // uml tab
-    LineEdit * edname;
-    QComboBox * edtype;
-    QComboBox * edstereotype;
-    QComboBox * edordering;
-    QComboBox * edmultiplicity;
-    QCheckBox * is_control_cb;
-    LineEdit * edin_state;
-    MultiLineEdit * eduml_selection;
-    MultiLineEdit * edcpp_selection;
-    MultiLineEdit * edjava_selection;
-    MultiLineEdit * comment;
-    
-    // User tab
-    KeyValuesTable * kvtable;
+    protected:
+        bool visit;
+        ActivityObjectData * data;
+        QStringList list;
+        BrowserNodeList nodes;
+        QList<BodyDialog> edits;
+        int offset;
+        BrowserNode * view;
 
-    static QSize previous_size;
-  
-    static void post_edit_description(ActivityObjectDialog *, QString);
-    static void post_edit_uml_selection(ActivityObjectDialog * d, QString s);
-    static void post_edit_cpp_selection(ActivityObjectDialog * d, QString s);
-    static void post_edit_java_selection(ActivityObjectDialog * d, QString s);
-    
-    void init_tab(QWidget *& w, MultiLineEdit *& ed, const char * v,
-		  const char * lbl, const char * sl, bool enabled);
-    
-  public:
-    ActivityObjectDialog(ActivityObjectData * a, const char * what,
-			 QStringList & st);
-    virtual ~ActivityObjectDialog();
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-  
-    void edit_description();
-    void edit_uml_selection();
-    void edit_cpp_selection();
-    void edit_java_selection();
-    void menu_type();
+        QWidget * umltab;
+        QWidget * ocltab;
+        QWidget * cpptab;
+        QWidget * javatab;
 
-    void change_tabs(QWidget *);
+        // uml tab
+        LineEdit * edname;
+        QComboBox * edtype;
+        QComboBox * edstereotype;
+        QComboBox * edordering;
+        QComboBox * edmultiplicity;
+        QCheckBox * is_control_cb;
+        LineEdit * edin_state;
+        MultiLineEdit * eduml_selection;
+        MultiLineEdit * edcpp_selection;
+        MultiLineEdit * edjava_selection;
+        MultiLineEdit * comment;
+
+        // User tab
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        static void post_edit_description (ActivityObjectDialog *, QString);
+        static void post_edit_uml_selection (ActivityObjectDialog * d, QString s);
+        static void post_edit_cpp_selection (ActivityObjectDialog * d, QString s);
+        static void post_edit_java_selection (ActivityObjectDialog * d, QString s);
+
+        void init_tab (QWidget *& w, MultiLineEdit *& ed, const char * v,
+                       const char * lbl, const char * sl, bool enabled);
+
+    public:
+        ActivityObjectDialog (ActivityObjectData * a, const char * what,
+                              QStringList & st);
+        virtual ~ActivityObjectDialog();
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+
+        void edit_description();
+        void edit_uml_selection();
+        void edit_cpp_selection();
+        void edit_java_selection();
+        void menu_type();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

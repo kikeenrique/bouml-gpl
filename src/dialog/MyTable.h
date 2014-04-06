@@ -32,28 +32,30 @@
 
 #include <qtable.h>
 
-class TableItem : public QTableItem {
-  public:
-    TableItem(QTable * table, EditType et, const QString & text)
-      : QTableItem(table, et, text) {};
-    TableItem(QTable * table, EditType et, const QString & text, const QPixmap & p)
-      : QTableItem(table, et, text, p) {};
-  
-    virtual int alignment() const;
+class TableItem : public QTableItem
+{
+    public:
+        TableItem (QTable * table, EditType et, const QString & text)
+            : QTableItem (table, et, text) {};
+        TableItem (QTable * table, EditType et, const QString & text, const QPixmap & p)
+            : QTableItem (table, et, text, p) {};
+
+        virtual int alignment() const;
 };
 
-class MyTable : public QTable {
-  Q_OBJECT
-    
-  public:
-    MyTable(QWidget * parent = 0, const char * name = 0) 
-      : QTable(parent, name) {};
-    MyTable(int numRows, int numCols, QWidget * parent = 0, const char * name = 0)
-      : QTable(numRows, numCols, parent, name) {};
+class MyTable : public QTable
+{
+        Q_OBJECT
 
-    virtual void setText(int row, int col, const QString & text);
-    
-    void forceUpdateCells();
+    public:
+        MyTable (QWidget * parent = 0, const char * name = 0)
+            : QTable (parent, name) {};
+        MyTable (int numRows, int numCols, QWidget * parent = 0, const char * name = 0)
+            : QTable (numRows, numCols, parent, name) {};
+
+        virtual void setText (int row, int col, const QString & text);
+
+        void forceUpdateCells();
 };
 
 #endif

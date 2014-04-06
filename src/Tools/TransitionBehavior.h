@@ -4,17 +4,18 @@
 
 #include <qcstring.h>
 
-class TransitionBehavior {
-  public:
-    QCString trigger;
+class TransitionBehavior
+{
+    public:
+        QCString trigger;
 
-    QCString guard;
+        QCString guard;
 
-    QCString activity;
+        QCString activity;
 
-    void read();
+        void read();
 
-    void unload();
+        void unload();
 
 };
 

@@ -4,19 +4,20 @@
 
 #include <qcstring.h>
 
-class FlowBehavior {
-  public:
-    QCString weight;
+class FlowBehavior
+{
+    public:
+        QCString weight;
 
-    QCString guard;
+        QCString guard;
 
-    QCString selection;
+        QCString selection;
 
-    QCString transformation;
+        QCString transformation;
 
-    void read();
+        void read();
 
-    void unload();
+        void unload();
 
 };
 

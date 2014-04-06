@@ -29,7 +29,7 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qtextview.h> 
+#include <qtextview.h>
 #include <qpushbutton.h>
 
 #include "About.h"
@@ -37,63 +37,65 @@
 #include "UmlDesktop.h"
 #include "translate.h"
 
-AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
-  setCaption(TR("About BOUML"));
-  //move(p);
-  
-  QVBoxLayout * vbox = new QVBoxLayout(this);  
-  QHBoxLayout * hbox; 
-  
-  vbox->setMargin(5);
-  
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
+AboutDialog::AboutDialog() : QDialog (0, "About BOUML", TRUE)
+{
+    setCaption (TR ("About BOUML"));
+    //move(p);
 
-  QPixmap bp((const char **) bp_xpm);
-  QLabel * lbp = new QLabel(this);
-  
-  lbp->setPixmap(bp);
-  hbox->addWidget(lbp);
-  hbox->addWidget(new QLabel("  ", this));
+    QVBoxLayout * vbox = new QVBoxLayout (this);
+    QHBoxLayout * hbox;
 
-  const char * htmltext = ("BOUML release <b>4.22.2</b><br>\n"
-			   "<br>\n"
-			   "<i>http://bouml.free.fr</i><br>\n"
-			   "<i>http://bouml.sourceforge.net/</i><br>\n"
-			   "<br>\n"
-			   "Bruno Pages (<i>bouml@free.fr</i>)");
-  const char * sizetext = ("BOUML release <b>4.88.88 patch 1</b>\n"
-			   "\n"
-			   "http://bouml.free.fr\n"
-			   "http://bouml.sourceforge.net/____\n"
-			   "\n"
-			   "Bruno Pages (bouml@free.fr)\n\n");
-  QTextView * tx =
-    new QTextView(htmltext, QString::null, this);
-  QFont fnt = tx->font();
-  
-  fnt.setItalic(TRUE);
-  
-  QFontMetrics fm(fnt);
-  
-  tx->setVScrollBarMode(QScrollView::AlwaysOff);
-  tx->setHScrollBarMode(QScrollView::AlwaysOff);
-  tx->setMinimumSize(fm.size(0, sizetext));
-  hbox->addWidget(tx);
-  
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  QPushButton * ok = new QPushButton(TR("&OK"), this);
-  
-  ok->setDefault( TRUE );
-  
-  hbox->addWidget(new QLabel(this));
-  hbox->addWidget(ok);
-  hbox->addWidget(new QLabel(this));
-  
-  if (UmlDesktop::fixed())
-    UmlDesktop::tocenter(this);
-  
-  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+    vbox->setMargin (5);
+
+    hbox = new QHBoxLayout (vbox);
+    hbox->setMargin (5);
+
+    QPixmap bp ( (const char **) bp_xpm);
+    QLabel * lbp = new QLabel (this);
+
+    lbp->setPixmap (bp);
+    hbox->addWidget (lbp);
+    hbox->addWidget (new QLabel ("  ", this));
+
+    const char * htmltext = ("BOUML release <b>4.22.2</b><br>\n"
+                             "<br>\n"
+                             "<i>http://bouml.free.fr</i><br>\n"
+                             "<i>http://bouml.sourceforge.net/</i><br>\n"
+                             "<br>\n"
+                             "Bruno Pages (<i>bouml@free.fr</i>)");
+    const char * sizetext = ("BOUML release <b>4.88.88 patch 1</b>\n"
+                             "\n"
+                             "http://bouml.free.fr\n"
+                             "http://bouml.sourceforge.net/____\n"
+                             "\n"
+                             "Bruno Pages (bouml@free.fr)\n\n");
+    QTextView * tx =
+        new QTextView (htmltext, QString::null, this);
+    QFont fnt = tx->font();
+
+    fnt.setItalic (TRUE);
+
+    QFontMetrics fm (fnt);
+
+    tx->setVScrollBarMode (QScrollView::AlwaysOff);
+    tx->setHScrollBarMode (QScrollView::AlwaysOff);
+    tx->setMinimumSize (fm.size (0, sizetext));
+    hbox->addWidget (tx);
+
+    hbox = new QHBoxLayout (vbox);
+    hbox->setMargin (5);
+    QPushButton * ok = new QPushButton (TR ("&OK"), this);
+
+    ok->setDefault (TRUE);
+
+    hbox->addWidget (new QLabel (this));
+    hbox->addWidget (ok);
+    hbox->addWidget (new QLabel (this));
+
+    if (UmlDesktop::fixed()) {
+        UmlDesktop::tocenter (this);
+    }
+
+    connect (ok, SIGNAL (clicked()), this, SLOT (accept()));
 }
 

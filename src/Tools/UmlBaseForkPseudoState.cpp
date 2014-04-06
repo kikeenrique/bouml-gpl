@@ -3,12 +3,13 @@
 #include "UmlForkPseudoState.h"
 #include "UmlItem.h"
 
-UmlForkPseudoState * UmlBaseForkPseudoState::create(UmlItem * parent)
+UmlForkPseudoState * UmlBaseForkPseudoState::create (UmlItem * parent)
 {
-  return (UmlForkPseudoState *) parent->create_(aForkPseudoState, "");
+    return (UmlForkPseudoState *) parent->create_ (aForkPseudoState, "");
 }
 
-anItemKind UmlBaseForkPseudoState::kind() {
-  return aForkPseudoState;
+anItemKind UmlBaseForkPseudoState::kind()
+{
+    return aForkPseudoState;
 }
 

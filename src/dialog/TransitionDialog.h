@@ -45,74 +45,75 @@ struct TransDef;
 class BodyDialog;
 
 struct TransDialog {
-  MultiLineEdit * edtrigger;
-  MultiLineEdit * edguard;
-  MultiLineEdit * edexpr;
-  
-  void accept(TransDef &);
+    MultiLineEdit * edtrigger;
+    MultiLineEdit * edguard;
+    MultiLineEdit * edexpr;
+
+    void accept (TransDef &);
 };
 
-class TransitionDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    bool visit;
-    QWidget * umltab;
-    TransitionData * rel;
-    LineEdit * edname;
-    QCheckBox * internal_cb;
-    QComboBox * edstereotype;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-    
-    QWidget * ocltab;
-    QWidget * cpptab;
-    QWidget * javatab;
+class TransitionDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    TransDialog uml;
-    TransDialog cpp;
-    TransDialog java;
-        
-    // User
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-  
-    static void post_edit_description(TransitionDialog * d, QString s);
-    static void post_edit_uml_trigger(TransitionDialog * d, QString s);
-    static void post_edit_uml_guard(TransitionDialog * d, QString s);
-    static void post_edit_uml_expr(TransitionDialog * d, QString s);
-    static void post_edit_cpp_trigger(TransitionDialog * d, QString s);
-    static void post_edit_cpp_guard(TransitionDialog * d, QString s);
-    static void post_edit_cpp_expr(TransitionDialog * d, QString s);
-    static void post_edit_java_trigger(TransitionDialog * d, QString s);
-    static void post_edit_java_guard(TransitionDialog * d, QString s);
-    static void post_edit_java_expr(TransitionDialog * d, QString s);
-  
-  public:
-    TransitionDialog(TransitionData * r);
-    virtual ~TransitionDialog();
-  
-  protected:
-    void init_tab(QWidget *&, TransDialog &, TransDef & td, const char * lbl,
-		  const char * sl_trigger, const char * sl_guard,
-		  const char * sl_expr, bool enabled);
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-  
-    void edit_description();
-    void edit_uml_trigger();
-    void edit_uml_guard();
-    void edit_uml_expr();
-    void edit_cpp_trigger();
-    void edit_cpp_guard();
-    void edit_cpp_expr();
-    void edit_java_trigger();
-    void edit_java_guard();
-    void edit_java_expr();
+    protected:
+        bool visit;
+        QWidget * umltab;
+        TransitionData * rel;
+        LineEdit * edname;
+        QCheckBox * internal_cb;
+        QComboBox * edstereotype;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
 
-    void change_tabs(QWidget *);
+        QWidget * ocltab;
+        QWidget * cpptab;
+        QWidget * javatab;
+
+        TransDialog uml;
+        TransDialog cpp;
+        TransDialog java;
+
+        // User
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        static void post_edit_description (TransitionDialog * d, QString s);
+        static void post_edit_uml_trigger (TransitionDialog * d, QString s);
+        static void post_edit_uml_guard (TransitionDialog * d, QString s);
+        static void post_edit_uml_expr (TransitionDialog * d, QString s);
+        static void post_edit_cpp_trigger (TransitionDialog * d, QString s);
+        static void post_edit_cpp_guard (TransitionDialog * d, QString s);
+        static void post_edit_cpp_expr (TransitionDialog * d, QString s);
+        static void post_edit_java_trigger (TransitionDialog * d, QString s);
+        static void post_edit_java_guard (TransitionDialog * d, QString s);
+        static void post_edit_java_expr (TransitionDialog * d, QString s);
+
+    public:
+        TransitionDialog (TransitionData * r);
+        virtual ~TransitionDialog();
+
+    protected:
+        void init_tab (QWidget *&, TransDialog &, TransDef & td, const char * lbl,
+                       const char * sl_trigger, const char * sl_guard,
+                       const char * sl_expr, bool enabled);
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+
+        void edit_description();
+        void edit_uml_trigger();
+        void edit_uml_guard();
+        void edit_uml_expr();
+        void edit_cpp_trigger();
+        void edit_cpp_guard();
+        void edit_cpp_expr();
+        void edit_java_trigger();
+        void edit_java_guard();
+        void edit_java_expr();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

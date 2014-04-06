@@ -35,53 +35,54 @@ class QComboBox;
 class ClassDiagramView;
 class BrowserClassDiagram;
 
-class ClassDiagramWindow : public DiagramWindow {
-  Q_OBJECT
-    
-  protected:
-    ClassDiagramView * view;
-    QToolButton * addClass;
-    QToolButton * addPackage;
-    QToolButton * addFragment;
-    QToolButton * inherit;
-    QToolButton * dependency;
-    QToolButton * association;
-    QToolButton * directionalassociation;
-    QToolButton * aggregation;
-    QToolButton * aggregationbyvalue;
-    QToolButton * directionalaggregation;
-    QToolButton * directionalaggregationbyvalue;
-    QToolButton * realize;
-    QToolButton * note;
-    QToolButton * anchor;
-    QToolButton * text;
-    QToolButton * image;
-    
-  public:
-    ClassDiagramWindow(const QString & s, BrowserClassDiagram *, int id = -1);
-    ~ClassDiagramWindow();
+class ClassDiagramWindow : public DiagramWindow
+{
+        Q_OBJECT
 
-    virtual DiagramView * get_view() const;
-    
-    virtual void hit_button(UmlCode, QToolButton *);
+    protected:
+        ClassDiagramView * view;
+        QToolButton * addClass;
+        QToolButton * addPackage;
+        QToolButton * addFragment;
+        QToolButton * inherit;
+        QToolButton * dependency;
+        QToolButton * association;
+        QToolButton * directionalassociation;
+        QToolButton * aggregation;
+        QToolButton * aggregationbyvalue;
+        QToolButton * directionalaggregation;
+        QToolButton * directionalaggregationbyvalue;
+        QToolButton * realize;
+        QToolButton * note;
+        QToolButton * anchor;
+        QToolButton * text;
+        QToolButton * image;
 
-  protected slots:
-    void hit_class();
-    void hit_package();
-    void hit_fragment();
-    void hit_inherit();
-    void hit_dependency();
-    void hit_association();
-    void hit_directionalassociation();
-    void hit_aggregation();
-    void hit_aggregationbyvalue();
-    void hit_directionalaggregation();
-    void hit_directionalaggregationbyvalue();
-    void hit_realize();
-    void hit_note();
-    void hit_anchor();
-    void hit_text();
-    void hit_image();
+    public:
+        ClassDiagramWindow (const QString & s, BrowserClassDiagram *, int id = -1);
+        ~ClassDiagramWindow();
+
+        virtual DiagramView * get_view() const;
+
+        virtual void hit_button (UmlCode, QToolButton *);
+
+    protected slots:
+        void hit_class();
+        void hit_package();
+        void hit_fragment();
+        void hit_inherit();
+        void hit_dependency();
+        void hit_association();
+        void hit_directionalassociation();
+        void hit_aggregation();
+        void hit_aggregationbyvalue();
+        void hit_directionalaggregation();
+        void hit_directionalaggregationbyvalue();
+        void hit_realize();
+        void hit_note();
+        void hit_anchor();
+        void hit_text();
+        void hit_image();
 };
 
 #endif

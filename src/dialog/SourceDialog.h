@@ -32,38 +32,40 @@
 
 class QLabel;
 
-class NumberedMultiLineEdit : public MultiLineEdit {
-  Q_OBJECT
-    
-  public:
-    NumberedMultiLineEdit(QWidget * w) : MultiLineEdit(w) { };
-  
-  protected:
-    virtual bool event(QEvent * e);
-  
-  signals:
-    void cursorMoved(int l, int c);
+class NumberedMultiLineEdit : public MultiLineEdit
+{
+        Q_OBJECT
+
+    public:
+        NumberedMultiLineEdit (QWidget * w) : MultiLineEdit (w) { };
+
+    protected:
+        virtual bool event (QEvent * e);
+
+    signals:
+        void cursorMoved (int l, int c);
 };
 
-class SourceDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    NumberedMultiLineEdit * e;
-    QLabel * lineColumn;
-    QString path;
-    BooL & edited;
-    unsigned & edition_number;
-    
-    static QSize previous_size;
-      
-  public:
-    SourceDialog(QString p, BooL & flg, unsigned & edn);
-    virtual ~SourceDialog();
-    
-  protected slots:
-    void edit();
-    void updateCursorPos(int l, int c);
+class SourceDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        NumberedMultiLineEdit * e;
+        QLabel * lineColumn;
+        QString path;
+        BooL & edited;
+        unsigned & edition_number;
+
+        static QSize previous_size;
+
+    public:
+        SourceDialog (QString p, BooL & flg, unsigned & edn);
+        virtual ~SourceDialog();
+
+    protected slots:
+        void edit();
+        void updateCursorPos (int l, int c);
 };
 
 #endif

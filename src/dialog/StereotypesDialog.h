@@ -33,61 +33,62 @@
 class LineEdit;
 class MyTable;
 
-class StereotypesDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    LineEdit * package_list;
-    MyTable * packagetable;
-    LineEdit * class_list;
-    MyTable * classtable;
-    LineEdit * usecase_list;
-    MyTable * usecasetable;
-    LineEdit * artifact_list;
-    MyTable * artifacttable;
-    LineEdit * attribute_list;
-    LineEdit * operation_list;
-    LineEdit * component_list;
-    LineEdit * node_list;
-    LineEdit * msg_list;
-    LineEdit * state_list;
-    LineEdit * pseudostate_list;
-    LineEdit * stateaction_list;
-    LineEdit * activity_list;
-    LineEdit * interruptibleactivityregion_list;
-    LineEdit * expansionregion_list;
-    LineEdit * parameter_list;
-    LineEdit * parameterset_list;
-    LineEdit * activitynode_list;
-    LineEdit * activityaction_list;
-    LineEdit * activityobject_list;
-    LineEdit * activitypartition_list;
-    LineEdit * pin_list;
-    LineEdit * expansionnode_list;
-    LineEdit * flow_list;
-    LineEdit * classview_list;
-    LineEdit * usecaseview_list;
-    LineEdit * componentview_list;
-    LineEdit * deploymentview_list;
-    LineEdit * classdiagram_list;
-    LineEdit * objectdiagram_list;
-    LineEdit * coldiagram_list;
-    LineEdit * seqdiagram_list;
-    LineEdit * usecasediagram_list;
-    LineEdit * statediagram_list;
-    LineEdit * activitydiagram_list;
-    LineEdit * componentdiagram_list;
-    LineEdit * deploymentdiagram_list;
-    
-    static QSize previous_size;
-  
-  public:
-    StereotypesDialog();
-    virtual ~StereotypesDialog();
-  
-  protected slots:
-    virtual void polish();
-    void accept();
+class StereotypesDialog : public QTabDialog
+{
+        Q_OBJECT
+
+    protected:
+        LineEdit * package_list;
+        MyTable * packagetable;
+        LineEdit * class_list;
+        MyTable * classtable;
+        LineEdit * usecase_list;
+        MyTable * usecasetable;
+        LineEdit * artifact_list;
+        MyTable * artifacttable;
+        LineEdit * attribute_list;
+        LineEdit * operation_list;
+        LineEdit * component_list;
+        LineEdit * node_list;
+        LineEdit * msg_list;
+        LineEdit * state_list;
+        LineEdit * pseudostate_list;
+        LineEdit * stateaction_list;
+        LineEdit * activity_list;
+        LineEdit * interruptibleactivityregion_list;
+        LineEdit * expansionregion_list;
+        LineEdit * parameter_list;
+        LineEdit * parameterset_list;
+        LineEdit * activitynode_list;
+        LineEdit * activityaction_list;
+        LineEdit * activityobject_list;
+        LineEdit * activitypartition_list;
+        LineEdit * pin_list;
+        LineEdit * expansionnode_list;
+        LineEdit * flow_list;
+        LineEdit * classview_list;
+        LineEdit * usecaseview_list;
+        LineEdit * componentview_list;
+        LineEdit * deploymentview_list;
+        LineEdit * classdiagram_list;
+        LineEdit * objectdiagram_list;
+        LineEdit * coldiagram_list;
+        LineEdit * seqdiagram_list;
+        LineEdit * usecasediagram_list;
+        LineEdit * statediagram_list;
+        LineEdit * activitydiagram_list;
+        LineEdit * componentdiagram_list;
+        LineEdit * deploymentdiagram_list;
+
+        static QSize previous_size;
+
+    public:
+        StereotypesDialog();
+        virtual ~StereotypesDialog();
+
+    protected slots:
+        virtual void polish();
+        void accept();
 };
 
 #endif

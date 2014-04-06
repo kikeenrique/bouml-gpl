@@ -26,9 +26,9 @@
 #ifndef MU_H
 #define MU_H
 
-extern void set_user_id(int);
+extern void set_user_id (int);
 extern int user_id();
-extern void set_root_permission(bool y);
+extern void set_root_permission (bool y);
 extern int root_permission();	// return previous uid or 0
 
 extern const char * user_name();

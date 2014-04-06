@@ -3,12 +3,13 @@
 #include "UmlComponentView.h"
 #include "UmlPackage.h"
 
-UmlComponentView * UmlBaseComponentView::create(UmlPackage * parent, const char * s)
+UmlComponentView * UmlBaseComponentView::create (UmlPackage * parent, const char * s)
 {
-  return (UmlComponentView *) parent->create_(aComponentView, s);
+    return (UmlComponentView *) parent->create_ (aComponentView, s);
 }
 
-anItemKind UmlBaseComponentView::kind() {
-  return aComponentView;
+anItemKind UmlBaseComponentView::kind()
+{
+    return aComponentView;
 }
 

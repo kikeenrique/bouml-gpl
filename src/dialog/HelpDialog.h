@@ -32,25 +32,26 @@ class QTextBrowser;
 
 // singleton
 
-class HelpDialog : public QDialog {
-  Q_OBJECT
-    
-  public:
-    static void show(QString);
-    
-  private:
-    HelpDialog();
-    virtual ~HelpDialog();
-    
-    static HelpDialog * the;
-  
-    QTextBrowser * br;
+class HelpDialog : public QDialog
+{
+        Q_OBJECT
+
+    public:
+        static void show (QString);
+
+    private:
+        HelpDialog();
+        virtual ~HelpDialog();
+
+        static HelpDialog * the;
+
+        QTextBrowser * br;
 };
 
 extern QString manual_dir();
-extern void set_manual_dir(QString);
+extern void set_manual_dir (QString);
 
 extern QString navigator_path();
-extern void set_navigator_path(QString);
+extern void set_navigator_path (QString);
 
 #endif

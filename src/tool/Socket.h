@@ -26,28 +26,29 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#include <qsocketdevice.h> 
-#include <qsocketnotifier.h> 
+#include <qsocketdevice.h>
+#include <qsocketnotifier.h>
 
 class ToolCom;
 
-class Socket : public QObject, public QSocketDevice {
-  Q_OBJECT
-    
-  protected:
-    ToolCom * com;
-    QSocketNotifier * notifier;
-    bool on_error;
-  
-  public:
-    Socket(ToolCom * c);
-    Socket(ToolCom * c, int s);
-    ~Socket();
-    
-    bool write_block(char * data, unsigned int len);
-    
-  protected slots:
-    void data_received();
+class Socket : public QObject, public QSocketDevice
+{
+        Q_OBJECT
+
+    protected:
+        ToolCom * com;
+        QSocketNotifier * notifier;
+        bool on_error;
+
+    public:
+        Socket (ToolCom * c);
+        Socket (ToolCom * c, int s);
+        ~Socket();
+
+        bool write_block (char * data, unsigned int len);
+
+    protected slots:
+        void data_received();
 };
-  
+
 #endif

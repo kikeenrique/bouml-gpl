@@ -11,17 +11,18 @@ class UmlClass;
 // - a class reference
 //
 // - an explicit type
-class UmlBaseTypeSpec {
-  public:
-    UmlBaseTypeSpec() : type(0) {};
+class UmlBaseTypeSpec
+{
+    public:
+        UmlBaseTypeSpec() : type (0) {};
 
-    // returns the type as a string in all cases
-    const QCString & toString() const;
+        // returns the type as a string in all cases
+        const QCString & toString() const;
 
-    // significant in case type == 0
-    QCString explicit_type;
+        // significant in case type == 0
+        QCString explicit_type;
 
-    UmlClass * type;
+        UmlClass * type;
 
 };
 

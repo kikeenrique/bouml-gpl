@@ -30,30 +30,31 @@
 
 class QTextView;
 
-class TraceDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    static TraceDialog * the;
-    static QTextView * txt;  
-    static bool AutoRaise;
-    static QString content;
+class TraceDialog : public QDialog
+{
+        Q_OBJECT
 
-    static QSize previous_size;
-      
-    TraceDialog();
-    
-  public:
-    virtual ~TraceDialog();
-    
-    static void add(const char *);
-    static void clear();
-    static void show_it();
-    static void trace_auto_raise(bool y);
-    
-  public slots:
-    void clr();
-    void save();
+    protected:
+        static TraceDialog * the;
+        static QTextView * txt;
+        static bool AutoRaise;
+        static QString content;
+
+        static QSize previous_size;
+
+        TraceDialog();
+
+    public:
+        virtual ~TraceDialog();
+
+        static void add (const char *);
+        static void clear();
+        static void show_it();
+        static void trace_auto_raise (bool y);
+
+    public slots:
+        void clr();
+        void save();
 };
 
 #endif

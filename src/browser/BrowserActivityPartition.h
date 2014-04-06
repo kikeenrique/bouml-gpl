@@ -34,80 +34,81 @@ class ActivityPartitionData;
 
 class BrowserActivityDiagram;
 
-class BrowserActivityPartition : public BrowserNode, public Labeled<BrowserActivityPartition> {
-  friend class StereotypesDialog;
-  
-  protected:
-    static IdDict<BrowserActivityPartition> all;
-    static QStringList its_default_stereotypes;
-  
-    ActivityPartitionData * def;
-    BrowserActivityDiagram * associated_diagram;
-    
-  protected:
-    BrowserActivityPartition(int id);
-  
-    void exec_menu_choice(int rank);
-    
-  public:
-    BrowserActivityPartition(QString s, BrowserNode * p, int id = 0);
-    BrowserActivityPartition(const BrowserActivityPartition * model, BrowserNode * p);
-    virtual ~BrowserActivityPartition();
-  
-    virtual bool may_contains_them(const QList<BrowserNode> & l,
-				   BooL & duplicable) const;
-    virtual BrowserNode * duplicate(BrowserNode * p,
-				    QString name = QString::null);
-    static BrowserActivityPartition * add_activitypartition(BrowserNode * future_parent);
-    static BrowserActivityPartition * add_activitypartition(BrowserNode * future_parent, const char * name);
-    static BrowserActivityPartition * get_activitypartition(BrowserNode * parent);
-    
-    virtual const QPixmap* pixmap (int) const;
+class BrowserActivityPartition : public BrowserNode, public Labeled<BrowserActivityPartition>
+{
+        friend class StereotypesDialog;
 
-    virtual void menu();
-    virtual void apply_shortcut(QString s);
-    virtual void open(bool);
-    virtual UmlCode get_type() const;
-    virtual QString get_stype() const;
-    virtual int get_identifier() const;
-    virtual const char * help_topic() const;
-    virtual void modified();
-    virtual void on_delete();
-    virtual BasicData * get_data() const;
-    virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
-    virtual bool allow_empty() const;
+    protected:
+        static IdDict<BrowserActivityPartition> all;
+        static QStringList its_default_stereotypes;
 
-    virtual BrowserNode * get_associated() const;
-    void set_associated_diagram(BrowserActivityDiagram *, bool on_read = FALSE);
-    
-    virtual void save(QTextStream &, bool ref, QString & warning);
-    static BrowserActivityPartition * read(char * &, char *, BrowserNode *);
-    static BrowserActivityPartition * read_ref(char * & st);
-    static BrowserNode * get_it(const char * k, int id);
-    static void post_load();
+        ActivityPartitionData * def;
+        BrowserActivityDiagram * associated_diagram;
 
-    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
-    
-    static void clear(bool old);
-    static void update_idmax_for_root();
-    virtual void renumber(int phase);
-    virtual void prepare_update_lib() const;
-    
-    virtual bool tool_cmd(ToolCom * com, const char * args);
-    virtual bool api_compatible(unsigned v) const;
-    
-    static void init();
-    static const QStringList & default_stereotypes();
-    static void read_stereotypes(char * &, char * & k);
-    static void save_stereotypes(QTextStream &);
-    
-    static QString drag_key(BrowserNode * p);
-    virtual QString drag_key() const;
-    virtual QString drag_postfix() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
-    virtual void DragMoveInsideEvent(QDragMoveEvent * e);
-    virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    protected:
+        BrowserActivityPartition (int id);
+
+        void exec_menu_choice (int rank);
+
+    public:
+        BrowserActivityPartition (QString s, BrowserNode * p, int id = 0);
+        BrowserActivityPartition (const BrowserActivityPartition * model, BrowserNode * p);
+        virtual ~BrowserActivityPartition();
+
+        virtual bool may_contains_them (const QList<BrowserNode> & l,
+                                        BooL & duplicable) const;
+        virtual BrowserNode * duplicate (BrowserNode * p,
+                                         QString name = QString::null);
+        static BrowserActivityPartition * add_activitypartition (BrowserNode * future_parent);
+        static BrowserActivityPartition * add_activitypartition (BrowserNode * future_parent, const char * name);
+        static BrowserActivityPartition * get_activitypartition (BrowserNode * parent);
+
+        virtual const QPixmap* pixmap (int) const;
+
+        virtual void menu();
+        virtual void apply_shortcut (QString s);
+        virtual void open (bool);
+        virtual UmlCode get_type() const;
+        virtual QString get_stype() const;
+        virtual int get_identifier() const;
+        virtual const char * help_topic() const;
+        virtual void modified();
+        virtual void on_delete();
+        virtual BasicData * get_data() const;
+        virtual QString full_name (bool rev = FALSE, bool itself = TRUE) const;
+        virtual bool allow_empty() const;
+
+        virtual BrowserNode * get_associated() const;
+        void set_associated_diagram (BrowserActivityDiagram *, bool on_read = FALSE);
+
+        virtual void save (QTextStream &, bool ref, QString & warning);
+        static BrowserActivityPartition * read (char * &, char *, BrowserNode *);
+        static BrowserActivityPartition * read_ref (char * & st);
+        static BrowserNode * get_it (const char * k, int id);
+        static void post_load();
+
+        virtual void referenced_by (QList<BrowserNode> & l, bool ondelete);
+
+        static void clear (bool old);
+        static void update_idmax_for_root();
+        virtual void renumber (int phase);
+        virtual void prepare_update_lib() const;
+
+        virtual bool tool_cmd (ToolCom * com, const char * args);
+        virtual bool api_compatible (unsigned v) const;
+
+        static void init();
+        static const QStringList & default_stereotypes();
+        static void read_stereotypes (char * &, char * & k);
+        static void save_stereotypes (QTextStream &);
+
+        static QString drag_key (BrowserNode * p);
+        virtual QString drag_key() const;
+        virtual QString drag_postfix() const;
+        virtual void DragMoveEvent (QDragMoveEvent * e);
+        virtual void DropEvent (QDropEvent * e);
+        virtual void DragMoveInsideEvent (QDragMoveEvent * e);
+        virtual void DropAfterEvent (QDropEvent * e, BrowserNode * after);
 };
 
 #endif

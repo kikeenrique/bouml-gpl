@@ -38,35 +38,39 @@
 #include "DialogUtil.h"
 #endif
 
-MLinesItem::MLinesItem(QTable * ta, const QString & s)
-    : TableItem(ta, QTableItem::WhenCurrent, s) {
+MLinesItem::MLinesItem (QTable * ta, const QString & s)
+    : TableItem (ta, QTableItem::WhenCurrent, s)
+{
 }
 
-QWidget * MLinesItem::createEditor() const {
+QWidget * MLinesItem::createEditor() const
+{
 #if QT_VERSION == 230
-  ((MLinesItem *) this)->mle = new MLEDialog(fromUnicode(text()), FALSE);
+    ( (MLinesItem *) this)->mle = new MLEDialog (fromUnicode (text()), FALSE);
 #else
-  ((MLinesItem *) this)->mle = new QMultiLineEdit(table()->viewport());
-  mle->setText(text());
+    ( (MLinesItem *) this)->mle = new QMultiLineEdit (table()->viewport());
+    mle->setText (text());
 #endif
-  return mle;
+    return mle;
 }
 
-void MLinesItem::setContentFromEditor(QWidget * w) {
+void MLinesItem::setContentFromEditor (QWidget * w)
+{
 #if QT_VERSION == 230
-  if (w->inherits("MLEDialog")) {
-    QString s = toUnicode(((MLEDialog *) w)->text());
-    
-    setText(s);
-  }
+    if (w->inherits ("MLEDialog")) {
+        QString s = toUnicode ( ( (MLEDialog *) w)->text());
+
+        setText (s);
+    }
 #else
-  if (w->inherits("QMultiLineEdit")) {
-    QString s = ((QMultiLineEdit *) w)->text();
-    
-    setText(s);
-  }
+    if (w->inherits ("QMultiLineEdit")) {
+        QString s = ( (QMultiLineEdit *) w)->text();
+
+        setText (s);
+    }
 #endif
-  else
-    QTableItem::setContentFromEditor(w);
+    else {
+        QTableItem::setContentFromEditor (w);
+    }
 }
 

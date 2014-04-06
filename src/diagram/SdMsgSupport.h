@@ -30,17 +30,18 @@ class SdMsgBaseCanvas;
 
 #include "DiagramCanvas.h"
 
-class SdMsgSupport : public DiagramCanvas {
-  public:
-    SdMsgSupport(UmlCanvas * canvas, int x, int y, int w, int h, int id)
-      : DiagramCanvas(0, canvas, x, y, w, h, id) {}
-  
-    virtual bool isaDuration() const = 0;
-    virtual bool isOverlappingDuration() const = 0;
-    virtual void add(SdMsgBaseCanvas *) = 0;
-    virtual void remove(SdMsgBaseCanvas *) = 0;
-    virtual double min_y() const = 0;
-    virtual void update_v_to_contain(const QRect re) = 0;
+class SdMsgSupport : public DiagramCanvas
+{
+    public:
+        SdMsgSupport (UmlCanvas * canvas, int x, int y, int w, int h, int id)
+            : DiagramCanvas (0, canvas, x, y, w, h, id) {}
+
+        virtual bool isaDuration() const = 0;
+        virtual bool isOverlappingDuration() const = 0;
+        virtual void add (SdMsgBaseCanvas *) = 0;
+        virtual void remove (SdMsgBaseCanvas *) = 0;
+        virtual double min_y() const = 0;
+        virtual void update_v_to_contain (const QRect re) = 0;
 };
 
 #endif

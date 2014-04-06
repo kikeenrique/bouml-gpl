@@ -31,13 +31,16 @@
 #include "BrowserNode.h"
 #include "UmlDesktop.h"
 
-SaveProgress::SaveProgress(int n)
-    : QProgressDialog(0, 0, n, 0, 0, FALSE, WDestructiveClose) {
-  
-  if (UmlDesktop::fixed())
-    UmlDesktop::tocenter(this);
+SaveProgress::SaveProgress (int n)
+    : QProgressDialog (0, 0, n, 0, 0, FALSE, WDestructiveClose)
+{
+
+    if (UmlDesktop::fixed()) {
+        UmlDesktop::tocenter (this);
+    }
 }
 
-SaveProgress::~SaveProgress() {
-  BrowserNode::save_progress_closed();
+SaveProgress::~SaveProgress()
+{
+    BrowserNode::save_progress_closed();
 }

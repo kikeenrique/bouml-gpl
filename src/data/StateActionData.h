@@ -33,33 +33,34 @@ class QTextStream;
 class BrowserStateAction;
 class StateActionDialog;
 
-class StateActionData : public SimpleData {
-  friend class StateActionDialog;
-    
-  protected:
-    MyStr uml;
-    MyStr cpp;
-    MyStr java;
-    
-    virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
-			      const QString & comment);
-    virtual void send_cpp_def(ToolCom * com);
-    virtual void send_java_def(ToolCom * com);
-    
-  public:
-    StateActionData();
-    StateActionData(StateActionData * model, BrowserNode * br);
-    virtual ~StateActionData();
-    
-    const char * get_action(DrawingLanguage) const;
-    
-    void edit();
-    
-    virtual bool tool_cmd(ToolCom * com, const char * args,
-			  BrowserNode * bn, const QString & comment);
-    
-    void save(QTextStream &, QString & warning) const;
-    void read(char * & st, char * & k);
+class StateActionData : public SimpleData
+{
+        friend class StateActionDialog;
+
+    protected:
+        MyStr uml;
+        MyStr cpp;
+        MyStr java;
+
+        virtual void send_uml_def (ToolCom * com, BrowserNode * bn,
+                                   const QString & comment);
+        virtual void send_cpp_def (ToolCom * com);
+        virtual void send_java_def (ToolCom * com);
+
+    public:
+        StateActionData();
+        StateActionData (StateActionData * model, BrowserNode * br);
+        virtual ~StateActionData();
+
+        const char * get_action (DrawingLanguage) const;
+
+        void edit();
+
+        virtual bool tool_cmd (ToolCom * com, const char * args,
+                               BrowserNode * bn, const QString & comment);
+
+        void save (QTextStream &, QString & warning) const;
+        void read (char * & st, char * & k);
 };
-  
+
 #endif

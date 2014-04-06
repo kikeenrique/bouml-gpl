@@ -34,41 +34,42 @@ class QSpinBox;
 class ColDiagramView;
 class BrowserColDiagram;
 
-class ColDiagramWindow : public DiagramWindow {
-  Q_OBJECT
-    
-  protected:
-    ColDiagramView * view;
-    QToolButton * addClass;
-    QToolButton * addClassInstance;
-    QToolButton * addPackage;
-    QToolButton * addFragment;
-    QToolButton * addLink;
-    QToolButton * addSelfLink;
-    QToolButton * note;
-    QToolButton * anchor;
-    QToolButton * text;
-    QToolButton * image;
-  
-  public:
-    ColDiagramWindow(const QString & s, BrowserColDiagram *, int id = -1);
-    ~ColDiagramWindow();
+class ColDiagramWindow : public DiagramWindow
+{
+        Q_OBJECT
 
-    virtual DiagramView * get_view() const;
-    
-    virtual void hit_button(UmlCode, QToolButton *);
+    protected:
+        ColDiagramView * view;
+        QToolButton * addClass;
+        QToolButton * addClassInstance;
+        QToolButton * addPackage;
+        QToolButton * addFragment;
+        QToolButton * addLink;
+        QToolButton * addSelfLink;
+        QToolButton * note;
+        QToolButton * anchor;
+        QToolButton * text;
+        QToolButton * image;
 
-  protected slots:
-    void hit_class();
-    void hit_classinstance();
-    void hit_package();
-    void hit_fragment();
-    void hit_link();
-    void hit_selflink();
-    void hit_note();
-    void hit_anchor();
-    void hit_text();
-    void hit_image();
+    public:
+        ColDiagramWindow (const QString & s, BrowserColDiagram *, int id = -1);
+        ~ColDiagramWindow();
+
+        virtual DiagramView * get_view() const;
+
+        virtual void hit_button (UmlCode, QToolButton *);
+
+    protected slots:
+        void hit_class();
+        void hit_classinstance();
+        void hit_package();
+        void hit_fragment();
+        void hit_link();
+        void hit_selflink();
+        void hit_note();
+        void hit_anchor();
+        void hit_text();
+        void hit_image();
 };
 
 #endif

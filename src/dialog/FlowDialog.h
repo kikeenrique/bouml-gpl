@@ -44,70 +44,71 @@ struct FlowDef;
 class BodyDialog;
 
 struct FlDialog {
-  LineEdit * edweight;
-  MultiLineEdit * edguard;
-  MultiLineEdit * edselection;
-  MultiLineEdit * edtransformation;
-  
-  void accept(FlowDef &);
+    LineEdit * edweight;
+    MultiLineEdit * edguard;
+    MultiLineEdit * edselection;
+    MultiLineEdit * edtransformation;
+
+    void accept (FlowDef &);
 };
 
-class FlowDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    QWidget * umltab;
-    bool visit;
-    FlowData * flow;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-    
-    FlDialog uml;
-    FlDialog cpp;
-    FlDialog java;
-        
-    // User
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-  
-    static void post_edit_description(FlowDialog * d, QString s);
-    static void post_edit_uml_guard(FlowDialog * d, QString s);
-    static void post_edit_uml_selection(FlowDialog * d, QString s);
-    static void post_edit_uml_transformation(FlowDialog * d, QString s);
-    static void post_edit_cpp_guard(FlowDialog * d, QString s);
-    static void post_edit_cpp_selection(FlowDialog * d, QString s);
-    static void post_edit_cpp_transformation(FlowDialog * d, QString s);
-    static void post_edit_java_guard(FlowDialog * d, QString s);
-    static void post_edit_java_selection(FlowDialog * d, QString s);
-    static void post_edit_java_transformation(FlowDialog * d, QString s);
-  
-  public:
-    FlowDialog(FlowData * r);
-    virtual ~FlowDialog();
-  
-  protected:
-    void init_tab(FlDialog &, FlowDef & fdef, const char * lbl,
-		  const char * sl_guard, const char * sl_selection,
-		  const char * sl_transformation, bool enabled);
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-  
-    void edit_description();
-    void edit_uml_guard();
-    void edit_uml_selection();
-    void edit_uml_transformation();
-    void edit_cpp_guard();
-    void edit_cpp_selection();
-    void edit_cpp_transformation();
-    void edit_java_guard();
-    void edit_java_selection();
-    void edit_java_transformation();
+class FlowDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    void change_tabs(QWidget *);
+    protected:
+        QWidget * umltab;
+        bool visit;
+        FlowData * flow;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
+
+        FlDialog uml;
+        FlDialog cpp;
+        FlDialog java;
+
+        // User
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        static void post_edit_description (FlowDialog * d, QString s);
+        static void post_edit_uml_guard (FlowDialog * d, QString s);
+        static void post_edit_uml_selection (FlowDialog * d, QString s);
+        static void post_edit_uml_transformation (FlowDialog * d, QString s);
+        static void post_edit_cpp_guard (FlowDialog * d, QString s);
+        static void post_edit_cpp_selection (FlowDialog * d, QString s);
+        static void post_edit_cpp_transformation (FlowDialog * d, QString s);
+        static void post_edit_java_guard (FlowDialog * d, QString s);
+        static void post_edit_java_selection (FlowDialog * d, QString s);
+        static void post_edit_java_transformation (FlowDialog * d, QString s);
+
+    public:
+        FlowDialog (FlowData * r);
+        virtual ~FlowDialog();
+
+    protected:
+        void init_tab (FlDialog &, FlowDef & fdef, const char * lbl,
+                       const char * sl_guard, const char * sl_selection,
+                       const char * sl_transformation, bool enabled);
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+
+        void edit_description();
+        void edit_uml_guard();
+        void edit_uml_selection();
+        void edit_uml_transformation();
+        void edit_cpp_guard();
+        void edit_cpp_selection();
+        void edit_cpp_transformation();
+        void edit_java_guard();
+        void edit_java_selection();
+        void edit_java_transformation();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

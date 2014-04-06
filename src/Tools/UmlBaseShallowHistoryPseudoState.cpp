@@ -3,12 +3,13 @@
 #include "UmlShallowHistoryPseudoState.h"
 #include "UmlItem.h"
 
-UmlShallowHistoryPseudoState * UmlBaseShallowHistoryPseudoState::create(UmlItem * parent)
+UmlShallowHistoryPseudoState * UmlBaseShallowHistoryPseudoState::create (UmlItem * parent)
 {
-  return (UmlShallowHistoryPseudoState *) parent->create_(aShallowHistoryPseudoState, "");
+    return (UmlShallowHistoryPseudoState *) parent->create_ (aShallowHistoryPseudoState, "");
 }
 
-anItemKind UmlBaseShallowHistoryPseudoState::kind() {
-  return aShallowHistoryPseudoState;
+anItemKind UmlBaseShallowHistoryPseudoState::kind()
+{
+    return aShallowHistoryPseudoState;
 }
 

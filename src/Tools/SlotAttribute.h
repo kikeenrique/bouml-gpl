@@ -12,10 +12,10 @@ struct SlotAttribute {
     QCString value;
 
     // because of QValueList use
-     SlotAttribute() : attribute(0) {
+    SlotAttribute() : attribute (0) {
     }
 
-     SlotAttribute(UmlAttribute * a, QCString v) : attribute(a), value(v) {
+    SlotAttribute (UmlAttribute * a, QCString v) : attribute (a), value (v) {
     }
 
 };

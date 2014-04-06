@@ -45,43 +45,44 @@ class ParameterSetData;
 class KeyValuesTable;
 class BodyDialog;
 
-class ParameterSetDialog : public QTabDialog {
-  Q_OBJECT
-    
-  protected:
-    QWidget * umltab;
-    ParameterSetData * data;
-    LineEdit * edname;
-    QComboBox * edstereotype;
-    MultiLineEdit * comment;
-    QList<BodyDialog> edits;
-    
-    // associated classes
-    QListBox * lb_available;
-    QListBox * lb_member;
-        
-    // user
-    KeyValuesTable * kvtable;
-    
-    static QSize previous_size;
-    
-    void init_uml_tab();
-    void init_pins_tab();
-      
-    static void post_edit_description(ParameterSetDialog * d, QString s);
-    
-  public:
-    ParameterSetDialog(ParameterSetData * nd);
-    virtual ~ParameterSetDialog();
-  
-  protected slots:
-    virtual void polish();
-    virtual void accept();
-    void edit_description();
-    void associate_cls();
-    void unassociate_cls();
+class ParameterSetDialog : public QTabDialog
+{
+        Q_OBJECT
 
-    void change_tabs(QWidget *);
+    protected:
+        QWidget * umltab;
+        ParameterSetData * data;
+        LineEdit * edname;
+        QComboBox * edstereotype;
+        MultiLineEdit * comment;
+        QList<BodyDialog> edits;
+
+        // associated classes
+        QListBox * lb_available;
+        QListBox * lb_member;
+
+        // user
+        KeyValuesTable * kvtable;
+
+        static QSize previous_size;
+
+        void init_uml_tab();
+        void init_pins_tab();
+
+        static void post_edit_description (ParameterSetDialog * d, QString s);
+
+    public:
+        ParameterSetDialog (ParameterSetData * nd);
+        virtual ~ParameterSetDialog();
+
+    protected slots:
+        virtual void polish();
+        virtual void accept();
+        void edit_description();
+        void associate_cls();
+        void unassociate_cls();
+
+        void change_tabs (QWidget *);
 };
 
 #endif

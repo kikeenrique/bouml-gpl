@@ -34,29 +34,30 @@
 class QComboBox;
 class LineEdit;
 
-class FragmentDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    QString & name;
-    QString & form;
-    BrowserNode *& refer;
-    QComboBox * name_cb;
-    QComboBox * diag_cb;
-    LineEdit * ed_form;
-    BrowserNodeList nodes;
-    
-    static QSize previous_size;
-  
-  public:
-    FragmentDialog(const QStringList &defaults, QString & na,
-		   QString & fo, BrowserNode *& d);
-    virtual ~FragmentDialog();
-  
-  protected slots:
-    virtual void polish();
-    void accept();
-    void menu_refer();
+class FragmentDialog : public QDialog
+{
+        Q_OBJECT
+
+    protected:
+        QString & name;
+        QString & form;
+        BrowserNode *& refer;
+        QComboBox * name_cb;
+        QComboBox * diag_cb;
+        LineEdit * ed_form;
+        BrowserNodeList nodes;
+
+        static QSize previous_size;
+
+    public:
+        FragmentDialog (const QStringList &defaults, QString & na,
+                        QString & fo, BrowserNode *& d);
+        virtual ~FragmentDialog();
+
+    protected slots:
+        virtual void polish();
+        void accept();
+        void menu_refer();
 };
 
 #endif

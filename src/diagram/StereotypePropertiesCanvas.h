@@ -31,41 +31,42 @@
 
 class DiagramItem;
 
-class StereotypePropertiesCanvas : public NoteCanvas {
-  Q_OBJECT
-    
-  friend class StereotypePropertiesDialog;
-  
-  protected:
-    DiagramItem * di;
-    
-  public:
-    StereotypePropertiesCanvas(UmlCanvas * canvas, DiagramItem *, int x, int y, int id);
-    StereotypePropertiesCanvas(UmlCanvas * canvas, DiagramItem *, QString);
-    virtual ~StereotypePropertiesCanvas();
-    
-    virtual void delete_it();
+class StereotypePropertiesCanvas : public NoteCanvas
+{
+        Q_OBJECT
 
-    virtual UmlCode type() const;
-    virtual void delete_available(BooL & in_model, BooL & out_model) const;
-    virtual bool copyable() const;
-    virtual void open();
-    virtual void menu(const QPoint&);
-    
-    virtual void apply_shortcut(QString s);
-    virtual bool has_drawing_settings() const;
-    virtual void edit_drawing_settings(QList<DiagramItem> &);
-    virtual void same_drawing_settings(QList<DiagramItem> &);
+        friend class StereotypePropertiesDialog;
 
-    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
-    static StereotypePropertiesCanvas * read(char * &, UmlCanvas *, char *);
-    static StereotypePropertiesCanvas * read(char * &, UmlCanvas *, char *, DiagramItem *);
-    
-    static void needed(UmlCanvas * canvas, DiagramItem * di, QString,
-		       StereotypePropertiesCanvas *& current, QPoint);
-    
-  public slots:
-    void update();
+    protected:
+        DiagramItem * di;
+
+    public:
+        StereotypePropertiesCanvas (UmlCanvas * canvas, DiagramItem *, int x, int y, int id);
+        StereotypePropertiesCanvas (UmlCanvas * canvas, DiagramItem *, QString);
+        virtual ~StereotypePropertiesCanvas();
+
+        virtual void delete_it();
+
+        virtual UmlCode type() const;
+        virtual void delete_available (BooL & in_model, BooL & out_model) const;
+        virtual bool copyable() const;
+        virtual void open();
+        virtual void menu (const QPoint&);
+
+        virtual void apply_shortcut (QString s);
+        virtual bool has_drawing_settings() const;
+        virtual void edit_drawing_settings (QList<DiagramItem> &);
+        virtual void same_drawing_settings (QList<DiagramItem> &);
+
+        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
+        static StereotypePropertiesCanvas * read (char * &, UmlCanvas *, char *);
+        static StereotypePropertiesCanvas * read (char * &, UmlCanvas *, char *, DiagramItem *);
+
+        static void needed (UmlCanvas * canvas, DiagramItem * di, QString,
+                            StereotypePropertiesCanvas *& current, QPoint);
+
+    public slots:
+        void update();
 };
 
 #endif

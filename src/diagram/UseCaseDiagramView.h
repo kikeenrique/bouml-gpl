@@ -35,31 +35,32 @@ class DiagramItem;
 class UmlCanvas;
 class ToolCom;
 
-class UseCaseDiagramView : public DiagramView {
-  Q_OBJECT
+class UseCaseDiagramView : public DiagramView
+{
+        Q_OBJECT
 
-  public:
-    UseCaseDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
-  
-    virtual void menu(const QPoint&);
-    virtual void add_related_elements(DiagramItem *, QString what,
-				      bool inh, bool assoc);
-    virtual void read(char *, char * k);
-    virtual void save(QTextStream & st, QString & warning, bool copy) const;
-    
-    void send(ToolCom * com);
-    
-  private:
-    UseCaseDiagramWindow * window() {
-      return (UseCaseDiagramWindow *) parent();
-    }
-    void add_marked_elements(const QPoint& p,
-			     QPtrDict<DiagramItem> & drawn);
-  
-  protected:
-    virtual void contentsMousePressEvent(QMouseEvent *);
-    virtual void dragEnterEvent(QDragEnterEvent *);
-    virtual void dropEvent(QDropEvent *);
+    public:
+        UseCaseDiagramView (QWidget * parent, UmlCanvas * canvas, int id);
+
+        virtual void menu (const QPoint&);
+        virtual void add_related_elements (DiagramItem *, QString what,
+                                           bool inh, bool assoc);
+        virtual void read (char *, char * k);
+        virtual void save (QTextStream & st, QString & warning, bool copy) const;
+
+        void send (ToolCom * com);
+
+    private:
+        UseCaseDiagramWindow * window() {
+            return (UseCaseDiagramWindow *) parent();
+        }
+        void add_marked_elements (const QPoint& p,
+                                  QPtrDict<DiagramItem> & drawn);
+
+    protected:
+        virtual void contentsMousePressEvent (QMouseEvent *);
+        virtual void dragEnterEvent (QDragEnterEvent *);
+        virtual void dropEvent (QDropEvent *);
 };
 
 #endif

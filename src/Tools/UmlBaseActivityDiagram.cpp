@@ -3,12 +3,13 @@
 #include "UmlActivityDiagram.h"
 #include "UmlItem.h"
 
-UmlActivityDiagram * UmlBaseActivityDiagram::create(UmlItem * parent, const char * s)
+UmlActivityDiagram * UmlBaseActivityDiagram::create (UmlItem * parent, const char * s)
 {
-  return (UmlActivityDiagram *) parent->create_(anActivityDiagram, s);
+    return (UmlActivityDiagram *) parent->create_ (anActivityDiagram, s);
 }
 
-anItemKind UmlBaseActivityDiagram::kind() {
-  return anActivityDiagram;
+anItemKind UmlBaseActivityDiagram::kind()
+{
+    return anActivityDiagram;
 }
 

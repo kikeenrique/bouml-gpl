@@ -34,26 +34,27 @@
 class QComboBox;
 class MultiLineEdit;
 
-class DecoratorDialog : public QDialog {
-  Q_OBJECT
-    
-  protected:
-    QString & value;
-    MultiLineEdit * e;
-    QComboBox * cb;
-    BrowserNodeList decorators;
-    
-    static QSize previous_size;
-  
-  public:
-    DecoratorDialog(QWidget * parent, QString & s, bool visit);
-    virtual ~DecoratorDialog();
-  
-  protected slots:
-    virtual void accept();
-    void add_decorator();
+class DecoratorDialog : public QDialog
+{
+        Q_OBJECT
 
-  
+    protected:
+        QString & value;
+        MultiLineEdit * e;
+        QComboBox * cb;
+        BrowserNodeList decorators;
+
+        static QSize previous_size;
+
+    public:
+        DecoratorDialog (QWidget * parent, QString & s, bool visit);
+        virtual ~DecoratorDialog();
+
+    protected slots:
+        virtual void accept();
+        void add_decorator();
+
+
 };
 
 #endif

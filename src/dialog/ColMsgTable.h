@@ -26,7 +26,7 @@
 #ifndef COLMSGTABLE_H
 #define COLMSGTABLE_H
 
-#include <qptrdict.h> 
+#include <qptrdict.h>
 
 #include "MyTable.h"
 
@@ -35,29 +35,30 @@ class ColMsgList;
 
 class ColDiagramView;
 
-class ColMsgTable : public MyTable {
-  Q_OBJECT
-    
-  protected:
-    bool rec;
-    ColDiagramView * view;
-    ColMsgList & msgs;
-    QValueList<ColMsg *> flat_msg_list;
-    
-    void refresh();
-    void refresh(ColMsgList & m);
-    void edit_msg(int row);
-    void change_ranks(int row, int col);
-    
+class ColMsgTable : public MyTable
+{
+        Q_OBJECT
+
+    protected:
+        bool rec;
+        ColDiagramView * view;
+        ColMsgList & msgs;
+        QValueList<ColMsg *> flat_msg_list;
+
+        void refresh();
+        void refresh (ColMsgList & m);
+        void edit_msg (int row);
+        void change_ranks (int row, int col);
+
 #ifdef NEW_METHOD
-    void save_list(ColMsgList & l, QPtrDict<ColMsgList> & saved);
+        void save_list (ColMsgList & l, QPtrDict<ColMsgList> & saved);
 #endif
-    
-  public:
-    ColMsgTable(QWidget * parent, ColDiagramView * v, ColMsgList & m);
- 
-  protected slots:
-    virtual void button_pressed(int row, int col, int button, const QPoint & mousePos);
+
+    public:
+        ColMsgTable (QWidget * parent, ColDiagramView * v, ColMsgList & m);
+
+    protected slots:
+        virtual void button_pressed (int row, int col, int button, const QPoint & mousePos);
 };
 
 #endif

@@ -36,53 +36,56 @@ class QRadioButton;
 class QPushButton;
 class LineEdit;
 
-class BrowserSearchDialog : public QDialog {
-  Q_OBJECT
- 
-  protected:
-    BrowserNodeList nodes;
-    QComboBox * kind;
-    QComboBox * results;
-    LineEdit * ed;
-    QCheckBox * case_sensitive;
-    QCheckBox * even_deleted;
-    QRadioButton * for_name;
-    QRadioButton * for_stereotype;
-    QRadioButton * for_comment;
-    QRadioButton * for_decldefbody;
-    QPushButton * select_b;
-    QPushButton * mark_unmark_b;
-    QPushButton * mark_them_b;
-    QPushButton * unmark_all_b;
-    
-    static BrowserSearchDialog * the;
-    static int saved_kind;
-    static QString saved_ed;
-    static bool saved_case_sensitive;
-    static bool saved_even_deleted;
-    static bool saved_name;
-    static bool saved_stereotype;
-    static bool saved_comment;
-    static bool saved_decldefbody;
-    
-    static QSize previous_size;
-        
-  public:
-    BrowserSearchDialog();
-    virtual ~BrowserSearchDialog();
+class BrowserSearchDialog : public QDialog
+{
+        Q_OBJECT
 
-    void update();
-    
-    static BrowserSearchDialog * get() { return the; }
-    
-  protected slots:
-    virtual void polish();
-    void search();
-    void select();
-    void selected(int);
-    void mark_unmark();
-    void mark_them();
-    void unmark_all();
+    protected:
+        BrowserNodeList nodes;
+        QComboBox * kind;
+        QComboBox * results;
+        LineEdit * ed;
+        QCheckBox * case_sensitive;
+        QCheckBox * even_deleted;
+        QRadioButton * for_name;
+        QRadioButton * for_stereotype;
+        QRadioButton * for_comment;
+        QRadioButton * for_decldefbody;
+        QPushButton * select_b;
+        QPushButton * mark_unmark_b;
+        QPushButton * mark_them_b;
+        QPushButton * unmark_all_b;
+
+        static BrowserSearchDialog * the;
+        static int saved_kind;
+        static QString saved_ed;
+        static bool saved_case_sensitive;
+        static bool saved_even_deleted;
+        static bool saved_name;
+        static bool saved_stereotype;
+        static bool saved_comment;
+        static bool saved_decldefbody;
+
+        static QSize previous_size;
+
+    public:
+        BrowserSearchDialog();
+        virtual ~BrowserSearchDialog();
+
+        void update();
+
+        static BrowserSearchDialog * get() {
+            return the;
+        }
+
+    protected slots:
+        virtual void polish();
+        void search();
+        void select();
+        void selected (int);
+        void mark_unmark();
+        void mark_them();
+        void unmark_all();
 };
 
 #endif

@@ -33,82 +33,83 @@ class QPixmap;
 class ObjectDiagramWindow;
 class SimpleData;
 
-class BrowserObjectDiagram : public BrowserDiagram {
-  friend class StereotypesDialog;
-  
-  protected:
-    static QList<BrowserObjectDiagram> imported;
-    static QValueList<int> imported_ids;
-    static QStringList its_default_stereotypes;
-  
-    SimpleData * def;
-    ObjectDiagramWindow * window;
-    ObjectDiagramSettings settings;
-    ObjectDiagramSettings * used_settings;
-    UmlColor note_color;
-    UmlColor fragment_color;
-    UmlColor package_color;
-    UmlColor class_instance_color;
+class BrowserObjectDiagram : public BrowserDiagram
+{
+        friend class StereotypesDialog;
 
-    BrowserObjectDiagram(BrowserObjectDiagram * model, BrowserNode * p);
-    BrowserObjectDiagram(int id);
-    void make();
-    void exec_menu_choice(int rank);
+    protected:
+        static QList<BrowserObjectDiagram> imported;
+        static QValueList<int> imported_ids;
+        static QStringList its_default_stereotypes;
 
-  public:
-    BrowserObjectDiagram(QString s, BrowserNode * p, int id = 0);
-    virtual ~BrowserObjectDiagram();
-      
-    virtual void delete_it();
-    virtual BrowserNode * duplicate(BrowserNode * p,
-				    QString name = QString::null);
-  
-    virtual const QPixmap* pixmap (int) const;
-    virtual void draw_svg() const;
-  
-    virtual void menu();
-    virtual void apply_shortcut(QString s);
-    virtual void open(bool);
-    virtual void on_close();
-    virtual void read_session(char * & st);
-    virtual UmlCode get_type() const;
-    virtual QString get_stype() const;
-    virtual int get_identifier() const;
-    virtual const char * help_topic() const;
-    virtual BasicData * get_data() const;
-    virtual void set_name(const char * s);
-    virtual void update_drawing_settings();
-    virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
-    virtual bool get_auto_label_position() const;    
-    virtual void package_settings(BooL & name_in_tab, ShowContextMode & show_context) const;
-    virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow() const;
-    virtual bool get_draw_all_relations() const;
-    virtual void dont_draw_all_relations();
-    virtual bool get_show_stereotype_properties() const;
-    virtual bool get_classinstwritehorizontally() const;
-    virtual ShowContextMode get_classinstshowmode() const;
-    virtual bool tool_cmd(ToolCom * com, const char * args);
-    virtual bool api_compatible(unsigned v) const;
-    virtual void save(QTextStream &, bool ref, QString & warning);
-    static BrowserObjectDiagram * read(char * &, char *, BrowserNode *);
-    static BrowserObjectDiagram * read_ref(char * & st, char * k);
-    static BrowserNode * get_it(const char * k, int id);
-    
-    void edit_settings();
-    
-    static BrowserObjectDiagram * add_object_diagram(BrowserNode * future_parent);
-    
-    static const QStringList & default_stereotypes();
-    static void read_stereotypes(char * &, char * & k);
-    static void save_stereotypes(QTextStream &);
-    
-    virtual void renumber(int phase);
-    static void open_all();
-    static void import();
-    
-    static void compute_referenced_by(QList<BrowserNode> & l, BrowserNode *,
-				      const char * kc, char const * kr);
+        SimpleData * def;
+        ObjectDiagramWindow * window;
+        ObjectDiagramSettings settings;
+        ObjectDiagramSettings * used_settings;
+        UmlColor note_color;
+        UmlColor fragment_color;
+        UmlColor package_color;
+        UmlColor class_instance_color;
+
+        BrowserObjectDiagram (BrowserObjectDiagram * model, BrowserNode * p);
+        BrowserObjectDiagram (int id);
+        void make();
+        void exec_menu_choice (int rank);
+
+    public:
+        BrowserObjectDiagram (QString s, BrowserNode * p, int id = 0);
+        virtual ~BrowserObjectDiagram();
+
+        virtual void delete_it();
+        virtual BrowserNode * duplicate (BrowserNode * p,
+                                         QString name = QString::null);
+
+        virtual const QPixmap* pixmap (int) const;
+        virtual void draw_svg() const;
+
+        virtual void menu();
+        virtual void apply_shortcut (QString s);
+        virtual void open (bool);
+        virtual void on_close();
+        virtual void read_session (char * & st);
+        virtual UmlCode get_type() const;
+        virtual QString get_stype() const;
+        virtual int get_identifier() const;
+        virtual const char * help_topic() const;
+        virtual BasicData * get_data() const;
+        virtual void set_name (const char * s);
+        virtual void update_drawing_settings();
+        virtual void get_objectdiagramsettings (ObjectDiagramSettings &) const;
+        virtual bool get_auto_label_position() const;
+        virtual void package_settings (BooL & name_in_tab, ShowContextMode & show_context) const;
+        virtual UmlColor get_color (UmlCode) const;
+        virtual bool get_shadow() const;
+        virtual bool get_draw_all_relations() const;
+        virtual void dont_draw_all_relations();
+        virtual bool get_show_stereotype_properties() const;
+        virtual bool get_classinstwritehorizontally() const;
+        virtual ShowContextMode get_classinstshowmode() const;
+        virtual bool tool_cmd (ToolCom * com, const char * args);
+        virtual bool api_compatible (unsigned v) const;
+        virtual void save (QTextStream &, bool ref, QString & warning);
+        static BrowserObjectDiagram * read (char * &, char *, BrowserNode *);
+        static BrowserObjectDiagram * read_ref (char * & st, char * k);
+        static BrowserNode * get_it (const char * k, int id);
+
+        void edit_settings();
+
+        static BrowserObjectDiagram * add_object_diagram (BrowserNode * future_parent);
+
+        static const QStringList & default_stereotypes();
+        static void read_stereotypes (char * &, char * & k);
+        static void save_stereotypes (QTextStream &);
+
+        virtual void renumber (int phase);
+        static void open_all();
+        static void import();
+
+        static void compute_referenced_by (QList<BrowserNode> & l, BrowserNode *,
+                                           const char * kc, char const * kr);
 };
 
 #endif

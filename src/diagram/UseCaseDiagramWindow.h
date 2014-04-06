@@ -34,47 +34,48 @@ class QSpinBox;
 class UseCaseDiagramView;
 class BrowserUseCaseDiagram;
 
-class UseCaseDiagramWindow : public DiagramWindow {
-  Q_OBJECT
-    
-  protected:
-    UseCaseDiagramView * view;
-    QToolButton * addClass;
-    QToolButton * addUseCase;
-    QToolButton * addPackage;
-    QToolButton * addFragment;
-    QToolButton * addSubject;
-    QToolButton * association;
-    QToolButton * directionalassociation;
-    QToolButton * dependency;
-    QToolButton * inherit;
-    QToolButton * note;
-    QToolButton * anchor;
-    QToolButton * text;
-    QToolButton * image;
-  
-  public:
-    UseCaseDiagramWindow(const QString & s, BrowserUseCaseDiagram * b, int id = -1);
-    ~UseCaseDiagramWindow();
+class UseCaseDiagramWindow : public DiagramWindow
+{
+        Q_OBJECT
 
-    virtual DiagramView * get_view() const;
-    
-    virtual void hit_button(UmlCode, QToolButton *);
-    
-  protected slots:
-    void hit_class();
-    void hit_usecase();
-    void hit_package();
-    void hit_fragment();
-    void hit_subject();
-    void hit_association();
-    void hit_directionalassociation();
-    void hit_dependency();
-    void hit_inherit();
-    void hit_note();
-    void hit_anchor();
-    void hit_text();
-    void hit_image();
+    protected:
+        UseCaseDiagramView * view;
+        QToolButton * addClass;
+        QToolButton * addUseCase;
+        QToolButton * addPackage;
+        QToolButton * addFragment;
+        QToolButton * addSubject;
+        QToolButton * association;
+        QToolButton * directionalassociation;
+        QToolButton * dependency;
+        QToolButton * inherit;
+        QToolButton * note;
+        QToolButton * anchor;
+        QToolButton * text;
+        QToolButton * image;
+
+    public:
+        UseCaseDiagramWindow (const QString & s, BrowserUseCaseDiagram * b, int id = -1);
+        ~UseCaseDiagramWindow();
+
+        virtual DiagramView * get_view() const;
+
+        virtual void hit_button (UmlCode, QToolButton *);
+
+    protected slots:
+        void hit_class();
+        void hit_usecase();
+        void hit_package();
+        void hit_fragment();
+        void hit_subject();
+        void hit_association();
+        void hit_directionalassociation();
+        void hit_dependency();
+        void hit_inherit();
+        void hit_note();
+        void hit_anchor();
+        void hit_text();
+        void hit_image();
 };
 
 #endif
