@@ -14,7 +14,7 @@ pipelines:
             - echo "Runs only on the master branch."
             - apt-get clean
             - apt-get update
-            - apt-get -y --no-install-recommends install dpkg-dev cdbs debhelper build-essential docbook-to-man quilt libpng12-dev
+            - apt-get -y --no-install-recommends install dpkg-dev cdbs debhelper build-essential docbook-to-man quilt libpng12-dev wget
             - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/libqt3-mt_3.3.8b-7+b1_amd64.deb 
 #            - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/qt3-apps-dev_3.3.8b-7+b1_amd64.deb
 #            - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/qt3-assistant_3.3.8b-7+b1_amd64.deb
