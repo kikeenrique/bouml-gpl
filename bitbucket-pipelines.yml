@@ -25,7 +25,7 @@ pipelines:
 #            - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/libqt3-compat-headers_3.3.8b-7+b1_amd64.deb
             - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/libqt3-headers_3.3.8b-7+b1_amd64.deb
             - wget http://archive.debian.org/debian//pool/main/q/qt-x11-free/libqt3-mt-dev_3.3.8b-7+b1_amd64.deb
-            - sudo dpkg -i libqt3-mt_3.3.8b-7+b1_amd64.deb qt3-dev-tools_3.3.8b-7+b1_amd64.deb libqt3-mt-dev_3.3.8b-7+b1_amd64.deb libqt3-headers_3.3.8b-7+b1_amd64.deb
+            - dpkg -i libqt3-mt_3.3.8b-7+b1_amd64.deb qt3-dev-tools_3.3.8b-7+b1_amd64.deb libqt3-mt-dev_3.3.8b-7+b1_amd64.deb libqt3-headers_3.3.8b-7+b1_amd64.deb
             - qmake-qt3 
             - make
 #            - dpkg-buildpackage -j2 -us -uc -b
