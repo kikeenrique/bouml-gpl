@@ -26,8 +26,8 @@
 #ifndef SIMPLERELATIONDIALOG_H
 #define SIMPLERELATIONDIALOG_H
 
-#include <qptrlist.h>
-#include <qtabdialog.h>
+#include <qlist.h>
+#include <q3tabdialog.h>
 
 #include "UmlEnum.h"
 
@@ -37,29 +37,28 @@ class SimpleRelationData;
 class KeyValuesTable;
 class BodyDialog;
 
-class SimpleRelationDialog : public QTabDialog
-{
-        Q_OBJECT
-
-    protected:
-        SimpleRelationData * rel;
-        QComboBox * edstereotype;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QList<BodyDialog> edits;
-
-        static QSize previous_size;
-
-        static void post_edit_description (SimpleRelationDialog * d, QString s);
-
-    public:
-        SimpleRelationDialog (SimpleRelationData * nd);
-        virtual ~SimpleRelationDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
+class SimpleRelationDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    SimpleRelationData * rel;
+    QComboBox * edstereotype;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QList<BodyDialog *> edits;
+    
+    static QSize previous_size;
+  
+    static void post_edit_description(SimpleRelationDialog * d, QString s);
+      
+  public:
+    SimpleRelationDialog(SimpleRelationData * nd);
+    virtual ~SimpleRelationDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
 };
 
 #endif

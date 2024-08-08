@@ -6,7 +6,7 @@
 #include "UmlBaseActivityNode.h"
 #include "UmlActivityItem.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class UmlFlow;
 class FileOut;
@@ -14,7 +14,7 @@ class FileOut;
 class UmlActivityNode : public UmlBaseActivityNode, public UmlActivityItem {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityNode(void * id, const QCString & s) : UmlBaseActivityNode(id, s) {
+     UmlActivityNode(void * id, const QByteArray & s) : UmlBaseActivityNode(id, s) {
     }
 
 

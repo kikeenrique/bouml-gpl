@@ -17,7 +17,7 @@
 
 #include "SmallPushButton.h"
 
-Dialog::Dialog(QCString & path, QCString & encoding, QCString & nomodel, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang)
+Dialog::Dialog(QByteArray & path, QByteArray & encoding, QByteArray & nomodel, QByteArray & genview, QByteArray & uml20, QByteArray & pk, QByteArray & vis, QByteArray & primitivetype, QByteArray & genextension, QByteArray & geneclipse, QByteArray & commentexporter, QByteArray & linefeed, Language & lang)
   : QDialog(0, 0, TRUE), _path(path), _encoding(encoding), _nomodel(nomodel), _genview(genview), _uml20(uml20), _pk(pk), _vis(vis), _primitivetype(primitivetype), _genextension(genextension), _geneclipse(geneclipse), _commentexporter(commentexporter), _linefeed(linefeed), _lang(lang) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBox * htab;

@@ -9,13 +9,13 @@
 class UmlTransition : public UmlBaseTransition, public UmlStateItem {
   public:
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
-     UmlTransition(void * id, const QCString & n) : UmlBaseTransition(id, n) {
+     UmlTransition(void * id, const QByteArray & n) : UmlBaseTransition(id, n) {
     }
 
 };

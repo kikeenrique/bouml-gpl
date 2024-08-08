@@ -29,12 +29,10 @@
 
 #include "KeyValueData.h"
 
-void KeyValueData::set_key (const char * s)
-{
-    key = s;
+void KeyValueData::set_key(const char * s) {
+  key = s;
 }
 
-void KeyValueData::set_value (const char * s)
-{
-    value = s;
+void KeyValueData::set_value(const char * s) {
+  value = s;
 }

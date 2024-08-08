@@ -6,7 +6,7 @@ void UmlActivityDiagram::memo_ref() {
   UmlDiagram::memo_ref();
 }
 
-QCString UmlActivityDiagram::sKind() {
+QByteArray UmlActivityDiagram::sKind() {
   return "activity diagram";
 }
 

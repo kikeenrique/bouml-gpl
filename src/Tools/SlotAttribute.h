@@ -9,13 +9,13 @@ class UmlAttribute;
 struct SlotAttribute {
     UmlAttribute * attribute;
 
-    QCString value;
+    QByteArray value;
 
     // because of QValueList use
-    SlotAttribute() : attribute (0) {
+     SlotAttribute() : attribute(0) {
     }
 
-    SlotAttribute (UmlAttribute * a, QCString v) : attribute (a), value (v) {
+     SlotAttribute(UmlAttribute * a, QByteArray v) : attribute(a), value(v) {
     }
 
 };

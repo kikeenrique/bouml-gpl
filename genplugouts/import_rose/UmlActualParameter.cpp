@@ -9,7 +9,7 @@ void UmlActualParameter::import(File & f, UmlTypeSpec & t)
   f.read("object");
   f.read("Parameter");
     
-  QCString s;
+  QByteArray s;
     
   if (f.read(s) != STRING)
     f.syntaxError(s, "actual's name");

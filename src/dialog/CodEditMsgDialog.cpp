@@ -29,6 +29,8 @@
 
 #include <qdialog.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 #include "CodEditMsgDialog.h"
 #include "ColDiagramView.h"
@@ -36,22 +38,22 @@
 #include "UmlDesktop.h"
 #include "translate.h"
 
-void CodEditMsgDialog::exec (ColDiagramView * view, ColMsgList & msgs)
+void CodEditMsgDialog::exec(ColDiagramView * view, ColMsgList & msgs)
 {
-    QDialog d (0, "Communication diagram message dialog", TRUE, 0);
-
-    d.setCaption (TR ("Communication diagram message dialog"));
-
-    QVBoxLayout vbox (&d);
-
-    vbox.addWidget (new ColMsgTable (&d, view, msgs));
-
-    static QSize previous_size;
-
-    UmlDesktop::limitsize_center (&d, previous_size, 0.8, 0.8);
-
-    d.exec();
-
-    previous_size = d.size();
+  QDialog d(0, "Communication diagram message dialog", TRUE, 0);
+  
+  d.setCaption(TR("Communication diagram message dialog"));
+  
+  Q3VBoxLayout vbox(&d);
+  
+  vbox.addWidget(new ColMsgTable(&d, view, msgs));
+  
+  static QSize previous_size;
+  
+  UmlDesktop::limitsize_center(&d, previous_size, 0.8, 0.8);
+  
+  d.exec();
+  
+  previous_size = d.size();
 }
 

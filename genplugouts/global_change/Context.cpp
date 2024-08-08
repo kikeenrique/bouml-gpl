@@ -1,11 +1,11 @@
 
 #include "Context.h"
 
-Context::Context(const QCString & o, const QCString & f)
+Context::Context(const QByteArray & o, const QByteArray & f)
   : _old(o), _future(f), _n_match(0), _n_err(0) {
 }
 
-const char * Context::set_filters(const QCString & f1, const QCString & f2, const QCString & f3, bool w1, bool w2, bool w3, bool and12, bool and23) {
+const char * Context::set_filters(const QByteArray & f1, const QByteArray & f2, const QByteArray & f3, bool w1, bool w2, bool w3, bool and12, bool and23) {
 _filter1 = f1;
 _filter2 = f2;
 _filter3 = f3;
@@ -39,7 +39,7 @@ else
 return 0;
 }
 
-bool Context::match_stereotype(const QCString & s) {
+bool Context::match_stereotype(const QByteArray & s) {
   if (_is)
     return (s == _stereotype);
   else if (_isnot)
@@ -48,7 +48,7 @@ bool Context::match_stereotype(const QCString & s) {
     return TRUE;
 }
 
-bool Context::match(QCString s) {
+bool Context::match(QByteArray s) {
   int index = 0;
   
   while ((index = s.find("\r", index)) != -1)
@@ -83,7 +83,7 @@ void Context::err() {
   _n_err += 1;
 }
 
-QCString Context::replace(QCString s) {
+QByteArray Context::replace(QByteArray s) {
   int index = 0;
   
   while ((index = s.find("\r", index)) != -1)
@@ -92,7 +92,7 @@ QCString Context::replace(QCString s) {
   return s.replace(s.find(_old), _old.length(), _future);
 }
 
-bool Context::match(QCString s, const QCString & filter, bool with) {
+bool Context::match(QByteArray s, const QByteArray & filter, bool with) {
 if ((with) ? (s.find(filter) != -1) : (s.find(filter) == -1)) {
   _n_match += 1;
   return TRUE;

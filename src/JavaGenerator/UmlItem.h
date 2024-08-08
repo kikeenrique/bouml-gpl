@@ -28,22 +28,22 @@
 
 #include "UmlBaseItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlPackage;
 
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n)
+    UmlItem(void * id, const QByteArray & n)
       : UmlBaseItem(id, n) {
     };
     virtual ~UmlItem();
     
     virtual void generate();
-    virtual void generate_import(QTextOStream & f, const QCString & indent);
+    virtual void generate_import(QTextStream & f, const QByteArray & indent);
     virtual UmlPackage * package();
     void manage_comment(const char *& p, const char *& pp, bool javadoc);
     void manage_description(const char *& p, const char *& pp);    
-    void manage_alias(const char *& p, QTextOStream & ts);
+    void manage_alias(const char *& p, QTextStream & ts);
 };
 
 #endif

@@ -41,11 +41,11 @@ class UmlBaseComponent : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseComponent(void * id, const QCString & n);
+    UmlBaseComponent(void * id, const QByteArray & n);
 
 };
 
-inline UmlBaseComponent::UmlBaseComponent(void * id, const QCString & n) : UmlItem(id, n) {
+inline UmlBaseComponent::UmlBaseComponent(void * id, const QByteArray & n) : UmlItem(id, n) {
   _assoc_diagram = 0;
 }
 

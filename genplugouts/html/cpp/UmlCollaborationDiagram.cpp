@@ -1,7 +1,7 @@
 
 #include "UmlCollaborationDiagram.h"
 
-QCString UmlCollaborationDiagram::sKind() {
+QByteArray UmlCollaborationDiagram::sKind() {
   return "collaboration diagram";
 }
 

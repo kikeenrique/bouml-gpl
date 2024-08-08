@@ -37,7 +37,7 @@
 #include "Lex.h"
 #include "UmlCom.h"
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   class_view = 0;
 #ifdef REVERSE
@@ -49,13 +49,13 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
   namespace_fixedp = FALSE;
 }
 
-UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
+UmlClassView * UmlPackage::get_classview(const QByteArray & nmsp) {
   UmlPackage * pack;
   
   if (nmsp != cppNamespace()) {
     if (namespace_fixedp) {
       if ((pack = findCppNamespace(nmsp)) == 0) {
-	QCString s = nmsp;
+	QByteArray s = nmsp;
 	
 	if (s.isEmpty())
 	  s = name();
@@ -72,14 +72,14 @@ UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
 	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
 	    ((pack = UmlBasePackage::create(this, s += "_")) == 0)) {
 #ifdef REVERSE
-	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+	  UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create package <i>")
 			+ s + "</i> under package <i>"
 			+ name() + "</b></font><br>");
 	  UmlCom::message("");
 	  throw 0;
 #else
 	  QMessageBox::critical(0, "Fatal Error", 
-				QCString("<font face=helvetica><b>cannot create package <i>")
+				QByteArray("<font face=helvetica><b>cannot create package <i>")
 				+ s + "</i> under package <i>"
 				+ Name() + "</b></font><br>");
 	  QApplication::exit(1);
@@ -111,14 +111,14 @@ UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
     
     if ((pack->class_view = UmlBaseClassView::create(pack, name())) == 0) {
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create class view <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create class view <i>")
 		    + name() + "</i> under package <i>"
 		    + pack->name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
-			    QCString("<font face=helvetica><b>cannot create class view <i>")
+			    QByteArray("<font face=helvetica><b>cannot create class view <i>")
 			    + name() + "</i> under package <i>"
 			    + pack->name() + "</b></font><br>");
       QApplication::exit(1);
@@ -131,7 +131,7 @@ UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
 
 #ifdef REVERSE
 
-void UmlPackage::reverse_main(const QCString & type, QCString comment) {
+void UmlPackage::reverse_main(const QByteArray & type, QByteArray comment) {
   // do not lost main !
   Lex::mark();
   UmlOperation::skip_body();
@@ -181,13 +181,13 @@ void UmlPackage::reverse_main(const QCString & type, QCString comment) {
 }
 
 
-UmlDeploymentView * UmlPackage::get_deploymentview(const QCString & nmsp) {
+UmlDeploymentView * UmlPackage::get_deploymentview(const QByteArray & nmsp) {
   UmlPackage * pack;
   
   if (nmsp != cppNamespace()) {
     if (namespace_fixedp) {
       if ((pack = findCppNamespace(nmsp)) == 0) {
-	QCString s = nmsp;
+	QByteArray s = nmsp;
 	
 	if (s.isEmpty())
 	  s = name();
@@ -204,14 +204,14 @@ UmlDeploymentView * UmlPackage::get_deploymentview(const QCString & nmsp) {
 	    ((pack = UmlBasePackage::create(this, s += "_")) == 0) &&
 	    ((pack = UmlBasePackage::create(this, s += "_")) == 0)) {
 #ifdef REVERSE
-	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+	  UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create package <i>")
 			+ s + "</i> under package <i>"
 			+ name() + "</b></font><br>");
 	  UmlCom::message("");
 	  throw 0;
 #else
 	  QMessageBox::critical(0, "Fatal Error", 
-				QCString("<font face=helvetica><b>cannot create package <i>")
+				QByteArray("<font face=helvetica><b>cannot create package <i>")
 				+ s + "</i> under package <i>"
 				+ Name() + "</b></font><br>");
 	  QApplication::exit(1);
@@ -243,14 +243,14 @@ UmlDeploymentView * UmlPackage::get_deploymentview(const QCString & nmsp) {
     
     if ((pack->deployment_view = UmlBaseDeploymentView::create(pack, name())) == 0) {
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create deployment view <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create deployment view <i>")
 		    + name() + "</i> under package <i>"
 		    + pack->name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
-			    QCString("<font face=helvetica><b>cannot create deployment view <i>")
+			    QByteArray("<font face=helvetica><b>cannot create deployment view <i>")
 			    + name() + "</i> under package <i>"
 			    + pack->name() + "</b></font><br>");
       QApplication::exit(1);

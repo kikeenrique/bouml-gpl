@@ -34,21 +34,21 @@
 
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n)
+    UmlClassMember(void * id, const QByteArray & n)
       : UmlBaseClassMember(id, n) {};
     
-    static void remove_comments(QCString & s);
-    static void remove_arrays(QCString & s);
-    static void remove_preprocessor(QCString & s);
+    static void remove_comments(QByteArray & s);
+    static void remove_arrays(QByteArray & s);
+    static void remove_preprocessor(QByteArray & s);
     static bool compute_dependency(QList<CppRefType> & dependency,
-				   QCString decl, const UmlTypeSpec &,
+				   QByteArray decl, const UmlTypeSpec &,
 				   bool force_incl = FALSE);
 
     void generate_visibility(aVisibility & current_visibility,
-			     QTextOStream & f_h, bool ahead,
-			     const QCString & indent);
-    bool insert_template(const char *& p, QTextOStream & fs,
-			 const QCString & indent, const QCString & templ);
+			     QTextStream & f_h, bool ahead,
+			     const QByteArray & indent);
+    bool insert_template(const char *& p, QTextStream & fs,
+			 const QByteArray & indent, const QByteArray & templ);
 };
 
 #endif

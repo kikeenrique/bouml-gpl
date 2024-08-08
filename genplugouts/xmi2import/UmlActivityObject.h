@@ -12,7 +12,7 @@ class UmlItem;
 class UmlActivityObject : public UmlBaseActivityObject {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityObject(void * id, const QCString & s) : UmlBaseActivityObject(id, s) {
+     UmlActivityObject(void * id, const QByteArray & s) : UmlBaseActivityObject(id, s) {
     }
 
     static void init();
@@ -22,15 +22,15 @@ class UmlActivityObject : public UmlBaseActivityObject {
 
 
   protected:
-    void setType(QCString idref);
+    void setType(QByteArray idref);
 
     void setType(Token & token);
 
-    void setOrdering(QCString s, FileIn & in);
+    void setOrdering(QByteArray s, FileIn & in);
 
-    void setSelection(QCString idref);
+    void setSelection(QByteArray idref);
 
-    void setInState(QCString s);
+    void setInState(QByteArray s);
 
     //import the lower multiplicity starting by 'tk' inside 'where'
     void importMultiplicity(FileIn & in, Token & token, bool upper);
@@ -42,7 +42,7 @@ class UmlActivityObject : public UmlBaseActivityObject {
 
   public:
     //  call at end of import : try to solve type or state
-    virtual void solve(int context, QCString idref);
+    virtual void solve(int context, QByteArray idref);
 
 };
 

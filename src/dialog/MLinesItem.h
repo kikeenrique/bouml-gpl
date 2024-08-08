@@ -31,23 +31,22 @@
 #if QT_VERSION == 230
 class MLEDialog;
 #else
-class QMultiLineEdit;
+class Q3MultiLineEdit;
 #endif
 
-class MLinesItem : public TableItem
-{
-    protected:
+class MLinesItem : public TableItem {
+  protected:
 #if QT_VERSION == 230
-        MLEDialog * mle;
+    MLEDialog * mle;
 #else
-        QMultiLineEdit * mle;
+    Q3MultiLineEdit * mle;
 #endif
-
-    public:
-        MLinesItem (QTable * t, const QString & s);
-
-        virtual QWidget * createEditor() const;
-        virtual void setContentFromEditor (QWidget * w);
+  
+  public:
+    MLinesItem(Q3Table * t, const QString & s);
+  
+    virtual QWidget * createEditor() const;
+    virtual void setContentFromEditor(QWidget * w);
 };
 
 #endif

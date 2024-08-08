@@ -230,7 +230,7 @@ bool UmlBaseOperation::set_isCppInline(bool y) {
     return FALSE;
 }
 
-const QCString & UmlBaseOperation::cppDef() {
+const QByteArray & UmlBaseOperation::cppDef() {
   read_if_needed_();
     
   return _cpp_def;
@@ -240,7 +240,7 @@ bool UmlBaseOperation::set_CppDef(const char * s) {
   return set_it_(_cpp_def, s, setCppDefCmd);
 }
 
-QCString UmlBaseOperation::cppBody() {
+QByteArray UmlBaseOperation::cppBody() {
   // not memorized in the instance for memory size reason
   UmlCom::send_cmd(_identifier, cppBodyCmd);
   return UmlCom::read_string();
@@ -252,7 +252,7 @@ bool UmlBaseOperation::set_CppBody(const char * s) {
   return UmlCom::read_bool();
 }
 
-const QCString & UmlBaseOperation::cppNameSpec() {
+const QByteArray & UmlBaseOperation::cppNameSpec() {
   read_if_needed_();
     
   return _cpp_name_spec;
@@ -334,7 +334,7 @@ bool UmlBaseOperation::set_isJavaSynchronized(bool y) {
     return FALSE;
 }
 
-const QCString & UmlBaseOperation::javaDef() {
+const QByteArray & UmlBaseOperation::javaDef() {
   return javaDecl();
 }
 
@@ -342,7 +342,7 @@ bool UmlBaseOperation::set_JavaDef(const char * s) {
   return set_JavaDecl(s);
 }
 
-QCString UmlBaseOperation::javaBody() {
+QByteArray UmlBaseOperation::javaBody() {
   // not memorized in the instance for memory size reason
   UmlCom::send_cmd(_identifier, javaBodyCmd);
   return UmlCom::read_string();
@@ -354,7 +354,7 @@ bool UmlBaseOperation::set_JavaBody(const char * s) {
   return UmlCom::read_bool();
 }
 
-const QCString & UmlBaseOperation::javaNameSpec() {
+const QByteArray & UmlBaseOperation::javaNameSpec() {
   read_if_needed_();
     
   return _java_name_spec;
@@ -419,7 +419,7 @@ bool UmlBaseOperation::set_isPhpFinal(bool y) {
     return FALSE;
 }
 
-const QCString & UmlBaseOperation::phpDef() {
+const QByteArray & UmlBaseOperation::phpDef() {
   return phpDecl();
 }
 
@@ -427,7 +427,7 @@ bool UmlBaseOperation::set_PhpDef(const char * s) {
   return set_PhpDecl(s);
 }
 
-QCString UmlBaseOperation::phpBody() {
+QByteArray UmlBaseOperation::phpBody() {
   // not memorized in the instance for memory size reason
   UmlCom::send_cmd(_identifier, phpBodyCmd);
   return UmlCom::read_string();
@@ -439,7 +439,7 @@ bool UmlBaseOperation::set_PhpBody(const char * s) {
   return UmlCom::read_bool();
 }
 
-const QCString & UmlBaseOperation::phpNameSpec() {
+const QByteArray & UmlBaseOperation::phpNameSpec() {
   read_if_needed_();
     
   return _php_name_spec;
@@ -487,7 +487,7 @@ bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
 #endif
 
 #ifdef WITHPYTHON
-const QCString & UmlBaseOperation::pythonDef() {
+const QByteArray & UmlBaseOperation::pythonDef() {
   return pythonDecl();
 }
 
@@ -495,7 +495,7 @@ bool UmlBaseOperation::set_PythonDef(const char * s) {
   return set_PythonDecl(s);
 }
 
-QCString UmlBaseOperation::pythonBody() {
+QByteArray UmlBaseOperation::pythonBody() {
   // not memorized in the instance for memory size reason
   UmlCom::send_cmd(_identifier, pythonBodyCmd);
   return UmlCom::read_string();
@@ -507,7 +507,7 @@ bool UmlBaseOperation::set_PythonBody(const char * s) {
   return UmlCom::read_bool();
 }
 
-const QCString & UmlBaseOperation::pythonNameSpec() {
+const QByteArray & UmlBaseOperation::pythonNameSpec() {
   read_if_needed_();
     
   return _python_name_spec;
@@ -555,7 +555,7 @@ bool UmlBaseOperation::set_PythonContextualBodyIndent(bool v) {
 #endif
 
 #ifdef WITHPYTHON
-const QCString & UmlBaseOperation::pythonDecorators() {
+const QByteArray & UmlBaseOperation::pythonDecorators() {
   read_if_needed_();
   return _python_decorators;
 }
@@ -583,7 +583,7 @@ bool UmlBaseOperation::set_isIdlOneway(bool y) {
     return FALSE;
 }
 
-const QCString & UmlBaseOperation::idlNameSpec() {
+const QByteArray & UmlBaseOperation::idlNameSpec() {
   read_if_needed_();
     
   return _idl_name_spec;

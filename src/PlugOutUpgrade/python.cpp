@@ -443,7 +443,7 @@ UmlArtifact * add_python_settings()
 			       " 'PythonSettings::instance()->member' or other long sentence like this.");
 
   UmlOperation * op;
-  QCString s;
+  QByteArray s;
   
   defGetBool(pythonsettings, _2_2, isPython_2_2, 0, 0, "");
   op->set_Description(" return if classes follow Python 2.2 by default");
@@ -577,7 +577,7 @@ UmlArtifact * add_python_settings()
   UmlRelation * rel;
   
   if ((rel = UmlBaseRelation::create(aGeneralisation, pythonsettings, umlsettings)) == 0) {
-    QCString msg = "PythonSettings can't inherit UmlSettings<br>\n";
+    QByteArray msg = "PythonSettings can't inherit UmlSettings<br>\n";
     
     UmlCom::trace("<b>" + msg + "</b>");
     throw 0;
@@ -681,10 +681,10 @@ UmlArtifact * add_python_settings()
 	      "    _map_imports.resize(n);\n"
 	      "  \n"
 	      "  for (index = 0; index != n; index += 1) {\n"
-	      "    QCString t = UmlCom::read_string();\n"
-	      "    QCString i = UmlCom::read_string();\n"
+	      "    QByteArray t = UmlCom::read_string();\n"
+	      "    QByteArray i = UmlCom::read_string();\n"
 	      "    \n"
-	      "    _map_imports.insert(t, new QCString(i));\n"
+	      "    _map_imports.insert(t, new QByteArray(i));\n"
 	      "  }\n"
 	      "  \n"
 	      "  _src_content = UmlCom::read_string();\n"
@@ -907,7 +907,7 @@ void operation_add_python()
   UmlClass * cl = UmlClass::get("UmlBaseOperation", 0);
   UmlOperation * prev = cl->get_operation("set_PhpContextualBodyIndent");
   UmlOperation * op;
-  QCString s;
+  QByteArray s;
   int index;
   
   // fixing

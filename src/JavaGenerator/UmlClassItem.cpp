@@ -25,7 +25,7 @@
 
 #include "UmlClassItem.h"
 
-void UmlClassItem::generate_enum_item(QTextOStream &, QCString, BooL &) {
+void UmlClassItem::generate_enum_item(QTextStream &, QByteArray, BooL &) {
   // produce nothing
 }
 

@@ -177,7 +177,7 @@ class UmlBaseClass : public UmlClassMember {
     //exist, else 0/null. In case the package is specified, the class must
     //be defined in a sub-level of the package
     
-    static UmlClass * get(const QCString & n, const UmlPackage * p);
+    static UmlClass * get(const QByteArray & n, const UmlPackage * p);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
@@ -229,7 +229,7 @@ class UmlBaseClass : public UmlClassMember {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseClass(void * id, const QCString & n);
+    UmlBaseClass(void * id, const QByteArray & n);
 
     virtual void read_uml_();
 

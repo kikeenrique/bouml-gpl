@@ -38,7 +38,7 @@ class UmlArtifact : public UmlBaseArtifact {
     bool managed;
     
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n), managed(FALSE) {};
     
     virtual void roundtrip_cpp();

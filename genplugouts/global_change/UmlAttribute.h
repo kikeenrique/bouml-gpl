@@ -13,7 +13,7 @@ class Context;
 // You can modify it as you want (except the constructor)
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n) :  UmlBaseAttribute(id, n) {};
+    UmlAttribute(void * id, const QByteArray & n) :  UmlBaseAttribute(id, n) {};
 
     virtual void change(Context & ctx);
 

@@ -19,7 +19,7 @@ class UmlActivityDiagram : public UmlBaseActivityDiagram, public UmlActivityItem
     virtual void memo_ref();
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     static void ref_index();
 
@@ -32,7 +32,7 @@ class UmlActivityDiagram : public UmlBaseActivityDiagram, public UmlActivityItem
 
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityDiagram(void * id, const QCString & s) : UmlBaseActivityDiagram(id, s) {
+     UmlActivityDiagram(void * id, const QByteArray & s) : UmlBaseActivityDiagram(id, s) {
     }
 
 };

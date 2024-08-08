@@ -27,61 +27,58 @@
 
 
 
-#include <qlayout.h>
-#include <qhbox.h>
+#include <qlayout.h> 
+#include <q3hbox.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 
 #include "MLEDialog.h"
 #include "DialogUtil.h"
 #include "translate.h"
 
-MLEDialog::MLEDialog (QString t, bool buttons) : QDialog (0, "Uml", TRUE, 0)
-{
-    QVBoxLayout *vbox = new QVBoxLayout (this);
+MLEDialog::MLEDialog(QString t, bool buttons) : QDialog(0, "Uml", TRUE, 0) {
+  Q3VBoxLayout *vbox = new Q3VBoxLayout(this);
 
-    e = new MultiLineEdit (this);
-    vbox->addWidget (e);
+  e = new MultiLineEdit(this);
+  vbox->addWidget(e);
+  
+  Q3HBox * hbox = new Q3HBox(this);
+  
+  vbox->addWidget(hbox);
+  hbox->setMargin(5);
 
-    QHBox * hbox = new QHBox (this);
-
-    vbox->addWidget (hbox);
-    hbox->setMargin (5);
-
-    if (buttons) {
-        new QLabel (hbox);
-        ok = new QPushButton (TR ("OK"), hbox);
-        new QLabel (hbox);
-        cancel = new QPushButton (TR ("Cancel"), hbox);
-        new QLabel (hbox);
-
-        connect (ok, SIGNAL (clicked()), this, SLOT (accept()));
-        connect (cancel, SIGNAL (clicked()), this, SLOT (reject()));
-    }
-
-    e->setText (t);
+  if (buttons) {
+    new QLabel(hbox);
+    ok = new QPushButton(TR("OK"), hbox);
+    new QLabel(hbox);
+    cancel = new QPushButton(TR("Cancel"), hbox);
+    new QLabel(hbox);
+  
+    connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  }
+    
+  e->setText(t);
 }
 
-MLEDialog::~MLEDialog()
-{
+MLEDialog::~MLEDialog() {
 }
 
-void MLEDialog::get (QString & t, const QPoint & p, QSize & sz)
+void MLEDialog::get(QString & t, const QPoint & p, QSize & sz)
 {
-    MLEDialog d (t, TRUE);
-
-    d.move (p);
-    if (sz.isValid()) {
-        d.resize (sz);
-    }
-    d.e->setFocus();
-    if (d.exec() == QDialog::Accepted) {
-        t = d.e->text();
-    }
-    sz = d.size();
+  MLEDialog d(t, TRUE);
+  
+  d.move(p);
+  if (sz.isValid())
+    d.resize(sz);
+  d.e->setFocus();
+  if (d.exec() == QDialog::Accepted)
+    t = d.e->text();
+  sz = d.size();
 }
 
-QString MLEDialog::text()
-{
-    return e->text();
+QString MLEDialog::text() {
+  return e->text();
 }
 

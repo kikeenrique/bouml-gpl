@@ -14,27 +14,27 @@ class Artifact {
   protected:
     Language language;
 
-    QCString name;
+    QByteArray name;
 
-    QCString stereotype;
+    QByteArray stereotype;
 
-    QCString description;
+    QByteArray description;
 
-    QCString cpp_path;
+    QByteArray cpp_path;
 
-    QCString java_path;
+    QByteArray java_path;
 
-    QCString cpp_namespace;
+    QByteArray cpp_namespace;
 
-    QCString java_package;
+    QByteArray java_package;
 
-    QCString idl_module;
+    QByteArray idl_module;
 
     static QAsciiDict<Artifact> all;
 
 
   public:
-    static Artifact * find(const QCString & uid);
+    static Artifact * find(const QByteArray & uid);
 
     static void import_component_view(File & f);
 
@@ -45,15 +45,15 @@ class Artifact {
     //'pack' is the package containing the class view where 'cl' is defined
     //'cl' is not nested in an other class
     //'art_path' is the rose path of the artifact
-    void add(UmlPackage * pack, UmlClass * cl, QCString & art_path);
+    void add(UmlPackage * pack, UmlClass * cl, QByteArray & art_path);
 
-    void add_cpp(UmlPackage * pack, UmlClass * cl, QCString h, QCString src);
+    void add_cpp(UmlPackage * pack, UmlClass * cl, QByteArray h, QByteArray src);
 
-    void add_corba(UmlPackage * pack, UmlClass * cl, QCString src);
+    void add_corba(UmlPackage * pack, UmlClass * cl, QByteArray src);
 
-    void add_java(UmlPackage * pack, UmlClass * cl, QCString art_path, QCString src);
+    void add_java(UmlPackage * pack, UmlClass * cl, QByteArray art_path, QByteArray src);
 
-    QCString normalize(QCString path, QCString root);
+    QByteArray normalize(QByteArray path, QByteArray root);
 
 };
 

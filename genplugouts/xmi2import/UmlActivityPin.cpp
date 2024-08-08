@@ -33,7 +33,7 @@ void UmlActivityPin::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anActivityPin, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     
     if (s.isEmpty()) {
       s = token.what();

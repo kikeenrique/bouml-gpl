@@ -20,13 +20,13 @@ class UmlJunctionPseudoState : public UmlBaseJunctionPseudoState {
 
     //  is the target of a transition
     
-    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent);
+    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent);
 
 
   protected:
     //  the name of the operation implementing the junction
     
-    QCString _oper;
+    QByteArray _oper;
 
     //  to have different name for the operation implementing the junction
     

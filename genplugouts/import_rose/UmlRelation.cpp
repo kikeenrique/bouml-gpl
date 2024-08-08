@@ -23,8 +23,8 @@ void UmlRelation::Role::import(File & f) {
   is_static = FALSE;
   is_byvalue = FALSE;
   
-  QCString ste; 
-  QCString s;
+  QByteArray ste; 
+  QByteArray s;
   int k; 
      
   do { 
@@ -101,7 +101,7 @@ void UmlRelation::import(File & f)
   if (scanning)
     f.skipBlock();
   else {
-    QCString s;
+    QByteArray s;
     
     if (f.read(s) != STRING)
       f.syntaxError(s, "relation's name");
@@ -109,11 +109,11 @@ void UmlRelation::import(File & f)
       // unnamed
       s = "";
     
-    QCString id;
-    QCString ste;
-    QCString doc;
-    QDict<QCString> prop;
-    QCString s2;
+    QByteArray id;
+    QByteArray ste;
+    QByteArray doc;
+    QDict<QByteArray> prop;
+    QByteArray s2;
     int k;
     
     do {
@@ -273,7 +273,7 @@ void UmlRelation::corba(UmlRelation::Role * role) {
 }
 
 void UmlRelation::java(UmlRelation::Role * role) {
-  QCString * v;
+  QByteArray * v;
     
   if ((v = role->prop.find("Java/Final")) != 0) {
     if (*v == "TRUE")

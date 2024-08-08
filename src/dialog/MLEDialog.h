@@ -31,23 +31,22 @@
 class MultiLineEdit;
 class QPushButton;
 
-class MLEDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        MultiLineEdit * e;
-        QPushButton * ok;
-        QPushButton * cancel;
-
-    public:
-        MLEDialog (QString t, bool buttons);
-        ~MLEDialog();
-
-        QString text();
-
-    public:
-        static void get (QString & t, const QPoint & p, QSize & sz);
+class MLEDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    MultiLineEdit * e;
+    QPushButton * ok;
+    QPushButton * cancel;
+    
+  public:
+    MLEDialog(QString t, bool buttons);
+    ~MLEDialog();
+    
+    QString text();
+  
+  public:
+    static void get(QString & t, const QPoint & p, QSize & sz);
 };
 
 #endif

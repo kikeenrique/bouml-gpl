@@ -10,7 +10,7 @@
 
 class UmlClassDiagram : public UmlBaseClassDiagram {
   public:
-    UmlClassDiagram(void * id, const QCString & n) 
+    UmlClassDiagram(void * id, const QByteArray & n) 
       : UmlBaseClassDiagram(id, n) {};
 };
 

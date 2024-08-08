@@ -34,9 +34,9 @@ void UmlActivityControlNode::importIt(FileIn & in, Token & token, UmlItem * wher
   where = where->container(anInitialActivityNode, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlActivityControlNode * a;
-    QCString t = token.xmiType();
+    QByteArray t = token.xmiType();
     
     t = t.mid(4, t.length() - 8);
     
@@ -62,7 +62,7 @@ void UmlActivityControlNode::importIt(FileIn & in, Token & token, UmlItem * wher
     a->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

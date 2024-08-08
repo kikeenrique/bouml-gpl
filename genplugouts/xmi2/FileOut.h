@@ -9,7 +9,7 @@
 class QFile;
 class UmlItem;
 
-//QTextOStream + usefull operations
+//QTextStream + usefull operations
 class FileOut : public QTextStream {
   public:
     FileOut(QFile * fp, bool lf, bool utf8);
@@ -27,13 +27,13 @@ class FileOut : public QTextStream {
     void idref(UmlItem * x);
 
     //for C++/Java types
-    void idref(QCString s, UmlItem * x);
+    void idref(QByteArray s, UmlItem * x);
 
     void idref_prefix(UmlItem * x, const char * pfix);
 
     void idref_prefix(UmlItem * x, const char * pfix, int n);
 
-    void idref_datatype(const QCString & t);
+    void idref_datatype(const QByteArray & t);
 
     //output <space><pfix1>="BOUML_<pfix2><x>"
     void ref(UmlItem * x, const char * pfix1, const char * pfix2 = "");
@@ -56,9 +56,9 @@ class FileOut : public QTextStream {
 
     int _indent;
 
-    QMap<QCString,int> _datatypes;
+    QMap<QByteArray,int> _datatypes;
 
-    QMap<QCString,int> _modifiedtypes;
+    QMap<QByteArray,int> _modifiedtypes;
 
 };
 

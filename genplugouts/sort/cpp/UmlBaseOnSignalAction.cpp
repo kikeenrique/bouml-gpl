@@ -2,7 +2,7 @@
 #include "UmlCom.h"
 #include "UmlBaseOnSignalAction.h"
 
-const QCString & UmlBaseOnSignalAction::signal() {
+const QByteArray & UmlBaseOnSignalAction::signal() {
     read_if_needed_();
     return _signal;
 }
@@ -12,7 +12,7 @@ bool UmlBaseOnSignalAction::set_Signal(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseOnSignalAction::cppSignal() {
+const QByteArray & UmlBaseOnSignalAction::cppSignal() {
     read_if_needed_();
     return _cpp_signal;
 }
@@ -23,7 +23,7 @@ bool UmlBaseOnSignalAction::set_CppSignal(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseOnSignalAction::javaSignal() {
+const QByteArray & UmlBaseOnSignalAction::javaSignal() {
     read_if_needed_();
     return _java_signal;
 }

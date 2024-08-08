@@ -34,14 +34,14 @@
 #include "UmlCom.h"
 #include "util.h"
 
-QCString UmlClass::idl_stereotype()
+QByteArray UmlClass::idl_stereotype()
 {
-  QCString s = IdlSettings::classStereotype(stereotype());
+  QByteArray s = IdlSettings::classStereotype(stereotype());
   
   return ((s == "struct") || (s == "union") || (s == "enum") ||
 	  (s == "typedef") || (s == "exception") || (s == "ignored") ||
 	  (s == "interface"))
-    ? s : QCString("valuetype");
+    ? s : QByteArray("valuetype");
 }
 
 void UmlClass::generate() {
@@ -52,26 +52,26 @@ void UmlClass::generate() {
       if (associatedArtifact() != 0)
 	associatedArtifact()->generate();
       else if (verbose())
-	UmlCom::trace(QCString("<hr><font face=helvetica><i> ") + name() +
+	UmlCom::trace(QByteArray("<hr><font face=helvetica><i> ") + name() +
 		      " : </i> does not have associated <i>artifact</i></font>");
     }
   }
 }
 
-void UmlClass::generate(QTextOStream & f) {
+void UmlClass::generate(QTextStream & f) {
   if (idlDecl().isEmpty())
     return;
   
   QVector<UmlItem> ch = children();
-  QCString stereotype = idl_stereotype();
+  QByteArray stereotype = idl_stereotype();
   bool a_typedef = (stereotype == "typedef");
   bool an_enum = (stereotype == "enum");
   bool an_union = (stereotype == "union");
   const char * p = idlDecl();
   const char * pp = 0;
-  QCString templ;
+  QByteArray templ;
   const char * sep;
-  QCString indent = "";
+  QByteArray indent = "";
   unsigned index;
   
   while ((*p == ' ') || (*p == '\t'))
@@ -214,15 +214,15 @@ void UmlClass::generate(QTextOStream & f) {
   }
 }
 
-void UmlClass::generate_decl(QTextOStream &, const QCString &, 
-			     QCString, bool) {
+void UmlClass::generate_decl(QTextStream &, const QByteArray &, 
+			     QByteArray, bool) {
   write_trace_header();
-  UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
+  UmlCom::trace(QByteArray("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");
   incr_warning();
 }
 
-void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
+void UmlClass::write(QTextStream & f, const UmlTypeSpec & t)
 {
   if (t.type != 0)
     t.type->write(f);
@@ -230,7 +230,7 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
     f << IdlSettings::type(t.explicit_type);
 }
 
-void UmlClass::write(QTextOStream & f) {
+void UmlClass::write(QTextStream & f) {
   UmlItem * p = associatedArtifact();
   
   if (p == 0)
@@ -240,13 +240,13 @@ void UmlClass::write(QTextOStream & f) {
     p = p->parent();
   } while (p->kind() != aPackage);
   
-  QCString module = ((UmlPackage *) p)->idlModule();
+  QByteArray module = ((UmlPackage *) p)->idlModule();
   
   if (module != UmlArtifact::generation_package()->idlModule())
     f << module << "::";
   
   if (isIdlExternal()) {
-    QCString s = idlDecl();
+    QByteArray s = idlDecl();
     int index = s.find('\n');
     
     s = (index == -1) ? s.stripWhiteSpace()

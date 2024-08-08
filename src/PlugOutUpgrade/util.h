@@ -111,10 +111,10 @@ extern void defSetBoolBitField_(UmlClass * base, const char * where, const char 
 extern void include_umlcom(UmlClass * cl);
 extern void include_umlcom(UmlArtifact * art);
 extern void add_assoc_diag_ops(UmlClass * base, UmlClass * diag);
-extern void conditional(QCString & s, const char * if_def,
+extern void conditional(QByteArray & s, const char * if_def,
 			const char * end_if);
-extern QCString java2Php(QCString s);
-extern QCString java2Python(QCString s);
-extern QCString cpp2Python(QCString s);
+extern QByteArray java2Php(QByteArray s);
+extern QByteArray java2Python(QByteArray s);
+extern QByteArray cpp2Python(QByteArray s);
 
 #endif

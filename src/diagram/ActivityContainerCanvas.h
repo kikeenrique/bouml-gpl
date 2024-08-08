@@ -32,25 +32,24 @@
 
 #include "DiagramCanvas.h"
 
-class ActivityContainerCanvas : public DiagramCanvas
-{
-    protected:
-        ActivityContainerCanvas (UmlCanvas * canvas, int id)
-            : DiagramCanvas (canvas, id) {
-        }
+class ActivityContainerCanvas : public DiagramCanvas {
+  protected:
+    ActivityContainerCanvas(UmlCanvas * canvas, int id)
+      : DiagramCanvas(canvas, id) {
+    }
+  
+  public:
+    ActivityContainerCanvas(BrowserNode * bn, UmlCanvas * canvas,
+			    int x, int y, int w, int h, int id) 
+      : DiagramCanvas(bn, canvas, x, y, w, h, id) {
+    }
 
-    public:
-        ActivityContainerCanvas (BrowserNode * bn, UmlCanvas * canvas,
-                                 int x, int y, int w, int h, int id)
-            : DiagramCanvas (bn, canvas, x, y, w, h, id) {
-        }
-
-        void force_inside (DiagramItem * di, QCanvasItem * ci, BooL & need_sub_upper);
-        void force_sub_inside (QCanvasItemList & all, BooL & need_sub_upper);
-        void resize_to_contain (QCanvasItemList & all, BooL & need_sub_upper);
-        void force_sub_upper (QCanvasItemList & all);
-        virtual void prepare_for_move (bool on_resize);
-        static bool force_inside (DiagramCanvas * elt, bool part);
+    void force_inside(DiagramItem * di, Q3CanvasItem * ci, BooL & need_sub_upper);
+    void force_sub_inside(Q3CanvasItemList & all, BooL & need_sub_upper);
+    void resize_to_contain(Q3CanvasItemList & all, BooL & need_sub_upper);
+    void force_sub_upper(Q3CanvasItemList & all);
+    virtual void prepare_for_move(bool on_resize);
+    static bool force_inside(DiagramCanvas * elt, bool part);
 };
 
 #endif

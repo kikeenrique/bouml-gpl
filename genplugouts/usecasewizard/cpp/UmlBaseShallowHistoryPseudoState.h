@@ -24,7 +24,7 @@ class UmlBaseShallowHistoryPseudoState : public UmlPseudoState {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseShallowHistoryPseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
+     UmlBaseShallowHistoryPseudoState(void * id, const QByteArray & s) : UmlPseudoState(id, s) {
     }
 
 };

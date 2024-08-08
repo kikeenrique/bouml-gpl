@@ -44,12 +44,12 @@
 QList<UmlClass> UmlClass::context;
 QValueList<UmlActualParameter> UmlClass::noactuals;
  
-QCString UmlClass::cpp_stereotype()
+QByteArray UmlClass::cpp_stereotype()
 {
-  QCString s = CppSettings::classStereotype(stereotype());
+  QByteArray s = CppSettings::classStereotype(stereotype());
   
   return ((s == "struct") || (s == "union") || (s == "enum") || (s == "typedef"))
-    ? s : QCString("class");
+    ? s : QByteArray("class");
 }
 
 void UmlClass::generate() {
@@ -59,12 +59,12 @@ void UmlClass::generate() {
     if (!isCppExternal() && !cppDecl().isEmpty()) {
       if (associatedArtifact() == 0) {
 	if (verbose())
-	  UmlCom::trace(QCString("<hr><font face=helvetica><i> ") + name() +
+	  UmlCom::trace(QByteArray("<hr><font face=helvetica><i> ") + name() +
 			" : </i> does not have associated <i>artifact</i></font><br>");
       }
       else if (cppDecl().isEmpty()) {
 	if (verbose())
-	  UmlCom::trace(QCString("<hr><font face=helvetica>class <i>")
+	  UmlCom::trace(QByteArray("<hr><font face=helvetica>class <i>")
 			+ name() + "</i> has an empty C++ definition</font><br>");
       }
       else
@@ -75,15 +75,15 @@ void UmlClass::generate() {
 
 void UmlClass::compute_dependencies(QList<CppRefType> & dependencies, 
 				    bool all_in_h) {
-  const QCString dummy;
+  const QByteArray dummy;
   
   compute_dependency(dependencies, dummy, all_in_h);
 }
 
 void UmlClass::compute_dependency(QList<CppRefType> & dependencies,
-				  const QCString &, bool all_in_h) {
+				  const QByteArray &, bool all_in_h) {
   QVector<UmlItem> ch = children();
-  const QCString stereotype = cpp_stereotype();
+  const QByteArray stereotype = cpp_stereotype();
   bool a_typedef = (stereotype == "typedef");
   bool an_enum = (stereotype == "enum");
   const QValueList<UmlFormalParameter> formals = this->formals();
@@ -125,7 +125,7 @@ void UmlClass::compute_dependency(QList<CppRefType> & dependencies,
 					 (*ita).value(), all_in_h);
     
     if (a_typedef) {
-      QCString decl = cppDecl();
+      QByteArray decl = cppDecl();
       int index;
       
       remove_comments(decl);
@@ -145,13 +145,13 @@ void UmlClass::compute_dependency(QList<CppRefType> & dependencies,
     CppRefType::force_ref(this, dependencies);
 }
 
-void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
+void UmlClass::generate_decl(QTextStream & f_h, QByteArray indent) {
   context.append(this);
   
   bool removed = FALSE;
   QVector<UmlItem> ch = children();
   const unsigned sup = ch.size();
-  const QCString & stereotype = cpp_stereotype();
+  const QByteArray & stereotype = cpp_stereotype();
   bool a_typedef = (stereotype == "typedef");
   bool an_enum = (stereotype == "enum");
   const QValueList<UmlFormalParameter> formals = this->formals();
@@ -337,10 +337,10 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
       if (! nestedp) {
 	// inline operations definition
 	// template class members
-	QCString templates;
-	QCString cl_names;
-	QCString templates_tmplop;
-	QCString cl_names_tmplop;
+	QByteArray templates;
+	QByteArray cl_names;
+	QByteArray templates_tmplop;
+	QByteArray cl_names_tmplop;
 	
 	spec(templates, cl_names, templates_tmplop, cl_names_tmplop);
 	
@@ -363,8 +363,8 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
     context.removeLast();
 }
 
-void UmlClass::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
-			     const QCString &, QCString indent,
+void UmlClass::generate_decl(aVisibility & current_visibility, QTextStream & f_h,
+			     const QByteArray &, QByteArray indent,
 			     BooL & first, bool) {
   generate_visibility(current_visibility, f_h, first, indent);
   first = FALSE;
@@ -373,13 +373,13 @@ void UmlClass::generate_decl(aVisibility & current_visibility, QTextOStream & f_
   f_h << '\n';
 }
 
-void UmlClass::generate_def(QTextOStream & f, QCString indent, bool h) {
+void UmlClass::generate_def(QTextStream & f, QByteArray indent, bool h) {
   if (! cppDecl().isEmpty()) {
     QVector<UmlItem> ch = children();
-    QCString templates;
-    QCString cl_names;
-    QCString templates_tmplop;
-    QCString cl_names_tmplop;
+    QByteArray templates;
+    QByteArray cl_names;
+    QByteArray templates_tmplop;
+    QByteArray cl_names_tmplop;
     
     spec(templates, cl_names, templates_tmplop, cl_names_tmplop);
     
@@ -391,14 +391,14 @@ void UmlClass::generate_def(QTextOStream & f, QCString indent, bool h) {
   }
 }
 
-void UmlClass::generate_def(QTextOStream & f, QCString indent, bool h,
-			    QCString templates, QCString cl_names,
-			    QCString, QCString) {
+void UmlClass::generate_def(QTextStream & f, QByteArray indent, bool h,
+			    QByteArray templates, QByteArray cl_names,
+			    QByteArray, QByteArray) {
   if (! cppDecl().isEmpty()) {
-    QCString template1;
-    QCString template2;
-    QCString templates_tmplop;
-    QCString cl_names_tmplop;
+    QByteArray template1;
+    QByteArray template2;
+    QByteArray templates_tmplop;
+    QByteArray cl_names_tmplop;
     
     get_template_prefixes(template1, template2);
     templates_tmplop = templates + "template<>\n";
@@ -416,8 +416,8 @@ void UmlClass::generate_def(QTextOStream & f, QCString indent, bool h,
   }
 }
 
-void UmlClass::get_template_prefixes(QCString & template1,
-				     QCString & template2) {
+void UmlClass::get_template_prefixes(QByteArray & template1,
+				     QByteArray & template2) {
   QValueList<UmlFormalParameter> formals = this->formals();
   
   if (!formals.isEmpty()) {
@@ -444,17 +444,17 @@ void UmlClass::get_template_prefixes(QCString & template1,
   }
 }
 
-void UmlClass::spec(QCString & templates, QCString & names,
-		    QCString & templates_tmplop,
-		    QCString & names_tmplop) {
+void UmlClass::spec(QByteArray & templates, QByteArray & names,
+		    QByteArray & templates_tmplop,
+		    QByteArray & names_tmplop) {
   if (parent()->kind() == aClass) {
     ((UmlClass *) parent())
       ->spec(templates, names, templates_tmplop, names_tmplop);
     names += "::";
   }
   
-  QCString t1;
-  QCString t2;
+  QByteArray t1;
+  QByteArray t2;
   
   get_template_prefixes(t1, t2);
   templates_tmplop = templates + "template<>\n";
@@ -466,11 +466,11 @@ void UmlClass::spec(QCString & templates, QCString & names,
 
 // warning : nested case not managed
 
-QCString UmlClass::decl() {      
-  QCString result;
-  QCString close_template;
+QByteArray UmlClass::decl() {      
+  QByteArray result;
+  QByteArray close_template;
   UmlArtifact * cp = associatedArtifact();
-  QCString nasp = ((UmlPackage *)
+  QByteArray nasp = ((UmlPackage *)
 		   ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package())
     ->cppNamespace();
     
@@ -489,8 +489,8 @@ QCString UmlClass::decl() {
     close_template += " } ";
   }
   
-  QCString template1;
-  QCString template2;
+  QByteArray template1;
+  QByteArray template2;
   
   get_template_prefixes(template1, template2);
   
@@ -502,13 +502,13 @@ QCString UmlClass::decl() {
   return result + name() + ';' + close_template + '\n';
 }
 
-void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t,
+void UmlClass::write(QTextStream & f, const UmlTypeSpec & t,
 		     bool with_formals, BooL * is_template)
 {
   if (t.type != 0)
     t.type->write(f, with_formals, is_template);
   else {
-    QCString s = CppSettings::type(t.explicit_type);
+    QByteArray s = CppSettings::type(t.explicit_type);
     
     f << s;
     
@@ -518,11 +518,11 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t,
 	
 }
 
-void UmlClass::write(QTextOStream & f, bool with_formals, BooL * is_template,
+void UmlClass::write(QTextStream & f, bool with_formals, BooL * is_template,
 		     const QValueList<UmlActualParameter> & actuals) {
-  if (context.findRef(this) == -1) {
+  if (context.indexOf(this) == -1) {
     if (parent()->kind() == aClass) {
-      if (context.findRef((UmlClass *) parent()) == -1) {
+      if (context.indexOf((UmlClass *) parent()) == -1) {
 	// parent cannot have formals, but may have actuals
 	((UmlClass *) parent())->write(f, FALSE, 0, actuals);
 	f << "::";
@@ -530,7 +530,7 @@ void UmlClass::write(QTextOStream & f, bool with_formals, BooL * is_template,
     }
     else {
       UmlArtifact * cp = associatedArtifact();
-      QCString nasp = ((UmlPackage *)
+      QByteArray nasp = ((UmlPackage *)
 		       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package())
 	->cppNamespace();
       
@@ -540,7 +540,7 @@ void UmlClass::write(QTextOStream & f, bool with_formals, BooL * is_template,
     }
   }
   
-  QCString s;
+  QByteArray s;
   
   if (isCppExternal()) {
     s = cppDecl();

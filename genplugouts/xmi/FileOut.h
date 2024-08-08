@@ -9,7 +9,7 @@
 class QFile;
 class UmlItem;
 
-//QTextOStream + usefull operations
+//QTextStream + usefull operations
 class FileOut : public QTextStream {
   public:
     FileOut(QFile * fp);
@@ -22,11 +22,11 @@ class FileOut : public QTextStream {
 
     void idref(const UmlItem * x);
 
-    void idref(QCString s, const UmlItem * x);
+    void idref(QByteArray s, const UmlItem * x);
 
     void ref(const UmlItem * x);
 
-    void idref_datatype(const QCString & t);
+    void idref_datatype(const QByteArray & t);
 
     void define_datatypes(int taggedvalue_mode);
 
@@ -36,9 +36,9 @@ class FileOut : public QTextStream {
   protected:
     int _indent;
 
-    QMap<QCString,int> _datatypes;
+    QMap<QByteArray,int> _datatypes;
 
-    QMap<QCString,int> _modifiedtypes;
+    QMap<QByteArray,int> _modifiedtypes;
 
 };
 

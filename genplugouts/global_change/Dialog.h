@@ -82,7 +82,7 @@ Q_OBJECT
   protected slots:
     void do_replace();
 
-    QCString digest(const QString s);
+    QByteArray digest(const QString s);
 
     virtual void polish();
 

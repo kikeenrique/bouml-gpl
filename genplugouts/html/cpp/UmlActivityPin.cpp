@@ -1,11 +1,11 @@
 
 #include "UmlActivityPin.h"
 
-QCString UmlActivityPin::sKind() {
+QByteArray UmlActivityPin::sKind() {
   return "activity action pin";
 }
 
-void UmlActivityPin::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlActivityPin::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Activity action pin <b>");

@@ -128,7 +128,7 @@ void add_fragment(UmlClassView * base_class_view, UmlClassView * user_class_view
   base_fragment->add_vect_assoc("_compartments", PrivateVisibility, user_fragment_compart, 0, 0);
   
   UmlAttribute * att;
-  QCString s;
+  QByteArray s;
   
   base_fragment->add_attribute("_name", PrivateVisibility, "string", 0, 0);
   base_fragment_compart->add_attribute("_rank", PrivateVisibility, "int", 0, 0);
@@ -660,7 +660,7 @@ UmlClass * add_ucassoc(UmlClassView * base_class_view, UmlClassView * user_class
 void add_ddef(UmlClass * cl, UmlClass * user_ddef)
 {
   UmlOperation * def = cl->add_op("definition", PublicVisibility, user_ddef);
-  QCString s;
+  QByteArray s;
   
   def->set_Description(" return the semantic part of the diagram not present in the model");
   s = 
@@ -1110,7 +1110,7 @@ UmlClass * add_seqmessage(UmlClassView * base_class_view, UmlClassView * user_cl
   user_seqmessage->set_Description(" this class manages messages in a sequence diagram,\n"
 				   " you can modify it");
 
-  QCString s = base_seqmessage->javaDecl();
+  QByteArray s = base_seqmessage->javaDecl();
   
   s.replace(s.find("${implements}"), 13, " implements java.lang.Comparable");
   base_seqmessage->set_JavaDecl(s);
@@ -1327,7 +1327,7 @@ void add_seqdiagdef(UmlClassView * base_class_view, UmlClassView * user_class_vi
 	      "  }\n"
 	      "\n"
 	      "  while (UmlCom::read_bool()) {\n"
-	      "    QCString s = UmlCom::read_string();\n"
+	      "    QByteArray s = UmlCom::read_string();\n"
 	      "    int x = (int) UmlCom::read_unsigned();\n"
 	      "    int y = (int) UmlCom::read_unsigned();\n"
 	      "    int w = (int) UmlCom::read_unsigned();\n"
@@ -1850,7 +1850,7 @@ void upgrade_interaction()
 	     "\n");
   s += "\n\
   while (UmlCom::read_bool()) {\n\
-    QCString s = UmlCom::read_string();\n\
+    QByteArray s = UmlCom::read_string();\n\
     int x = (int) UmlCom::read_unsigned();\n\
     int y = (int) UmlCom::read_unsigned();\n\
     int w = (int) UmlCom::read_unsigned();\n\

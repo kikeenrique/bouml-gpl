@@ -28,72 +28,58 @@
 
 #include "UmlEnum.h"
 
-class StateSpec
-{
-    public:
-        enum kind {
-            is3states, isClassDrawingMode, isDrawingLanguage, isShowContextMode, isMemberWidth
-        };
-
-        QString name;
-        void * state;
-        kind who;
-
-        void set (QString n, Uml3States * s) {
-            name = n;
-            state = s;
-            who = is3states;
-        };
-        void set (QString n, ClassDrawingMode * s) {
-            name = n;
-            state = s;
-            who = isClassDrawingMode;
-        };
-        void set (QString n, DrawingLanguage * s) {
-            name = n;
-            state = s;
-            who = isDrawingLanguage;
-        };
-        void set (QString n, ShowContextMode * s) {
-            name = n;
-            state = s;
-            who = isShowContextMode;
-        };
-        void set (QString n, char * s) {
-            name = n;
-            state = s;
-            who = isMemberWidth;
-        };
-
-        void set_state (int v);
+class StateSpec {
+  public:
+    enum kind {
+      is3states, isClassDrawingMode, isDrawingLanguage, isShowContextMode, isMemberWidth
+    };
+  
+    QString name;
+    void * state;
+    kind who;
+    
+    void set(QString n, Uml3States * s) {
+      name = n;
+      state = s;
+      who = is3states;
+    };
+    void set(QString n, ClassDrawingMode * s) {
+      name = n;
+      state = s;
+      who = isClassDrawingMode;
+    };
+    void set(QString n, DrawingLanguage * s) {
+      name = n;
+      state = s;
+      who = isDrawingLanguage;
+    };
+    void set(QString n, ShowContextMode * s) {
+      name = n;
+      state = s;
+      who = isShowContextMode;
+    };
+    void set(QString n, char * s) {
+      name = n;
+      state = s;
+      who = isMemberWidth;
+    };
+    
+    void set_state(int v);
 };
 
-class StateSpecVector
-{
-    public:
-        StateSpecVector() : _size (0), _v (0) {}
-        StateSpecVector (int s) : _size (s) {
-            _v = new StateSpec[s];
-        }
-        ~StateSpecVector() {
-            if (_v) {
-                delete [] _v;
-            }
-        }
-        int size() const {
-            return _size;
-        }
-        void resize (int s);
-        StateSpec & operator[] (int i) const {
-            return _v[i];
-        }
-        StateSpec & at (int i) const {
-            return _v[i];
-        }
-
-    private:
-        int _size;
-        StateSpec * _v;
+class StateSpecVector {
+  public:
+    StateSpecVector() : _size(0), _v(0) {}
+    StateSpecVector(int s) : _size(s) { _v = new StateSpec[s]; }
+    ~StateSpecVector() { if (_v) delete [] _v; }
+    int size() const { return _size; }
+    void resize(int s);
+    StateSpec & operator[] (int i) const { return _v[i]; }
+    StateSpec & at (int i) const { return _v[i]; }
+    
+  private:
+    int _size;
+    StateSpec * _v;
 };
 
 #endif

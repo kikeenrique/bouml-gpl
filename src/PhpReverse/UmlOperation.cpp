@@ -47,11 +47,11 @@ using namespace std;
 
 bool UmlOperation::new_one(Class * container, aVisibility visibility,
 			   bool finalp, bool abstractp, bool staticp,
-			   QCString comment, QCString description)
+			   QByteArray comment, QByteArray description)
 {
   // 'function' was read, it is followed by :
   // ['&'] name'(' {'array' | <classname>] ['&'] '$'<varname> ['=' <value>]}* ')' '{' ... '}'
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   bool refp;
   
   if (s == "&") {
@@ -66,7 +66,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
     return FALSE;
   }
     
-  QCString name = s;
+  QByteArray name = s;
   
 #ifdef TRACE
   cout << "OPERATION '" << name << "'\n";
@@ -90,7 +90,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
     op = UmlBaseOperation::create(cl, name);
     
     if (op == 0) {
-      PhpCatWindow::trace(QCString("<font face=helvetica><b>cannot add operation <i>")
+      PhpCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add operation <i>")
 			   + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
       return FALSE;
@@ -101,7 +101,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
 #endif
   }
     
-  QCString def;
+  QByteArray def;
     
   if (op != 0) {
     op->set_Visibility(visibility);
@@ -148,7 +148,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
   
   while (read_param(container, rank, param, def, op == 0)) {
     if ((op != 0) && ! op->addParameter(rank++, param)) {
-      PhpCatWindow::trace(QCString("<font face=helvetica><b>cannot add param <i>")
+      PhpCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add param <i>")
 			   + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
 #ifdef TRACE
@@ -200,7 +200,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
     
 #ifdef REVERSE
     if (op != 0) {
-      QCString e = Lex::region();
+      QByteArray e = Lex::region();
       
       e.truncate(e.length() - 1);	// remove }
 
@@ -242,7 +242,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
     unsigned nparams = l.count();
 
     if (nparams != 0) {
-      QCString varname;
+      QByteArray varname;
       int index2;
       char xn[16];
 
@@ -287,13 +287,13 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
 // a param is : {'array' | <classname>] ['&'] '$'<varname> ['=' <value>]
 
 bool UmlOperation::read_param(Class * container, unsigned rank,
-			      UmlParameter & param, QCString & def, bool bypass)
+			      UmlParameter & param, QByteArray & def, bool bypass)
 {
 #ifdef TRACE
   cout << "UmlOperation::manage_param " << rank << "\n";
 #endif
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
   if (s.isEmpty()) {
     Lex::premature_eof();
@@ -351,7 +351,7 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
   }
   
   if (! bypass) {
-    QCString n_close = QCString().setNum(rank) + "}";
+    QByteArray n_close = QByteArray().setNum(rank) + "}";
     
     param.name = s.mid(1);
 	
@@ -416,7 +416,7 @@ void UmlOperation::skip_body(int level) {
   Lex::clear_comments();
 }
 	 
-QCString UmlOperation::skip_expr(int level) {
+QByteArray UmlOperation::skip_expr(int level) {
   char c;
     
   while (((c = Lex::read_word_bis()) != 0) &&
@@ -434,7 +434,7 @@ QCString UmlOperation::skip_expr(int level) {
   
   Lex::clear_comments();
   
-  QCString e;
+  QByteArray e;
   
   if (c != 0)
     e += c;

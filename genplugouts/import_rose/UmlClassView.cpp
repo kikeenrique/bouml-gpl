@@ -12,7 +12,7 @@
 #include "UmlUseCaseDiagram.h"
 #include "UmlSequenceDiagram.h"
 #include "UmlCollaborationDiagram.h"
-UmlClassView::UmlClassView(void * id, const QCString & n)  : UmlBaseClassView(id, n){
+UmlClassView::UmlClassView(void * id, const QByteArray & n)  : UmlBaseClassView(id, n){
  ucv = 0;
  cpt[kind()] += 1;
 
@@ -20,16 +20,16 @@ UmlClassView::UmlClassView(void * id, const QCString & n)  : UmlBaseClassView(id
 
 void UmlClassView::import(UmlPackage * parent, File & f)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, " class view's name expected");
 
-  QCString a;
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
+  QByteArray a;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
   
   for (;;) {
     int k = f.readDefinitionBeginning(a, id, ste, doc, prop);
@@ -45,7 +45,7 @@ void UmlClassView::import(UmlPackage * parent, File & f)
       
       if (! f2.open(IO_ReadOnly))
 	UmlCom::trace("<br>cannot open '" + a + "' referenced in "
-		      + QCString(f.name()));
+		      + QByteArray(f.name()));
       else {     
         f2.read("(");
         f2.read("object");
@@ -83,7 +83,7 @@ void UmlClassView::import(UmlPackage * parent, File & f)
 	if (!doc.isEmpty())
 	  clv->set_Description(doc);
 	
-	QCString * nmsp;
+	QByteArray * nmsp;
 	
 	if ((nmsp = prop.find("Cplusplus/IsNamespace")) != 0) {
 	  if (*nmsp == "TRUE")
@@ -112,7 +112,7 @@ void UmlClassView::import(UmlPackage * parent, File & f)
 
 void UmlClassView::import(File & f) {
   for (;;) {
-    QCString s;
+    QByteArray s;
 
     switch (f.read(s)) {
     case -1:
@@ -139,7 +139,7 @@ void UmlClassView::import(File & f) {
 
 void UmlClassView::readObjects(File & f) {
   for (;;) {
-    QCString s;
+    QByteArray s;
 
     switch (f.read(s)) {
     case ')':
@@ -180,7 +180,7 @@ void UmlClassView::readObjects(File & f) {
     }
     else {
       if (s != "Mechanism")
-	UmlCom::trace("<br>" + s + " in " + QCString(f.name()) + " NOT MANAGED by ClassView::readObject()");
+	UmlCom::trace("<br>" + s + " in " + QByteArray(f.name()) + " NOT MANAGED by ClassView::readObject()");
       f.skipBlock();
     }
   }

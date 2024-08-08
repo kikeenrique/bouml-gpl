@@ -17,28 +17,28 @@ class QComboBox;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir, QCString & footer);
+    Dialog(UmlArtifact * art, const QByteArray & path_exe, QByteArray & pro, QByteArray & target, QByteArray & tmplt, QByteArray & config, QByteArray & defines, QByteArray & includepath, QByteArray & dependpath, QByteArray & objectsdir, QByteArray & footer);
 
   protected:
     UmlArtifact * _art;
 
-    QCString & _pro;
+    QByteArray & _pro;
 
-    QCString & _target;
+    QByteArray & _target;
 
-    QCString & _tmplt;
+    QByteArray & _tmplt;
 
-    QCString & _config;
+    QByteArray & _config;
 
-    QCString & _defines;
+    QByteArray & _defines;
 
-    QCString & _includepath;
+    QByteArray & _includepath;
 
-    QCString & _dependpath;
+    QByteArray & _dependpath;
 
-    QCString & _objectsdir;
+    QByteArray & _objectsdir;
 
-    QCString & _footer;
+    QByteArray & _footer;
 
     QLineEdit * edpro;
 

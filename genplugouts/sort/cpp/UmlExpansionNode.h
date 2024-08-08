@@ -8,7 +8,7 @@
 class UmlExpansionNode : public UmlBaseExpansionNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlExpansionNode(void * id, const QCString & s) : UmlBaseExpansionNode(id, s) {
+     UmlExpansionNode(void * id, const QByteArray & s) : UmlBaseExpansionNode(id, s) {
     }
 
 };

@@ -45,7 +45,7 @@ bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l,
 		     bool incl, bool hight)
 {
   CppRefType * ref;
-  QCString t = cl->name();
+  QByteArray t = cl->name();
   Weight w;
   
   if (cl->parent()->kind() == aClass) {
@@ -78,7 +78,7 @@ bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l,
   return TRUE;
 }
 
-bool CppRefType::add(const QCString & t, QList<CppRefType> & l, bool incl)
+bool CppRefType::add(const QByteArray & t, QList<CppRefType> & l, bool incl)
 {
   if (t.isEmpty())
     return FALSE;
@@ -116,11 +116,11 @@ bool CppRefType::add(const QCString & t, QList<CppRefType> & l, bool incl)
   return TRUE;
 }
 
-void CppRefType::remove(const QCString & t, QList<CppRefType> & l)
+void CppRefType::remove(const QByteArray & t, QList<CppRefType> & l)
 {
   QListIterator<CppRefType> it(l);
   
-  for (; it.current(); ++it) {
+  for (; (*it); ++it) {
     if ((*it)->type.explicit_type == t) {
       delete *it;
       l.remove(it);
@@ -133,7 +133,7 @@ void CppRefType::remove(UmlClass * cl, QList<CppRefType> & l)
 {
   QListIterator<CppRefType> it(l);
   
-  for (; it.current(); ++it) {
+  for (; (*it); ++it) {
     if ((*it)->type.type == cl) {
       l.remove(it);
       return;
@@ -144,7 +144,7 @@ void CppRefType::remove(UmlClass * cl, QList<CppRefType> & l)
 void CppRefType::force_ref(UmlClass * cl, QList<CppRefType> & l)
 {
   CppRefType * ref;
-  QCString t = cl->name();
+  QByteArray t = cl->name();
   
   for (ref = l.first(); ref; ref = l.next()) {
     // don't use ref->type.toString() because of synonymous
@@ -159,16 +159,16 @@ void CppRefType::force_ref(UmlClass * cl, QList<CppRefType> & l)
 }
 
 void CppRefType::compute(QList<CppRefType> & dependencies,
-			 const QCString & hdef, const QCString & srcdef,
-			 QCString & h_incl,  QCString & decl, QCString & src_incl,
+			 const QByteArray & hdef, const QByteArray & srcdef,
+			 QByteArray & h_incl,  QByteArray & decl, QByteArray & src_incl,
 			 UmlArtifact * who)
 {
   UmlPackage * pack = who->package();
-  QCString hdir;
-  QCString srcdir;
+  QByteArray hdir;
+  QByteArray srcdir;
   
   if (CppSettings::isRelativePath()) {
-    QCString empty;
+    QByteArray empty;
     
     hdir = pack->header_path(empty);
     srcdir = pack->source_path(empty);
@@ -186,8 +186,8 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
     src_incl += CppSettings::headerExtension();
   }
   src_incl += "\"\n";
-  h_incl = "";	// to not be QCString::null
-  decl = "";	// to not be QCString::null
+  h_incl = "";	// to not be QByteArray::null
+  decl = "";	// to not be QByteArray::null
   
   CppRefType * ref;
   
@@ -196,11 +196,11 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
       ? ref->type.type
       : UmlBaseClass::get(ref->type.explicit_type, 0);
     bool included = ref->included;
-    QCString hform;	// form in header
-    QCString srcform;	// form in source
+    QByteArray hform;	// form in header
+    QByteArray srcform;	// form in source
     
     if (cl == 0) {
-      QCString in = CppSettings::include(ref->type.explicit_type);
+      QByteArray in = CppSettings::include(ref->type.explicit_type);
       
       if (!in.isEmpty()) 
 	hform = srcform = in + '\n';
@@ -234,7 +234,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
       srcform = hform;
     }
     else {
-      QCString st = cl->cpp_stereotype();	
+      QByteArray st = cl->cpp_stereotype();	
       
       if ((st == "enum") || (st == "typedef"))
 	included = TRUE;
@@ -257,7 +257,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
       }
       else if (cl->parent()->kind() != aClass) {
 	write_trace_header();
-	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
+	UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
 	incr_warning();
 	continue;
@@ -286,7 +286,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	if ((cl->associatedArtifact() == 0) &&
 	    (cl->parent()->kind() != aClass)) {
 	  write_trace_header();
-	  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
+	  UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
 			"</i> referenced but does not have associated <i>artifact</i></b></font><br>");
 	  incr_warning();
 	}

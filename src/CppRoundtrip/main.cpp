@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
   if (argc != 2)
       return 0;
   
-  if (UmlCom::connect(QCString(argv[1]).toUInt())) {
+  if (UmlCom::connect(QByteArray(argv[1]).toUInt())) {
     bool aborted = TRUE;
     
     try {
@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
 	throw 0;
       }
 	
-      QCString f;
+      QByteArray f;
 	
       if (project->propertyValue("#file", f))
 	Lex::defines(f);

@@ -18,44 +18,44 @@ struct UmlStereotype;
 class UmlSettings {
   public:
     // return the default description
-    static QCString artifactDescription();
+    static QByteArray artifactDescription();
 
     // set the default description
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ArtifactDescription(QCString v);
+    static bool set_ArtifactDescription(QByteArray v);
 
     // return the default description
-    static QCString classDescription();
+    static QByteArray classDescription();
 
     // set the default description
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ClassDescription(QCString v);
+    static bool set_ClassDescription(QByteArray v);
 
     // return the default description
-    static QCString operationDescription();
+    static QByteArray operationDescription();
 
     // set the default description
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_OperationDescription(QCString v);
+    static bool set_OperationDescription(QByteArray v);
 
     // return the default description
-    static QCString attributeDescription();
+    static QByteArray attributeDescription();
 
     // set the default description
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDescription(QCString v);
+    static bool set_AttributeDescription(QByteArray v);
 
     // return the default description
-    static QCString relationDescription();
+    static QByteArray relationDescription();
 
     // set the default description
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationDescription(QCString v);
+    static bool set_RelationDescription(QByteArray v);
 
 
   protected:
@@ -64,15 +64,15 @@ class UmlSettings {
 
     static bool _defined;
 
-    static QCString _artifact_default_description;
+    static QByteArray _artifact_default_description;
 
-    static QCString _class_default_description;
+    static QByteArray _class_default_description;
 
-    static QCString _operation_default_description;
+    static QByteArray _operation_default_description;
 
-    static QCString _attribute_default_description;
+    static QByteArray _attribute_default_description;
 
-    static QCString _relation_default_description;
+    static QByteArray _relation_default_description;
 
     static QDict<UmlBuiltin> _map_builtins;
 
@@ -96,31 +96,31 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static unsigned multiplicity_column(const QCString & mult);
+    static unsigned multiplicity_column(const QByteArray & mult);
 
     //internal, do NOT use it
     
-    static QCString uml_type(const QCString & t, QCString UmlBuiltin::* f);
+    static QByteArray uml_type(const QByteArray & t, QByteArray UmlBuiltin::* f);
 
     //internal, do NOT use it
     
-    static QCString uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_rel_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
     //internal, do NOT use it
     
-    static QCString uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_class_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
     //internal, do NOT use it
     
-    static UmlBuiltin * add_type(const QCString & s);
+    static UmlBuiltin * add_type(const QByteArray & s);
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_rel_stereotype(const QCString & s);
+    static UmlStereotype * add_rel_stereotype(const QByteArray & s);
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_class_stereotype(const QCString & s);
+    static UmlStereotype * add_class_stereotype(const QByteArray & s);
 
 };
 

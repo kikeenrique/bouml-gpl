@@ -8,7 +8,7 @@
 class UmlInitialPseudoState : public UmlBaseInitialPseudoState {
   public:
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlInitialPseudoState(void * id) : UmlBaseInitialPseudoState(id, "") {

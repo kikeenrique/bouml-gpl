@@ -56,10 +56,10 @@ void UmlFlow::write_it(FileOut & out) {
   out.ref(parent(), "source");
   out.ref(target(), "target");
   
-  QCString w;
-  QCString g;
-  QCString s;
-  QCString t;
+  QByteArray w;
+  QByteArray g;
+  QByteArray s;
+  QByteArray t;
   
   switch (_lang) {
   case Uml:

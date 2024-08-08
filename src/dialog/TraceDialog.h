@@ -28,33 +28,32 @@
 
 #include "qdialog.h"
 
-class QTextView;
+class Q3TextView;
 
-class TraceDialog : public QDialog
-{
-        Q_OBJECT
+class TraceDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    static TraceDialog * the;
+    static Q3TextView * txt;  
+    static bool AutoRaise;
+    static QString content;
 
-    protected:
-        static TraceDialog * the;
-        static QTextView * txt;
-        static bool AutoRaise;
-        static QString content;
-
-        static QSize previous_size;
-
-        TraceDialog();
-
-    public:
-        virtual ~TraceDialog();
-
-        static void add (const char *);
-        static void clear();
-        static void show_it();
-        static void trace_auto_raise (bool y);
-
-    public slots:
-        void clr();
-        void save();
+    static QSize previous_size;
+      
+    TraceDialog();
+    
+  public:
+    virtual ~TraceDialog();
+    
+    static void add(const char *);
+    static void clear();
+    static void show_it();
+    static void trace_auto_raise(bool y);
+    
+  public slots:
+    void clr();
+    void save();
 };
 
 #endif

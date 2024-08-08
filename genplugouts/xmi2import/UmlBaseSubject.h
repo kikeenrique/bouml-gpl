@@ -3,7 +3,7 @@
 
 
 #include <qcstring.h>
-#include <qptrvector.h>
+#include <qvector.h>
 
 class UmlSubject;
 
@@ -11,13 +11,13 @@ class UmlSubject;
 class UmlBaseSubject {
   public:
     // return the name
-    const QCString & name() const {
+    const QByteArray & name() const {
         return _name;
     }
 
 
   private:
-    QCString _name;
+    QByteArray _name;
 
     int _x;
 

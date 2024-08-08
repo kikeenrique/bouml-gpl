@@ -5,7 +5,7 @@
 void UmlActivityAction::html() {
   UmlCom::message(name());
 
-  QCString s = sKind();
+  QByteArray s = sKind();
   
   s.replace(0, 1, s.left(1).upper());
     
@@ -15,7 +15,7 @@ void UmlActivityAction::html() {
   parent()->write();
   fw.write("</p>");
 
-  QCString scpp, sjava;
+  QByteArray scpp, sjava;
   
   s = preCondition();
   scpp = cppPreCondition();

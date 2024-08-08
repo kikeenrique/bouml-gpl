@@ -12,7 +12,7 @@ class UmlDeploymentView : public UmlBaseDeploymentView {
   public:
     virtual void sort();
 
-    UmlDeploymentView(void * id, const QCString & n) : UmlBaseDeploymentView(id, n) {};
+    UmlDeploymentView(void * id, const QByteArray & n) : UmlBaseDeploymentView(id, n) {};
 
     virtual int orderWeight();
 

@@ -9,17 +9,17 @@
 
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
   
     void remove_cpp_throw();
     void add_param(int rank, aDirection dir,
 		   const char * name, UmlTypeSpec type);
     void set_cpp(const char * return_form_or_inherit,
-		 const char * params, QCString body,
+		 const char * params, QByteArray body,
 		 bool inlinep, const char * if_def, const char * end_if);
     void set_java(const char * return_form, const char * params,
-		  QCString body, bool inlinep);
+		  QByteArray body, bool inlinep);
     
     virtual void rename_jdk5();
     

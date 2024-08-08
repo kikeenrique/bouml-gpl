@@ -101,13 +101,13 @@ void UmlItem::manage_description(const char *& p, const char *& pp) {
   p = the_comment;
 }
 
-void UmlItem::manage_alias(const char *& p, QTextOStream & ts) {
+void UmlItem::manage_alias(const char *& p, QTextStream & ts) {
   // p starts by '@'
   const char * pclosed;
   
   if ((p[1] == '{') && ((pclosed = strchr(p + 2, '}')) != 0)) {
-    QCString key(p + 2, pclosed - p - 1);
-    QCString value;
+    QByteArray key(p + 2, pclosed - p - 1);
+    QByteArray value;
     UmlItem * node = this;
 
     do {
@@ -135,7 +135,7 @@ void UmlItem::generate() {
   // does nothing
 }
 
-void UmlItem::generate_import(QTextOStream &, const QCString &) {
+void UmlItem::generate_import(QTextStream &, const QByteArray &) {
   // does nothing
 }
 

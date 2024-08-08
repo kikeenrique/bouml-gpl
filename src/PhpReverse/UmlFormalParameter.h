@@ -39,7 +39,7 @@ class UmlFormalParameter : public UmlBaseFormalParameter {
   public:
     UmlFormalParameter() {};
 
-    UmlFormalParameter(QCString n, const UmlTypeSpec & e);
+    UmlFormalParameter(QByteArray n, const UmlTypeSpec & e);
 };
 
 typedef QValueList<UmlFormalParameter> FormalParameterList;

@@ -11,14 +11,14 @@ class Token;
 class UmlOnSignalAction : public UmlBaseOnSignalAction {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlOnSignalAction(void * id, const QCString & s) : UmlBaseOnSignalAction(id, s) {
+     UmlOnSignalAction(void * id, const QByteArray & s) : UmlBaseOnSignalAction(id, s) {
     }
 
 
   public:
     //  call at end of import : try to solve signal
     
-    virtual void solve(QCString idref);
+    virtual void solve(QByteArray idref);
 
 
   protected:

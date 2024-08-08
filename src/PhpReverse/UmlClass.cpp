@@ -25,6 +25,6 @@
 
 #include "UmlClass.h"
 
-UmlClass::UmlClass(void * id, const QCString & n) 
+UmlClass::UmlClass(void * id, const QByteArray & n) 
     : UmlBaseClass(id, n) {
 }

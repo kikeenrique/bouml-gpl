@@ -30,9 +30,9 @@
 QStringList Namespace::Stack;
 
 // namespace and class aliases
-QMap<QCString,QCString> Namespace::Aliases;
+QMap<QByteArray,QByteArray> Namespace::Aliases;
 
-void Namespace::enter(QCString s)
+void Namespace::enter(QByteArray s)
 {
   for (;;) {
     Stack.prepend(s + "\\");
@@ -53,14 +53,14 @@ void Namespace::exit()
   Aliases.clear();
 }
 
-QString Namespace::namespacify(QCString s) {
+QString Namespace::namespacify(QByteArray s) {
   int index = s.find("\\");
   
   if (index == 0)
     // absolute path
     return ((const char *) s) + 1;
   
-  QMap<QCString,QCString>::ConstIterator it;
+  QMap<QByteArray,QByteArray>::ConstIterator it;
   
   if (index == -1) {
     if ((it = Aliases.find(s)) != Aliases.end())
@@ -79,11 +79,11 @@ QString Namespace::namespacify(QCString s) {
     : Stack.last() + QString(s);
 }
 
-QCString Namespace::current() {
+QByteArray Namespace::current() {
   if (Stack.isEmpty())
     return 0;
   
   QString & s = Stack.last();
   
-  return QCString(s.left(s.length() - 1));
+  return QByteArray(s.left(s.length() - 1));
 }

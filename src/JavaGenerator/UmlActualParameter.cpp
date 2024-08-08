@@ -29,7 +29,7 @@
 #include "UmlActualParameter.h"
 #include "UmlClass.h"
 
-void UmlActualParameter::generate(QTextOStream & f) const {
+void UmlActualParameter::generate(QTextStream & f) const {
   f << ((rank() == 0) ? "<" : ", ");
   UmlClass::write(f, value());
 }

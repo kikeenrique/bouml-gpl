@@ -25,7 +25,7 @@
 
 #include "UmlFormalParameter.h"
 
-UmlFormalParameter::UmlFormalParameter(QCString n, const UmlTypeSpec & e) {
+UmlFormalParameter::UmlFormalParameter(QByteArray n, const UmlTypeSpec & e) {
   _name = n;
   _extends = e;
 }

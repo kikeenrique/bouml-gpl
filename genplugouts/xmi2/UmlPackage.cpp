@@ -21,18 +21,18 @@ void UmlPackage::xmi(int argc, char ** argv) {
   // the project
 
   bool noarg = (argc == 0);
-  QCString path;
-  QCString encoding;
-  QCString nomodel;
-  QCString genviews;
-  QCString uml20;
-  QCString pkprefix;
-  QCString visprefix;
-  QCString primitivetype;
-  QCString genextension;
-  QCString geneclipse;
-  QCString commentexporter;
-  QCString linefeed;
+  QByteArray path;
+  QByteArray encoding;
+  QByteArray nomodel;
+  QByteArray genviews;
+  QByteArray uml20;
+  QByteArray pkprefix;
+  QByteArray visprefix;
+  QByteArray primitivetype;
+  QByteArray genextension;
+  QByteArray geneclipse;
+  QByteArray commentexporter;
+  QByteArray linefeed;
   
   bool comment_exporter = FALSE;  
   bool no_model = FALSE;
@@ -247,8 +247,8 @@ void UmlPackage::write(FileOut & out) {
   out.quote(name());
   out << '"'; 
   
-  QCString mcr;
-  QCString mmr;
+  QByteArray mcr;
+  QByteArray mmr;
   
   if (is_profile) {
     propertyValue("metaclassreference", mcr);

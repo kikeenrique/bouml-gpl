@@ -8,7 +8,7 @@
 
 class UmlComponentView : public UmlBaseComponentView {
   public:
-    UmlComponentView(void * id, const QCString & n)
+    UmlComponentView(void * id, const QByteArray & n)
       : UmlBaseComponentView(id, n) {};
 };
 

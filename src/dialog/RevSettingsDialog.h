@@ -32,40 +32,39 @@ class QCheckBox;
 class QComboBox;
 class LineEdit;
 
-class RevSettingsDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        LineEdit * cpp_dir;
-        LineEdit * cpp_file;
-        QCheckBox * cpp_dir_case_sensitive;
-        QCheckBox * cpp_file_case_sensitive;
-        QComboBox * edcpp_h_extension;
-        QComboBox * edcpp_src_extension;
-
-        LineEdit * java_dir;
-        LineEdit * java_file;
-        QCheckBox * java_dir_case_sensitive;
-        QCheckBox * java_file_case_sensitive;
-        QComboBox * edjava_extension;
-
-        LineEdit * php_dir;
-        LineEdit * php_file;
-        QCheckBox * php_dir_case_sensitive;
-        QCheckBox * php_file_case_sensitive;
-        QComboBox * edphp_extension;
-
-        static QSize previous_size;
-
-    public:
-        RevSettingsDialog();
-        virtual ~RevSettingsDialog();
-
-    protected slots:
-        virtual void polish();
-        void accept();
-        void show_regexp_help();
+class RevSettingsDialog : public QDialog {
+  Q_OBJECT
+ 
+  protected:
+    LineEdit * cpp_dir;
+    LineEdit * cpp_file;
+    QCheckBox * cpp_dir_case_sensitive;
+    QCheckBox * cpp_file_case_sensitive;
+    QComboBox * edcpp_h_extension;
+    QComboBox * edcpp_src_extension;
+    
+    LineEdit * java_dir;
+    LineEdit * java_file;
+    QCheckBox * java_dir_case_sensitive;
+    QCheckBox * java_file_case_sensitive;
+    QComboBox * edjava_extension;
+    
+    LineEdit * php_dir;
+    LineEdit * php_file;
+    QCheckBox * php_dir_case_sensitive;
+    QCheckBox * php_file_case_sensitive;
+    QComboBox * edphp_extension;
+ 
+    static QSize previous_size;
+  
+ public:
+    RevSettingsDialog();
+    virtual ~RevSettingsDialog();
+ 
+  protected slots:
+    virtual void polish();
+    void accept();
+    void show_regexp_help();
 };
 
 #endif

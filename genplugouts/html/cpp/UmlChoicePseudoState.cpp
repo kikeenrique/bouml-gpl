@@ -1,7 +1,7 @@
 
 #include "UmlChoicePseudoState.h"
 
-QCString UmlChoicePseudoState::sKind() {
+QByteArray UmlChoicePseudoState::sKind() {
   return "choice pseudo state";
 }
 

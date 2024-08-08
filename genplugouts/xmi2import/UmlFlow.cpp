@@ -24,8 +24,8 @@ void UmlFlow::solveThem()
   for (iter = All.begin(); iter != All.end(); ++iter) {
     Flow & flow = *iter;
     
-    QMap<QCString, UmlItem*>::Iterator isrc = UmlItem::All.find(flow.source);
-    QMap<QCString, UmlItem*>::Iterator itgt = UmlItem::All.find(flow.target);
+    QMap<QByteArray, UmlItem*>::Iterator isrc = UmlItem::All.find(flow.source);
+    QMap<QByteArray, UmlItem*>::Iterator itgt = UmlItem::All.find(flow.target);
     
     if ((isrc == UmlItem::All.end()) && 
 	((isrc = Outgoings.find(flow.id)) == Outgoings.end())) {
@@ -58,7 +58,7 @@ void UmlFlow::solveThem()
 	  if (flow.interrupt)
 	    f->set_Stereotype("interrupt");
 	  if (! flow.selection.isEmpty()) {
-	    QMap<QCString, QCString>::Iterator iter =
+	    QMap<QByteArray, QByteArray>::Iterator iter =
 	      OpaqueDefs.find(flow.selection);
 	    
 	    if (iter == OpaqueDefs.end()) {
@@ -69,7 +69,7 @@ void UmlFlow::solveThem()
 	      f->set_Selection(*iter);
 	  }
 	  if (! flow.transformation.isEmpty()) {
-	    QMap<QCString, QCString>::Iterator iter =
+	    QMap<QByteArray, QByteArray>::Iterator iter =
 	      OpaqueDefs.find(flow.transformation);
 	    
 	    if (iter == OpaqueDefs.end()) {
@@ -97,7 +97,7 @@ void UmlFlow::solveThem()
 void UmlFlow::importIt(FileIn & in, Token & token, UmlItem *)
 {
   Flow & flow = *(All.append(Flow()));
-  QCString s;
+  QByteArray s;
   
   flow.id = token.xmiId();
   flow.name = token.valueOf("name");
@@ -108,7 +108,7 @@ void UmlFlow::importIt(FileIn & in, Token & token, UmlItem *)
   flow.transformation = token.valueOf("transformation");
   
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
@@ -130,7 +130,7 @@ void UmlFlow::importIt(FileIn & in, Token & token, UmlItem *)
 	  in.finish(s);
       }
       else if (s == "guard") {
-	QCString b = token.valueOf("body");
+	QByteArray b = token.valueOf("body");
 	
 	if (! b.isNull()) {
 	  flow.guard = b;

@@ -30,8 +30,8 @@
 
 
 
-#include <qptrlist.h>
-#include <qtabdialog.h>
+#include <qlist.h>
+#include <q3tabdialog.h>
 
 class QComboBox;
 class QCheckBox;
@@ -43,38 +43,37 @@ class KeyValuesTable;
 class BodyDialog;
 class BrowserNode;
 
-class ActivityPartitionDialog : public QTabDialog
-{
-        Q_OBJECT
+class ActivityPartitionDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    QWidget * umltab;
+    ActivityPartitionData * data;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    QComboBox * edrepresents;
+    BrowserNode * represented;
+    QCheckBox * dimension_cb;
+    QCheckBox * external_cb;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QList<BodyDialog *> edits;
 
-    protected:
-        QWidget * umltab;
-        ActivityPartitionData * data;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        QComboBox * edrepresents;
-        BrowserNode * represented;
-        QCheckBox * dimension_cb;
-        QCheckBox * external_cb;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QList<BodyDialog> edits;
+    static QSize previous_size;
+    
+    static void post_edit_description(ActivityPartitionDialog * d, QString s);
+      
+  public:
+    ActivityPartitionDialog(ActivityPartitionData * nd);
+    virtual ~ActivityPartitionDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
+    void menu_represents();
 
-        static QSize previous_size;
-
-        static void post_edit_description (ActivityPartitionDialog * d, QString s);
-
-    public:
-        ActivityPartitionDialog (ActivityPartitionData * nd);
-        virtual ~ActivityPartitionDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
-        void menu_represents();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

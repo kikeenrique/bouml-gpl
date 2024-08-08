@@ -197,7 +197,7 @@ int Package::file_number(QDir & d, bool rec)
     QFileInfoListIterator it(*list);
     QFileInfo * fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       if (fi->extension(FALSE) == Ext)
 	result += 1;
       ++it;
@@ -272,10 +272,10 @@ void Package::reverse_directory(QDir & d, bool rec) {
     QFileInfoListIterator it(*list);
     QFileInfo * fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       if (fi->extension(FALSE) == Ext) {
 	if (allowed(FileFilter, fi->fileName()))
-	  reverse_file(QCString(fi->filePath()), QCString(my_baseName(fi)));
+	  reverse_file(QByteArray(fi->filePath()), QByteArray(my_baseName(fi)));
 	if (progress)
 	  progress->tic();
 	app->processEvents();
@@ -295,7 +295,7 @@ void Package::reverse_directory(QDir & d, bool rec) {
       while ((di = itd.current()) != 0) {
 	if (((const char *) di->fileName())[0] != '.') {
 	  QDir sd(di->filePath());
-	  Package * p = find(QCString(sd.dirName()), TRUE);
+	  Package * p = find(QByteArray(sd.dirName()), TRUE);
 	  
 	  if (p != 0)
 	    p->reverse_directory(sd, TRUE);
@@ -306,17 +306,17 @@ void Package::reverse_directory(QDir & d, bool rec) {
   }
 }
 
-void Package::reverse_file(QCString path, QCString name) {
+void Package::reverse_file(QByteArray path, QByteArray name) {
   if (! Lex::open(path)) {
     // very strange !
     if (! scan)
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot open <i>")
 		    + path + "</i></b></font><br>");
   }
   else {
     UmlArtifact * art = 0;
-    QCString file_start;
-    QCString file_end;
+    QByteArray file_start;
+    QByteArray file_end;
     
     UmlCom::message(((scan) ? "scan " : "reverse ") + path);
     
@@ -330,7 +330,7 @@ void Package::reverse_file(QCString path, QCString name) {
       redo = FALSE;
       before_class = TRUE;
       
-      QCString s;
+      QByteArray s;
       char c = Lex::read_word_bis();
       
       while (c != 0) {
@@ -362,7 +362,7 @@ void Package::reverse_file(QCString path, QCString name) {
 	    UmlPackage * pack = get_uml(TRUE);
 	    
 	    if ((art = UmlBaseArtifact::create(pack->get_deploymentview(Namespace::current()), name)) == 0) {
-	      UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
+	      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create<i> artifact ")
 			    + name + "</i></b></font><br>");
 	      Namespace::exit();
 	      Lex::close(); 
@@ -458,7 +458,7 @@ void Package::reverse_file(QCString path, QCString name) {
 	UmlPackage * pack = get_uml(TRUE);
 	
 	if ((art = UmlBaseArtifact::create(pack->get_deploymentview(Namespace::current()), name)) == 0) {
-	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
+	  UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create<i> artifact ")
 			+ name + "</i></b></font><br>");
 	  Namespace::exit();
 	  Lex::close(); 
@@ -494,11 +494,11 @@ void Package::reverse_file(QCString path, QCString name) {
 }
 
 void Package::use() {	  
-  QCString s1;
+  QByteArray s1;
   
   while (!(s1 = Lex::read_word()).isEmpty()) {
-    QCString s = Lex::read_word();
-    QCString s2;
+    QByteArray s = Lex::read_word();
+    QByteArray s2;
     
     if (s == "as") {
       s2 = Lex::read_word();
@@ -508,7 +508,7 @@ void Package::use() {
       int p = s1.findRev('\\');
       
       s2 = (p == -1)
-	? QCString() // strange
+	? QByteArray() // strange
 	: s1.mid(p + 1);
     }
     
@@ -524,7 +524,7 @@ void Package::use() {
   }
 }
 
-void Package::update_class_list(QCString pack, UmlItem * container)
+void Package::update_class_list(QByteArray pack, UmlItem * container)
 {
   const QVector<UmlItem> & ch = container->children();
   
@@ -544,7 +544,7 @@ void Package::update_class_list(QCString pack, UmlItem * container)
   }
 }
 
-Class * Package::define(const QCString & name, char st) {
+Class * Package::define(const QByteArray & name, char st) {
   Class * cl = Defined[name];
   
   if (cl != 0)
@@ -566,7 +566,7 @@ Class * Package::define(const QCString & name, char st) {
   return cl;
 }
 
-void Package::compute_type(QCString name, UmlTypeSpec & typespec,
+void Package::compute_type(QByteArray name, UmlTypeSpec & typespec,
 			   Class ** need_object) {
   typespec.type = 0;
   typespec.explicit_type = 0;
@@ -619,7 +619,7 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 // the class is not a builtin, the package is the right,
 // the name doesn't contains '.'
 
-Class * Package::declare_if_needed(QCString name, char st) {
+Class * Package::declare_if_needed(QByteArray name, char st) {
   Class * cl;
   
   // the class already exist ?
@@ -635,12 +635,12 @@ Class * Package::declare_if_needed(QCString name, char st) {
 }
 
 #ifdef WITH_PHPCAT
-void Package::declare(const QCString & name, Class * cl) {
+void Package::declare(const QByteArray & name, Class * cl) {
   Undefined.insert(name, cl);
 }
 #endif
 
-Package * Package::find(QCString name, bool nohack) {
+Package * Package::find(QByteArray name, bool nohack) {
   // hack
   if (!nohack && (text(0) == (const char *) name))
     return this;
@@ -700,7 +700,7 @@ UmlPackage * Package::get_uml(bool mandatory) {
 	return 0;
       
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create package <i>")
 		    + name + "</i> under package <i>" + uml_pa->name() +
 		    "</b></font><br>");
       UmlCom::message("");
@@ -792,7 +792,7 @@ void Package::menu() {
 	QApplication::restoreOverrideCursor();
       }
       else
-	UmlCom::trace(QCString("<font face=helvetica><i>") + path +
+	UmlCom::trace(QByteArray("<font face=helvetica><i>") + path +
 		      "</i> <b>doesn't exist !</b></font><br>");
 	
     }

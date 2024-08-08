@@ -30,32 +30,32 @@
 
 
 
-#include <qtable.h>
+#include <q3table.h>
+//Added by qt3to4:
+#include <QPixmap>
 
-class TableItem : public QTableItem
-{
-    public:
-        TableItem (QTable * table, EditType et, const QString & text)
-            : QTableItem (table, et, text) {};
-        TableItem (QTable * table, EditType et, const QString & text, const QPixmap & p)
-            : QTableItem (table, et, text, p) {};
-
-        virtual int alignment() const;
+class TableItem : public Q3TableItem {
+  public:
+    TableItem(Q3Table * table, EditType et, const QString & text)
+      : Q3TableItem(table, et, text) {};
+    TableItem(Q3Table * table, EditType et, const QString & text, const QPixmap & p)
+      : Q3TableItem(table, et, text, p) {};
+  
+    virtual int alignment() const;
 };
 
-class MyTable : public QTable
-{
-        Q_OBJECT
+class MyTable : public Q3Table {
+  Q_OBJECT
+    
+  public:
+    MyTable(QWidget * parent = 0, const char * name = 0) 
+      : Q3Table(parent, name) {};
+    MyTable(int numRows, int numCols, QWidget * parent = 0, const char * name = 0)
+      : Q3Table(numRows, numCols, parent, name) {};
 
-    public:
-        MyTable (QWidget * parent = 0, const char * name = 0)
-            : QTable (parent, name) {};
-        MyTable (int numRows, int numCols, QWidget * parent = 0, const char * name = 0)
-            : QTable (numRows, numCols, parent, name) {};
-
-        virtual void setText (int row, int col, const QString & text);
-
-        void forceUpdateCells();
+    virtual void setText(int row, int col, const QString & text);
+    
+    void forceUpdateCells();
 };
 
 #endif

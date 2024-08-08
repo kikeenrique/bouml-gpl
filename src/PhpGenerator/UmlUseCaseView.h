@@ -30,7 +30,7 @@
 
 class UmlUseCaseView : public UmlBaseUseCaseView {
   public:
-    UmlUseCaseView(void * id, const QCString & n)
+    UmlUseCaseView(void * id, const QByteArray & n)
       : UmlBaseUseCaseView(id, n) {};
 	
     virtual void generate();

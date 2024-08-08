@@ -41,9 +41,9 @@ ClassContainer::~ClassContainer() {
 bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl, 
 			       const QValueList<FormalParameterList> & tmplts,
 			       QValueList<UmlTypeSpec> * actuals,
-			       QCString & str_actuals, QCString s,
-			       UmlClass ** first_actual_class, QCString & def,
-			       QCString & genericname) {
+			       QByteArray & str_actuals, QByteArray s,
+			       UmlClass ** first_actual_class, QByteArray & def,
+			       QByteArray & genericname) {
   str_actuals = 0;
   if (actuals != 0)
     actuals->clear();
@@ -53,8 +53,8 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
     return FALSE;
   }
     
-  QCString path; // type without <..>
-  QCString type; // real type form
+  QByteArray path; // type without <..>
+  QByteArray type; // real type form
   bool internal_template = FALSE;	// true if type is ...<...>...
   int pfixdef_length = 0;		// generic form including first class
   int first_actual_class_length = 0;	// first class's name length
@@ -80,7 +80,7 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
       Lex::mark();
       
       int level = 0;
-      QCString firstword;	// first element in current actual
+      QByteArray firstword;	// first element in current actual
       int pfixlen = 0;		// type length including firstword
       
       for (;;) {
@@ -108,7 +108,7 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
 	}
       }
       
-      QCString e = Lex::region();
+      QByteArray e = Lex::region();
       
       type += e;
       str_actuals += e;

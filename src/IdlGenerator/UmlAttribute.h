@@ -30,11 +30,11 @@
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
 
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       QCString indent, bool = FALSE);
+    virtual void generate_decl(QTextStream & f, const QByteArray & cl_stereotype,
+			       QByteArray indent, bool = FALSE);
 };
 
 #endif

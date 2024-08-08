@@ -30,8 +30,8 @@
 
 extern void set_verbose();
 extern bool verbose();
-extern void set_trace_header(QCString s);
-extern QCString get_trace_header();
+extern void set_trace_header(QByteArray s);
+extern QByteArray get_trace_header();
 extern void write_trace_header();
 
 extern void incr_error();

@@ -1,15 +1,3 @@
-# About this bouml repository #
-Repository containing latests software versions before bouml was forked as paid version. 
-bouml GPL versions until version 4.22. 
-No version from 4.23 has been found. If you have any, please contact or create a pull request.
-
-
-
-
-
-
-# Original Readme #
-
 This the distribution of BOUML for Unix/Linux/Solaris.
 The sources may be compiled under Windows but I do not help you for
 this because it is useless : the Windows executable are available on

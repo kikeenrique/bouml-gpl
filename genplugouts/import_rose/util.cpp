@@ -2,7 +2,7 @@
 
 #include "util.h"
 
-QCString legalName(QCString s)
+QByteArray legalName(QByteArray s)
 {
   for (unsigned index = 0; index != s.length(); index += 1) {
     char c = s.at(index);
@@ -19,7 +19,7 @@ QCString legalName(QCString s)
   return s;
 }
 
-QCString replace(QCString f, QCString k, QCString v)
+QByteArray replace(QByteArray f, QByteArray k, QByteArray v)
 {
   int index = f.find(k);
 

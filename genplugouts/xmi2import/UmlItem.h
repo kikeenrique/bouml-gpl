@@ -19,22 +19,22 @@ typedef void (*PFunc)(FileIn &, Token &, UmlItem *);
 //  'element' has an unresolved reference
 class Unresolved {
   public:
-    static void addGeneralization(UmlItem * e, QCString & id, QCString cstr);
+    static void addGeneralization(UmlItem * e, QByteArray & id, QByteArray cstr);
 
-    static void addRef(UmlItem * e, QCString & id);
+    static void addRef(UmlItem * e, QByteArray & id);
 
     //  for QValueList
     Unresolved(){};
 
 
   protected:
-    Unresolved(UmlItem * e, QCString id, QCString cstr) : element(e), idref(id), constraint(cstr) {}
+    Unresolved(UmlItem * e, QByteArray id, QByteArray cstr) : element(e), idref(id), constraint(cstr) {}
 
     UmlItem * element;
 
-    QCString idref;
+    QByteArray idref;
 
-    QCString constraint;
+    QByteArray constraint;
 
     static QValueList<Unresolved> Generalizations;
 
@@ -49,7 +49,7 @@ class Unresolved {
 //  'element' has an unresolved reference
 class UnresolvedWithContext {
   public:
-    static void add(UmlItem * e, QCString id, int c);
+    static void add(UmlItem * e, QByteArray id, int c);
 
     static void solveThem();
 
@@ -58,11 +58,11 @@ class UnresolvedWithContext {
 
 
   protected:
-    UnresolvedWithContext(UmlItem * e, QCString id, int c) : element(e), idref(id), context(c) {}
+    UnresolvedWithContext(UmlItem * e, QByteArray id, int c) : element(e), idref(id), context(c) {}
 
     UmlItem * element;
 
-    QCString idref;
+    QByteArray idref;
 
     int context;
 
@@ -72,25 +72,25 @@ class UnresolvedWithContext {
 
 class UnresolvedRelation {
   public:
-    static void add(int ctx, QCString idFrom, QCString idTo, QCString label, QCString constraint);
+    static void add(int ctx, QByteArray idFrom, QByteArray idTo, QByteArray label, QByteArray constraint);
 
     //  for QValueList
     UnresolvedRelation();
 
 
   protected:
-    UnresolvedRelation(int ctx, QCString idFrom, QCString idTo, QCString label, QCString cnst)
+    UnresolvedRelation(int ctx, QByteArray idFrom, QByteArray idTo, QByteArray label, QByteArray cnst)
       : context(ctx), from(idFrom), to(idTo), name(label), constraint(cnst) {}
 
     int context;
 
-    QCString from;
+    QByteArray from;
 
-    QCString to;
+    QByteArray to;
 
-    QCString name;
+    QByteArray name;
 
-    QCString constraint;
+    QByteArray constraint;
 
     static QValueList<UnresolvedRelation> All;
 
@@ -106,18 +106,18 @@ class UnresolvedRelation {
 // You can modify it as you want (except the constructor)
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n) {};
+    UmlItem(void * id, const QByteArray & n) : UmlBaseItem(id, n) {};
 
     virtual ~UmlItem();
 
-    QCString id() const {
+    QByteArray id() const {
       return _xmi_id;
     }
 
     //Import an xmi file, only allowed in a package
     virtual void import(QString path);
 
-    void addItem(QCString id, FileIn & in);
+    void addItem(QByteArray id, FileIn & in);
 
     //look at the token kind to call the function managing
     //this case or bypass the token
@@ -129,29 +129,29 @@ class UmlItem : public UmlBaseItem {
 
     //  call at end of import : try to solve reference
     //  does nothing at this level : never called
-    virtual void solve(QCString idref);
+    virtual void solve(QByteArray idref);
 
     //  call at end of import : try to solve reference
     //  does nothing at this level : never called
-    virtual void solve(int context, QCString idref);
+    virtual void solve(int context, QByteArray idref);
 
     //  call at end of import : try to solve generalization dependencies and realization
     //  not from a class
-    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint);
+    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QByteArray label, QByteArray constraint);
 
     //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
-    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint);
+    virtual void solveGeneralizationDependencyRealization(int context, QByteArray idref, QByteArray label, QByteArray constraint);
 
 
   protected:
     //  try to solve type, return true is type already known
     //  else memorize unsolved couple if needed and return false
-    bool setType(QCString idref, UmlTypeSpec & type);
+    bool setType(QByteArray idref, UmlTypeSpec & type);
 
     //  try to solve type, return true is type already known
     //  else memorize unsolved couple if needed and return false
-    bool setType(QCString idref, int context, UmlTypeSpec & type);
+    bool setType(QByteArray idref, int context, UmlTypeSpec & type);
 
     //  try to solve token being <type ..>, return true is type already known
     //  else memorize unsolved couple if needed and return false
@@ -171,15 +171,15 @@ class UmlItem : public UmlBaseItem {
   protected:
     //  try to solve type, return true if type already known
     //  and set 'type', else return false
-    static bool getType(QCString idref, UmlTypeSpec & type);
+    static bool getType(QByteArray idref, UmlTypeSpec & type);
 
 
   public:
-    static void declareFct(QCString what, QCString type, PFunc fct);
+    static void declareFct(QByteArray what, QByteArray type, PFunc fct);
 
     static PFunc getFct(const Token & tk);
 
-    static QCString readComment(FileIn & in, Token & token);
+    static QByteArray readComment(FileIn & in, Token & token);
 
     static void init();
 
@@ -205,13 +205,13 @@ class UmlItem : public UmlBaseItem {
     
     static void outgoing(FileIn & in, Token & token, UmlItem * where);
 
-    static QCString legalName(QCString s);
+    static QByteArray legalName(QByteArray s);
 
     static bool fromEclipse();
 
-    static QCString readConstraint(FileIn & in, Token & token);
+    static QByteArray readConstraint(FileIn & in, Token & token);
 
-    static QMap<QCString, QCString> OpaqueDefs;
+    static QMap<QByteArray, QByteArray> OpaqueDefs;
 
 
   protected:
@@ -221,21 +221,21 @@ class UmlItem : public UmlBaseItem {
 
 
   public:
-    static QMap<QCString, UmlItem *> All;
+    static QMap<QByteArray, UmlItem *> All;
 
 
   protected:
-    static QMap<QCString, PFunc> Functions;
+    static QMap<QByteArray, PFunc> Functions;
 
-    static QMap<QCString, UmlTypeSpec> PrimitiveTypes;
+    static QMap<QByteArray, UmlTypeSpec> PrimitiveTypes;
 
-    static QMap<QCString,UmlItem*> Incomings;
+    static QMap<QByteArray,UmlItem*> Incomings;
 
-    static QMap<QCString, UmlItem*> Outgoings;
+    static QMap<QByteArray, UmlItem*> Outgoings;
 
 
   private:
-    QCString _xmi_id;
+    QByteArray _xmi_id;
 
 };
 

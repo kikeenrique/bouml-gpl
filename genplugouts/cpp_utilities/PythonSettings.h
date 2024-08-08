@@ -25,7 +25,7 @@ class PythonSettings : public UmlSettings {
     static bool set_IsPython_2_2(bool y);
 
     // return the  default indent step
-    static const QCString & indentStep();
+    static const QByteArray & indentStep();
 
     // set default indent step
     //
@@ -44,109 +44,109 @@ class PythonSettings : public UmlSettings {
 
     // returns the PYTHON stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationAttributeStereotype(const QCString & s);
+    static QByteArray relationAttributeStereotype(const QByteArray & s);
 
     // set the PYTHON stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationAttributeStereotype(QCString s, QCString v);
+    static bool set_RelationAttributeStereotype(QByteArray s, QByteArray v);
 
     // reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the PYTHON one given in argument
-    static QCString relationAttributeUmlStereotype(const QCString & s);
+    static QByteArray relationAttributeUmlStereotype(const QByteArray & s);
 
     // returns the PYTHON stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString classStereotype(const QCString & s);
+    static QByteArray classStereotype(const QByteArray & s);
 
     // set the PYTHON stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ClassStereotype(QCString s, QCString v);
+    static bool set_ClassStereotype(QByteArray s, QByteArray v);
 
     // reverse of the ClassStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the PYTHON one given in argument
-    static QCString classUmlStereotype(const QCString & s);
+    static QByteArray classUmlStereotype(const QByteArray & s);
 
     //returns the import or other form specified in the last
     //'Generation settings' tab for the Python type given in argument.
-    static QCString get_import(const QCString & s);
+    static QByteArray get_import(const QByteArray & s);
 
     //  set the import or other form specified in the last
     //  'Generation settings' tab for the Python type given in argument.
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_Import(QCString s, QCString v);
+    static bool set_Import(QByteArray s, QByteArray v);
 
     //  return the 'root' directory
-    static const QCString & rootDir();
+    static const QByteArray & rootDir();
 
     //  set the 'root' directory
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RootDir(QCString v);
+    static bool set_RootDir(QByteArray v);
 
     // returns the default source file content
-    static const QCString & sourceContent();
+    static const QByteArray & sourceContent();
 
     // set the default source file content
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SourceContent(QCString v);
+    static bool set_SourceContent(QByteArray v);
 
     // returns the extension of the file produced by the PYTHON code generator
-    static const QCString & sourceExtension();
+    static const QByteArray & sourceExtension();
 
     // set the extension of the file produced by the PYTHON code generator
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SourceExtension(QCString v);
+    static bool set_SourceExtension(QByteArray v);
 
     // returns the default definition of a class
-    static const QCString & classDecl();
+    static const QByteArray & classDecl();
 
     // set the default definition of a class
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ClassDecl(QCString v);
+    static bool set_ClassDecl(QByteArray v);
 
     // returns the default specification for an 'external' class
-    static const QCString & externalClassDecl();
+    static const QByteArray & externalClassDecl();
 
     // set the default specification for an 'external' class
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ExternalClassDecl(QCString v);
+    static bool set_ExternalClassDecl(QByteArray v);
 
     // returns the default definition of an enumeration
-    static QCString enumDecl();
+    static QByteArray enumDecl();
 
     // set the default definition of an enumeration
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_EnumDecl(QCString v);
+    static bool set_EnumDecl(QByteArray v);
 
     // returns the default definition of an attribute depending on the multiplicity
-    static const QCString & attributeDecl(const char * multiplicity);
+    static const QByteArray & attributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(const char * multiplicity, QCString v);
+    static bool set_AttributeDecl(const char * multiplicity, QByteArray v);
 
     // returns the default definition of an enumeration item
-    static QCString enumItemDecl();
+    static QByteArray enumItemDecl();
 
     // set the default definition of an enumeration item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_EnumItemDecl(QCString v);
+    static bool set_EnumItemDecl(QByteArray v);
 
     // returns the default definition of a relation depending on it is an
     // aggregation by value or not and the multiplicity, given in argument.
-    static const QCString & relationDecl(bool by_value, const char * multiplicity);
+    static const QByteArray & relationDecl(bool by_value, const char * multiplicity);
 
     // set the default definition of a relation depending on it is an
     // aggregation by value or not and the multiplicity, given in argument.
@@ -155,85 +155,85 @@ class PythonSettings : public UmlSettings {
     static bool set_RelationDecl(bool by_value, const char * multiplicity, const char * v);
 
     // returns the default definition of an operation
-    static const QCString & operationDef();
+    static const QByteArray & operationDef();
 
     // set the default definition of an operation
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_OperationDef(QCString v);
+    static bool set_OperationDef(QByteArray v);
 
     // returns the default definition of __init__
-    static const QCString & initOperationDef();
+    static const QByteArray & initOperationDef();
 
     // set the default definition of __init__
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_InitOperationDef(QCString v);
+    static bool set_InitOperationDef(QByteArray v);
 
     // returns the default name of a 'get' operation generated 
     // through the attribute and relation 'add get operation' menu
-    static const QCString & getName();
+    static const QByteArray & getName();
 
     // set the default name of a 'get' operation generated 
     // through the attribute and relation 'add get operation' menu
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_GetName(QCString v);
+    static bool set_GetName(QByteArray v);
 
     // returns the default name of a 'set' operation generated 
     // through the attribute and relation 'add set operation' menu
-    static const QCString & setName();
+    static const QByteArray & setName();
 
     // set the default name of a 'set' operation generated 
     // through the attribute and relation 'add set operation' menu
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SetName(QCString v);
+    static bool set_SetName(QByteArray v);
 
 
   private:
     // never called !
     PythonSettings() {};
 
-    static unsigned mult_column(const QCString & mult);
+    static unsigned mult_column(const QByteArray & mult);
 
     static bool _defined;
 
     static bool _2_2;
 
-    static QCString _indent_step;
+    static QByteArray _indent_step;
 
-    static QCString _root;
+    static QByteArray _root;
 
-    static QCString _class_decl;
+    static QByteArray _class_decl;
 
-    static QCString _external_class_decl;
+    static QByteArray _external_class_decl;
 
-    static QCString _enum_decl;
+    static QByteArray _enum_decl;
 
-    static QCString _attr_decl[2/*multiplicity*/];
+    static QByteArray _attr_decl[2/*multiplicity*/];
 
-    static QCString _enum_item_decl;
+    static QByteArray _enum_item_decl;
 
-    static QCString _rel_decl[2/*relation kind*/][2/*multiplicity*/];
+    static QByteArray _rel_decl[2/*relation kind*/][2/*multiplicity*/];
 
-    static QCString _oper_def;
+    static QByteArray _oper_def;
 
 
   protected:
-    static QCString _initoper_def;
+    static QByteArray _initoper_def;
 
 
   private:
-    static QCString _get_name;
+    static QByteArray _get_name;
 
-    static QCString _set_name;
+    static QByteArray _set_name;
 
-    static QCString _src_content;
+    static QByteArray _src_content;
 
-    static QCString _ext;
+    static QByteArray _ext;
 
-    static QDict<QCString> _map_imports;
+    static QDict<QByteArray> _map_imports;
 
 
   protected:

@@ -69,7 +69,7 @@ void UmlSettings::read_if_needed_()
   }
 }
 
-unsigned UmlSettings::multiplicity_column(const QCString & mult)
+unsigned UmlSettings::multiplicity_column(const QByteArray & mult)
 {
   if (mult.isEmpty() || (mult == "1"))
     return 0;
@@ -80,7 +80,7 @@ unsigned UmlSettings::multiplicity_column(const QCString & mult)
   return 2;
 }
 
-QCString UmlSettings::uml_type(const QCString & t, QCString UmlBuiltin::* f)
+QByteArray UmlSettings::uml_type(const QByteArray & t, QByteArray UmlBuiltin::* f)
 {
   unsigned index = _map_builtins.count();
   
@@ -91,7 +91,7 @@ QCString UmlSettings::uml_type(const QCString & t, QCString UmlBuiltin::* f)
   return 0;
 }
 
-QCString UmlSettings::uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f)
+QByteArray UmlSettings::uml_rel_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f)
 {
   unsigned index = _map_relation_stereotypes.count();
   
@@ -102,7 +102,7 @@ QCString UmlSettings::uml_rel_stereotype(const QCString & t, QCString UmlStereot
   return 0;
 }
 
-QCString UmlSettings::uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f)
+QByteArray UmlSettings::uml_class_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f)
 {
   unsigned index = _map_class_stereotypes.count();
   
@@ -113,7 +113,7 @@ QCString UmlSettings::uml_class_stereotype(const QCString & t, QCString UmlStere
   return 0;
 }
 
-UmlBuiltin * UmlSettings::add_type(const QCString & s)
+UmlBuiltin * UmlSettings::add_type(const QByteArray & s)
 {
   unsigned n = _map_builtins.count();
   unsigned index;
@@ -149,7 +149,7 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
 
 }
 
-UmlStereotype * UmlSettings::add_rel_stereotype(const QCString & s)
+UmlStereotype * UmlSettings::add_rel_stereotype(const QByteArray & s)
 {
   unsigned n = _map_relation_stereotypes.count();
   unsigned index;
@@ -182,7 +182,7 @@ UmlStereotype * UmlSettings::add_rel_stereotype(const QCString & s)
 
 }
 
-UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
+UmlStereotype * UmlSettings::add_class_stereotype(const QByteArray & s)
 {
   unsigned n = _map_class_stereotypes.count();
   unsigned index;

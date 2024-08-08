@@ -34,50 +34,49 @@ class QSpinBox;
 class DeploymentDiagramView;
 class BrowserDeploymentDiagram;
 
-class DeploymentDiagramWindow : public DiagramWindow
-{
-        Q_OBJECT
+class DeploymentDiagramWindow : public DiagramWindow {
+  Q_OBJECT
+    
+  protected:
+    DeploymentDiagramView * view;
+    QToolButton * addPackage;
+    QToolButton * addFragment;
+    QToolButton * addDeploymentNode;
+    QToolButton * addArtifact;
+    QToolButton * addComponent;
+    QToolButton * inherit;
+    QToolButton * network;
+    QToolButton * hub;
+    QToolButton * association;
+    QToolButton * dependency;
+    QToolButton * note;
+    QToolButton * anchor;
+    QToolButton * text;
+    QToolButton * image;
+    
+  public:
+    DeploymentDiagramWindow(const QString & s, BrowserDeploymentDiagram * b, int id = -1);
+    ~DeploymentDiagramWindow();
 
-    protected:
-        DeploymentDiagramView * view;
-        QToolButton * addPackage;
-        QToolButton * addFragment;
-        QToolButton * addDeploymentNode;
-        QToolButton * addArtifact;
-        QToolButton * addComponent;
-        QToolButton * inherit;
-        QToolButton * network;
-        QToolButton * hub;
-        QToolButton * association;
-        QToolButton * dependency;
-        QToolButton * note;
-        QToolButton * anchor;
-        QToolButton * text;
-        QToolButton * image;
-
-    public:
-        DeploymentDiagramWindow (const QString & s, BrowserDeploymentDiagram * b, int id = -1);
-        ~DeploymentDiagramWindow();
-
-        virtual DiagramView * get_view() const;
-
-        virtual void hit_button (UmlCode, QToolButton *);
-
-    protected slots:
-        void hit_package();
-        void hit_fragment();
-        void hit_deploymentnode();
-        void hit_component();
-        void hit_artifact();
-        void hit_inherit();
-        void hit_network();
-        void hit_hub();
-        void hit_association();
-        void hit_dependency();
-        void hit_note();
-        void hit_anchor();
-        void hit_text();
-        void hit_image();
+    virtual DiagramView * get_view() const;
+    
+    virtual void hit_button(UmlCode, QToolButton *);
+    
+  protected slots:
+    void hit_package();
+    void hit_fragment();
+    void hit_deploymentnode();
+    void hit_component();
+    void hit_artifact();
+    void hit_inherit();
+    void hit_network();
+    void hit_hub();
+    void hit_association();
+    void hit_dependency();
+    void hit_note();
+    void hit_anchor();
+    void hit_text();
+    void hit_image();
 };
 
 #endif

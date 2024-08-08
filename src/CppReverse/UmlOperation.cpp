@@ -49,10 +49,10 @@ using namespace std;
 
 NDict< QList<UmlOperation> > UmlOperation::friends;
 #ifdef ROUNDTRIP
-QPtrDict<QCString> UmlOperation::DefNotYetSet(97);
+QPtrDict<QByteArray> UmlOperation::DefNotYetSet(97);
 #endif
 
-UmlOperation::UmlOperation(void * id, const QCString & n)
+UmlOperation::UmlOperation(void * id, const QByteArray & n)
     : UmlBaseOperation(id, n), formals(0) {
 }
 
@@ -61,11 +61,11 @@ UmlOperation::~UmlOperation() {
     delete formals;
 }
     
-bool UmlOperation::pfunc(BooL & func, QCString & name, QCString & type,
+bool UmlOperation::pfunc(BooL & func, QByteArray & name, QByteArray & type,
 			 const char * namespec)
 {
   // Lex:mark before type, first '(' read
-  QCString s;
+  QByteArray s;
   const LexContext here = Lex::get_context();
   
   while (!Lex::star(s = Lex::read_word())) {
@@ -121,17 +121,17 @@ bool UmlOperation::pfunc(BooL & func, QCString & name, QCString & type,
 }
 
 static void insert_template(const FormalParameterList & tmplt, 
-			    QCString & s, bool decl)
+			    QByteArray & s, bool decl)
 {
   // computes "template<....>"
-  QCString tm;
+  QByteArray tm;
   FormalParameterList::ConstIterator it;
   const char * sep = "template<";
   
   for (it = tmplt.begin(); it != tmplt.end(); ++it) {
     tm += sep + (*it).type() + ' ' + (*it).name();
     
-    const QCString & t = (*it).defaultValue().toString();
+    const QByteArray & t = (*it).defaultValue().toString();
     
     if (! t.isEmpty())
       tm += " = " + t;
@@ -191,14 +191,14 @@ static void insert_template(const FormalParameterList & tmplt,
   s.insert(p - ps, tm);
 }
 
-bool UmlOperation::new_one(Class * cl, const QCString & name,
+bool UmlOperation::new_one(Class * cl, const QByteArray & name,
 			   const QValueList<FormalParameterList> & tmplts,
-			   QCString type, const QCString & modifier,
-			   const QCString & pretype, aVisibility visibility,
+			   QByteArray type, const QByteArray & modifier,
+			   const QByteArray & pretype, aVisibility visibility,
 			   bool inlinep, bool virtualp, bool staticp, bool constp,
 			   bool volatilep, bool typenamep, bool explicitp,
-			   bool friendp, QCString friend_template,
-			   QCString comment, QCString description, bool pfunc
+			   bool friendp, QByteArray friend_template,
+			   QByteArray comment, QByteArray description, bool pfunc
 #ifdef ROUNDTRIP
 			   , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -210,13 +210,13 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   cout << "OPERATION '" << name << "' type '" << type << "' modifier '" << modifier << "'\n";
 #endif
   
-  QCString cl_name = QCString(cl->text(0));
+  QByteArray cl_name = QByteArray(cl->text(0));
   UmlOperation * op;
 #ifdef ROUNDTRIP
   bool may_roundtrip = roundtrip &&
     (!cl->from_libp() || (visibility != PrivateVisibility));
   QValueList<UmlParameter> params;
-  QCString body;
+  QByteArray body;
   
   if (may_roundtrip)
 #else
@@ -231,7 +231,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
     op = UmlBaseOperation::create(cl->get_uml(), name);
     
     if (op == 0) {
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot add operation <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add operation <i>")
 		    + Lex::quote(name) + "</i> in <i>" + Lex::quote(cl_name)
 		    + "</i></b></font><br><hr><br>");  
       return FALSE;
@@ -245,11 +245,11 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   }
     
   UmlTypeSpec return_type;
-  QCString typeform;
+  QByteArray typeform;
   
   if (!pfunc) {
     typeform = (pretype.isEmpty())
-      ? QCString("${type}")
+      ? QByteArray("${type}")
       : pretype + " ${type}";
     
     if (! type.isEmpty())	
@@ -258,7 +258,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   }
   
   int index;
-  QCString decl;
+  QByteArray decl;
   
   if (op != 0) {
     op->set_Visibility(visibility);
@@ -290,7 +290,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
     
     if (! pfunc) {
       if (!modifier.isEmpty())
-	decl.insert(index + 7, QCString(" ") + modifier);
+	decl.insert(index + 7, QByteArray(" ") + modifier);
       decl.replace(index, 7, typeform);
       if (typenamep) {
 	decl.insert(index, "typename ");
@@ -387,7 +387,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
       op = UmlBaseOperation::create(cl->get_uml(), name);
       
       if (op == 0) {
-	UmlCom::trace(QCString("<font face=helvetica><b>cannot add operation <i>")
+	UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add operation <i>")
 		      + Lex::quote(name) + "</i> in <i>" + Lex::quote(cl_name)
 		      + "</i></b></font><br><hr><br>");  
 	return FALSE;
@@ -443,7 +443,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
       fr->append(op);
   }
   
-  QCString s;
+  QByteArray s;
   
   if (pfunc) {
     Lex::mark();
@@ -590,7 +590,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   if ((index = cl_name.find('<')) != -1)
     cl_name.truncate(index);
   
-  if ((name == cl_name) || (name == (QCString("~") + cl_name))) {
+  if ((name == cl_name) || (name == (QByteArray("~") + cl_name))) {
     // constructor or destructor : remove useless ${}
     decl.remove(decl.find("${friend}"), 9);
     decl.remove(decl.find("${static}"), 9);
@@ -721,7 +721,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
       }
       
       if (may_roundtrip) {
-	QCString dcl = decl;
+	QByteArray dcl = decl;
 	
 	if (! friend_template.isEmpty())
 	  dcl.insert(dcl.find("${(}"), friend_template);
@@ -736,13 +736,13 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
       if (friend_template.isEmpty())
 	op->set_CppDecl(decl);
       else {
-	QCString dcl = decl;
+	QByteArray dcl = decl;
 	
 	dcl.insert(dcl.find("${(}"), friend_template);
 	op->set_CppDecl(dcl);
       }
       
-      QCString def;
+      QByteArray def;
       
       if (! defined_in_decl) {          
 	def = CppSettings::operationDef();
@@ -777,7 +777,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 	  index = def.find("${type}");
 	  
 	  if (!modifier.isEmpty())
-	    def.insert(index + 7, QCString(" ") + modifier);
+	    def.insert(index + 7, QByteArray(" ") + modifier);
 	  def.replace(index, 7, typeform);
 	}
 	else {
@@ -805,7 +805,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 	if (volatilep)
 	  def.insert(index, "volatile ");
 	
-	if ((name == cl_name) || (name == (QCString("~") + cl_name))) {
+	if ((name == cl_name) || (name == (QByteArray("~") + cl_name))) {
 	  // constructor or destructor : remove useless ${}
 	  index = def.find("${type}");
 	  def.remove(index, (((const char *) def)[index + 7] == ' ') ? 8 : 7);
@@ -834,7 +834,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
       if (may_roundtrip)
 	// if the definition wil not be read the definition will
 	// be set if needed by mark_useless
-	DefNotYetSet.insert(op, new QCString(def));
+	DefNotYetSet.insert(op, new QByteArray(def));
       else
 #endif
 	op->set_CppDef(def);
@@ -849,7 +849,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 }
 
 bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
-			      UmlParameter & param, QCString & decl,
+			      UmlParameter & param, QByteArray & decl,
 			      const QValueList<FormalParameterList> & tmplt,
 			      BooL & on_error, bool add_defaultvalue)
 {
@@ -860,7 +860,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
   on_error = TRUE;
   Lex::mark();
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
 
 #ifdef DEBUG_BOUML
   cout << "commence par " << s << '\n';
@@ -880,14 +880,14 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
   param.type.type = 0;
   param.type.explicit_type = 0;
   
-  QCString pn = QCString("${p") + QCString().setNum(rank) + '}';
+  QByteArray pn = QByteArray("${p") + QByteArray().setNum(rank) + '}';
   bool constp = FALSE;
   bool volatilep = FALSE;
   bool typenamep = FALSE;
-  QCString modifier;
-  QCString array;
-  QCString type;
-  QCString pretype;	// struct/union/class/enum
+  QByteArray modifier;
+  QByteArray array;
+  QByteArray type;
+  QByteArray pretype;	// struct/union/class/enum
   bool pfct = FALSE;
   
   for (;;) {
@@ -897,7 +897,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
     }
     else if (s == "const") {
       if (!modifier.isEmpty())
-	modifier += QCString(" ") + s;
+	modifier += QByteArray(" ") + s;
       else {
 	constp = TRUE;
 	Lex::mark();
@@ -905,7 +905,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
     }
     else if (s == "volatile") {
       if (!modifier.isEmpty())
-	modifier += QCString(" ") + s;
+	modifier += QByteArray(" ") + s;
       else {
 	volatilep = TRUE;
 	Lex::mark();
@@ -914,7 +914,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
     else if (s == "typename") {
       // note : may have "const typename ...", but not "typename const ..."
       if (!modifier.isEmpty())
-	modifier += QCString(" ") + s;
+	modifier += QByteArray(" ") + s;
       else {
 	typenamep = TRUE;
 	Lex::mark();
@@ -929,7 +929,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
     }
     else if (Lex::star(s) || (s == "&")) {
       if (!modifier.isEmpty())
-	modifier += QCString(" ") + s;
+	modifier += QByteArray(" ") + s;
       else if (!type.isEmpty())
 	modifier = s;
       else {
@@ -952,7 +952,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       param.dir = (constp || modifier.isEmpty())
 	? InputDirection : InputOutputDirection;
       
-      QCString s2;
+      QByteArray s2;
       
       if (rank != 0)
 	s2 = ", ";
@@ -963,7 +963,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       if (typenamep)
 	s2 += "typename ";
       
-      QCString n_close = QCString().setNum(rank) + "}";
+      QByteArray n_close = QByteArray().setNum(rank) + "}";
       
       // note : doesn't add the pretype (class ...) else
       // this will be a problem if this one is not used both
@@ -971,7 +971,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       // add needed declaration/includes
       
       if (!pfct) {
-	QCString typeform = QCString("${t") + n_close;
+	QByteArray typeform = QByteArray("${t") + n_close;
 	
 	container->compute_type(type, param.type, typeform, FALSE, tmplt);
 	
@@ -991,7 +991,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       }
 	
       if (add_defaultvalue)
-	s2 += QCString("${v") + n_close;
+	s2 += QByteArray("${v") + n_close;
       
       if (s == "...")
 	s2 += " ...";
@@ -1091,9 +1091,9 @@ bool UmlOperation::read_throw_elt(ClassContainer * container,
     else {
       Lex::unread_word();
       
-      QCString s = Lex::normalize(Lex::read_list_elt());
+      QByteArray s = Lex::normalize(Lex::read_list_elt());
       
-      QCString dummy;
+      QByteArray dummy;
       
       container->compute_type(s, typespec, dummy, FALSE, tmplts);
       if (typespec.type == 0)
@@ -1111,7 +1111,7 @@ bool UmlOperation::read_throw_elt(ClassContainer * container,
 
 void UmlOperation::friend_operations(QList<UmlOperation> & candidates,
 				     const QValueList<FormalParameterList> & tmplts,
-				     const QCString & name)
+				     const QByteArray & name)
 {
   QList<UmlOperation> * fr = friends[name];
   
@@ -1121,9 +1121,9 @@ void UmlOperation::friend_operations(QList<UmlOperation> & candidates,
     const FormalParameterList & tmpl = (tmplts.isEmpty()) ? t : tmplts.last();
     QListIterator<UmlOperation> it(*fr);
       
-    while (it.current() != 0) {
+    while ((*it) != 0) {
       const FormalParameterList & formals =
-	((UmlClass *) it.current()->parent())->formals();
+	((UmlClass *) (*it)->parent())->formals();
       
       if (tmpl.count() <= formals.count()) {
 	unsigned rank = tmpl.count();
@@ -1137,7 +1137,7 @@ void UmlOperation::friend_operations(QList<UmlOperation> & candidates,
 	  
 	if (rank == ~0u)
 	  // candidate
-	  candidates.append(it.current());
+	  candidates.append((*it));
       }
       
       ++it;
@@ -1147,7 +1147,7 @@ void UmlOperation::friend_operations(QList<UmlOperation> & candidates,
 
 static bool compare_templates(const FormalParameterList & t1,
 			      const FormalParameterList & t2,
-			      const QCString & w, const QCString & s)
+			      const QByteArray & w, const QByteArray & s)
 {
   if (t1.count() != t2.count()) {
     Lex::warn("wrong template specification " + w + " <font color =\"red\">" +
@@ -1178,7 +1178,7 @@ static bool compare_templates(const FormalParameterList & t1,
 bool UmlOperation::operations(QList<UmlOperation> & candidates, UmlClass * cl,
 			      const QValueList<FormalParameterList> & tmplts,
 			      const FormalParameterList *& oper_tmplt,
-			      const QCString & name)
+			      const QByteArray & name)
 {
   // name is the full name spec or just a simple if 'using cl' was made
   // normalized is the normalized cl spec
@@ -1237,7 +1237,7 @@ bool UmlOperation::operations(QList<UmlOperation> & candidates, UmlClass * cl,
   oper_tmplt = (bypassed_tmplts == n) ? 0 : &tmplts[bypassed_tmplts];
     
   int index;
-  QCString opname = ((index = name.findRev("::")) > 0)
+  QByteArray opname = ((index = name.findRev("::")) > 0)
     ? name.mid(index + 2)
     : name;
   QVector<UmlItem> children = cl->children();
@@ -1278,7 +1278,7 @@ bool UmlOperation::operations(QList<UmlOperation> & candidates, UmlClass * cl,
 	    }
 	  }
 	  
-	  QCString e = QCString("(") + Lex::region();
+	  QByteArray e = QByteArray("(") + Lex::region();
 	  
 	  e.truncate(e.length() - 1);
 	  
@@ -1318,17 +1318,17 @@ bool UmlOperation::operations(QList<UmlOperation> & candidates, UmlClass * cl,
   return TRUE;
 }
   
-void UmlOperation::reverse_definition(Package * pack, QCString name,
-				      QCString type, 
+void UmlOperation::reverse_definition(Package * pack, QByteArray name,
+				      QByteArray type, 
 				      QValueList<FormalParameterList> & tmplts,
-				      bool inlinep, const QCString & comment,
-				      const QCString & description)
+				      bool inlinep, const QByteArray & comment,
+				      const QByteArray & description)
 {
   // parameter list '(' already read
   
   int index;
   bool pfct = FALSE;
-  QCString normalized;
+  QByteArray normalized;
   UmlTypeSpec tcl;
     
   if (name.isEmpty()) {
@@ -1344,15 +1344,15 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
       type = 0;
     }
     else {
-      QCString s1;
-      QCString s2;
+      QByteArray s1;
+      QByteArray s2;
     
       if (((index = type.findRev("::")) > 0) &&
 	  pack->find_type(normalized = Lex::normalize(type.left(index)), tcl) &&
 	  (s1 = tcl.type->name(),
 	   s2 = type.mid(index + 2),
 	   s1 = ((index = s1.find('<')) != -1) ? s1.left(index) : s1,
-	   ((s1 == s2) || (s2 == (QCString("~") + s1))))) {
+	   ((s1 == s2) || (s2 == (QByteArray("~") + s1))))) {
 	name = type;
 	type = 0;
       }
@@ -1409,13 +1409,13 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
   UmlClass * cl = 0;
   
   do {
-    if ((nargs == ~0u) || (it.current()->params().count() == nargs)) {
-      if (cl != it.current()->parent()) {
-	cl = (UmlClass *) it.current()->parent();
+    if ((nargs == ~0u) || ((*it)->params().count() == nargs)) {
+      if (cl != (*it)->parent()) {
+	cl = (UmlClass *) (*it)->parent();
 	cl->set_under_construction(TRUE, TRUE);
       }
       
-      if (it.current()->reverse_if_def(pack, tmplts, oper_tmplt, inlinep, 
+      if ((*it)->reverse_if_def(pack, tmplts, oper_tmplt, inlinep, 
 				       pfct, comment, description,
 				       on_error, nargs, name)) {
 	cl->set_under_construction(FALSE, TRUE);
@@ -1424,7 +1424,7 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
       Lex::set_context(context);
     }
     ++it;
-  } while (!on_error && (it.current() != 0));
+  } while (!on_error && ((*it) != 0));
 
   cl->set_under_construction(FALSE, TRUE);
   
@@ -1437,15 +1437,15 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
 bool UmlOperation::reverse_if_def(Package * pack,
 				  QValueList<FormalParameterList> & tmplts,
 				  const FormalParameterList * oper_tmplt,
-				  bool inlinep, bool pfct, const QCString & comment,
-				  const QCString & description, BooL & on_error,
-				  unsigned & nargs, QCString oper_name) {
+				  bool inlinep, bool pfct, const QByteArray & comment,
+				  const QByteArray & description, BooL & on_error,
+				  unsigned & nargs, QByteArray oper_name) {
   // parameters
   
   UmlParameter param;
   QValueList<UmlParameter> params = this->params();
-  QList<QCString> param_names;
-  QCString decl = "${(}${)}";
+  QList<QByteArray> param_names;
+  QByteArray decl = "${(}${)}";
   unsigned rank = 0;
   
   param_names.setAutoDelete(TRUE);
@@ -1469,7 +1469,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
   // not do not check that 'this' does not have too many
   // parameters, this test is included in the parameters decl check
   
-  QCString s;
+  QByteArray s;
   
   if (pfct) {
     if (((s = Lex::read_word()) != ")") ||
@@ -1562,10 +1562,10 @@ bool UmlOperation::reverse_if_def(Package * pack,
   // check the parameters decl to take into account the modifiers
 
 #ifdef ROUNDTRIP
-  QCString * fromdecl = DefNotYetSet[this];
-  QCString def = (fromdecl == 0) ? cppDef() : *fromdecl;
+  QByteArray * fromdecl = DefNotYetSet[this];
+  QByteArray def = (fromdecl == 0) ? cppDef() : *fromdecl;
 #else
-  QCString def = cppDef();
+  QByteArray def = cppDef();
 #endif
   int start = def.find("${(}");
   int end = def.find("${)}");
@@ -1661,7 +1661,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
 #endif
       
       // oper_name is class<...>::oper
-      QCString s = oper_name.left(oper_name.findRev("::"));
+      QByteArray s = oper_name.left(oper_name.findRev("::"));
       
       int index = s.findRev("::");
 
@@ -1723,7 +1723,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
 	clean_body(s);
 	
 	// remove \r in case of preserve body
-	QCString current_body = op->cppBody();
+	QByteArray current_body = op->cppBody();
 	int index = 0;
 	
 	while ((index = current_body.find('\r', index)) != -1)
@@ -1836,7 +1836,7 @@ void UmlOperation::skip_body(int level) {
   Lex::clear_comments();
 }
 
-void UmlOperation::skip_expr(QCString end, bool allow_templ) {
+void UmlOperation::skip_expr(QByteArray end, bool allow_templ) {
   char c;
   int level = 0;
     
@@ -1984,7 +1984,7 @@ void UmlOperation::update_exceptions(Class * cl,
   }
 }
 
-void UmlOperation::clean_body(QCString & body)
+void UmlOperation::clean_body(QByteArray & body)
 {
   const char * BodyPrefix = "// Bouml preserved body begin ";
   const char * BodyPostfix = "// Bouml preserved body end ";
@@ -2013,7 +2013,7 @@ void UmlOperation::clean_body(QCString & body)
 }
 
 UmlOperation * UmlOperation::already_exist(Class * container,
-					   const QCString & name,
+					   const QByteArray & name,
 					   QValueList<UmlParameter> & params,
 					   bool empty_decl)
 {
@@ -2089,13 +2089,13 @@ UmlOperation * UmlOperation::already_exist(Class * container,
 
 void UmlOperation::force_defs()
 {
-  QPtrDictIterator<QCString> it(DefNotYetSet);
+  QPtrDictIterator<QByteArray> it(DefNotYetSet);
   
-  for (; it.current(); ++it) {
+  for (; (*it); ++it) {
     UmlOperation * op = (UmlOperation *) it.currentKey();
     
-    if (neq(*(it.current()), op->cppDef())) {
-      op->set_CppDef(*(it.current()));
+    if (neq(*((*it)), op->cppDef())) {
+      op->set_CppDef(*((*it)));
       ((UmlClass *) op->parent())->get_class()->set_updated();
     }
   }

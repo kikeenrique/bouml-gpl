@@ -5,8 +5,8 @@
 
 #include "UmlCom.h"
 #include "Sgnl.h"
-void UmlOnSignalAction::solve(QCString idref) {
-  QCString sig = Signal::get(idref);
+void UmlOnSignalAction::solve(QByteArray idref) {
+  QByteArray sig = Signal::get(idref);
   
   if (!sig.isNull())
     set_Signal(sig);
@@ -16,10 +16,10 @@ void UmlOnSignalAction::solve(QCString idref) {
 }
 
 void UmlOnSignalAction::import_it(FileIn & in, Token & token) {
-  QCString s = token.valueOf("signal");
+  QByteArray s = token.valueOf("signal");
   
   if (!s.isEmpty()) {
-    QCString sig = Signal::get(s);
+    QByteArray sig = Signal::get(s);
     
     if (!sig.isNull())
       set_Signal(sig);
@@ -28,13 +28,13 @@ void UmlOnSignalAction::import_it(FileIn & in, Token & token) {
   }
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * ks = k;
     
     while (in.read(), !token.close(ks)) {
       if (token.what() == "signal") {
-	QCString sig_name;
-	QCString sig_ref;
+	QByteArray sig_name;
+	QByteArray sig_ref;
 	
 	Signal::add(in, token, sig_name, sig_ref);
 	

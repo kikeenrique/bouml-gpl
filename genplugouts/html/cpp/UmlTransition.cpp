@@ -1,11 +1,11 @@
 
 #include "UmlTransition.h"
 
-QCString UmlTransition::sKind() {
+QByteArray UmlTransition::sKind() {
   return "transition";
 }
 
-void UmlTransition::html(QCString, unsigned int, unsigned int) {
+void UmlTransition::html(QByteArray, unsigned int, unsigned int) {
   fw.write("<table><tr><td><div class=\"element\">Transition  <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>");
@@ -23,7 +23,7 @@ void UmlTransition::html(QCString, unsigned int, unsigned int) {
     fw.write("</p>");
   }
 
-  QCString s = description();
+  QByteArray s = description();
 
   if (!s.isEmpty()) {
     fw.write("<p>");
@@ -31,7 +31,7 @@ void UmlTransition::html(QCString, unsigned int, unsigned int) {
     fw.write("<br /></p>");
   }
 
-  QCString scpp, sjava;
+  QByteArray scpp, sjava;
   
   s = trigger();
   scpp = cppTrigger();

@@ -31,19 +31,19 @@
 #include "PhpSettings.h"
 #include "util.h"
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   dir.read = FALSE;
 }
 
 static bool RootDirRead;
-static QCString RootDir;
+static QByteArray RootDir;
 
-static QCString relative_path(const QDir & destdir, QCString relto)
+static QByteArray relative_path(const QDir & destdir, QByteArray relto)
 {
   QDir fromdir(relto);
-  QCString from = QCString(fromdir.absPath());
-  QCString to = QCString(destdir.absPath());
+  QByteArray from = QByteArray(fromdir.absPath());
+  QByteArray to = QByteArray(destdir.absPath());
   const char * cfrom = from;
   const char * cto = to;
   int lastsep = -1;
@@ -60,10 +60,10 @@ static QCString relative_path(const QDir & destdir, QCString relto)
 	return "";
       case '/':
 	// to = .../aze/qsd/wxc, from = .../aze => qsd/wxc/
-	return (cto + index + 1) + QCString("/");
+	return (cto + index + 1) + QByteArray("/");
       default:
 	// to = .../aze/qsd/wxc, from = .../az => ../aze/qsd/wxc/
-	return "../" + QCString(cto + lastsep + 1) + "/";
+	return "../" + QByteArray(cto + lastsep + 1) + "/";
       }
     }
     else if (t == f) {
@@ -72,7 +72,7 @@ static QCString relative_path(const QDir & destdir, QCString relto)
       index += 1;
     }
     else if (t == 0) {
-      QCString r;
+      QByteArray r;
       const char * p = cfrom+index;
       
       do {
@@ -89,7 +89,7 @@ static QCString relative_path(const QDir & destdir, QCString relto)
     }
     else {
       // to = .../aze, from = .../iop/klm => ../../aze/
-      QCString r = "../";
+      QByteArray r = "../";
       const char * p = cfrom + lastsep + 1;
       
       while (*p != 0)
@@ -101,7 +101,7 @@ static QCString relative_path(const QDir & destdir, QCString relto)
   }
 }
 
-QCString UmlPackage::rootDir()
+QByteArray UmlPackage::rootDir()
 {
   if (! RootDirRead) {
     RootDirRead = TRUE;
@@ -119,7 +119,7 @@ QCString UmlPackage::rootDir()
   return RootDir;
 }
 
-QCString UmlPackage::file_path(const QCString & f, QCString relto) {
+QByteArray UmlPackage::file_path(const QByteArray & f, QByteArray relto) {
   if (!dir.read) {
     dir.file = phpDir();
     dir.file_absolute = FALSE;
@@ -134,7 +134,7 @@ QCString UmlPackage::file_path(const QCString & f, QCString relto) {
       dir.file_absolute = TRUE;
    
     if (dir.file.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Php')</b></font><br>");
@@ -152,7 +152,7 @@ QCString UmlPackage::file_path(const QCString & f, QCString relto) {
   
   if (! d.exists()) {
     // create directory including the intermediates
-    QCString s = dir.file;
+    QByteArray s = dir.file;
     int index = 0;
     char sep = QDir::separator();
     
@@ -167,12 +167,12 @@ QCString UmlPackage::file_path(const QCString & f, QCString relto) {
     int index2;
     
     while ((index2 = s.find("/", index + 1)) != -1) {
-      QCString s2 = s.left(index2);
+      QByteArray s2 = s.left(index2);
       QDir sd(s2);
       
       if (!sd.exists()) {
 	if (!sd.mkdir(s2)) {
-	  UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
+	  UmlCom::trace(QByteArray("<font color=\"red\"><b> cannot create directory <i>")
 			+ s2 + "</i></b></font><br>");
 	  UmlCom::bye(n_errors() + 1);
 	  UmlCom::fatal_error("UmlPackage::file_path");
@@ -182,18 +182,18 @@ QCString UmlPackage::file_path(const QCString & f, QCString relto) {
     }
   }
   
-  QCString df = (dir.file_absolute || relto.isEmpty())
-    ? QCString(d.filePath(f))
+  QByteArray df = (dir.file_absolute || relto.isEmpty())
+    ? QByteArray(d.filePath(f))
     : relative_path(d, relto) + f;
   
   if (PhpSettings::isRelativePath() && (df[0] != '/') && (df[0] != '.'))
     df = "./" + df;
   
-  return df + QCString(".") + PhpSettings::sourceExtension();
+  return df + QByteArray(".") + PhpSettings::sourceExtension();
 }
 
-QCString UmlPackage::text_path(const QCString & f) {
-  QCString r = file_path(f);
+QByteArray UmlPackage::text_path(const QByteArray & f) {
+  QByteArray r = file_path(f);
   
   return r.left(r.length() - 1 - PhpSettings::sourceExtension().length());
 }

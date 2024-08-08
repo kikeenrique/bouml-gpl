@@ -28,7 +28,7 @@
 #include "util.h"
 #include "UmlCom.h"
 
-QCString capitalize(const QCString & s)
+QByteArray capitalize(const QByteArray & s)
 {
   return (s.isEmpty())
     ? s
@@ -42,14 +42,14 @@ QString capitalize(const QString & s)
     : s.left(1).upper() + s.mid(1);
 }
 
-QCString current_indent(const char * p, const char * begin)
+QByteArray current_indent(const char * p, const char * begin)
 {
-  QString indent = "";	// to not be QCString::null
+  QString indent = "";	// to not be QByteArray::null
   
   while ((p != begin) && ((p[-1] == ' ') || (p[-1] == '\t')))
     indent.prepend(*--p);
   
-  return QCString(indent);
+  return QByteArray(indent);
 }
 
 const char * name_spec(const char * spec)
@@ -107,7 +107,7 @@ bool need_equal(const char * p, const char * v)
 
 //
 
-static QCString TraceHeader;
+static QByteArray TraceHeader;
 static bool Verbose = FALSE;
 static bool Preserve = FALSE;
 
@@ -131,12 +131,12 @@ bool preserve()
   return Preserve;
 }
 
-void set_trace_header(QCString s)
+void set_trace_header(QByteArray s)
 {
   TraceHeader = s;
 }
 
-QCString get_trace_header()
+QByteArray get_trace_header()
 {
   return TraceHeader;
 }

@@ -26,9 +26,9 @@
 #ifndef STATEACTIONDIALOG_H
 #define STATEACTIONDIALOG_H
 
-#include <qwidgetlist.h>
+#include <qwidget.h>
 #include <qstringlist.h>
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "BrowserNode.h"
 
@@ -42,42 +42,41 @@ class BrowserNode;
 class KeyValuesTable;
 class BodyDialog;
 
-class StateActionDialog : public QTabDialog
-{
-        Q_OBJECT
+class StateActionDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    bool visit;
+    StateActionData * action;
+    QComboBox * edstereotype;
+    MultiLineEdit * comment;
+    QList<BodyDialog *> edits;
+    
+    QWidget * umltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+    MultiLineEdit * uml;
+    MultiLineEdit * cpp;
+    MultiLineEdit * java;
+        
+    // User
+    KeyValuesTable * kvtable;
+    
+    static QSize previous_size;
+  
+    static void post_edit_description(StateActionDialog * d, QString s);
+  
+  public:
+    StateActionDialog(StateActionData * r);
+    virtual ~StateActionDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+  
+    void edit_description();
 
-    protected:
-        bool visit;
-        StateActionData * action;
-        QComboBox * edstereotype;
-        MultiLineEdit * comment;
-        QList<BodyDialog> edits;
-
-        QWidget * umltab;
-        QWidget * cpptab;
-        QWidget * javatab;
-        MultiLineEdit * uml;
-        MultiLineEdit * cpp;
-        MultiLineEdit * java;
-
-        // User
-        KeyValuesTable * kvtable;
-
-        static QSize previous_size;
-
-        static void post_edit_description (StateActionDialog * d, QString s);
-
-    public:
-        StateActionDialog (StateActionData * r);
-        virtual ~StateActionDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-
-        void edit_description();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

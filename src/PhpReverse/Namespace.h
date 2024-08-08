@@ -39,22 +39,22 @@
 
 class Namespace {
   public:
-    static void enter(QCString s);
+    static void enter(QByteArray s);
     static void exit();
     
     static const QStringList stack() { return Stack; }
         
-    static void add_alias(const QCString & a, const QCString & s) {
+    static void add_alias(const QByteArray & a, const QByteArray & s) {
       Aliases.replace(a, s);
     }
     static void clear_aliases() { Aliases.clear(); }
     
-    static QString namespacify(QCString s);
-    static QCString current();
+    static QString namespacify(QByteArray s);
+    static QByteArray current();
     
   private:
     static QStringList Stack;
-    static QMap<QCString,QCString> Aliases;
+    static QMap<QByteArray,QByteArray> Aliases;
 };
 
 // does not not inherit QDict to not allow to use directly
@@ -67,32 +67,32 @@ class NDict {
     NDict() {}
     NDict(unsigned n) { d.resize(n); }
   
-    void insert(const QCString & key, const T * item);
-    void replace(const QCString & key, const T * item);
-    bool remove(const QCString & key);
-    T * operator[] (const QCString & key) const;
+    void insert(const QByteArray & key, const T * item);
+    void replace(const QByteArray & key, const T * item);
+    bool remove(const QByteArray & key);
+    T * operator[] (const QByteArray & key) const;
       
   private:
     QDict<T> d;
 };
 
 template<class T>
-void NDict<T>::insert(const QCString & key, const T * item) {
+void NDict<T>::insert(const QByteArray & key, const T * item) {
   d.insert(Namespace::namespacify(key), item);
 }
 
 template<class T>
-void NDict<T>::replace(const QCString & key, const T * item) {
+void NDict<T>::replace(const QByteArray & key, const T * item) {
   d.replace(Namespace::namespacify(key), item);
 }
 
 template<class T>
-bool NDict<T>::remove(const QCString & key) {
+bool NDict<T>::remove(const QByteArray & key) {
   return d.remove(Namespace::namespacify(key));
 }
 
 template<class T>
-T * NDict<T>::operator[] (const QCString & key) const {
+T * NDict<T>::operator[] (const QByteArray & key) const {
   QString k = Namespace::namespacify(key);
   T * r = d[k];
   

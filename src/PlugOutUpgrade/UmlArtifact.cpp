@@ -33,12 +33,12 @@
 #include "JavaSettings.h"
 
 UmlArtifact * UmlArtifact::made(UmlDeploymentView * depl_view,
-				const QCString & s)
+				const QByteArray & s)
 {
   UmlArtifact * art = UmlBaseArtifact::create(depl_view, s);
   
   if (art == 0) {
-    QCString msg = "can't create artifact " + s + " in " + depl_view->name() + "<br>\n";
+    QByteArray msg = "can't create artifact " + s + " in " + depl_view->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -55,13 +55,13 @@ UmlArtifact * UmlArtifact::made(UmlDeploymentView * depl_view,
 
 void UmlArtifact::add_includes(const char * i, bool h) {
   if (h) {
-    QCString s = cppHeader();
+    QByteArray s = cppHeader();
     
     s.insert(s.find("${includes}"), i);
     set_CppHeader(s);
   }
   else {
-    QCString s = cppSource();
+    QByteArray s = cppSource();
     
     s.insert(s.find("${includes}"), i);
     set_CppSource(s);
@@ -69,7 +69,7 @@ void UmlArtifact::add_includes(const char * i, bool h) {
 }
 
 void UmlArtifact::add_import(const char * i) {
-  QCString s = javaSource();
+  QByteArray s = javaSource();
   
   s.insert(s.find("${definition}"), i);
   set_JavaSource(s);

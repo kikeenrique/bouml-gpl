@@ -39,7 +39,7 @@
 # endif
 #endif
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   classview = 0;
 #ifdef REVERSE
@@ -66,14 +66,14 @@ UmlClassView * UmlPackage::get_classview() {
     
     if ((classview = UmlBaseClassView::create(this, name())) == 0) {
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create class view <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create class view <i>")
 		    + name() + "</i> under package <i>"
 		    + name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
-			    QCString("<font face=helvetica><b>cannot create class view <i>")
+			    QByteArray("<font face=helvetica><b>cannot create class view <i>")
 			    + name() + "</i> under package <i>"
 			    + name() + "</b></font><br>");
       QApplication::exit(1);
@@ -102,14 +102,14 @@ UmlDeploymentView * UmlPackage::get_deploymentview() {
     
     if ((deploymentview = UmlBaseDeploymentView::create(this, name())) == 0) {
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create deployment view <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create deployment view <i>")
 		    + name() + "</i> under package <i>"
 		    + name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
-			    QCString("<font face=helvetica><b>cannot create deployment view <i>")
+			    QByteArray("<font face=helvetica><b>cannot create deployment view <i>")
 			    + name() + "</i> under package <i>"
 			    + name() + "</b></font><br>");
       QApplication::exit(1);

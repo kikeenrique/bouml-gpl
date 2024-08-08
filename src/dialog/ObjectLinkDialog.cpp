@@ -30,6 +30,9 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "ObjectLinkDialog.h"
 #include "MyTable.h"
@@ -43,182 +46,173 @@
 
 QSize ObjectLinkDialog::previous_size;
 
-ObjectLinkDialog::ObjectLinkDialog (BrowserClassInstance * a, BrowserClassInstance * b,
-                                    QList<RelationData> & l, RelationData * current,
-                                    int nfirstdir)
-    : QDialog (0, "object link dialog", TRUE),
-      rels (l), nforward (nfirstdir), clia (a), clib (b), choozen (0), reverse (FALSE)
-{
-    setCaption (TR ("Object link dialog"));
+ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstance * b,
+				   QList<RelationData *> & l, RelationData * current,
+				   int nfirstdir)
+    : QDialog(0, "object link dialog", TRUE),
+      rels(l), nforward(nfirstdir), clia(a), clib(b), choozen(0), reverse(FALSE) {
+  setCaption(TR("Object link dialog"));
 
-    QVBoxLayout * vbox = new QVBoxLayout (this);
-    QHBoxLayout * hbox;
+  Q3VBoxLayout * vbox = new Q3VBoxLayout(this);
+  Q3HBoxLayout * hbox;
 
-    hbox = new QHBoxLayout (vbox);
-    hbox->setMargin (5);
+  hbox = new Q3HBoxLayout(vbox);
+  hbox->setMargin(5);
 
-    hbox->addWidget (new QLabel (TR ("\n"
-                                     "To set the association, select a cell or the first column with a single click, then press 'OK'\n"
-                                     "To unset the association press 'Unset' then press 'OK'\n"),
-                                 this));
+  hbox->addWidget(new QLabel(TR("\n"
+				"To set the association, select a cell or the first column with a single click, then press 'OK'\n"
+				"To unset the association press 'Unset' then press 'OK'\n"),
+			     this));
 
-    init (current);	// update table
+  init(current);	// update table
 
-    vbox->addWidget (table);
+  vbox->addWidget(table);
 
-    hbox = new QHBoxLayout (vbox);
-    hbox->setMargin (5);
-    QPushButton * newrel =
-        ( ( (ClassInstanceData *) clia->get_data())->get_class()->is_writable() ||
-          ( (ClassInstanceData *) clib->get_data())->get_class()->is_writable())
-        ? new QPushButton (TR ("&New"), this) : 0;
-    QPushButton * unset = new QPushButton (TR ("&Unset"), this);
-    QPushButton * accept = new QPushButton (TR ("&OK"), this);
-    QPushButton * cancel = new QPushButton (TR ("&Cancel"), this);
-    QSize bs (cancel->sizeHint());
+  hbox = new Q3HBoxLayout(vbox);
+  hbox->setMargin(5);
+  QPushButton * newrel =
+    (((ClassInstanceData *) clia->get_data())->get_class()->is_writable() ||
+     ((ClassInstanceData *) clib->get_data())->get_class()->is_writable())
+    ? new QPushButton(TR("&New"), this) : 0;
+  QPushButton * unset = new QPushButton(TR("&Unset"), this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
+  QSize bs(cancel->sizeHint());
 
-    if (newrel != 0) {
-        newrel->setFixedSize (bs);
-        hbox->addWidget (newrel);
-        connect (newrel, SIGNAL (clicked()), this, SLOT (create()));
-    }
-    unset->setFixedSize (bs);
-    accept->setFixedSize (bs);
-    cancel->setFixedSize (bs);
+  if (newrel != 0) {
+    newrel->setFixedSize(bs);
+    hbox->addWidget(newrel);
+    connect(newrel, SIGNAL(clicked()), this, SLOT(create()));
+  }
+  unset->setFixedSize(bs);
+  accept->setFixedSize(bs);
+  cancel->setFixedSize(bs);
 
-    hbox->addWidget (unset);
-    hbox->addWidget (accept);
-    hbox->addWidget (cancel);
+  hbox->addWidget(unset);
+  hbox->addWidget(accept);
+  hbox->addWidget(cancel);
 
-    connect (unset, SIGNAL (clicked()), this, SLOT (unselect()));
-    connect (accept, SIGNAL (clicked()), this, SLOT (accept()));
-    connect (cancel, SIGNAL (clicked()), this, SLOT (reject()));
+  connect(unset, SIGNAL(clicked()), this, SLOT(unselect()));
+  connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
-ObjectLinkDialog::~ObjectLinkDialog()
-{
-    previous_size = size();
+ObjectLinkDialog::~ObjectLinkDialog() {
+  previous_size = size();
 }
 
-void ObjectLinkDialog::polish()
-{
-    QDialog::polish();
-    UmlDesktop::limitsize_center (this, previous_size, 0.8, 0.8);
+void ObjectLinkDialog::polish() {
+  QDialog::polish();
+  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
-static void add_rel (MyTable * table, RelationData * d, int row,
-                     QString a, QString b)
+static void add_rel(MyTable * table, RelationData * d, int row,
+		    QString a, QString b)
 {
-    table->setItem (row, 0, new TableItem (table, QTableItem::Never, a));
+  table->setItem(row, 0, new TableItem(table, Q3TableItem::Never, a));
 
-    const char * s;
+  const char * s;
 
-    s = d->get_role_b();
-    table->setItem (row, 1, new TableItem (table, QTableItem::Never, (s == 0) ? "" : s));
+  s = d->get_role_b();
+  table->setItem(row, 1, new TableItem(table, Q3TableItem::Never, (s == 0) ? "" : s));
 
-    table->setItem (row, 2, new TableItem (table, QTableItem::Never, stringify (d->get_type())));
+  table->setItem(row, 2, new TableItem(table, Q3TableItem::Never, stringify(d->get_type())));
 
-    s = d->get_role_a();
-    table->setItem (row, 3, new TableItem (table, QTableItem::Never, (s == 0) ? "" : s));
+  s = d->get_role_a();
+  table->setItem(row, 3, new TableItem(table, Q3TableItem::Never, (s == 0) ? "" : s));
 
-    table->setItem (row, 4, new TableItem (table, QTableItem::Never, b));
+  table->setItem(row, 4, new TableItem(table, Q3TableItem::Never, b));
 }
 
-void ObjectLinkDialog::init (RelationData * current)
-{
-    table = new MyTable (this);
+void ObjectLinkDialog::init(RelationData * current) {
+  table = new MyTable(this);
 
-    table->setNumRows (rels.count());
-    table->setNumCols (5);
-    table->setSelectionMode (QTable::Single);
-    table->setSorting (FALSE);
+  table->setNumRows(rels.count());
+  table->setNumCols(5);
+  table->setSelectionMode(Q3Table::Single);
+  table->setSorting(FALSE);
 
-    table->horizontalHeader()->setLabel (0, TR ("Class Inst."));
-    table->horizontalHeader()->setLabel (1, TR ("Role"));
-    table->horizontalHeader()->setLabel (2, TR ("kind"));
-    table->horizontalHeader()->setLabel (3, TR ("Role"));
-    table->horizontalHeader()->setLabel (4, TR ("Class Inst."));
+  table->horizontalHeader()->setLabel(0, TR("Class Inst."));
+  table->horizontalHeader()->setLabel(1, TR("Role"));
+  table->horizontalHeader()->setLabel(2, TR("kind"));
+  table->horizontalHeader()->setLabel(3, TR("Role"));
+  table->horizontalHeader()->setLabel(4, TR("Class Inst."));
 
-    ra = clia->get_name() + QString (":") +
-         ( (ClassInstanceData *) clia->get_data())->get_class()->get_name();
-    rb = clib->get_name() + QString (":") +
-         ( (ClassInstanceData *) clib->get_data())->get_class()->get_name();
-    QListIterator<RelationData> iter (rels);
-    int row;
+  ra = clia->get_name() + QString(":") +
+       ((ClassInstanceData *) clia->get_data())->get_class()->get_name();
+  rb = clib->get_name() + QString(":") +
+       ((ClassInstanceData *) clib->get_data())->get_class()->get_name();
+  QList<RelationData *>::const_iterator it;
 
-    for (row = 0; (row != nforward) && iter.current(); ++iter, row += 1) {
-        add_rel (table, iter.current(), row, ra, rb);
-    }
+  int row;
 
-    for (; iter.current(); ++iter, row += 1) {
-        add_rel (table, iter.current(), row, rb, ra);
-    }
+  for (row = 0, it = rels.begin(); (row != nforward)  && it!= rels.end(); it++, row += 1) {
+    add_rel(table, (*it), row, ra, rb);
+  }
+  for (; it!= rels.end(); it++, row += 1) {
+    add_rel(table, (*it), row, rb, ra);
+  }
 
-    ninputrels = row;
+  ninputrels = row;
 
-    table->setColumnStretchable (1, TRUE);
-    table->setColumnStretchable (3, TRUE);
-    table->adjustColumn (0);
-    table->adjustColumn (2);
-    table->adjustColumn (4);
+  table->setColumnStretchable (1, TRUE);
+  table->setColumnStretchable (3, TRUE);
+  table->adjustColumn(0);
+  table->adjustColumn(2);
+  table->adjustColumn(4);
 
-    if (current != 0) {
-        // select the current relation
-        QTableSelection sel;
-        int row = rels.findRef (current);
+  if (current != 0) {
+    // select the current relation
+    Q3TableSelection sel;
+    int row = rels.indexOf(current);
 
-        sel.init (row, 0);
-        sel.expandTo (row, 4);
-        table->addSelection (sel);
-    }
+    sel.init(row, 0);
+    sel.expandTo(row, 4);
+    table->addSelection(sel);
+  }
 }
 
-void ObjectLinkDialog::unselect()
-{
-    // multi selection possible even table->setSelectionMode(QTable::Single)
-    while (table->numSelections() != 0) {
-        table->removeSelection (0);
-    }
+void ObjectLinkDialog::unselect() {
+  // multi selection possible even table->setSelectionMode(QTable::Single)
+  while (table->numSelections() != 0)
+    table->removeSelection(0);
 }
 
-void ObjectLinkDialog::create()
-{
-    BrowserClass * cla = ( (ClassInstanceData *) clia->get_data())->get_class();
-    BrowserClass * clb = ( (ClassInstanceData *) clib->get_data())->get_class();
-    RelationData * d = (cla->is_writable())
-                       ? (RelationData *) cla->add_relation ( (clb->is_writable()) ? UmlAssociation
-                               : UmlDirectionalAssociation,
-                               clb)
-                           : (RelationData *) clb->add_relation (UmlDirectionalAssociation, cla);
+void ObjectLinkDialog::create() {
+  BrowserClass * cla = ((ClassInstanceData *) clia->get_data())->get_class();
+  BrowserClass * clb = ((ClassInstanceData *) clib->get_data())->get_class();
+  RelationData * d = (cla->is_writable())
+    ? (RelationData *) cla->add_relation((clb->is_writable()) ? UmlAssociation
+							      : UmlDirectionalAssociation,
+					 clb)
+    : (RelationData *) clb->add_relation(UmlDirectionalAssociation, cla);
 
-    d->get_start()->select_in_browser();
-    d->edit();
+  d->get_start()->select_in_browser();
+  d->edit();
 
-    int n = table->numRows();
+  int n = table->numRows();
 
-    table->setNumRows (n + 1);
-    add_rel (table, d, n, ra, rb);
-    rels.append (d);
+  table->setNumRows(n + 1);
+  add_rel(table, d, n, ra, rb);
+  rels.append(d);
 
-    // multi selection possible even table->setSelectionMode(QTable::Single)
-    while (table->numSelections() != 0) {
-        table->removeSelection (0);
-    }
+  // multi selection possible even table->setSelectionMode(QTable::Single)
+  while (table->numSelections() != 0)
+    table->removeSelection(0);
 
-    QTableSelection sel;
+  Q3TableSelection sel;
 
-    sel.init (n, 0);
-    sel.expandTo (n, 4);
-    table->addSelection (sel);
+  sel.init(n, 0);
+  sel.expandTo(n, 4);
+  table->addSelection(sel);
 }
 
-void ObjectLinkDialog::accept()
-{
-    if (table->numSelections() != 0) {
-        QTableSelection sel = table->selection (0);
+void ObjectLinkDialog::accept() {
+  if (table->numSelections() != 0) {
+    Q3TableSelection sel = table->selection(0);
 
-        choozen = rels.at (sel.topRow());
-        reverse = (sel.topRow() >= nforward) && (sel.topRow() < ninputrels);
-    }
-    QDialog::accept();
+    choozen = rels.at(sel.topRow());
+    reverse = (sel.topRow() >= nforward) && (sel.topRow() < ninputrels);
+  }
+  QDialog::accept();
 }

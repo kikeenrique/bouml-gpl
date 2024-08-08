@@ -50,7 +50,7 @@ anItemKind UmlBaseValueSpecificationAction::kind() {
   return aValueSpecificationAction;
 }
 
-const QCString & UmlBaseValueSpecificationAction::value() {
+const QByteArray & UmlBaseValueSpecificationAction::value() {
   read_if_needed_();
   return _value;
 }
@@ -60,7 +60,7 @@ bool UmlBaseValueSpecificationAction::set_Value(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseValueSpecificationAction::cppValue() {
+const QByteArray & UmlBaseValueSpecificationAction::cppValue() {
   read_if_needed_();
   return _cpp_value;
 }
@@ -71,7 +71,7 @@ bool UmlBaseValueSpecificationAction::set_CppValue(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseValueSpecificationAction::javaValue() {
+const QByteArray & UmlBaseValueSpecificationAction::javaValue() {
   read_if_needed_();
   return _java_value;
 }
@@ -120,7 +120,7 @@ anItemKind UmlBaseOpaqueAction::kind() {
   return anOpaqueAction;
 }
 
-const QCString & UmlBaseOpaqueAction::behavior() {
+const QByteArray & UmlBaseOpaqueAction::behavior() {
   read_if_needed_();
   return _behavior;
 }
@@ -130,7 +130,7 @@ bool UmlBaseOpaqueAction::set_Behavior(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseOpaqueAction::cppBehavior() {
+const QByteArray & UmlBaseOpaqueAction::cppBehavior() {
   read_if_needed_();
   return _cpp_behavior;
 }
@@ -141,7 +141,7 @@ bool UmlBaseOpaqueAction::set_CppBehavior(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseOpaqueAction::javaBehavior() {
+const QByteArray & UmlBaseOpaqueAction::javaBehavior() {
   read_if_needed_();
   return _java_behavior;
 }
@@ -208,7 +208,7 @@ bool UmlBaseAcceptEventAction::set_isTimeEvent(bool v) {
   return set_it_(_timeevent, v, setTimeEventCmd);
 }
 
-const QCString & UmlBaseAcceptEventAction::trigger() {
+const QByteArray & UmlBaseAcceptEventAction::trigger() {
   read_if_needed_();
   return _trigger;
 }
@@ -218,7 +218,7 @@ bool UmlBaseAcceptEventAction::set_Trigger(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseAcceptEventAction::cppTrigger() {
+const QByteArray & UmlBaseAcceptEventAction::cppTrigger() {
   read_if_needed_();
   return _cpp_trigger;
 }
@@ -229,7 +229,7 @@ bool UmlBaseAcceptEventAction::set_CppTrigger(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseAcceptEventAction::javaTrigger() {
+const QByteArray & UmlBaseAcceptEventAction::javaTrigger() {
   read_if_needed_();
   return _java_trigger;
 }
@@ -419,7 +419,7 @@ anItemKind UmlBaseAcceptCallAction::kind() {
   return anAcceptCallAction;
 }
 
-const QCString & UmlBaseAcceptCallAction::trigger() {
+const QByteArray & UmlBaseAcceptCallAction::trigger() {
   read_if_needed_();
   return _trigger;
 }
@@ -429,7 +429,7 @@ bool UmlBaseAcceptCallAction::set_Trigger(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseAcceptCallAction::cppTrigger() {
+const QByteArray & UmlBaseAcceptCallAction::cppTrigger() {
   read_if_needed_();
   return _cpp_trigger;
 }
@@ -440,7 +440,7 @@ bool UmlBaseAcceptCallAction::set_CppTrigger(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseAcceptCallAction::javaTrigger() {
+const QByteArray & UmlBaseAcceptCallAction::javaTrigger() {
   read_if_needed_();
   return _java_trigger;
 }
@@ -489,7 +489,7 @@ anItemKind UmlBaseReplyAction::kind() {
   return aReplyAction;
 }
 
-const QCString & UmlBaseReplyAction::replyToCall() {
+const QByteArray & UmlBaseReplyAction::replyToCall() {
   read_if_needed_();
   return _trigger;
 }
@@ -499,7 +499,7 @@ bool UmlBaseReplyAction::set_ReplyToCall(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseReplyAction::cppReplyToCall() {
+const QByteArray & UmlBaseReplyAction::cppReplyToCall() {
   read_if_needed_();
   return _cpp_trigger;
 }
@@ -510,7 +510,7 @@ bool UmlBaseReplyAction::set_CppReplyToCall(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseReplyAction::javaReplyToCall() {
+const QByteArray & UmlBaseReplyAction::javaReplyToCall() {
   read_if_needed_();
   return _java_trigger;
 }
@@ -559,7 +559,7 @@ anItemKind UmlBaseCreateObjectAction::kind() {
   return aCreateObjectAction;
 }
 
-const QCString & UmlBaseCreateObjectAction::classifier() {
+const QByteArray & UmlBaseCreateObjectAction::classifier() {
   read_if_needed_();
   return _classifier;
 }

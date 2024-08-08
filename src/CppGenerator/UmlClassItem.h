@@ -26,34 +26,34 @@
 #ifndef UMLCLASSITEM_H
 #define UMLCLASSITEM_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClassItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlTypeSpec;
 class CppRefType;
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n) {
     };
   
     virtual void compute_dependency(QList<CppRefType> & dependency,
-				    const QCString & cl_stereotype,
+				    const QByteArray & cl_stereotype,
 				    bool all_in_h) = 0;
 				     
     virtual void generate_decl(aVisibility & current_visibility,
-			       QTextOStream & f_h,
-			       const QCString & cl_stereotype,
-			       QCString indent,
+			       QTextStream & f_h,
+			       const QByteArray & cl_stereotype,
+			       QByteArray indent,
 			       BooL & first, bool last) = 0;
     
-    virtual void generate_def(QTextOStream & f, QCString indent, bool h,
-			      QCString templates, QCString cl_names,
-			      QCString templates_tmplop, 
-			      QCString cl_names_tmplop) = 0;
+    virtual void generate_def(QTextStream & f, QByteArray indent, bool h,
+			      QByteArray templates, QByteArray cl_names,
+			      QByteArray templates_tmplop, 
+			      QByteArray cl_names_tmplop) = 0;
 };
 
 #endif

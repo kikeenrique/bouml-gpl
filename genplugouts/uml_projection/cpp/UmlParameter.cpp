@@ -3,8 +3,8 @@
 
 #include "UmlClass.h"
 #include "CppSettings.h"
-QCString UmlParameter::cpp(unsigned rank) const {
-  QCString s;
+QByteArray UmlParameter::cpp(unsigned rank) const {
+  QByteArray s;
   int index;
 
   if ((type.type != 0) &&
@@ -45,13 +45,13 @@ QCString UmlParameter::cpp(unsigned rank) const {
   }
   
   if ((index = s.find("${type}")) != -1) {
-    QCString t;
+    QByteArray t;
     
     t.sprintf("${t%u}", rank);
     s.replace(index, 7, t);
   }
   
-  QCString p;
+  QByteArray p;
   
   p.sprintf(" ${p%u}${v%u}", rank, rank);
   return s + p;

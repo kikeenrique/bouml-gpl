@@ -4,7 +4,7 @@
 
 #include "UmlState.h"
 
-void UmlRegion::init(UmlClass * mother, QCString path, QCString pretty_path, UmlState *) {
+void UmlRegion::init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState *) {
   const QVector<UmlItem> ch = children();
   unsigned index;
   

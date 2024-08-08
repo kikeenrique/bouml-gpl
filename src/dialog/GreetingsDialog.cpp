@@ -30,26 +30,29 @@
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qtextview.h>
+#include <q3textview.h> 
 #include <qpushbutton.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <QCloseEvent>
 
 #include "GreetingsDialog.h"
 #include "UmlDesktop.h"
 
-GreetingsDialog::GreetingsDialog() : QDialog (0, "", TRUE)
-{
-    setCaption ("Greetings");
+GreetingsDialog::GreetingsDialog() : QDialog(0, "", TRUE) {
+  setCaption("Greetings");
+  
+  Q3VBoxLayout * vbox = new Q3VBoxLayout(this);  
+  Q3HBoxLayout * hbox; 
+  
+  vbox->setMargin(5);
+  
+  hbox = new Q3HBoxLayout(vbox); 
+  hbox->setMargin(5);
 
-    QVBoxLayout * vbox = new QVBoxLayout (this);
-    QHBoxLayout * hbox;
-
-    vbox->setMargin (5);
-
-    hbox = new QHBoxLayout (vbox);
-    hbox->setMargin (5);
-
-    const char * msg = "\
+  const char * msg = "\
 <br>\n\
 Greetings,<br>\n\
 <br>\n\
@@ -69,49 +72,45 @@ Best regards and happy modeling<br>\n\
 Bruno Pages<i> <i>http://bouml.free.fr</i>\n\
 <br>\n<br>\n<br>\n";
 
-    QTextView * tx =
-        new QTextView (msg, QString::null, this);
-    QFont fnt = tx->font();
-
-    fnt.setItalic (TRUE);
-
-    QFontMetrics fm (fnt);
-
-    tx->setVScrollBarMode (QScrollView::AlwaysOff);
-    tx->setHScrollBarMode (QScrollView::AlwaysOff);
-    tx->setMinimumSize (fm.size (0, msg));
-    hbox->addWidget (tx);
-
-    hbox = new QHBoxLayout (vbox);
-    hbox->setMargin (5);
-
-    ok = new QPushButton ("&OK", this);
-    ok->setDefault (TRUE);
-    ok->setEnabled (FALSE);
-
-    hbox->addWidget (new QLabel (this));
-    hbox->addWidget (ok);
-    hbox->addWidget (new QLabel (this));
-
-    if (UmlDesktop::fixed()) {
-        UmlDesktop::tocenter (this);
-    }
-
-    connect (ok, SIGNAL (clicked()), this, SLOT (reject()));
-
-    QTimer::singleShot (5000, this, SLOT (valid_ok()));
-    QApplication::setOverrideCursor (Qt::waitCursor);
+  Q3TextView * tx =
+    new Q3TextView(msg, QString::null, this);
+  QFont fnt = tx->font();
+  
+  fnt.setItalic(TRUE);
+  
+  QFontMetrics fm(fnt);
+  
+  tx->setVScrollBarMode(Q3ScrollView::AlwaysOff);
+  tx->setHScrollBarMode(Q3ScrollView::AlwaysOff);
+  tx->setMinimumSize(fm.size(0, msg));
+  hbox->addWidget(tx);
+  
+  hbox = new Q3HBoxLayout(vbox); 
+  hbox->setMargin(5);
+  
+  ok = new QPushButton("&OK", this);
+  ok->setDefault(TRUE);
+  ok->setEnabled(FALSE);
+  
+  hbox->addWidget(new QLabel(this));
+  hbox->addWidget(ok);
+  hbox->addWidget(new QLabel(this));
+  
+  if (UmlDesktop::fixed())
+    UmlDesktop::tocenter(this);
+  
+  connect(ok, SIGNAL(clicked()), this, SLOT(reject()));
+  
+  QTimer::singleShot(5000, this, SLOT(valid_ok()));
+  QApplication::setOverrideCursor(Qt::waitCursor);
 }
 
-void GreetingsDialog::valid_ok()
-{
-    ok->setEnabled (TRUE);
-    QApplication::restoreOverrideCursor();
+void GreetingsDialog::valid_ok() {
+  ok->setEnabled(TRUE);
+  QApplication::restoreOverrideCursor();
 }
 
-void GreetingsDialog::closeEvent (QCloseEvent * e)
-{
-    if (ok->isEnabled()) {
-        QDialog::closeEvent (e);
-    }
+void GreetingsDialog::closeEvent(QCloseEvent * e) {
+  if (ok->isEnabled())
+    QDialog::closeEvent(e);
 }

@@ -32,22 +32,22 @@ class Class;
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
   
-    static bool new_one(Class * cl, const QCString & name, const QCString & type,
-			const QCString & modifier, const QCString & pretype, 
-			const QCString & array,	aVisibility visibility,
+    static bool new_one(Class * cl, const QByteArray & name, const QByteArray & type,
+			const QByteArray & modifier, const QByteArray & pretype, 
+			const QByteArray & array,	aVisibility visibility,
 			bool staticp, bool constp, bool typenamep, bool mutablep,
-			bool volatilep,	const QCString & bitfield,
-			const QCString & value,	QCString comment,
-			QCString description
+			bool volatilep,	const QByteArray & bitfield,
+			const QByteArray & value,	QByteArray comment,
+			QByteArray description
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			);
 #ifdef ROUNDTRIP
-    static UmlAttribute * search_attr(UmlClass * cl, const QCString & name);
+    static UmlAttribute * search_attr(UmlClass * cl, const QByteArray & name);
 #endif
 };
 

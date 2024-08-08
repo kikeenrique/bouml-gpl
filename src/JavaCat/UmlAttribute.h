@@ -32,21 +32,21 @@ class Class;
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
   
-    static bool new_one(Class * container, const QCString & name,
+    static bool new_one(Class * container, const QByteArray & name,
 			UmlTypeSpec typespec, aVisibility visibility,
 			bool staticp, bool finalp, bool transientp,
-			bool volatilep, const QCString & array,
-			const QCString & value, QCString comment,
-			QCString description, QCString annotation
+			bool volatilep, const QByteArray & array,
+			const QByteArray & value, QByteArray comment,
+			QByteArray description, QByteArray annotation
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			);
     
-    static bool manage_enum_item(QCString s, UmlClass * cl
+    static bool manage_enum_item(QByteArray s, UmlClass * cl
 #ifdef ROUNDTRIP
 				 , bool roundtrip,
 				 QList<UmlItem> & expected_order

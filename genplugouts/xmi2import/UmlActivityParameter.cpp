@@ -4,7 +4,7 @@
 #include "Token.h"
 
 void UmlActivityParameter::readParameter(FileIn & in, Token & token) {
-  QCString s;
+  QByteArray s;
 
   s = token.valueOf("direction");
   if ((s == "in") || (s == "pk_in"))
@@ -30,7 +30,7 @@ void UmlActivityParameter::readParameter(FileIn & in, Token & token) {
     setType(s);
 
   if (!token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
@@ -61,7 +61,7 @@ void UmlActivityParameter::readParameter(FileIn & in, Token & token) {
 }
 
 void UmlActivityParameter::readParameterNode(FileIn & in, Token & token) {
-  QCString s;
+  QByteArray s;
 
   if (token.valueOf("iscontroltype") == "true")
     set_IsControlType(TRUE);
@@ -75,7 +75,7 @@ void UmlActivityParameter::readParameterNode(FileIn & in, Token & token) {
     setType(s);
     
   if (!token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
@@ -102,7 +102,7 @@ void UmlActivityParameter::readParameterNode(FileIn & in, Token & token) {
   }
 }
 
-void UmlActivityParameter::setEffect(QCString s, FileIn & in) {
+void UmlActivityParameter::setEffect(QByteArray s, FileIn & in) {
   if (s == "create")
     set_Effect(createEffect);
   else if (s == "read")

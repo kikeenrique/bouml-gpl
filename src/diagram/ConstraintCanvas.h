@@ -28,52 +28,54 @@
 
 #include "NoteCanvas.h"
 #include "BrowserNode.h"
+//Added by qt3to4:
+#include <QTextStream>
+#include <Q3ValueList>
 
 class CdClassCanvas;
 
-class ConstraintCanvas : public NoteCanvas
-{
-        Q_OBJECT
+class ConstraintCanvas : public NoteCanvas {
+  Q_OBJECT
+    
+  friend class ConstraintDialog;
+  friend class ConstraintTable;
+  
+  protected:
+    bool indicate_visible;
+    CdClassCanvas * cl;
+    Q3ValueList<BrowserNode *> hidden_visible;
+    Q3ValueList<BasicData *> connect_list;	// class only
+    BrowserNodeList elements;
+    
+  public:
+    ConstraintCanvas(UmlCanvas * canvas, CdClassCanvas *, int x, int y, int id);
+    ConstraintCanvas(UmlCanvas * canvas, CdClassCanvas *, QString);
+    virtual ~ConstraintCanvas();
+    
+    virtual void delete_it();
 
-        friend class ConstraintDialog;
-        friend class ConstraintTable;
+    virtual UmlCode type() const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
+    virtual bool copyable() const;
+    virtual void history_load(QBuffer &);
+    virtual void history_hide();
+    virtual void open();
+    virtual void menu(const QPoint&);
+    
+    virtual void apply_shortcut(QString s);
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem *> &);
+    virtual void same_drawing_settings(QList<DiagramItem *> &);
 
-    protected:
-        bool indicate_visible;
-        CdClassCanvas * cl;
-        QValueList<BrowserNode *> hidden_visible;
-        QValueList<BasicData *> connect_list;	// class only
-        BrowserNodeList elements;
-
-    public:
-        ConstraintCanvas (UmlCanvas * canvas, CdClassCanvas *, int x, int y, int id);
-        ConstraintCanvas (UmlCanvas * canvas, CdClassCanvas *, QString);
-        virtual ~ConstraintCanvas();
-
-        virtual void delete_it();
-
-        virtual UmlCode type() const;
-        virtual void delete_available (BooL & in_model, BooL & out_model) const;
-        virtual bool copyable() const;
-        virtual void history_load (QBuffer &);
-        virtual void history_hide();
-        virtual void open();
-        virtual void menu (const QPoint&);
-
-        virtual void apply_shortcut (QString s);
-        virtual bool has_drawing_settings() const;
-        virtual void edit_drawing_settings (QList<DiagramItem> &);
-        virtual void same_drawing_settings (QList<DiagramItem> &);
-
-        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
-        static ConstraintCanvas * read (char * &, UmlCanvas *, char *, CdClassCanvas *);
-
-        static ConstraintCanvas * compute (UmlCanvas * canvas,
-                                           CdClassCanvas * cl,
-                                           ConstraintCanvas * current);
-
-    public slots:
-        void update();
+    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
+    static ConstraintCanvas * read(char * &, UmlCanvas *, char *, CdClassCanvas *);
+    
+    static ConstraintCanvas * compute(UmlCanvas * canvas,
+				      CdClassCanvas * cl,
+				      ConstraintCanvas * current);
+    
+  public slots:
+    void update();
 };
 
 #endif

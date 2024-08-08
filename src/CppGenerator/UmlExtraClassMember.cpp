@@ -29,14 +29,14 @@
 #include "UmlClass.h"
 
 void UmlExtraClassMember::compute_dependency(QList<CppRefType> &,
-					     const QCString &,
+					     const QByteArray &,
 					     bool) {
 }
 
 void UmlExtraClassMember::generate_decl(aVisibility &,
-					QTextOStream & f_h,
-					const QCString &,
-					QCString indent,
+					QTextStream & f_h,
+					const QByteArray &,
+					QByteArray indent,
 					BooL & first, bool) {
   first = FALSE;
   
@@ -48,9 +48,9 @@ void UmlExtraClassMember::generate_decl(aVisibility &,
   f_h << p;
 }
 
-void UmlExtraClassMember::generate_def(QTextOStream & f, QCString indent,
-				       bool h, QCString templates,
-				       QCString, QCString, QCString) {
+void UmlExtraClassMember::generate_def(QTextStream & f, QByteArray indent,
+				       bool h, QByteArray templates,
+				       QByteArray, QByteArray, QByteArray) {
   if (!cppDef().isEmpty() &&
       ((isCppInline() || !templates.isEmpty()) == h)) {
     const char * p = cppDef();

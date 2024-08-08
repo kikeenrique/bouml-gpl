@@ -16,15 +16,15 @@ class QRadioButton;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(QCString & path, QCString & encoding, QCString & genview, int & taggedvalue, Language & lang);
+    Dialog(QByteArray & path, QByteArray & encoding, QByteArray & genview, int & taggedvalue, Language & lang);
 
 
   protected:
-    QCString & _path;
+    QByteArray & _path;
 
-    QCString & _encoding;
+    QByteArray & _encoding;
 
-    QCString & _genview;
+    QByteArray & _genview;
 
     int & _taggedvalue;
 

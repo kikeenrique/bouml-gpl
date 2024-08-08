@@ -8,7 +8,7 @@
 #include "UmlFragmentCompartment.h"
 #include "UmlDiagram.h"
 void UmlFragment::write(FileOut & out, UmlItem * diagram, QList<UmlSequenceMessage> & msgs) {
-  QCString oper = name();
+  QByteArray oper = name();
   
   if (oper == "ref")
     write_ref(out, diagram, msgs);
@@ -68,9 +68,9 @@ void UmlFragment::write(FileOut & out, UmlItem * diagram, QList<UmlSequenceMessa
 }
 
 void UmlFragment::cover(UmlSequenceMessage * msg) {
-  if (covered.findRef(msg->from()) == -1)
+  if (covered.indexOf(msg->from()) == -1)
     covered.append(msg->from());
-  if (covered.findRef(msg->to()) == -1)
+  if (covered.indexOf(msg->to()) == -1)
     covered.append(msg->to());
 
   if (container() != 0)

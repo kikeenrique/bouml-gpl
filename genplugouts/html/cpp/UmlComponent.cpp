@@ -3,7 +3,7 @@
 
 #include "UmlCom.h"
 #include "UmlClass.h"
-void UmlComponent::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlComponent::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlCom::message(name());
 
   UmlItem::html("Component", (UmlDiagram *) associatedDiagram());
@@ -58,7 +58,7 @@ void UmlComponent::html(QCString pfix, unsigned int rank, unsigned int level) {
   unload(FALSE, FALSE);
 }
 
-QCString UmlComponent::sKind() {
+QByteArray UmlComponent::sKind() {
   return "component";
 }
 

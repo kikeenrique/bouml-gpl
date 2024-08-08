@@ -30,7 +30,7 @@
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n) {
     };
 };

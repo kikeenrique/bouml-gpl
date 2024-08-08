@@ -8,22 +8,22 @@ UmlItem * UmlUseCaseView::item() {
   return this;
 }
 
-void UmlUseCaseView::readObject(File & f, QCString) {
+void UmlUseCaseView::readObject(File & f, QByteArray) {
   f.skipNextForm();
 }
 
 void UmlUseCaseView::import(UmlItem * parent, File & f)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, " use case view's name expected");
 
-  QCString a;
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
+  QByteArray a;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
   
   for (;;) {
     int k = f.readDefinitionBeginning(a, id, ste, doc, prop);
@@ -39,7 +39,7 @@ void UmlUseCaseView::import(UmlItem * parent, File & f)
       
       if (! f2.open(IO_ReadOnly))
 	UmlCom::trace("<br>cannot open '" + a + "' referenced in "
-		      + QCString(f.name()));
+		      + QByteArray(f.name()));
       else {     
         f2.read("(");
         f2.read("object");

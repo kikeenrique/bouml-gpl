@@ -27,34 +27,35 @@
 #define INFOCANVAS_H
 
 #include "NoteCanvas.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 class DiagramItem;
 
-class InfoCanvas : public NoteCanvas
-{
-    protected:
-        DiagramItem * who;
+class InfoCanvas : public NoteCanvas {
+  protected:
+    DiagramItem * who;
+  
+  public:
+    InfoCanvas(UmlCanvas * canvas, DiagramItem *, int x, int y, int id);
+    InfoCanvas(UmlCanvas * canvas, DiagramItem *, QString);
+    virtual ~InfoCanvas();
+        
+    virtual UmlCode type() const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
+    virtual bool copyable() const;
+    virtual void open();
+    virtual void menu(const QPoint&);
+    
+    virtual void apply_shortcut(QString s);
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem *> &);
+    virtual void same_drawing_settings(QList<DiagramItem *> &);
 
-    public:
-        InfoCanvas (UmlCanvas * canvas, DiagramItem *, int x, int y, int id);
-        InfoCanvas (UmlCanvas * canvas, DiagramItem *, QString);
-        virtual ~InfoCanvas();
+    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
+    static InfoCanvas * read(char * &, UmlCanvas *, char *, DiagramItem *);
 
-        virtual UmlCode type() const;
-        virtual void delete_available (BooL & in_model, BooL & out_model) const;
-        virtual bool copyable() const;
-        virtual void open();
-        virtual void menu (const QPoint&);
-
-        virtual void apply_shortcut (QString s);
-        virtual bool has_drawing_settings() const;
-        virtual void edit_drawing_settings (QList<DiagramItem> &);
-        virtual void same_drawing_settings (QList<DiagramItem> &);
-
-        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
-        static InfoCanvas * read (char * &, UmlCanvas *, char *, DiagramItem *);
-
-        void set (QString s);
+    void set(QString s);
 };
 
 #endif

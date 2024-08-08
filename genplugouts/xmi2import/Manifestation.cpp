@@ -6,9 +6,9 @@
 
 void Manifestation::import(FileIn & in, Token & token, UmlArtifact * artifact)
 {
-  QCString s;
-  QCString name;
-  QCString utilized;
+  QByteArray s;
+  QByteArray name;
+  QByteArray utilized;
 
   name = token.valueOf("name");
   
@@ -18,7 +18,7 @@ void Manifestation::import(FileIn & in, Token & token, UmlArtifact * artifact)
     utilized = s;
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {

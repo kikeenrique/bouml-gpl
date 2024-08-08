@@ -10,7 +10,7 @@ class FileOut;
 class UmlActivityControlNode : public UmlBaseActivityControlNode {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityControlNode(void * id, const QCString & s) : UmlBaseActivityControlNode(id, s) {
+     UmlActivityControlNode(void * id, const QByteArray & s) : UmlBaseActivityControlNode(id, s) {
     }
 
 

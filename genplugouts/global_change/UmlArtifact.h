@@ -12,7 +12,7 @@ class Context;
 // You can modify it as you want (except the constructor)
 class UmlArtifact : public UmlBaseArtifact {
   public:
-    UmlArtifact(void * id, const QCString & n) : UmlBaseArtifact(id, n) {};
+    UmlArtifact(void * id, const QByteArray & n) : UmlBaseArtifact(id, n) {};
 
     virtual void change(Context & ctx);
 

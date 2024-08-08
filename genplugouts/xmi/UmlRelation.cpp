@@ -159,8 +159,8 @@ void UmlRelation::write_relation(FileOut & out, aRelationKind k) {
   out << "\">\n";
 
   if (!multiplicity().isEmpty()) {
-    QCString min;
-    QCString max;
+    QByteArray min;
+    QByteArray max;
     int index = multiplicity().find("..");
 
     if (index != -1) {

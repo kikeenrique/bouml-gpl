@@ -25,7 +25,7 @@ class UmlBaseExpansionRegion : public UmlActivityRegion {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseExpansionRegion(void * id, const QCString & s) : UmlActivityRegion(id, s) {
+     UmlBaseExpansionRegion(void * id, const QByteArray & s) : UmlActivityRegion(id, s) {
     }
 
 

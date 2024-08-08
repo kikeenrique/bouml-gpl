@@ -27,31 +27,35 @@
 #define STATEDIAGRAMVIEW_H
 
 #include "DiagramView.h"
+//Added by qt3to4:
+#include <QTextStream>
+#include <QMouseEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 
 class StateDiagramWindow;
 class DiagramItem;
 class UmlCanvas;
 
-class StateDiagramView : public DiagramView
-{
-        Q_OBJECT
+class StateDiagramView : public DiagramView {
+  Q_OBJECT
 
-    public:
-        StateDiagramView (QWidget * parent, UmlCanvas * canvas, int id);
-
-        virtual void menu (const QPoint&);
-        virtual void read (char *, char * k);
-        virtual void save (QTextStream & st, QString & warning, bool copy) const;
-
-    private:
-        StateDiagramWindow * window() {
-            return (StateDiagramWindow *) parent();
-        };
-
-    protected:
-        virtual void contentsMousePressEvent (QMouseEvent *);
-        virtual void dragEnterEvent (QDragEnterEvent *);
-        virtual void dropEvent (QDropEvent *);
+  public:
+    StateDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
+  
+    virtual void menu(const QPoint&);
+    virtual void read(char *, char * k);
+    virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+  private:
+    StateDiagramWindow * window() {
+      return (StateDiagramWindow *) parent();
+    };
+  
+  protected:
+    virtual void contentsMousePressEvent(QMouseEvent *);
+    virtual void dragEnterEvent(QDragEnterEvent *);
+    virtual void dropEvent(QDropEvent *);
 };
 
 #endif

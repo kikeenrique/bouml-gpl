@@ -14,11 +14,11 @@ class UmlFormalParameter : public UmlBaseFormalParameter {
   public:
     UmlFormalParameter() {};
 
-    UmlFormalParameter(QCString name, QCString value);
+    UmlFormalParameter(QByteArray name, QByteArray value);
 
 };
 
-inline UmlFormalParameter::UmlFormalParameter(QCString name, QCString value) {
+inline UmlFormalParameter::UmlFormalParameter(QByteArray name, QByteArray value) {
   _name = name;
   _type = "typename";
   _default_value.explicit_type = value;

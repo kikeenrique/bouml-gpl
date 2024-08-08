@@ -30,120 +30,90 @@
 
 
 
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qfont.h>
-#include <qintdict.h>
+#include <q3intdict.h> 
 
 #include "UmlEnum.h"
 #include "Labeled.h"
 
-class QCanvasLine;
+class Q3CanvasLine;
 class QPainter;
 class BrowserNode;
 class BrowserDiagram;
 class DiagramView;
 class DiagramItem;
 
-class UmlCanvas : public QCanvas
-{
-        Q_OBJECT
+class UmlCanvas : public Q3Canvas {
+  Q_OBJECT
+    
+  protected:
+    Q3CanvasItemList selected;
+    BrowserDiagram * br_diagram;
+    DiagramView * view;
+    bool do_scale;
+    bool do_paste;
+    bool show_shadow;
+    bool draw_all_relations;
+    bool saved_draw_all_relations;
+    double zoom_value;
+    int width100percent;
+    int height100percent;
+    QFont the_fonts[UmlFontNumber];
+    IdDict<DiagramItem> all_items;	// to re-use the same id for the DiagramItems
+    Q3CanvasLine * hlimit;
+    Q3CanvasLine * vlimit;
+    
+    void update_limits();
 
-    protected:
-        QCanvasItemList selected;
-        BrowserDiagram * br_diagram;
-        DiagramView * view;
-        bool do_scale;
-        bool do_paste;
-        bool show_shadow;
-        bool draw_all_relations;
-        bool saved_draw_all_relations;
-        double zoom_value;
-        int width100percent;
-        int height100percent;
-        QFont the_fonts[UmlFontNumber];
-        IdDict<DiagramItem> all_items;	// to re-use the same id for the DiagramItems
-        QCanvasLine * hlimit;
-        QCanvasLine * vlimit;
+  public:
+    UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag);
+    ~UmlCanvas();
+    
+    Q3CanvasItem * collision(const QPoint &) const;
+    Q3CanvasItem * collision(const QPoint &, int except) const;
+    const Q3CanvasItemList & selection() const { return selected; };
+    void select(Q3CanvasItem * i);
+    void unselect(Q3CanvasItem * i);
+    void unselect_all();
 
-        void update_limits();
-
-    public:
-        UmlCanvas (CanvasFormat f, BrowserDiagram * br_diag);
-        ~UmlCanvas();
-
-        QCanvasItem * collision (const QPoint &) const;
-        QCanvasItem * collision (const QPoint &, int except) const;
-        const QCanvasItemList & selection() const {
-            return selected;
-        };
-        void select (QCanvasItem * i);
-        void unselect (QCanvasItem * i);
-        void unselect_all();
-
-        void del (QCanvasItem * i);
-
-        void set_zoom (double zm);
-        void zoom_end() {
-            do_scale = FALSE;
-        };
-        bool do_zoom() const {
-            return do_scale;
-        };
-        double zoom() const {
-            return zoom_value;
-        };
-
-        void resize (CanvasFormat);
-
-        int shadow() const;
-        bool must_draw_all_relations() const {
-            return draw_all_relations;
-        }
-        void dont_draw_all_relations();
-        void freeze_draw_all_relations() {
-            saved_draw_all_relations = draw_all_relations;
-            draw_all_relations = FALSE;
-        }
-        void unfreeze_draw_all_relations() {
-            draw_all_relations = saved_draw_all_relations;
-        }
-        static void update_global_settings();
-
-        QFont get_font (UmlFont f) const {
-            return the_fonts[f];
-        };
-
-        BrowserDiagram * browser_diagram() const {
-            return br_diagram;
-        };
-        void set_view (DiagramView * v);
-        DiagramView * get_view() const {
-            return view;
-        };
-
-        IdDict<DiagramItem> & get_all_items() {
-            return all_items;
-        }
-        void read_old_diagram (bool y) {
-            all_items.read_old_diagram (y);
-        }
-        void set_paste (bool y) {
-            do_paste = y;
-            all_items.read_old_diagram (y);
-        }
-        bool paste() {
-            return do_paste;
-        }
-        void clear_old_ids() {
-            all_items.clear (TRUE);
-        }
-
-        void show_limits (bool y);
-
-        bool already_drawn (BrowserNode * bn);
-
-    public slots:
-        virtual void update();
+    void del(Q3CanvasItem * i);
+    
+    void set_zoom(double zm);
+    void zoom_end() { do_scale = FALSE; };
+    bool do_zoom() const { return do_scale; };
+    double zoom() const { return zoom_value; };
+    
+    void resize(CanvasFormat);
+    
+    int shadow() const;
+    bool must_draw_all_relations() const { return draw_all_relations; }
+    void dont_draw_all_relations();
+    void freeze_draw_all_relations() {
+      saved_draw_all_relations = draw_all_relations;
+      draw_all_relations = FALSE;
+    }
+    void unfreeze_draw_all_relations() { draw_all_relations = saved_draw_all_relations; }
+    static void update_global_settings();
+  
+    QFont get_font(UmlFont f) const { return the_fonts[f]; };
+    
+    BrowserDiagram * browser_diagram() const { return br_diagram; };
+    void set_view(DiagramView * v);
+    DiagramView * get_view() const { return view; };
+    
+    IdDict<DiagramItem> & get_all_items() { return all_items; }
+    void read_old_diagram(bool y) { all_items.read_old_diagram(y); }
+    void set_paste(bool y) { do_paste = y; all_items.read_old_diagram(y); }
+    bool paste() { return do_paste; }
+    void clear_old_ids() { all_items.clear(TRUE); }
+    
+    void show_limits(bool y);
+    
+    bool already_drawn(BrowserNode * bn);
+    
+  public slots:
+    virtual void update();
 };
 
 #endif

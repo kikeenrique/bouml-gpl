@@ -256,7 +256,7 @@ bool UmlBaseClass::set_isIdlCustom(bool y) {
 }
 #endif
 
-UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
+UmlClass * UmlBaseClass::get(const QByteArray & n, const UmlPackage * p)
 {
   if (p == 0) {
     UmlClass * x = _classes[n];
@@ -283,7 +283,7 @@ void UmlBaseClass::unload(bool rec, bool del) {
 
 QDict<UmlClass> UmlBaseClass::_classes(1001);
 
- UmlBaseClass::UmlBaseClass(void * id, const QCString & n) 
+ UmlBaseClass::UmlBaseClass(void * id, const QByteArray & n) 
     : UmlClassMember(id, n) {
   _assoc_diagram = 0;
   

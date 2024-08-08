@@ -25,32 +25,31 @@
 
 // all is static ... I don't like singleton
 
-class UmlDesktop
-{
-    public:
-        static void init();
-        static void limits (int & l, int & t, int & r, int & b);
-        static void set_limits (int l, int t, int r, int b);
-        static int width();
-        static int height();
-        static void tocenter (QWidget * who);
-        static void limitsize_center (QWidget * who, QSize & previous, double max_w, double max_h);
-        static void limitsize_move (QWidget * who, QSize & previous,
-                                    double max_w, double max_h);
-        static void setsize_center (QWidget * who, QSize & previous,
-                                    double pw, double ph);
-        static bool fixed();
-        static bool nogui();
-        static void set_nogui();
-
-    private:
-        static int left;
-        static int top;
-        static int right;
-        static int bottom;
-        static int w;
-        static int h;
-        static QPoint c;
-        static bool fixedp;
-        static bool noguip;
+class UmlDesktop {
+  public:
+    static void init();
+    static void limits(int & l, int & t, int & r, int & b);
+    static void set_limits(int l, int t, int r, int b);
+    static int width();
+    static int height();
+    static void tocenter(QWidget * who);
+    static void limitsize_center(QWidget * who, QSize & previous, double max_w, double max_h);
+    static void limitsize_move(QWidget * who, QSize & previous, 
+			       double max_w, double max_h);
+    static void setsize_center(QWidget * who, QSize & previous, 
+			       double pw, double ph);
+    static bool fixed();
+    static bool nogui();
+    static void set_nogui();
+        
+  private:
+    static int left;
+    static int top;
+    static int right;
+    static int bottom;
+    static int w;
+    static int h;
+    static QPoint c;
+    static bool fixedp;
+    static bool noguip;
 };

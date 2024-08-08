@@ -26,20 +26,20 @@
 #ifndef UMLATTRIBUTE_H
 #define UMLATTRIBUTE_H
 
-class QTextOStream;
+class QTextStream;
 
 #include "UmlBaseAttribute.h"
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
 
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, BooL & indent_needed,
-			  int & enum_item_rank, const QCString & self);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, BooL & indent_needed,
+			  int & enum_item_rank, const QByteArray & self);
     
-    virtual void generate_imports(QTextOStream & f, QCString & made);
+    virtual void generate_imports(QTextStream & f, QByteArray & made);
 };
 
 #endif

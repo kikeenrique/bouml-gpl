@@ -24,7 +24,7 @@ class UmlBaseInitialPseudoState : public UmlPseudoState {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseInitialPseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
+     UmlBaseInitialPseudoState(void * id, const QByteArray & s) : UmlPseudoState(id, s) {
     }
 
 };

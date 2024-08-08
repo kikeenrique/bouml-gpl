@@ -386,7 +386,7 @@ void add_class_instance(UmlClassView * base_class_view, UmlClassView * user_clas
 
   //
   
-  QCString s;
+  QByteArray s;
   
   art = base_class_instance->associatedArtifact();
   s = art->cppHeader();
@@ -418,7 +418,7 @@ void baseitem_read_class_instance(UmlClass * base_item)
   UmlOperation * op = base_item->get_operation("read_");
   
   if (op != 0) {
-    QCString body;
+    QByteArray body;
     
     body = op->cppBody();
     body.insert(body.findRev("default:"),
@@ -437,7 +437,7 @@ void baseitem_read_class_instance(UmlClass * base_item)
   
   // update BaseUmlItem artifact
   UmlArtifact * art = base_item->associatedArtifact();
-  QCString s;
+  QByteArray s;
   
   s = art->cppSource();
   s.insert(s.find("#include \"UmlUseCase.h\""),

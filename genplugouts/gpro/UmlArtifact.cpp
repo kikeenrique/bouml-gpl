@@ -11,9 +11,9 @@
 #include "UmlClass.h"
 #include "Dialog.h"
 
-static QCString root_dir()
+static QByteArray root_dir()
 {
-  static QCString RootDir;
+  static QByteArray RootDir;
 
   if (RootDir.isEmpty()) {
     RootDir = CppSettings::rootDir();
@@ -38,7 +38,7 @@ static QCString root_dir()
 void UmlArtifact::genpro() {
   UmlPackage * pack = (UmlPackage *) parent()->parent();
   
-  QCString path;
+  QByteArray path;
 
   if (! propertyValue("genpro path", path)) {
 
@@ -61,9 +61,9 @@ void UmlArtifact::genpro() {
     UmlCom::trace(stereotype() + " : not managed");
 }
 
-void UmlArtifact::gen_app(const QCString & path) {
-  QCString target;
-  QCString pro;
+void UmlArtifact::gen_app(const QByteArray & path) {
+  QByteArray target;
+  QByteArray pro;
 
   propertyValue("genpro target", target);
   propertyValue("genpro pro", pro);
@@ -88,13 +88,13 @@ void UmlArtifact::gen_app(const QCString & path) {
     pro = d.absFilePath(pro + ".pro");
   }
 
-  QCString tmplt;
-  QCString config;
-  QCString defines;
-  QCString includepath;
-  QCString dependpath;
-  QCString objectsdir;
-  QCString footer;
+  QByteArray tmplt;
+  QByteArray config;
+  QByteArray defines;
+  QByteArray includepath;
+  QByteArray dependpath;
+  QByteArray objectsdir;
+  QByteArray footer;
 
   if (!propertyValue("genpro tmplt", tmplt))
     tmplt = "app";
@@ -187,7 +187,7 @@ void UmlArtifact::gen_app(const QCString & path) {
       const QVector<UmlArtifact> & arts = associatedArtifacts();
       unsigned index;
       const char * sep;
-      QCString ext;
+      QByteArray ext;
       
       ext = CppSettings::headerExtension();
       sep = "HEADERS\t\t= ";

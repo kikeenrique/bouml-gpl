@@ -2,16 +2,16 @@
 #include "UmlActivityPin.h"
 #include "UmlParameterSet.h"
 
-QCString UmlParameterSet::sKind() {
+QByteArray UmlParameterSet::sKind() {
   return "parameter set";
 }
 
-void UmlParameterSet::html(QCString, unsigned int, unsigned int) {
+void UmlParameterSet::html(QByteArray, unsigned int, unsigned int) {
   fw.write("<table><tr><td><div class=\"element\">Parameter set  <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>");
   
-  QCString s = description();
+  QByteArray s = description();
 
   if (!s.isEmpty()) {
     fw.write("<p>");

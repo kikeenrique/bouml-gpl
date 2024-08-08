@@ -45,7 +45,7 @@ const int BodyPrefixLength = 30;
 const int BodyPostfixLength = 28;
 
 static bool generate_type(const QValueList<UmlParameter> & params,
-			  unsigned rank, QTextOStream & f)
+			  unsigned rank, QTextStream & f)
 {
   if (rank >= params.count())
     return FALSE;
@@ -55,7 +55,7 @@ static bool generate_type(const QValueList<UmlParameter> & params,
 }
 
 static bool generate_var(const QValueList<UmlParameter> & params, 
-			 unsigned rank, QTextOStream & f)
+			 unsigned rank, QTextStream & f)
 {
   if (rank >= params.count())
     return FALSE;
@@ -64,17 +64,17 @@ static bool generate_var(const QValueList<UmlParameter> & params,
   return TRUE;
 }
 
-static void param_error(const QCString & parent, const QCString & name, unsigned rank)
+static void param_error(const QByteArray & parent, const QByteArray & name, unsigned rank)
 {
   write_trace_header();
-  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
-		+ parent + "::" + name + "</i> parameter rank " + QCString().setNum(rank)
+  UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
+		+ parent + "::" + name + "</i> parameter rank " + QByteArray().setNum(rank)
 		+ " does not exist</font></b><br>");
   incr_error();
 }
 
-QCString UmlOperation::compute_name() {
-  QCString get_set_spec = javaNameSpec();
+QByteArray UmlOperation::compute_name() {
+  QByteArray get_set_spec = javaNameSpec();
   
   if (! get_set_spec.isEmpty()) {
     UmlClassMember * it;
@@ -83,7 +83,7 @@ QCString UmlOperation::compute_name() {
       it = setOf();
     
     int index;
-    QCString s = (it->kind() == aRelation)
+    QByteArray s = (it->kind() == aRelation)
       ? ((UmlRelation *) it)->roleName()
       : it->name();
     
@@ -105,12 +105,12 @@ QCString UmlOperation::compute_name() {
 // p0 is the beginning of the operation's def
 // p point to ${body}
 // indent is the one of the operation
-const char * UmlOperation::generate_body(QTextOStream & f,
-					 QCString indent,
+const char * UmlOperation::generate_body(QTextStream & f,
+					 QByteArray indent,
 					 const char * p)
 {
   const char * body = 0;
-  QCString modeler_body;
+  QByteArray modeler_body;
   bool no_indent;
   char s_id[9];
   
@@ -131,7 +131,7 @@ const char * UmlOperation::generate_body(QTextOStream & f,
     no_indent = TRUE;
   
   // get keyword indent
-  QCString bindent = indent;
+  QByteArray bindent = indent;
   
   while (*p != '$')
     bindent += *p++;
@@ -188,8 +188,8 @@ static const char * bypass_body(const char * p)
   return p;
 }
 
-void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
-			    QCString indent) {
+void UmlOperation::generate(QTextStream & f, const QByteArray & cl_stereotype,
+			    QByteArray indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -374,18 +374,18 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
   }
 }
 
-void UmlOperation::generate_enum_pattern_item(QTextOStream &, int &,
-					      const QCString &, QCString) {
+void UmlOperation::generate_enum_pattern_item(QTextStream &, int &,
+					      const QByteArray &, QByteArray) {
   write_trace_header();
   UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>enum</i> cannot have operation</b></font><br>");
   incr_warning();
 }
 
-void UmlOperation::generate_enum_pattern_case(QTextOStream &, QCString) {
+void UmlOperation::generate_enum_pattern_case(QTextStream &, QByteArray) {
   // error already signaled
 }
 
-void UmlOperation::generate_enum_member(QTextOStream & f, QCString indent) {
+void UmlOperation::generate_enum_member(QTextStream & f, QByteArray indent) {
   generate(f, "enum", indent);
 }
 
@@ -429,14 +429,14 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       long id = strtol(p2, &body, 16);
       
       if (body != (p2 + 8)) {
-	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
+	UmlCom::trace(QByteArray("<font color =\"red\"> Error in ") + path +
 		      " : invalid preserve body identifier</font><br>");
 	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 1");
       }
       
       if (bodies.find(id) != 0) {
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 	  " : preserve body identifier used twice</font><br>");
 	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 2");
@@ -447,7 +447,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       if (*body == '\n')
 	body += 1;
       else {
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, end of line expected</font><br>");
 	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 3");
@@ -455,7 +455,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       
       if (((p1 = strstr(body, BodyPostfix)) == 0) ||
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 		      " : invalid preserve body block, wrong balanced</font><br>");
 	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("read_bodies 4");

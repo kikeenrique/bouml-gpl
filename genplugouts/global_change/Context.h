@@ -17,23 +17,23 @@ enum Equation {
 };
 class Context {
   public:
-    Context(const QCString & o, const QCString & f);
+    Context(const QByteArray & o, const QByteArray & f);
 
-    const char * set_filters(const QCString & f1, const QCString & f2, const QCString & f3, bool w1, bool w2, bool w3, bool and12, bool and23);
+    const char * set_filters(const QByteArray & f1, const QByteArray & f2, const QByteArray & f3, bool w1, bool w2, bool w3, bool and12, bool and23);
 
-    void set_stereotype(const QCString & s, bool eq, bool neq);
+    void set_stereotype(const QByteArray & s, bool eq, bool neq);
 
     void set_targets(bool art, bool cl, bool op, bool att, bool rel);
 
     void set_language(bool c, bool j, bool p, bool y, bool i);
 
-    bool match_stereotype(const QCString & s);
+    bool match_stereotype(const QByteArray & s);
 
-    bool match(QCString s);
+    bool match(QByteArray s);
 
     void err();
 
-    QCString replace(QCString s);
+    QByteArray replace(QByteArray s);
 
     bool onArtifact() const;
 
@@ -61,11 +61,11 @@ class Context {
 
 
   protected:
-    QCString _filter1;
+    QByteArray _filter1;
 
-    QCString _filter2;
+    QByteArray _filter2;
 
-    QCString _filter3;
+    QByteArray _filter3;
 
     bool _with1;
 
@@ -73,7 +73,7 @@ class Context {
 
     bool _with3;
 
-    QCString _stereotype;
+    QByteArray _stereotype;
 
     bool _is;
 
@@ -99,9 +99,9 @@ class Context {
 
     bool _idl;
 
-    QCString _old;
+    QByteArray _old;
 
-    QCString _future;
+    QByteArray _future;
 
     Equation _equation;
 
@@ -109,11 +109,11 @@ class Context {
 
     int _n_err;
 
-    bool match(QCString s, const QCString & filter, bool with);
+    bool match(QByteArray s, const QByteArray & filter, bool with);
 
 };
 
-inline void Context::set_stereotype(const QCString & s, bool eq, bool neq) {
+inline void Context::set_stereotype(const QByteArray & s, bool eq, bool neq) {
   _stereotype = s;
   _is = eq;
   _isnot = neq;

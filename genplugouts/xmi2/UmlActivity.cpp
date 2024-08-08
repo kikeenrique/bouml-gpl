@@ -26,7 +26,7 @@ void UmlActivity::write(FileOut & out) {
   out << ">\n";
   out.indent(+1); 
   
-  QCString s = constraint();
+  QByteArray s = constraint();
   
   if (! s.isEmpty()) {
     out.indent();
@@ -82,7 +82,7 @@ void UmlActivity::write(FileOut & out) {
 
   write_flows(out);
   
-  QMap<QCString, Opaque>::ConstIterator ito;
+  QMap<QByteArray, Opaque>::ConstIterator ito;
   
   for (ito = _opaque_behavior.begin(); ito != _opaque_behavior.end(); ++ito) {
     out.indent();
@@ -101,7 +101,7 @@ void UmlActivity::write(FileOut & out) {
   out.indent(); 
   out << "</" << k << ">\n"; 
 
-  QMap<QCString, UmlItem *>::ConstIterator ite;
+  QMap<QByteArray, UmlItem *>::ConstIterator ite;
   
   for (ite = _opaque_expression.begin(); ite != _opaque_expression.end(); ++ite) {
     out.indent();
@@ -119,7 +119,7 @@ void UmlActivity::write(FileOut & out) {
   unload();
 }
 
-void UmlActivity::write_condition(FileOut & out, QCString cond, bool pre) {
+void UmlActivity::write_condition(FileOut & out, QByteArray cond, bool pre) {
   if (! cond.isEmpty()) {
     const char * k;
     const char * K;
@@ -151,8 +151,8 @@ void UmlActivity::write_condition(FileOut & out, QCString cond, bool pre) {
   }
 }
 
-UmlItem * UmlActivity::add_opaque_behavior(QCString beh, UmlItem * who, const char * k) {
-  QMap<QCString, Opaque>::Iterator iter = _opaque_behavior.find(beh);
+UmlItem * UmlActivity::add_opaque_behavior(QByteArray beh, UmlItem * who, const char * k) {
+  QMap<QByteArray, Opaque>::Iterator iter = _opaque_behavior.find(beh);
   
   if (iter == _opaque_behavior.end()) {
     _opaque_behavior.insert(beh, Opaque(who, k));
@@ -162,8 +162,8 @@ UmlItem * UmlActivity::add_opaque_behavior(QCString beh, UmlItem * who, const ch
     return iter.data().item;
 }
 
-UmlItem * UmlActivity::add_opaque_expression(QCString val, UmlItem * who) {
-  QMap<QCString, UmlItem *>::Iterator iter = _opaque_expression.find(val);
+UmlItem * UmlActivity::add_opaque_expression(QByteArray val, UmlItem * who) {
+  QMap<QByteArray, UmlItem *>::Iterator iter = _opaque_expression.find(val);
   
   if (iter == _opaque_expression.end()) {
     _opaque_expression.insert(val, who);

@@ -79,7 +79,7 @@ void Lex::unget()
   context.pointer -= 1;
 }
 
-static QCString Separators = " \r\t\f\n&~\"#{'(-|`)[]=}%*<>?,;/:!";
+static QByteArray Separators = " \r\t\f\n&~\"#{'(-|`)[]=}%*<>?,;/:!";
 
 const QString & Lex::filename()
 {
@@ -238,7 +238,7 @@ void Lex::bypass_c_comment()
   }
 }
 
-QCString Lex::manage_operator(QString & result, int c)
+QByteArray Lex::manage_operator(QString & result, int c)
 {
   result += c;
   
@@ -276,7 +276,7 @@ QCString Lex::manage_operator(QString & result, int c)
 #ifdef TRACE
   cout << "retourne '" << result << "'\n";
 #endif
-  return QCString(result);
+  return QByteArray(result);
 }
 
 char Lex::bypass_operator(int c)
@@ -318,7 +318,7 @@ char Lex::bypass_operator(int c)
   }
 }
 
-QCString Lex::read_string()
+QByteArray Lex::read_string()
 {
   QString result = "\"";;
   
@@ -336,7 +336,7 @@ QCString Lex::read_string()
       result += c;
       break;
     case '"':
-      return QCString(result += c);
+      return QByteArray(result += c);
     default:
       result += c;
     }
@@ -364,9 +364,9 @@ void Lex::bypass_string()
   }
 }
 
-QCString Lex::read_character()
+QByteArray Lex::read_character()
 {
-  QCString result = "'";
+  QByteArray result = "'";
   
   for (;;) {
     int c = get();
@@ -375,7 +375,7 @@ QCString Lex::read_character()
     case EOF:
       return 0;
     case '\'':
-      return QCString(result += c);
+      return QByteArray(result += c);
     default:
       result += c;
     }
@@ -401,9 +401,9 @@ void Lex::bypass_character()
   }
 }
 
-QCString Lex::read_array_dim() 
+QByteArray Lex::read_array_dim() 
 {
-  QCString result = "[";
+  QByteArray result = "[";
   char * pointer = context.pointer;
 	  
   for (;;) {
@@ -442,7 +442,7 @@ void Lex::bypass_array_dim()
   }
 }
 
-QCString Lex::read_word()
+QByteArray Lex::read_word()
 {
   QString result;
   
@@ -515,7 +515,7 @@ QCString Lex::read_word()
   else
     cout << "retourne '" << result << "'\n";
 #endif
-  return QCString(result);
+  return QByteArray(result);
 }
 
 char Lex::read_word_bis()
@@ -623,17 +623,17 @@ void Lex::finish_line()
   }
 }
 
-QCString Lex::get_comments() 
+QByteArray Lex::get_comments() 
 {
-  QCString result = QCString(context.comments);
+  QByteArray result = QByteArray(context.comments);
   
   context.comments = QString::null;
   return result;
 }
 
-QCString Lex::get_comments(QCString & co) 
+QByteArray Lex::get_comments(QByteArray & co) 
 {
-  QCString result = QCString(context.comments);
+  QByteArray result = QByteArray(context.comments);
   
   context.comments = QString::null;
   
@@ -642,17 +642,17 @@ QCString Lex::get_comments(QCString & co)
     : co += "\n" + result;
 }
 
-QCString Lex::get_description() 
+QByteArray Lex::get_description() 
 {
-  QCString result = QCString(context.description);
+  QByteArray result = QByteArray(context.description);
   
   context.description = QString::null;
   return result;
 }
 
-QCString Lex::get_description(QCString & co) 
+QByteArray Lex::get_description(QByteArray & co) 
 {
-  QCString result = QCString(context.description);
+  QByteArray result = QByteArray(context.description);
   
   context.description = QString::null;
   
@@ -675,12 +675,12 @@ void Lex::mark() {
   context.mark = context.pointer;
 }
 
-QCString Lex::region() {
+QByteArray Lex::region() {
   char c = *context.pointer;
   
   *context.pointer = 0;
   
-  QCString result = context.mark;
+  QByteArray result = context.mark;
   
   *context.pointer = c;
   
@@ -689,11 +689,11 @@ QCString Lex::region() {
 
 //
 
-void Lex::syntax_error(QCString s)
+void Lex::syntax_error(QByteArray s)
 {
-  PhpCatWindow::trace(QCString("<font face=helvetica>syntax error in <i> ")
-			+ QCString(context.filename) + "</i> line " +
-			QCString().setNum(context.line_number) + " <b>"
+  PhpCatWindow::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+			+ QByteArray(context.filename) + "</i> line " +
+			QByteArray().setNum(context.line_number) + " <b>"
 			+ s + "</b></font><br>"); 
   
 #ifdef TRACE
@@ -704,9 +704,9 @@ void Lex::syntax_error(QCString s)
 
 void Lex::premature_eof()
 {
-  PhpCatWindow::trace(QCString("<font face=helvetica>syntax error in <i> ")
-		       + QCString(context.filename) + "</i> line " +
-		       QCString().setNum(context.line_number) +
+  PhpCatWindow::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+		       + QByteArray(context.filename) + "</i> line " +
+		       QByteArray().setNum(context.line_number) +
 		       " <b>premature eof</b></font><br>"); 
   
 #ifdef TRACE
@@ -715,11 +715,11 @@ void Lex::premature_eof()
 #endif
 }
 
-void Lex::error_near(QCString s)
+void Lex::error_near(QByteArray s)
 {
-  PhpCatWindow::trace(QCString("<font face=helvetica>syntax error in <i> ")
-		       + QCString(context.filename) + "</i> line " +
-		       QCString().setNum(context.line_number) + " <b>near <font color =\"red\">"
+  PhpCatWindow::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+		       + QByteArray(context.filename) + "</i> line " +
+		       QByteArray().setNum(context.line_number) + " <b>near <font color =\"red\">"
 		       + quote(s) + "</font></b></font><br>"); 
   
 #ifdef TRACE
@@ -730,9 +730,9 @@ void Lex::error_near(QCString s)
 
 // allows a string to be written as it is by an html writer
 
-QCString Lex::quote(QCString s)
+QByteArray Lex::quote(QByteArray s)
 {
-  QCString result;
+  QByteArray result;
   const char * p = s;
   
   for (;;) {
@@ -758,9 +758,9 @@ QCString Lex::quote(QCString s)
 
 //
 
-static QCString get_next_word(QCString s, int & index, int & index2)
+static QByteArray get_next_word(QByteArray s, int & index, int & index2)
 {
-  QCString result;
+  QByteArray result;
   const char * p = ((const char *)  s) + index;
   
   for (;;) {
@@ -802,12 +802,12 @@ static QCString get_next_word(QCString s, int & index, int & index2)
   }
 }
 
-QCString value_of(QCString s, QCString k, int & index)
+QByteArray value_of(QByteArray s, QByteArray k, int & index)
 {
   index = s.find(k);
   
   if (index == -1) {
-    QCString result;
+    QByteArray result;
     
     return result;
   }
@@ -819,10 +819,10 @@ QCString value_of(QCString s, QCString k, int & index)
   }
 }
 
-QCString value_of(QCString s, QCString k, int & index,
-		  QCString & next, int & index2)
+QByteArray value_of(QByteArray s, QByteArray k, int & index,
+		  QByteArray & next, int & index2)
 {
-  QCString result;
+  QByteArray result;
   
   index = s.find(k, index);
   

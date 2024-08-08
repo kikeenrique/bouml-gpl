@@ -8,7 +8,7 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 bool UmlOperation::write_if_needed(FileOut & out) {
-  QCString decl;
+  QByteArray decl;
 
   switch (_lang) {
   case Uml:
@@ -92,7 +92,7 @@ bool UmlOperation::write_if_needed(FileOut & out) {
   return TRUE;
 }
 
-void UmlOperation::write_return_type(FileOut & out, QCString decl) {
+void UmlOperation::write_return_type(FileOut & out, QByteArray decl) {
   const UmlTypeSpec & t = returnType();
   static int return_rank = 0;
   
@@ -125,7 +125,7 @@ void UmlOperation::write_return_type(FileOut & out, QCString decl) {
   }
 }
 
-void UmlOperation::write_cpp_returntype(FileOut & out, QCString decl) {
+void UmlOperation::write_cpp_returntype(FileOut & out, QByteArray decl) {
   // doesn't manage function pointer
   // manage keywords
   int index;
@@ -154,7 +154,7 @@ void UmlOperation::write_cpp_returntype(FileOut & out, QCString decl) {
     write_type(out, t, decl, "${name}", "${type}");
 }
 
-void UmlOperation::write_java_returntype(FileOut & out, QCString decl) {
+void UmlOperation::write_java_returntype(FileOut & out, QByteArray decl) {
 // manage keywords
 int index;
 
@@ -231,7 +231,7 @@ void UmlOperation::write_uml_params(FileOut & out) {
   }
 }
 
-void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
+void UmlOperation::write_cpp_java_params(FileOut & out, QByteArray decl) {
   int index1 = decl.find("${(}");
     
   if (index1 == -1)
@@ -247,9 +247,9 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
   index1 = 0;
     
   const QValueList<UmlParameter> p = params();
-  QCString sparam;
-  QCString kname;
-  QCString ktype;
+  QByteArray sparam;
+  QByteArray kname;
+  QByteArray ktype;
   int rank;
     
   if ((name() == "unload") && (parent()->name() == "UmlBasePackage"))
@@ -291,7 +291,7 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
   }
 }
 
-bool UmlOperation::get_param(QCString s, int & index, QCString & r, QCString & kname, QCString & ktype, int & rank) {
+bool UmlOperation::get_param(QByteArray s, int & index, QByteArray & r, QByteArray & kname, QByteArray & ktype, int & rank) {
 int index0 = index;
 int level = 0;
 const char * p = (const char *) s;

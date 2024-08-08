@@ -36,26 +36,26 @@ class ClassContainer {
   public:
     virtual ~ClassContainer();	// just to not have warning
   
-    virtual Class * declare_if_needed(const QCString & name,
-				      QCString stereotype = 0) = 0;
-    virtual Class * define(const QCString & name, QCString stereotype = 0) = 0;
-    virtual void declare_if_needed(QCString name, Class * cl) = 0;
-    virtual void define(QCString name, Class * cl) = 0;
-    virtual Class * new_class(const QCString & name,
-			      const QCString & stereotype,
+    virtual Class * declare_if_needed(const QByteArray & name,
+				      QByteArray stereotype = 0) = 0;
+    virtual Class * define(const QByteArray & name, QByteArray stereotype = 0) = 0;
+    virtual void declare_if_needed(QByteArray name, Class * cl) = 0;
+    virtual void define(QByteArray name, Class * cl) = 0;
+    virtual Class * new_class(const QByteArray & name,
+			      const QByteArray & stereotype,
 			      bool declaration) = 0;
-    virtual bool find_type(QCString type, UmlTypeSpec & typespec) = 0;
-    virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl
+    virtual bool find_type(QByteArray type, UmlTypeSpec & typespec) = 0;
+    virtual void declaration(const QByteArray & name, const QByteArray & stereotype,
+			     const QByteArray & decl
 #ifdef ROUNDTRIP
 			     , bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			     ) = 0;
     
-    void compute_type(QCString type, UmlTypeSpec & typespec,
-		      QCString & typeform, bool get_first_template_actual = FALSE,
+    void compute_type(QByteArray type, UmlTypeSpec & typespec,
+		      QByteArray & typeform, bool get_first_template_actual = FALSE,
 		      const QValueList<FormalParameterList> & tmplts = empty);
-    bool find_type(QCString type, UmlTypeSpec & typespec,
+    bool find_type(QByteArray type, UmlTypeSpec & typespec,
 		   NDict<Class> & defined);
 #ifdef ROUNDTRIP
     virtual Class * upload_define(UmlClass *) = 0;
@@ -64,12 +64,12 @@ class ClassContainer {
     static bool get_template(FormalParameterList & tmplt);
     
   protected:
-    Class * declare_if_needed(const QCString & name,
-			      const QCString & stereotype,
+    Class * declare_if_needed(const QByteArray & name,
+			      const QByteArray & stereotype,
 			      const FormalParameterList & formals,
 			      NDict<Class> & declared, 
 			      NDict<Class> & defined);
-    Class * define(const QCString & name, const QCString & stereotype,
+    Class * define(const QByteArray & name, const QByteArray & stereotype,
 		   NDict<Class> & declared, NDict<Class> & defined);
     
     static QValueList<FormalParameterList> empty;

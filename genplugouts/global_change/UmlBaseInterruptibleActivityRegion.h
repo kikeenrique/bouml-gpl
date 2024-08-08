@@ -24,7 +24,7 @@ class UmlBaseInterruptibleActivityRegion : public UmlActivityRegion {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseInterruptibleActivityRegion(void * id, const QCString & s) : UmlActivityRegion(id, s) {
+     UmlBaseInterruptibleActivityRegion(void * id, const QByteArray & s) : UmlActivityRegion(id, s) {
     }
 
 };

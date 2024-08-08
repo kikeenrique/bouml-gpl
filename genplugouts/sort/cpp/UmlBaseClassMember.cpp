@@ -60,7 +60,7 @@ bool UmlBaseClassMember::set_CppVisibility(aVisibility v) {
 #endif
 
 #ifdef WITHJAVA
-QCString UmlBaseClassMember::javaAnnotations() {
+QByteArray UmlBaseClassMember::javaAnnotations() {
     read_if_needed_();
     
     return _java_annotation;

@@ -28,24 +28,19 @@
 
 #include "mystr.h"
 
-class KeyValueData
-{
-    protected:
-        MyStr key;
-        MyStr value;
+class KeyValueData {
+  protected:
+    MyStr key;
+    MyStr value;
 
-    public:
-        KeyValueData() {};
+  public:
+    KeyValueData() {};
+  
+    void set_key(const char *);
+    const char * get_key() { return key; };
 
-        void set_key (const char *);
-        const char * get_key() {
-            return key;
-        };
-
-        void set_value (const char *);
-        const char * get_value() {
-            return value;
-        };
+    void set_value(const char *);
+    const char * get_value() { return value; };
 };
 
 #endif

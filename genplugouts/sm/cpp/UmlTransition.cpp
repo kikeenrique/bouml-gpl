@@ -2,15 +2,15 @@
 #include "UmlTransition.h"
 #include "UmlClass.h"
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlCom.h"
 #include "UmlState.h"
 #include "UmlOperation.h"
 
-QCString UmlTransition::triggerName() {
+QByteArray UmlTransition::triggerName() {
   // get & check trigger's name
-  QCString s = cppTrigger();
+  QByteArray s = cppTrigger();
   
   if (s.isEmpty()) {
     switch (parent()->kind()) {
@@ -58,7 +58,7 @@ QCString UmlTransition::triggerName() {
   return s;
 }
 
-void UmlTransition::init(UmlClass *, QCString, QCString, UmlState * state) {
+void UmlTransition::init(UmlClass *, QByteArray, QByteArray, UmlState * state) {
   if (triggerName() == "_completion")
     state->setHasCompletion();
 }
@@ -67,11 +67,11 @@ void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState *
   if (_already_managed)
     return;
     
-  QCString s = triggerName();
+  QByteArray s = triggerName();
   
   // group transitions having the same trigger
   const QVector<UmlItem> ch = parent()->children();
-  unsigned index = ch.findRef(this);
+  unsigned index = ch.indexOf(this);
   QList<UmlTransition> trs;
   UmlTransition * tr_no_guard = 0;
   
@@ -104,7 +104,7 @@ void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState *
   // made the trigger
 
   UmlOperation * trg = state->assocClass()->trigger(s, machine, anystate);
-  QCString body;
+  QByteArray body;
   
   if (s == "create") {
     // manage entry
@@ -128,7 +128,7 @@ void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState *
   trg->set_CppBody(body);
 }
 
-void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent) {
+void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent) {
   if (!cppTrigger().isEmpty()) {
     UmlCom::trace("Error : transition from a pseudo state can't have trigger<br>");
     throw 0;
@@ -140,7 +140,7 @@ void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState *
   generate(l, machine, anystate, state, body, indent, FALSE);
 }
 
-void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent, bool completion)
+void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent, bool completion)
 {
   UmlTransition * tr;
   bool guard = FALSE;
@@ -214,7 +214,7 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
     }
     else if (tr->target()->kind() != aTerminatePseudoState) {
       if (tg != common) {
-	QCString enter;
+	QByteArray enter;
 	UmlState * tg_parent;
       
 	// the enter behavior of the target state will be managed

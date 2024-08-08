@@ -9,7 +9,7 @@
 class UmlStateDiagram : public UmlBaseStateDiagram, public UmlStateItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlStateDiagram(void * id, const QCString & s) : UmlBaseStateDiagram(id, s) {
+     UmlStateDiagram(void * id, const QByteArray & s) : UmlBaseStateDiagram(id, s) {
     }
 
 };

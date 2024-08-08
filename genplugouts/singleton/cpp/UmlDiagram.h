@@ -13,7 +13,7 @@
 // You can modify it as you want (except the constructor)
 class UmlDiagram : public UmlBaseDiagram {
   public:
-    UmlDiagram(void * id, const QCString & n) : UmlBaseDiagram(id, n) {};
+    UmlDiagram(void * id, const QByteArray & n) : UmlBaseDiagram(id, n) {};
 
 };
 

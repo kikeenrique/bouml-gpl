@@ -26,7 +26,7 @@ class UmlBaseFlow : public UmlItem {
     virtual UmlActivityNode * target();
 
     // return the weight in OCL
-    const QCString & weight();
+    const QByteArray & weight();
 
     // set the weight in OCL
     //
@@ -34,7 +34,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_Weight(const char * v);
 
     // return the guard in OCL
-    const QCString & guard();
+    const QByteArray & guard();
 
     // set the guard in OCL
     //
@@ -42,7 +42,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_Guard(const char * v);
 
     // return the selection in OCL
-    const QCString & selection();
+    const QByteArray & selection();
 
     // set the selection in OCL
     //
@@ -50,7 +50,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_Selection(const char * v);
 
     // return the transformation in OCL
-    const QCString & transformation();
+    const QByteArray & transformation();
 
     // set the transformation in OCL
     //
@@ -59,7 +59,7 @@ class UmlBaseFlow : public UmlItem {
 
 #ifdef WITHCPP
     // return the weight in C++
-    const QCString & cppWeight();
+    const QByteArray & cppWeight();
 
     // set the weight in C++
     //
@@ -67,7 +67,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_CppWeight(const char * v);
 
     // return the guard in C++
-    const QCString & cppGuard();
+    const QByteArray & cppGuard();
 
     // set the guard in C++
     //
@@ -75,7 +75,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_CppGuard(const char * v);
 
     // return the selection in C++
-    const QCString & cppSelection();
+    const QByteArray & cppSelection();
 
     // set the selection in C++
     //
@@ -83,7 +83,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_CppSelection(const char * v);
 
     // return the transformation in C++
-    const QCString & cppTransformation();
+    const QByteArray & cppTransformation();
 
     // set the transformation in C++
     //
@@ -93,7 +93,7 @@ class UmlBaseFlow : public UmlItem {
 
 #ifdef WITHJAVA
     // return the weight in Java
-    const QCString & javaWeight();
+    const QByteArray & javaWeight();
 
     // set the weight in Java
     //
@@ -101,7 +101,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_JavaWeight(const char * v);
 
     // return the guard in Java
-    const QCString & javaGuard();
+    const QByteArray & javaGuard();
 
     // set the guard in Java
     //
@@ -109,7 +109,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_JavaGuard(const char * v);
 
     // return the selection in Java
-    const QCString & javaSelection();
+    const QByteArray & javaSelection();
 
     // set the selection in Java
     //
@@ -117,7 +117,7 @@ class UmlBaseFlow : public UmlItem {
     bool set_JavaSelection(const char * v);
 
     // return the transformation in Java
-    const QCString & javaTransformation();
+    const QByteArray & javaTransformation();
 
     // set the transformation in Java
     //
@@ -160,7 +160,7 @@ class UmlBaseFlow : public UmlItem {
 #endif
 
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseFlow(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseFlow(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 };

@@ -11,10 +11,10 @@
 // You can modify it as you want (except the constructor)
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n) : UmlBaseClassMember(id, n) {};
+    UmlClassMember(void * id, const QByteArray & n) : UmlBaseClassMember(id, n) {};
 
     //  set the description, depending on the  or  keyword
-    virtual void setComment(QCString s);
+    virtual void setComment(QByteArray s);
 
 };
 

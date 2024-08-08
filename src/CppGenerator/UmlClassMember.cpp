@@ -34,8 +34,8 @@
 #include "CppSettings.h"
 
 void UmlClassMember::generate_visibility(aVisibility & current_visibility,
-					 QTextOStream & f_h, bool ahead,
-					 const QCString & indent) {
+					 QTextStream & f_h, bool ahead,
+					 const QByteArray & indent) {
   aVisibility v = (cppVisibility() == DefaultVisibility)
     ? visibility() : cppVisibility();
   
@@ -61,7 +61,7 @@ void UmlClassMember::generate_visibility(aVisibility & current_visibility,
   }
 }
 
-void UmlClassMember::remove_comments(QCString & s)
+void UmlClassMember::remove_comments(QByteArray & s)
 {
   int index1 = 0;
   
@@ -92,7 +92,7 @@ void UmlClassMember::remove_comments(QCString & s)
   }
 }
 
-void UmlClassMember::remove_preprocessor(QCString & s)
+void UmlClassMember::remove_preprocessor(QByteArray & s)
 {
   int index = 0;
   
@@ -117,7 +117,7 @@ void UmlClassMember::remove_preprocessor(QCString & s)
   }
 }
 
-void UmlClassMember::remove_arrays(QCString & s)
+void UmlClassMember::remove_arrays(QByteArray & s)
 {
   int index1 = 0;
   
@@ -137,7 +137,7 @@ void UmlClassMember::remove_arrays(QCString & s)
 // because I cannot know how the type is used and I do not want to
 // produce circular #include
 bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
-					QCString decl, const UmlTypeSpec & t,
+					QByteArray decl, const UmlTypeSpec & t,
 					bool force_incl)
 {
   remove_comments(decl);
@@ -220,7 +220,7 @@ bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
 //#warning NAMESPACE
       
       if (dontsubstituteuntil == 0) {
-	QCString subst = CppSettings::type(ts.explicit_type);
+	QByteArray subst = CppSettings::type(ts.explicit_type);
 	
 	if (subst != ts.explicit_type) {
 	  decl = subst + ' ' + p;
@@ -267,9 +267,9 @@ bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
 }
 
 // return TRUE if stop on comment/description
-bool UmlClassMember::insert_template(const char *& p, QTextOStream & fs,
-				     const QCString & indent,
-				     const QCString & templ)
+bool UmlClassMember::insert_template(const char *& p, QTextStream & fs,
+				     const QByteArray & indent,
+				     const QByteArray & templ)
 {
   // search the beginning of the definition/declaration in p;
   for (;;) {

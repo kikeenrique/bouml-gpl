@@ -9,7 +9,7 @@
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
     
     static UmlAttribute * java2Php(UmlClass * php, UmlClass * java,

@@ -17,7 +17,7 @@ class UmlBaseCollaborationMessage : public UmlMessage {
     }
 
     // return the hierarchical rank of the message
-    const QCString & hrank() const {
+    const QByteArray & hrank() const {
         return _hrank;
     }
 
@@ -25,7 +25,7 @@ class UmlBaseCollaborationMessage : public UmlMessage {
   private:
     int _rank;
 
-    QCString _hrank;
+    QByteArray _hrank;
 
     // internal, don't call it
     void read_(const QPtrDict<UmlClassInstanceReference> & instances);

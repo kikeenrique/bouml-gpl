@@ -15,7 +15,7 @@ class UmlClass;
 // You can modify it as you want (except the constructor)
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n) {
+    UmlOperation(void * id, const QByteArray & n) : UmlBaseOperation(id, n) {
       cpt[kind()] += 1;
     };
 
@@ -29,13 +29,13 @@ class UmlOperation : public UmlBaseOperation {
 
     void importExceptions(File & f);
 
-    void cplusplus(QDict<QCString> & prop);
+    void cplusplus(QDict<QByteArray> & prop);
 
-    void oracle8(QDict<QCString> & prop);
+    void oracle8(QDict<QByteArray> & prop);
 
-    void corba(QDict<QCString> & prop);
+    void corba(QDict<QByteArray> & prop);
 
-    void java(QDict<QCString> & prop);
+    void java(QDict<QByteArray> & prop);
 
 };
 

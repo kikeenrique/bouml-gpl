@@ -4,7 +4,7 @@
 
 #include "UmlBaseItem.h"
 #include <qcstring.h>
-#include <qptrvector.h>
+#include <qvector.h>
 
 
 // This class is a mother class for all the other Uml* classes, this
@@ -13,7 +13,7 @@
 // You can modify it as you want (except the constructor)
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n) {};
+    UmlItem(void * id, const QByteArray & n) : UmlBaseItem(id, n) {};
 
     virtual ~UmlItem();
 

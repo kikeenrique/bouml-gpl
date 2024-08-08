@@ -33,13 +33,13 @@ unsigned Statistic::n_operations;
 
 void Statistic::produce() 
 {
-  UmlCom::trace(QCString("<br><hr><br><font face=helvetica>Java reverse done</font><br><br>") +
-		QCString("<font face=helvetica>	") +
-		QCString().setNum(n_classes) + QCString(" classes </font><br>") +
-		QCString("<font face=helvetica>	") +
-		QCString().setNum(n_attributes) + QCString(" attributes </font><br>") +
-		QCString("<font face=helvetica>	") +
-		QCString().setNum(n_relations) + " relations </font><br>" +
-		QCString("<font face=helvetica>	") +
-		QCString().setNum(n_operations) + " operations </font><br><hr><br>");
+  UmlCom::trace(QByteArray("<br><hr><br><font face=helvetica>Java reverse done</font><br><br>") +
+		QByteArray("<font face=helvetica>	") +
+		QByteArray().setNum(n_classes) + QByteArray(" classes </font><br>") +
+		QByteArray("<font face=helvetica>	") +
+		QByteArray().setNum(n_attributes) + QByteArray(" attributes </font><br>") +
+		QByteArray("<font face=helvetica>	") +
+		QByteArray().setNum(n_relations) + " relations </font><br>" +
+		QByteArray("<font face=helvetica>	") +
+		QByteArray().setNum(n_operations) + " operations </font><br><hr><br>");
 }

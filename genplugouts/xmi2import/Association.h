@@ -11,12 +11,12 @@ class Token;
 
 // an unused role has an empty id
 struct Role {
-    QCString name;
+    QByteArray name;
 
-    QCString id;
+    QByteArray id;
 
     // idref of the type containing it
-    QCString idref;
+    QByteArray idref;
 
     aRelationKind aggregate;
 
@@ -34,19 +34,19 @@ struct Role {
 
     bool isStatic : 1;
 
-    QCString multiplicity;
+    QByteArray multiplicity;
 
-    QCString visibility;
+    QByteArray visibility;
 
-    QCString comment;
+    QByteArray comment;
 
-    QCString constraint;
+    QByteArray constraint;
 
-    QCString defaultValue;
+    QByteArray defaultValue;
 
     Role() : aggregate(anAssociation), navigable(TRUE), readOnly(FALSE), isStatic(FALSE) {}
 
-    void setMultiplicity(QCString v, bool upper, const char * dflt);
+    void setMultiplicity(QByteArray v, bool upper, const char * dflt);
 
 };
 
@@ -59,23 +59,23 @@ class Association {
     void set_class_association(){ is_class_association = TRUE; }
     // search for the association from its id
     
-    static Association & get(QCString id, QCString s = "");
+    static Association & get(QByteArray id, QByteArray s = "");
 
     static void solveThem();
 
 
   protected:
-    QCString name;
+    QByteArray name;
 
     Role roles[2];
 
-    static QMap<QCString, Association> All;
+    static QMap<QByteArray, Association> All;
 
     bool is_class_association;
 
 
   private:
-    void solve(QCString id);
+    void solve(QByteArray id);
 
 };
 

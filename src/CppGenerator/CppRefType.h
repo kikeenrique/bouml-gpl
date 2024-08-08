@@ -26,11 +26,11 @@
 #ifndef CPPREFTYPE_H
 #define CPPREFTYPE_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlTypeSpec.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlArtifact;
 
 class CppRefType {
@@ -38,14 +38,14 @@ class CppRefType {
     enum Weight { Low, Medium, High, Strong };
       
     static bool add(UmlClass *, QList<CppRefType> &, bool incl, bool hight = FALSE);
-    static bool add(const QCString &, QList<CppRefType> &, bool incl);
+    static bool add(const QByteArray &, QList<CppRefType> &, bool incl);
     static bool add(const UmlTypeSpec & t, QList<CppRefType> & l, bool incl);
     static void remove(UmlClass *, QList<CppRefType> & l);
-    static void remove(const QCString &, QList<CppRefType> & l);
+    static void remove(const QByteArray &, QList<CppRefType> & l);
     static void force_ref(UmlClass * cl, QList<CppRefType> & l);
     static void compute(QList<CppRefType> & dependencies,
-			const QCString & hdef, const QCString & srcdef,
-			QCString & h_incl,  QCString & decl, QCString & src_incl,
+			const QByteArray & hdef, const QByteArray & srcdef,
+			QByteArray & h_incl,  QByteArray & decl, QByteArray & src_incl,
 			UmlArtifact * who);
     
   protected:
@@ -55,7 +55,7 @@ class CppRefType {
     
     CppRefType(UmlClass * cl, bool i, Weight w)
       : included(i), weight(w) { type.type = cl; };
-    CppRefType(const QCString & t, bool i, Weight w)
+    CppRefType(const QByteArray & t, bool i, Weight w)
       : included(i), weight(w) { type.explicit_type = t; };
     
 };

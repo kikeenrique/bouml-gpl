@@ -5,14 +5,14 @@
 void UmlOperation::change(Context & ctx) {
 if (ctx.onOperation() && ctx.match_stereotype(stereotype())) {
   if (ctx.cpp()) {
-    const QCString & c = cppDecl();
+    const QByteArray & c = cppDecl();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_CppDecl(ctx.replace(c)))
 	ctx.err();
     }
     
-    const QCString & f = cppDef();
+    const QByteArray & f = cppDef();
     
     if (!f.isEmpty() && ctx.match(f)) {
       if (!set_CppDef(ctx.replace(f)))
@@ -21,7 +21,7 @@ if (ctx.onOperation() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.java()) {
-    const QCString & c = javaDecl();
+    const QByteArray & c = javaDecl();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_JavaDecl(ctx.replace(c)))
@@ -30,7 +30,7 @@ if (ctx.onOperation() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.php()) {
-    const QCString & c = phpDecl();
+    const QByteArray & c = phpDecl();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_PhpDecl(ctx.replace(c)))
@@ -39,7 +39,7 @@ if (ctx.onOperation() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.python()) {
-    const QCString & c = pythonDecl();
+    const QByteArray & c = pythonDecl();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_PythonDecl(ctx.replace(c)))
@@ -48,7 +48,7 @@ if (ctx.onOperation() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.idl()) {
-    const QCString & c = idlDecl();
+    const QByteArray & c = idlDecl();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_IdlDecl(ctx.replace(c)))

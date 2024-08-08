@@ -28,7 +28,7 @@
 #include "UmlActualParameter.h"
 #include "IdlSettings.h"
 
-void UmlActualParameter::generate(QTextOStream & f) const {
+void UmlActualParameter::generate(QTextStream & f) const {
   f << ((rank() == 0) ? "<" : ", ")
     << IdlSettings::type(value().toString());
 }

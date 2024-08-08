@@ -12,16 +12,16 @@
 #include "IdlSettings.h"
 void UmlOperation::import(File & f, UmlClass * parent)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, "operations's name");
     
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
-  QCString s2;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
+  QByteArray s2;
   int k;
   
   do {
@@ -31,7 +31,7 @@ void UmlOperation::import(File & f, UmlClass * parent)
   UmlOperation * x;
 
   if (scanning) {
-    QCString name;
+    QByteArray name;
     
     if (s.left(8) != "operator")
       name = (s.at(0) == '~')
@@ -118,7 +118,7 @@ void UmlOperation::import(File & f) {
     return;
   }
 
-  QCString s;
+  QByteArray s;
   UmlTypeSpec t;
 
   for (;;) {    
@@ -182,10 +182,10 @@ void UmlOperation::import(File & f) {
 }
 
 void UmlOperation::importParameters(File & f) {
-  QCString s;
+  QByteArray s;
   unsigned rank = 0;
   const char * sep = "";
-  QCString doc = description();
+  QByteArray doc = description();
 
   for (;;) {
     switch (f.read(s)) {
@@ -204,17 +204,17 @@ void UmlOperation::importParameters(File & f) {
     f.read("Parameter");
 
     UmlParameter p;
-    QCString ti;
+    QByteArray ti;
 	
     ti.sprintf("${t%u}", rank);
 
     if (f.read(p.name) != STRING)
       f.syntaxError(s, "parameter's name");
 
-    QCString id;
-    QCString ste;
-    QCString p_doc;
-    QDict<QCString> prop;
+    QByteArray id;
+    QByteArray ste;
+    QByteArray p_doc;
+    QDict<QByteArray> prop;
     int k;
 
     for (;;) {
@@ -242,7 +242,7 @@ void UmlOperation::importParameters(File & f) {
 	    s = s.mid(6);
 	  }
 	  else {
-	    QCString err =
+	    QByteArray err =
 	      "<br>'" + s + "' : wrong parameter direction, in " + f.context();
 	  
 	    UmlCom::trace(err);
@@ -267,7 +267,7 @@ void UmlOperation::importParameters(File & f) {
 	f.skipNextForm();
     }
 
-    QCString d;
+    QByteArray d;
     int index;
     
     switch (((UmlClass *) parent())->language()) {
@@ -305,7 +305,7 @@ void UmlOperation::importParameters(File & f) {
 }
 
 void UmlOperation::importExceptions(File & f) {
-  QCString s;
+  QByteArray s;
   unsigned rank = 0;
   
   if (f.read(s) != STRING)
@@ -325,7 +325,7 @@ void UmlOperation::importExceptions(File & f) {
     if (((index2 = t.explicit_type.find("[")) != -1) &&
 	(((const char *) t.explicit_type)[t.explicit_type.length() - 1]
 	 == ']')) {
-      QCString target_id =
+      QByteArray target_id =
 	t.explicit_type.mid(index2+1, 
 			    t.explicit_type.length() - index2 - 2);
       UmlClass * cl = (UmlClass *) UmlItem::findItem(target_id, aClass);
@@ -342,16 +342,16 @@ void UmlOperation::importExceptions(File & f) {
   }
 }
 
-void UmlOperation::cplusplus(QDict<QCString> &) {
+void UmlOperation::cplusplus(QDict<QByteArray> &) {
   set_CppDecl(CppSettings::operationDecl());
   set_CppDef(CppSettings::operationDef());
 }
 
-void UmlOperation::oracle8(QDict<QCString> &) {
+void UmlOperation::oracle8(QDict<QByteArray> &) {
 }
 
-void UmlOperation::corba(QDict<QCString> & prop) {
-  QCString * v;
+void UmlOperation::corba(QDict<QByteArray> & prop) {
+  QByteArray * v;
     
   if ((v = prop.find("CORBA/OperationIsOneWay")) != 0) {
     if (*v == "TRUE")
@@ -362,9 +362,9 @@ void UmlOperation::corba(QDict<QCString> & prop) {
   set_IdlDecl(IdlSettings::operationDecl());
 }
 
-void UmlOperation::java(QDict<QCString> & prop) {
-  QCString d = JavaSettings::operationDef();
-  QCString * v;
+void UmlOperation::java(QDict<QByteArray> & prop) {
+  QByteArray d = JavaSettings::operationDef();
+  QByteArray * v;
     
   if ((v = prop.find("Java/Final")) != 0) {
     if (*v == "TRUE")

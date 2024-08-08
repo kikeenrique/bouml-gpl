@@ -35,7 +35,7 @@
 #include "util.h"
 
 static bool generate_dir(const QValueList<UmlParameter> & params,
-			 unsigned rank, QTextOStream & f)
+			 unsigned rank, QTextStream & f)
 {
   if (rank >= params.count())
     return FALSE;
@@ -54,7 +54,7 @@ static bool generate_dir(const QValueList<UmlParameter> & params,
 }
 
 static bool generate_type(const QValueList<UmlParameter> & params,
-			  unsigned rank, QTextOStream & f)
+			  unsigned rank, QTextStream & f)
 {
   if (rank >= params.count())
     return FALSE;
@@ -64,7 +64,7 @@ static bool generate_type(const QValueList<UmlParameter> & params,
 }
 
 static bool generate_var(const QValueList<UmlParameter> & params, 
-			 unsigned rank, QTextOStream & f)
+			 unsigned rank, QTextStream & f)
 {
   if (rank >= params.count())
     return FALSE;
@@ -73,19 +73,19 @@ static bool generate_var(const QValueList<UmlParameter> & params,
   return TRUE;
 }
 
-static void param_error(const QCString & parent, const QCString & name,
+static void param_error(const QByteArray & parent, const QByteArray & name,
 			unsigned rank, const char * where)
 {
   write_trace_header();
-  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
+  UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
 		+ parent + "::" + name + "</i> " + where
-		+ ", parameter rank " + QCString().setNum(rank)
+		+ ", parameter rank " + QByteArray().setNum(rank)
 		+ " does not exist</font></b><br>");
   incr_error();
 }
 
-QCString UmlOperation::compute_name() {
-  QCString get_set_spec = idlNameSpec();
+QByteArray UmlOperation::compute_name() {
+  QByteArray get_set_spec = idlNameSpec();
   
   if (! get_set_spec.isEmpty()) {
     UmlClassMember * it;
@@ -94,7 +94,7 @@ QCString UmlOperation::compute_name() {
       it = setOf();
     
     int index;
-    QCString s = (it->kind() == aRelation)
+    QByteArray s = (it->kind() == aRelation)
       ? ((UmlRelation *) it)->roleName()
       : it->name();
     
@@ -113,9 +113,9 @@ QCString UmlOperation::compute_name() {
     return name();
 }
 
-void UmlOperation::generate_decl(QTextOStream & f,
-				 const QCString & cl_stereotype,
-				 QCString indent, bool) {
+void UmlOperation::generate_decl(QTextStream & f,
+				 const QByteArray & cl_stereotype,
+				 QByteArray indent, bool) {
   if (!idlDecl().isEmpty()) {
     if ((cl_stereotype != "interface") &&
 	(cl_stereotype != "valuetype")) {

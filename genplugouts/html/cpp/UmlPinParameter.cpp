@@ -1,7 +1,7 @@
 
 #include "UmlPinParameter.h"
 
-void UmlPinParameter::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlPinParameter::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   if (isUnique()) {
     if (isException())
       fw.write("<p>Unique, exception</p>");

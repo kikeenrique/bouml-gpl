@@ -72,9 +72,9 @@ extern QColor UmlMagentaColor;
 extern QColor UmlMidMagentaColor;
 extern QColor UmlDarkMagentaColor;
 
-extern const QColor & color (UmlColor);
+extern const QColor & color(UmlColor);
 
 void init_font();
-void resize_font (int);
+void resize_font(int);
 
 #endif

@@ -36,21 +36,21 @@
 
 class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
-    UmlExtraClassMember(void * id, const QCString & n)
+    UmlExtraClassMember(void * id, const QByteArray & n)
       : UmlBaseExtraClassMember(id, n) {};
   
     virtual void compute_dependency(QList<CppRefType> & dependency,
-				    const QCString & cl_stereotype,
+				    const QByteArray & cl_stereotype,
 				    bool all_in_h);
     virtual void generate_decl(aVisibility & current_visibility,
-			       QTextOStream & f_h,
-			       const QCString & cl_stereotype,
-			       QCString indent,
+			       QTextStream & f_h,
+			       const QByteArray & cl_stereotype,
+			       QByteArray indent,
 			       BooL & first, bool last);
-    virtual void generate_def(QTextOStream &f, QCString indent, bool h,
-			      QCString templates, QCString cl_names,
-			      QCString templates_tmplop, 
-			      QCString cl_names_tmplop);
+    virtual void generate_def(QTextStream &f, QByteArray indent, bool h,
+			      QByteArray templates, QByteArray cl_names,
+			      QByteArray templates_tmplop, 
+			      QByteArray cl_names_tmplop);
 };
 
 #endif

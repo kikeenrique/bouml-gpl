@@ -4,7 +4,7 @@
 
 #include "UmlItem.h"
 #include "anItemKind.h"
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qcstring.h>
 
 #include "UmlClass.h"	// to avoid destructor problem
@@ -82,40 +82,40 @@ class UmlBaseArtifact : public UmlItem {
 
 #ifdef WITHCPP
     // returns the C++ header file definition
-    const QCString & cppHeader();
+    const QByteArray & cppHeader();
 
     // to set the C++ header file definition
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_CppHeader(const QCString & s);
+    bool set_CppHeader(const QByteArray & s);
 
     // returns the C++ source file definition
-    const QCString & cppSource();
+    const QByteArray & cppSource();
 
     // to set the C++ source file definition
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_CppSource(const QCString & s);
+    bool set_CppSource(const QByteArray & s);
 #endif
 
 #ifdef WITHJAVA
     // returns the Java file definition
-    const QCString & javaSource();
+    const QByteArray & javaSource();
 
     // to set the Java file definition
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_JavaSource(const QCString & s);
+    bool set_JavaSource(const QByteArray & s);
 #endif
 
 #ifdef WITHIDL
     // returns the Idl file definition
-    const QCString & idlSource();
+    const QByteArray & idlSource();
 
     // to set the Idl file definition
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_IdlSource(const QCString & s);
+    bool set_IdlSource(const QByteArray & s);
 #endif
 
     // to unload the object to free memory, it will be reloaded
@@ -132,17 +132,17 @@ class UmlBaseArtifact : public UmlItem {
     QVector<UmlArtifact> _associated;
 
 #ifdef WITHCPP
-    QCString _cpp_h;
+    QByteArray _cpp_h;
 
-    QCString _cpp_src;
+    QByteArray _cpp_src;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_src;
+    QByteArray _java_src;
 #endif
 
 #ifdef WITHIDL
-    QCString _idl_src;
+    QByteArray _idl_src;
 #endif
 
 
@@ -162,11 +162,11 @@ class UmlBaseArtifact : public UmlItem {
 #endif
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseArtifact(void * id, const QCString & n);
+    UmlBaseArtifact(void * id, const QByteArray & n);
 
 };
 
-inline UmlBaseArtifact::UmlBaseArtifact(void * id, const QCString & n) : UmlItem(id, n) {
+inline UmlBaseArtifact::UmlBaseArtifact(void * id, const QByteArray & n) : UmlItem(id, n) {
   _assoc_diagram = 0;
 }
 

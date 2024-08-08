@@ -6,7 +6,7 @@ void UmlStateDiagram::memo_ref() {
   UmlDiagram::memo_ref();
 }
 
-QCString UmlStateDiagram::sKind() {
+QByteArray UmlStateDiagram::sKind() {
   return "state diagram";
 }
 

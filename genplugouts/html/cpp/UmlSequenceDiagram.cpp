@@ -1,7 +1,7 @@
 
 #include "UmlSequenceDiagram.h"
 
-QCString UmlSequenceDiagram::sKind() {
+QByteArray UmlSequenceDiagram::sKind() {
   return "sequence diagram";
 }
 

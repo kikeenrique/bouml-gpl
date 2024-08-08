@@ -7,7 +7,7 @@
 #include "UmlOperation.h"
 #include "UmlState.h"
 
-void UmlExitPointPseudoState::init(UmlClass *, QCString, QCString, UmlState *) {
+void UmlExitPointPseudoState::init(UmlClass *, QByteArray, QByteArray, UmlState *) {
   // check transition number
   const QVector<UmlItem> ch = children();
   
@@ -47,7 +47,7 @@ void UmlExitPointPseudoState::generate(UmlClass * machine, UmlClass * anystate, 
   ex->addParam(0, InputOutputDirection, "stm", machine);
   ex->setParams("${t0} & ${p0}");
   
-  QCString body;
+  QByteArray body;
   
   // the exit behavior is made entering in the exit pseudo state
   if (! state->cppExitBehavior().isEmpty())
@@ -68,7 +68,7 @@ void UmlExitPointPseudoState::generate(UmlClass * machine, UmlClass * anystate, 
   ex->set_CppBody(body);
 }
 
-void UmlExitPointPseudoState::generate(UmlClass *, UmlClass *, UmlState *, QCString & body, QCString indent) {
+void UmlExitPointPseudoState::generate(UmlClass *, UmlClass *, UmlState *, QByteArray & body, QByteArray indent) {
   // generate a call to _exit<n>() because it is a priori shared
   if (_oper.isEmpty())
     _oper.sprintf("_exit%d", ++_rank);

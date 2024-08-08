@@ -2,12 +2,12 @@
 #include "UmlDiagram.h"
 
 #include "UmlCom.h"
-void UmlDiagram::html(QCString, unsigned int, unsigned int) {
+void UmlDiagram::html(QByteArray, unsigned int, unsigned int) {
   UmlCom::message(name());
 
   define();
 
-  QCString s;
+  QByteArray s;
   
   s.setNum(getIdentifier());
   s = "fig" + s + ((svg) ? ".svg" : ".png");

@@ -41,7 +41,7 @@ class QColorGroup;
 
 class Class : public BrowserNode, public ClassContainer {
   protected:
-    QCString filename;
+    QByteArray filename;
     UmlClass * uml;
     QDict<UmlClass> user_defined;
     char stereotype;	// 'c' : class, 'i' : interface, '@' @interface, 'e' : enum
@@ -56,7 +56,7 @@ class Class : public BrowserNode, public ClassContainer {
     static UmlArtifact * CurrentArtifact;
 #else
     bool description_updatedp;
-    QCString description;
+    QByteArray description;
     
     static QList<Class> Historic;
 #endif
@@ -77,14 +77,14 @@ class Class : public BrowserNode, public ClassContainer {
 #endif
 			   );
     bool add_inherit(aRelationKind k, UmlTypeSpec & typespec,
-		     QValueList<UmlTypeSpec> & actuals, QCString & str_actual
+		     QValueList<UmlTypeSpec> & actuals, QByteArray & str_actual
 #ifdef ROUNDTRIP
 		     , bool roundtrip, QList<UmlItem> & expected_order
 #endif
 		     );
     void inherit(Class * cl);
-    void inherit(UmlClass * uml_cl, QCString header = 0);
-    bool manage_member(QCString s, QCString & path
+    void inherit(UmlClass * uml_cl, QByteArray header = 0);
+    bool manage_member(QByteArray s, QByteArray & path
 #ifdef ROUNDTRIP
 		       , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -110,11 +110,11 @@ class Class : public BrowserNode, public ClassContainer {
     Class(BrowserNode * parent, UmlClass * ucl);
 #endif
   
-    virtual void compute_type(QCString type, UmlTypeSpec & typespec,
+    virtual void compute_type(QByteArray type, UmlTypeSpec & typespec,
 			      const QValueList<FormalParameterList> & tmplts,
 			      Class ** need_object = 0);
-    virtual Class * define(const QCString & name, char st);
-    virtual void declare(const QCString &, Class *);
+    virtual Class * define(const QByteArray & name, char st);
+    virtual void declare(const QByteArray &, Class *);
     virtual bool isa_package() const;
     UmlClass * get_uml();
     bool reversed() const { return reversedp; };
@@ -131,7 +131,7 @@ class Class : public BrowserNode, public ClassContainer {
     static UmlArtifact * current_artifact() { return CurrentArtifact; }
     bool from_libp() const { return from_lib; };
 #else
-    const QCString & get_description() const { return description; };
+    const QByteArray & get_description() const { return description; };
     
     virtual void selected();
     virtual void activated();
@@ -149,9 +149,9 @@ class Class : public BrowserNode, public ClassContainer {
     static void restore(QDataStream & dt, char c, BrowserNode * p);
     
     // note tmplts equals its input value on exit
-    static bool reverse(ClassContainer * container, QCString stereotype,
-			QCString annotation, bool abstractp, bool finalp,
-			aVisibility visibility,	QCString & f, 
+    static bool reverse(ClassContainer * container, QByteArray stereotype,
+			QByteArray annotation, bool abstractp, bool finalp,
+			aVisibility visibility,	QByteArray & f, 
 			QValueList<FormalParameterList> tmplts
 #ifdef ROUNDTRIP
 			, bool rndtrp, QList<UmlItem> & expectedorder

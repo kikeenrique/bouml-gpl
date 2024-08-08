@@ -45,30 +45,30 @@ class UmlRelation;
 
 class UmlClass : public UmlBaseClass {
   public:
-    UmlClass(void * id, const QCString & n) 
+    UmlClass(void * id, const QByteArray & n) 
       : UmlBaseClass(id, n) {};
   
     void made(UmlClassView * base_class_view, UmlClassView * user_class_view,
 	      UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-	      UmlClass * base_item, QCString s, UmlClass *& base,
+	      UmlClass * base_item, QByteArray s, UmlClass *& base,
 	      UmlClass *& user, UmlClass * user_interf = 0);
     
     void made(UmlClassView * base_class_view, UmlClassView * user_class_view,
 	      UmlArtifact * base_art, UmlArtifact * user_art,
-	      UmlClass * base_item, QCString s, UmlClass *& base,
+	      UmlClass * base_item, QByteArray s, UmlClass *& base,
 	      UmlClass *& user, UmlClass * user_interf = 0);
     
     static UmlClass * made(UmlClassView * class_view,
 			   UmlDeploymentView * depl_view,
-			   QCString s, bool interf = FALSE);
+			   QByteArray s, bool interf = FALSE);
     
     static UmlClass * made(UmlClassView * class_view,
 			   UmlArtifact * art,
-			   QCString s, bool interf = FALSE);
+			   QByteArray s, bool interf = FALSE);
     
     void add_kind(const char * k);
     void add_default_base_op(UmlClass * super, UmlClass * user,
-			     UmlClass * parent, QCString s,
+			     UmlClass * parent, QByteArray s,
 			     const char * k, bool unnamed = FALSE);
     UmlOperation * add_constr(UmlClass * super, aVisibility, bool unnamed = FALSE);
     UmlOperation * add_destr(aVisibility, const char * comment = 0);

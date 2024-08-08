@@ -3,7 +3,7 @@
 
 
 #include "UmlBaseCollaborationMessage.h"
-#include <qptrvector.h>
+#include <qvector.h>
 
 class FileOut;
 class UmlItem;

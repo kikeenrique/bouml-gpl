@@ -20,7 +20,7 @@ class FileIn {
     Token & read(bool any = FALSE);
 
     //return content and the next token which must be a 'what'
-    QCString body(QCString what);
+    QByteArray body(QByteArray what);
 
     //return the next work, may be :
     //<
@@ -38,26 +38,26 @@ class FileIn {
     //Warning : returned value will be changed by next call !
     const char * readWord(bool any, BooL & str);
 
-    void finish(QCString what);
+    void finish(QByteArray what);
 
     void bypass(Token & tk);
 
     void bypassedId(Token & tk);
 
     //doesn't return
-    void error(QCString s);
+    void error(QByteArray s);
 
-    void warning(QCString s);
+    void warning(QByteArray s);
 
-    const QCString & path() const { return _path; }
+    const QByteArray & path() const { return _path; }
 
-    static bool isBypassedId(QCString id) {
+    static bool isBypassedId(QByteArray id) {
       return BypassedIds[QString(id)] != 0;
     }
 
 
   protected:
-    QCString _path;
+    QByteArray _path;
 
     FILE * _fp;
 
@@ -69,7 +69,7 @@ class FileIn {
 
     char * _buffer;
 
-    QMap<QCString, char> _special_chars;
+    QMap<QByteArray, char> _special_chars;
 
     static QDict<char> BypassedIds;
 
@@ -83,7 +83,7 @@ class FileIn {
 
 
   public:
-    void setEncoding(QCString s);
+    void setEncoding(QByteArray s);
 
 };
 

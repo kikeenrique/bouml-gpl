@@ -1,31 +1,31 @@
 
 #include "UmlActivityControlNodeClasses.h"
 
-QCString UmlInitialActivityNode::sKind() {
+QByteArray UmlInitialActivityNode::sKind() {
   return "initial activity node";
 }
 
-QCString UmlFlowFinalActivityNode::sKind() {
+QByteArray UmlFlowFinalActivityNode::sKind() {
   return "flow final";
 }
 
-QCString UmlActivityFinalActivityNode::sKind() {
+QByteArray UmlActivityFinalActivityNode::sKind() {
   return "activity final";
 }
 
-QCString UmlDecisionActivityNode::sKind() {
+QByteArray UmlDecisionActivityNode::sKind() {
   return "decision activity node";
 }
 
-QCString UmlMergeActivityNode::sKind() {
+QByteArray UmlMergeActivityNode::sKind() {
   return "merge activity node";
 }
 
-QCString UmlForkActivityNode::sKind() {
+QByteArray UmlForkActivityNode::sKind() {
   return "fork activity node";
 }
 
-QCString UmlJoinActivityNode::sKind() {
+QByteArray UmlJoinActivityNode::sKind() {
   return "join activity node";
 }
 

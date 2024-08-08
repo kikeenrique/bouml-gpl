@@ -27,7 +27,7 @@
 #define SYNCHROWINDOW_H
 
 #include <qmainwindow.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class QHBox;
 class BrowserView;

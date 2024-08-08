@@ -5,13 +5,13 @@
 
 #include "UmlCom.h"
 void UmlAccessVariableValueAction::import_it(FileIn & in, Token & token) {
-  QCString s = token.valueOf("variable");
+  QByteArray s = token.valueOf("variable");
   
   if (! s.isEmpty())
     setVariable(s);
     
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
@@ -28,8 +28,8 @@ void UmlAccessVariableValueAction::import_it(FileIn & in, Token & token) {
   }
 }
 
-void UmlAccessVariableValueAction::setVariable(QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlAccessVariableValueAction::setVariable(QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it == All.end())
     Unresolved::addRef(this, idref);
@@ -44,8 +44,8 @@ void UmlAccessVariableValueAction::setVariable(QCString idref) {
   }
 }
 
-void UmlAccessVariableValueAction::solve(QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlAccessVariableValueAction::solve(QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))

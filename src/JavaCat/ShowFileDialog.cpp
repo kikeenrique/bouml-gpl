@@ -37,7 +37,7 @@
  
 #include "ShowFileDialog.h"
  
-ShowFileDialog::ShowFileDialog(const QCString & filename)
+ShowFileDialog::ShowFileDialog(const QByteArray & filename)
     : QDialog(0, filename) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
  

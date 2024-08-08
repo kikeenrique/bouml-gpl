@@ -26,31 +26,33 @@
 #ifndef UMLDRAG_H
 #define UMLGRAG_H
 
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <QDragMoveEvent>
+#include <QDropEvent>
 
 #include "UmlEnum.h"
 
 class BrowserNode;
 
-class UmlDrag : public QStoredDrag
-{
-    private:
-        static QString postfix;
-        static bool ro;
+class UmlDrag : public Q3StoredDrag {
+  private:
+    static QString postfix;
+    static bool ro;
+  
+  public:
+    static const QString Key;
 
-    public:
-        static const QString Key;
+    UmlDrag(BrowserNode * bn, QWidget * parent = 0, const char * name = 0);
+    ~UmlDrag() {};
 
-        UmlDrag (BrowserNode * bn, QWidget * parent = 0, const char * name = 0);
-        ~UmlDrag() {};
-
-        static bool canDecode (QDragMoveEvent * e, UmlCode type,
-                               bool withpostfix = FALSE,
-                               bool evenro = FALSE);
-        static bool canDecode (QDragMoveEvent * e, const QString & type);
-        static BrowserNode * decode (QDropEvent * e, UmlCode type, bool withpostfix = FALSE);
-        static BrowserNode * decode (QDropEvent * e, const QString & type);
+    static bool canDecode(QDragMoveEvent * e, UmlCode type,
+			  bool withpostfix = FALSE,
+			  bool evenro = FALSE);
+    static bool canDecode(QDragMoveEvent * e, const QString & type);
+    static BrowserNode * decode(QDropEvent * e, UmlCode type, bool withpostfix = FALSE);
+    static BrowserNode * decode(QDropEvent * e, const QString & type);
 };
 
 #endif

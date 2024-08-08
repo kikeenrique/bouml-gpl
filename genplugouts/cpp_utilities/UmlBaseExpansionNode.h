@@ -24,7 +24,7 @@ class UmlBaseExpansionNode : public UmlActivityObject {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseExpansionNode(void * id, const QCString & s) : UmlActivityObject(id, s) {
+     UmlBaseExpansionNode(void * id, const QByteArray & s) : UmlActivityObject(id, s) {
     }
 
 };

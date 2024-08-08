@@ -1,12 +1,58 @@
-TEMPLATE	= app
+TEMPLATE	  = app
 INCLUDEPATH	= browser data diagram dialog misc tool xpm
-CONFIG		+= qt warn_on release
-HEADERS		= data/ActualParamData.h \
+CONFIG      += qt warn_on debug
+HEADERS     = \
+          browser/BrowserAttribute.h \
+          browser/BrowserExtraMember.h \
+          browser/BrowserClass.h \
+          browser/BrowserClassDiagram.h \
+          browser/BrowserClassView.h \
+          browser/BrowserDiagram.h \
+          browser/BrowserNode.h \
+          browser/BrowserOperation.h \
+          browser/BrowserPackage.h \
+          browser/BrowserRelation.h \
+          browser/BrowserSimpleRelation.h \
+          browser/BrowserTransition.h \
+          browser/BrowserSeqDiagram.h \
+          browser/BrowserUseCase.h \
+          browser/BrowserUseCaseDiagram.h \
+          browser/BrowserUseCaseView.h \
+          browser/BrowserColDiagram.h \
+          browser/BrowserObjectDiagram.h \
+          browser/BrowserComponent.h \
+          browser/BrowserComponentView.h \
+          browser/BrowserComponentDiagram.h \
+          browser/BrowserDeploymentNode.h \
+          browser/BrowserDeploymentView.h \
+          browser/BrowserDeploymentDiagram.h \
+          browser/BrowserArtifact.h \
+          browser/BrowserState.h \
+          browser/BrowserRegion.h \
+          browser/BrowserPseudoState.h \
+          browser/BrowserStateAction.h \
+          browser/BrowserStateDiagram.h \
+          browser/BrowserActivity.h \
+          browser/BrowserActivityNode.h \
+          browser/BrowserActivityDiagram.h \
+          browser/BrowserParameter.h \
+          browser/BrowserParameterSet.h \
+          browser/BrowserActivityAction.h \
+          browser/BrowserPin.h \
+          browser/BrowserInterruptibleActivityRegion.h \
+          browser/BrowserExpansionRegion.h \
+          browser/BrowserExpansionNode.h \
+          browser/BrowserActivityObject.h \
+          browser/BrowserActivityPartition.h \
+          browser/BrowserFlow.h \
+          browser/BrowserClassInstance.h \
+          data/ActualParamData.h \
 		  data/BasicData.h \
 		  data/SimpleData.h \
 		  data/ClassMemberData.h \
 		  data/AttributeData.h \
 		  data/ExtraMemberData.h \
+		  data/AType.h \
 		  data/ClassData.h \
 		  data/ArtifactData.h \
 		  data/ExceptionData.h \
@@ -37,18 +83,19 @@ HEADERS		= data/ActualParamData.h \
 		  data/ClassInstanceData.h \
 		  data/UseCaseData.h \
 		  diagram/ArrowCanvas.h \
-		  diagram/HubCanvas.h \
 		  diagram/AssocContainCanvas.h \
 		  diagram/ArrowPointCanvas.h \
 		  diagram/BrowserView.h \
 		  diagram/CdClassCanvas.h \
 		  diagram/ClassDiagramView.h \
 		  diagram/ClassDiagramWindow.h \
+		  diagram/ColMsg.h \
 		  diagram/DiagramCanvas.h \
 		  diagram/DiagramItem.h \
 		  diagram/DiagramView.h \
 		  diagram/DiagramWindow.h \
 		  diagram/FragmentCanvas.h \
+		  diagram/HubCanvas.h \
 		  diagram/SubjectCanvas.h \
 		  diagram/LabelCanvas.h \
 		  diagram/NoteCanvas.h \
@@ -71,6 +118,7 @@ HEADERS		= data/ActualParamData.h \
 		  diagram/SelectAreaCanvas.h \
 		  diagram/SeqDiagramView.h \
 		  diagram/SeqDiagramWindow.h \
+		  diagram/TemplateCanvas.h \
 		  diagram/TextCanvas.h \
 		  diagram/IconCanvas.h \
 		  diagram/UcClassCanvas.h \
@@ -137,6 +185,7 @@ HEADERS		= data/ActualParamData.h \
 		  dialog/MyTable.h \
 		  dialog/ComponentDialog.h \
 		  dialog/ArtifactDialog.h \
+		  dialog/DialogUtil.h \
 		  dialog/GenerationSettingsDialog.h \
 		  dialog/SettingsDialog.h \
 		  dialog/KeyValueTable.h \
@@ -195,15 +244,18 @@ HEADERS		= data/ActualParamData.h \
 		  dialog/GreetingsDialog.h \
 		  dialog/RelatedElementsDialog.h \
 		  dialog/ImageDialog.h \
+		  misc/GenerationSettings.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
 		  misc/UmlGlobal.h \
 		  misc/Labeled.h \
 		  misc/myio.h \
+		  misc/mystr.h \
 		  misc/mu.h \
 		  misc/ProfiledStereotypes.h \
 		  misc/Images.h \
+		  misc/strutil.h \
 		  tool/Tool.h \
 		  tool/Socket.h \
 		  tool/ToolCom.h \
@@ -469,6 +521,8 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  tool/Tool.cpp \
 		  tool/ToolCom.cpp \
 		  xpm/UmlPixmap.cpp
-INTERFACES	= 
-TARGET		= bouml
-DEFINES         = BooL=bool
+INTERFACES =
+TARGET     = bouml
+DEFINES    = BooL=bool QT_NO_STYLE_MOTIFPLUS
+#The following line was inserted by qt3to4
+QT         += network  qt3support

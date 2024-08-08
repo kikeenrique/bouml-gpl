@@ -10,7 +10,7 @@
 
 class UmlUseCaseDiagram : public UmlBaseUseCaseDiagram {
   public:
-    UmlUseCaseDiagram(void * id, const QCString & n)
+    UmlUseCaseDiagram(void * id, const QByteArray & n)
       : UmlBaseUseCaseDiagram(id, n) {};
   
 };

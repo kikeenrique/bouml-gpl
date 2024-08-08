@@ -121,7 +121,7 @@ void UmlRelation::write_relation(FileOut & out) {
   out << '<' << k << " xmi:type=\"uml:Association\"";
   out.id_prefix(this, "ASSOC_");
   
-  QCString s = name();
+  QByteArray s = name();
   int i1 = s.find("(");
   int i2 = s.findRev(")");
   
@@ -198,7 +198,7 @@ void UmlRelation::write_ends(FileOut & out) {
 
 void UmlRelation::write_relation_as_attribute(FileOut & out) {
   UmlRelation * first = side(TRUE);
-  QCString s;  
+  QByteArray s;  
   UmlClass * base;
 
   if ((first->parent()->stereotype() == "stereotype") &&

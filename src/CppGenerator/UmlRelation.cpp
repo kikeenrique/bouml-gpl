@@ -34,7 +34,7 @@
 #include "util.h"
 
 void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
-				     const QCString & cl_stereotype,
+				     const QByteArray & cl_stereotype,
 				     bool all_in_h) {
   if (cl_stereotype == "enum")
     return;
@@ -51,7 +51,7 @@ void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
     CppRefType::add(roleType(), dependencies, TRUE);
     break;
   default:
-    QCString decl = cppDecl();
+    QByteArray decl = cppDecl();
     int index;
     
     if ((index = decl.find("${static}")) != -1)
@@ -88,9 +88,9 @@ void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
   }
 }
 
-void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h, 
+void UmlRelation::generate_inherit(const char *& sep, QTextStream & f_h, 
 				   const QValueList<UmlActualParameter> & actuals,
-				   const QCString & cl_stereotype) {
+				   const QByteArray & cl_stereotype) {
   switch (relationKind()) {
   default:
     break;
@@ -98,7 +98,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
   case aRealization:
     if ((cl_stereotype == "union") || (cl_stereotype == "enum")) {
       write_trace_header();
-      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
+      UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
 		    + cl_stereotype + "</i> cannot inherits</b></font><br>");
       incr_warning();
       return;
@@ -111,12 +111,12 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
     }
     
     UmlClass * role_type = roleType();
-    const QCString & other_stereotype = role_type->stereotype();
+    const QByteArray & other_stereotype = role_type->stereotype();
     
     if ((other_stereotype == "union") ||
 	(other_stereotype == "enum")) {
       write_trace_header();
-      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot inherits an <i>")
+      UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot inherits an <i>")
 		    + other_stereotype + "</i></b></font><br>");
       incr_warning();
       return;
@@ -158,8 +158,8 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
   }
 }
 
-void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
-				const QCString & cl_stereotype, QCString indent,
+void UmlRelation::generate_decl(aVisibility & current_visibility, QTextStream & f_h,
+				const QByteArray & cl_stereotype, QByteArray indent,
 				BooL & first, bool) {
   switch (relationKind()) {
   case aDependency:
@@ -208,7 +208,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
     
       const char * p = cppDecl();
       const char * pp = 0;
-      QCString s;
+      QByteArray s;
       
       while ((*p == ' ') || (*p == '\t'))
 	indent += *p++;
@@ -285,7 +285,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
       
-	  const QCString & m = multiplicity();
+	  const QByteArray & m = multiplicity();
 	  
 	  if (!m.isEmpty() && (*((const char *) m) == '['))
 	    f_h << m;
@@ -320,9 +320,9 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
   }
 }
 
-void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
-			       QCString templates, QCString cl_names,
-			       QCString, QCString) {
+void UmlRelation::generate_def(QTextStream & f, QByteArray indent, bool h,
+			       QByteArray templates, QByteArray cl_names,
+			       QByteArray, QByteArray) {
   if (isClassMember() && !cppDecl().isEmpty()) {
     UmlClass * cl = (UmlClass *) parent();
     
@@ -422,7 +422,7 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
       
-	  const QCString & m = multiplicity();
+	  const QByteArray & m = multiplicity();
 	  
 	  if (!m.isEmpty() && (*((const char *) m) == '['))
 	    f << m;

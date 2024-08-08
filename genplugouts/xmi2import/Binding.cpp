@@ -8,24 +8,24 @@
 void Binding::import(FileIn & in, Token & token, UmlClass * where)
 {
   QList<Binding> l;
-  QCString boundid = token.valueOf("boundelement");
-  QCString signatureid = token.valueOf("signature");  
+  QByteArray boundid = token.valueOf("boundelement");
+  QByteArray signatureid = token.valueOf("signature");  
     
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if (s == "boundelement")
 	boundid = token.xmiIdref();
       else if (s == "signature")
 	signatureid = token.xmiIdref();
       else if (s == "parametersubstitution") {
-	QCString formalid = token.valueOf("formal");
-	QCString actualid = token.valueOf("actual");
-	QCString actual;
+	QByteArray formalid = token.valueOf("formal");
+	QByteArray actualid = token.valueOf("actual");
+	QByteArray actual;
 	bool owned = FALSE;
 	
 	if (! token.closed()) {
@@ -38,12 +38,12 @@ void Binding::import(FileIn & in, Token & token, UmlClass * where)
 	      actualid = token.xmiIdref();
 	    else if (s == "ownedactual") {
 	      if (token.xmiType() == "uml:OpaqueExpression") {
-		QCString opid = token.xmiId();
+		QByteArray opid = token.xmiId();
 		
 		UmlItem::importOpaqueDef(in, token, 0);
 		owned = TRUE;
 		
-		QMap<QCString, QCString>::Iterator it =
+		QMap<QByteArray, QByteArray>::Iterator it =
 		  UmlItem::OpaqueDefs.find(opid);
 		
 		if (it != UmlItem::OpaqueDefs.end())
@@ -94,7 +94,7 @@ void Binding::solveThem()
   while (! All.isEmpty()) {
     Binding * b = All.take(0);
     
-    QMap<QCString, UmlItem *>::Iterator it = UmlItem::All.find(b->boundId);
+    QMap<QByteArray, UmlItem *>::Iterator it = UmlItem::All.find(b->boundId);
     UmlClass * tmpl = UmlClass::signature(b->signatureId);
     
     if (it == UmlItem::All.end()) {
@@ -120,7 +120,7 @@ void Binding::solveThem()
 	  cl->replaceActual(rank, typespec);
 	}
 	else {
-	  QMap<QCString, QCString>::Iterator opit = 
+	  QMap<QByteArray, QByteArray>::Iterator opit = 
 	    UmlItem::OpaqueDefs.find(b->actualId);
 	  
 	  if (opit != UmlItem::OpaqueDefs.end())

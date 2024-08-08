@@ -326,7 +326,7 @@ bool UmlBaseClass::set_isIdlCustom(bool y) {
 }
 #endif
 
-UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
+UmlClass * UmlBaseClass::get(const QByteArray & n, const UmlPackage * p)
 {
   if (p == 0) {
     UmlClass * x = _classes[n];
@@ -341,7 +341,7 @@ UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
   return (UmlClass *) UmlBaseItem::read_();
 }
 
-UmlClass * UmlBaseClass::findStereotype(QCString s, bool caseSensitive)
+UmlClass * UmlBaseClass::findStereotype(QByteArray s, bool caseSensitive)
 {
   UmlCom::send_cmd(packageGlobalCmd, findStereotypeCmd,
                    (caseSensitive) ? "y" : "n", (const char *) s);
@@ -358,12 +358,12 @@ void UmlBaseClass::unload(bool rec, bool del) {
   UmlBaseClassItem::unload(rec, del);
 }
 
-bool UmlBaseClass::set_Name(const QCString & s) {
+bool UmlBaseClass::set_Name(const QByteArray & s) {
   if (!UmlBaseItem::set_Name(s))
     return FALSE;
 
   const QVector<UmlItem> ch = children();
-  QCString destr = "~" + name();
+  QByteArray destr = "~" + name();
 
   for (unsigned i = 0; i != ch.size(); i += 1) {
     if (ch[i]->kind() == anOperation) {
@@ -379,7 +379,7 @@ bool UmlBaseClass::set_Name(const QCString & s) {
 
 QDict<UmlClass> UmlBaseClass::_classes(1001);
 
- UmlBaseClass::UmlBaseClass(void * id, const QCString & n) 
+ UmlBaseClass::UmlBaseClass(void * id, const QByteArray & n) 
     : UmlClassMember(id, n) {
   _assoc_diagram = 0;
   

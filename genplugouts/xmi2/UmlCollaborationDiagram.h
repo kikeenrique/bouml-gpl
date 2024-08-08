@@ -14,7 +14,7 @@ class FileOut;
 // You can modify it as you want (except the constructor)
 class UmlCollaborationDiagram : public UmlBaseCollaborationDiagram {
   public:
-    UmlCollaborationDiagram(void * id, const QCString & n) : UmlBaseCollaborationDiagram(id, n) {};
+    UmlCollaborationDiagram(void * id, const QByteArray & n) : UmlBaseCollaborationDiagram(id, n) {};
 
     virtual void write(FileOut & out);
 

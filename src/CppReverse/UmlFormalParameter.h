@@ -26,7 +26,7 @@
 #ifndef _UMLFORMALPARAMETER_H
 #define _UMLFORMALPARAMETER_H
 
-class QTextOStream;
+class QTextStream;
 
 
 #include "UmlBaseFormalParameter.h"
@@ -39,7 +39,7 @@ class QTextOStream;
 class UmlFormalParameter : public UmlBaseFormalParameter {
   public:
     UmlFormalParameter() {};
-    UmlFormalParameter(QCString t, QCString n, QCString v);
+    UmlFormalParameter(QByteArray t, QByteArray n, QByteArray v);
 
 };
 

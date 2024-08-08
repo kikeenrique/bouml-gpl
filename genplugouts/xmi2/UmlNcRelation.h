@@ -12,7 +12,7 @@ class FileOut;
 // You can modify it as you want (except the constructor)
 class UmlNcRelation : public UmlBaseNcRelation {
   public:
-    UmlNcRelation(void * id, const QCString & n) : UmlBaseNcRelation(id, n) {};
+    UmlNcRelation(void * id, const QByteArray & n) : UmlBaseNcRelation(id, n) {};
 
     //called inside element definition
     

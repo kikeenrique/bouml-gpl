@@ -10,7 +10,7 @@
 
 class UmlCollaborationDiagram : public UmlBaseCollaborationDiagram {
   public:
-    UmlCollaborationDiagram(void * id, const QCString & n)
+    UmlCollaborationDiagram(void * id, const QByteArray & n)
       : UmlBaseCollaborationDiagram(id, n) {};
 };
 

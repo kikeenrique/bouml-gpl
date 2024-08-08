@@ -8,13 +8,13 @@
 class UmlBaseOnSignalAction : public UmlActivityAction {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseOnSignalAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseOnSignalAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the signal
-    const QCString & signal();
+    const QByteArray & signal();
 
     // set the signal
     //
@@ -23,7 +23,7 @@ class UmlBaseOnSignalAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the signal in C++
-    const QCString & cppSignal();
+    const QByteArray & cppSignal();
 
     // set the signal in C++
     //
@@ -33,7 +33,7 @@ class UmlBaseOnSignalAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the signal in Java
-    const QCString & javaSignal();
+    const QByteArray & javaSignal();
 
     // set the signal in Java
     //
@@ -51,14 +51,14 @@ class UmlBaseOnSignalAction : public UmlActivityAction {
 
 
   private:
-    QCString _signal;
+    QByteArray _signal;
 
 #ifdef WITHCPP
-    QCString _cpp_signal;
+    QByteArray _cpp_signal;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_signal;
+    QByteArray _java_signal;
 #endif
 
 

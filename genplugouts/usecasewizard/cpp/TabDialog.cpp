@@ -37,7 +37,7 @@ const struct {
 };
   
 TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
-  setCaption(QCString("Properties of the use case '") + u->name() + "'");
+  setCaption(QByteArray("Properties of the use case '") + u->name() + "'");
 
   setCancelButton();
   
@@ -114,12 +114,12 @@ TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
       QVBox * vbox = new QVBox(this);
       
       vbox->setMargin(5);
-      (new QLabel(QCString(Tabs[i].lbl) + u->name() + "'",
+      (new QLabel(QByteArray(Tabs[i].lbl) + u->name() + "'",
 		  new QGroupBox(1, Horizontal, vbox)))
 	->setAlignment(AlignCenter);
       this->*(Tabs[i]).a = new QMultiLineEdit(vbox);
       
-      QCString v;
+      QByteArray v;
       
       if (u->propertyValue(Tabs[i].key, v))
 	(this->*(Tabs[i]).a)->setText(toUnicode(v));
@@ -175,12 +175,12 @@ void TabDialog::latinize(QString & s) {
   }
 }
 
-QCString TabDialog::fromUnicode(const QString & s) {
+QByteArray TabDialog::fromUnicode(const QString & s) {
   if (Codec == 0) {
     QString str = s;
 
     latinize(str);
-    return QCString(str);
+    return QByteArray(str);
   }
   else if (s.isEmpty())
     return "";

@@ -52,7 +52,7 @@ void UmlExpansionRegion::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anExpansionRegion, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlExpansionRegion * r = create(where, s);
     
     if (r == 0)
@@ -64,7 +64,7 @@ void UmlExpansionRegion::importIt(FileIn & in, Token & token, UmlItem * where)
     if (token.valueOf("mustisolate") == "true")
       r->set_isMustIsolate(TRUE);
     
-    QCString v = token.valueOf("mode").lower();
+    QByteArray v = token.valueOf("mode").lower();
     
     if (v == "parallel")
       r->set_Mode(parallelExecution);
@@ -76,7 +76,7 @@ void UmlExpansionRegion::importIt(FileIn & in, Token & token, UmlItem * where)
       in.error("illegal mode '" + v + "'");
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

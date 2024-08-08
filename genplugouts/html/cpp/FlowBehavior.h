@@ -6,13 +6,13 @@
 
 class FlowBehavior {
   public:
-    QCString weight;
+    QByteArray weight;
 
-    QCString guard;
+    QByteArray guard;
 
-    QCString selection;
+    QByteArray selection;
 
-    QCString transformation;
+    QByteArray transformation;
 
     void read();
 

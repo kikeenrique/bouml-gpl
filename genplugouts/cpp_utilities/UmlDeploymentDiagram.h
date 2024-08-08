@@ -12,7 +12,7 @@
 // You can modify it as you want (except the constructor)
 class UmlDeploymentDiagram : public UmlBaseDeploymentDiagram {
   public:
-    UmlDeploymentDiagram(void * id, const QCString & n) : UmlBaseDeploymentDiagram(id, n) {};
+    UmlDeploymentDiagram(void * id, const QByteArray & n) : UmlBaseDeploymentDiagram(id, n) {};
 
 };
 

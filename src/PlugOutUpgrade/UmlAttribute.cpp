@@ -40,9 +40,9 @@ UmlAttribute * UmlAttribute::java2Php(UmlClass * php, UmlClass * java,
   UmlAttribute * from = java->get_attribute(javaname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find attribute '") + 
-      javaname + QCString("' in class '") + java->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find attribute '") + 
+      javaname + QByteArray("' in class '") + java->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -50,9 +50,9 @@ UmlAttribute * UmlAttribute::java2Php(UmlClass * php, UmlClass * java,
   UmlAttribute * to = UmlBaseAttribute::create(php, phpname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create attribute '") + 
-      phpname + QCString("' in class '") + php->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create attribute '") + 
+      phpname + QByteArray("' in class '") + php->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -79,9 +79,9 @@ UmlAttribute * UmlAttribute::java2Python(UmlClass * python, UmlClass * java,
   UmlAttribute * from = java->get_attribute(javaname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find attribute '") + 
-      javaname + QCString("' in class '") + java->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find attribute '") + 
+      javaname + QByteArray("' in class '") + java->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -89,9 +89,9 @@ UmlAttribute * UmlAttribute::java2Python(UmlClass * python, UmlClass * java,
   UmlAttribute * to = UmlBaseAttribute::create(python, pythonname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create attribute '") + 
-      pythonname + QCString("' in class '") + python->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create attribute '") + 
+      pythonname + QByteArray("' in class '") + python->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -118,9 +118,9 @@ UmlAttribute * UmlAttribute::cpp2Python(UmlClass * python, UmlClass * cpp,
   UmlAttribute * from = cpp->get_attribute(cppname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find attribute '") + 
-      cppname + QCString("' in class '") + cpp->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find attribute '") + 
+      cppname + QByteArray("' in class '") + cpp->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -128,9 +128,9 @@ UmlAttribute * UmlAttribute::cpp2Python(UmlClass * python, UmlClass * cpp,
   UmlAttribute * to = UmlBaseAttribute::create(python, pythonname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create attribute '") + 
-      pythonname + QCString("' in class '") + python->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create attribute '") + 
+      pythonname + QByteArray("' in class '") + python->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }

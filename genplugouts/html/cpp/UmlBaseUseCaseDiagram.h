@@ -26,7 +26,7 @@ class UmlBaseUseCaseDiagram : public UmlDiagram {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCaseDiagram(void * id, const QCString & n) : UmlDiagram(id, n), _def(0) {};
+    UmlBaseUseCaseDiagram(void * id, const QByteArray & n) : UmlDiagram(id, n), _def(0) {};
 
 
   public:

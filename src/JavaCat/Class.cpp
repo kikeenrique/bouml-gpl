@@ -81,7 +81,7 @@ Class::Class(BrowserNode * p, const char * n, char st)
 Class::Class(BrowserNode * p, UmlClass * ucl)
     : BrowserNode(p, ucl->name()),
       uml(ucl), abstractp(FALSE), reversedp(FALSE), from_lib(FALSE), updated(FALSE) {
-  QCString st = ucl->stereotype();
+  QByteArray st = ucl->stereotype();
   
   if (!st.isEmpty())
     st = JavaSettings::classStereotype(st);
@@ -119,7 +119,7 @@ UmlClass * Class::get_uml() {
     UmlItem * p = (((BrowserNode *) parent())->isa_package())
       ? (UmlItem *) ((Package *) parent())->get_uml()->get_classview()
       : (UmlItem *) ((Class *) parent())->get_uml();
-    QCString str = QCString(text(0));
+    QByteArray str = QByteArray(text(0));
     
     uml = UmlBaseClass::create(p, str);
     
@@ -182,7 +182,7 @@ UmlClass * Class::get_uml() {
     break;
   case '@':
     {
-      QCString s = JavaSettings::interfaceDecl();
+      QByteArray s = JavaSettings::interfaceDecl();
       int index = s.find("interface");
       
       if (index != -1)
@@ -234,7 +234,7 @@ UmlClass * Class::get_uml() {
 #ifdef ROUNDTRIP
     if (roundtrip) {
       if (!uml->stereotype().isEmpty()) {
-	QCString jst = JavaSettings::classStereotype(uml->stereotype());
+	QByteArray jst = JavaSettings::classStereotype(uml->stereotype());
 	
 	if ((jst == "interface") || (jst == "@interface") || (jst == "enum")) {
 	  uml->set_Stereotype("");
@@ -330,18 +330,18 @@ bool Class::already_in_bouml() {
 // note : 'tmplts' must be given by value to not have to
 // remove the may be added formals in all the return cases
 
-bool Class::reverse(ClassContainer * container, QCString stereotype,
-		    QCString annotation, bool abstractp, bool finalp,
-		    aVisibility visibility, QCString & path, 
+bool Class::reverse(ClassContainer * container, QByteArray stereotype,
+		    QByteArray annotation, bool abstractp, bool finalp,
+		    aVisibility visibility, QByteArray & path, 
 		    QValueList<FormalParameterList> tmplts
 #ifdef ROUNDTRIP
 		    , bool rndtrp, QList<UmlItem> & expectedorder
 #endif
 )
 {
-  QCString comment = Lex::get_comments();
-  QCString description = Lex::get_description();
-  QCString name;
+  QByteArray comment = Lex::get_comments();
+  QByteArray description = Lex::get_description();
+  QByteArray name;
   
   if ((name = Lex::read_word()).isEmpty())
     return FALSE;
@@ -464,7 +464,7 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
 #endif
   }
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
   if (s == "<") {
     if (!cl->get_formals(cl->formals, FALSE, tmplts))
@@ -656,8 +656,8 @@ bool Class::manage_extends(ClassContainer * container,
   UmlTypeSpec typespec;
   Class * cl = 0;
   QValueList<UmlTypeSpec> actuals;
-  QCString str_actuals;
-  QCString dummy;
+  QByteArray str_actuals;
+  QByteArray dummy;
   
   if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals,
 			     dummy, 0, dummy, dummy))
@@ -697,8 +697,8 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
     UmlTypeSpec typespec;
     Class * cl = 0;
     QValueList<UmlTypeSpec> actuals;
-    QCString str_actuals;
-    QCString dummy;
+    QByteArray str_actuals;
+    QByteArray dummy;
     
     if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals,
 			       dummy, 0, dummy, dummy))
@@ -723,7 +723,7 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
 		     ))
       return FALSE;
     
-    QCString s = Lex::read_word();
+    QByteArray s = Lex::read_word();
     
     if (s == "{") {
       Lex::unread_word(s);
@@ -739,7 +739,7 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
 
 bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
 			QValueList<UmlTypeSpec> & actuals, 
-			QCString & str_actuals
+			QByteArray & str_actuals
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -770,7 +770,7 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
 	  if (rk != k)
 	    rel->set_rel_kind(k);
 	  
-	  QCString expected_decl;
+	  QByteArray expected_decl;
 	  
 	  if (!typespec.explicit_type.isEmpty())
 	    expected_decl = typespec.explicit_type;
@@ -885,12 +885,12 @@ void Class::inherit(Class * cl) {
 #ifdef ROUNDTRIP
       if ((cl->uml != 0) && !cl->uml->is_created()) {
 	if (cl->uml->is_roundtrip_expected())
-	  ((Package *) cl->parent())->reverse_file(QCString(f),
+	  ((Package *) cl->parent())->reverse_file(QByteArray(f),
 						   cl->uml->associatedArtifact());
       }
       else
 #endif
-      ((Package *) cl->parent())->reverse_file(QCString(f));
+      ((Package *) cl->parent())->reverse_file(QByteArray(f));
       Lex::pop_context();
       Package::pop_context();
 #ifdef REVERSE
@@ -901,8 +901,8 @@ void Class::inherit(Class * cl) {
   
   QDictIterator<Class> it(cl->Defined);
   
-  while (it.current()) {
-    Defined.replace(it.currentKey(), it.current());
+  while ((*it)) {
+    Defined.replace(it.currentKey(), (*it));
     ++it;
   }
   
@@ -915,7 +915,7 @@ void Class::inherit(Class * cl) {
 }
 
 // this inherits uml_cl => it knowns uml_cl's sub-classes
-void Class::inherit(UmlClass * uml_cl, QCString header) {
+void Class::inherit(UmlClass * uml_cl, QByteArray header) {
   QVector<UmlItem> ch = uml_cl->children();
   UmlItem ** v = ch.data();
   UmlItem ** const vsup = v + ch.size();
@@ -923,7 +923,7 @@ void Class::inherit(UmlClass * uml_cl, QCString header) {
   
   for (;v != vsup; v += 1) {
     if ((x = *v)->kind() == aClass) {
-      QCString s = (header.isEmpty()) ? x->name() : header + x->name();
+      QByteArray s = (header.isEmpty()) ? x->name() : header + x->name();
       
       user_defined.replace(s, (UmlClass *) x);
       s += ".";
@@ -937,10 +937,10 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
   // '<' already read
   tmplt.clear();
   
-  QCString s;
+  QByteArray s;
   
   do {
-    QCString n = Lex::read_word();
+    QByteArray n = Lex::read_word();
     
     if (n == ">")
       break;
@@ -990,7 +990,7 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
     UmlTypeSpec typespec;
     
     if (!name_only && !Package::scanning()) {
-      QCString e = Lex::region();
+      QByteArray e = Lex::region();
       
       e.resize(e.length()); // remove , or >
       e = e.stripWhiteSpace();
@@ -1006,7 +1006,7 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
   return TRUE;
 }
 
-bool Class::manage_member(QCString s, QCString & path
+bool Class::manage_member(QByteArray s, QByteArray & path
 #ifdef ROUNDTRIP
 			  , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -1022,8 +1022,8 @@ bool Class::manage_member(QCString s, QCString & path
     visibility = PackageVisibility;
   }
 
-  QCString comment = Lex::get_comments();
-  QCString description = Lex::get_description();
+  QByteArray comment = Lex::get_comments();
+  QByteArray description = Lex::get_description();
   bool m_staticp = FALSE;
   bool m_finalp = FALSE;
   bool m_abstractp = FALSE;
@@ -1033,20 +1033,20 @@ bool Class::manage_member(QCString s, QCString & path
   bool m_transientp = FALSE;
   bool m_volatilep = FALSE;
   bool first_var = TRUE;
-  QCString array_before_name;
-  QCString array;
+  QByteArray array_before_name;
+  QByteArray array;
   UmlTypeSpec type;
   bool type_read = FALSE;
   QValueList<FormalParameterList> tmplts;
   QValueList<UmlTypeSpec> actuals;
-  QCString str_actuals;
-  QCString name;
-  QCString value;
-  QCString annotation;
-  QCString oper_templ;
+  QByteArray str_actuals;
+  QByteArray name;
+  QByteArray value;
+  QByteArray annotation;
+  QByteArray oper_templ;
   UmlClass * first_actual_class = 0;
-  QCString type_def;
-  QCString genericname;
+  QByteArray type_def;
+  QByteArray genericname;
   
 #ifdef TRACE
   cout << "Class::manage_member(" << s << ")\n";
@@ -1152,7 +1152,7 @@ bool Class::manage_member(QCString s, QCString & path
 	  return FALSE;
       }
       else if (name.isEmpty()) {
-	if (type.toString() == QCString(text(0))) {
+	if (type.toString() == QByteArray(text(0))) {
 	  // constructor
 	  name = text(0);
 	  type.type = 0;
@@ -1326,7 +1326,7 @@ bool Class::manage_enum_items(
 #endif
 			      ) {
   UmlClass * cl_uml = (Package::scanning()) ? 0 : get_uml();
-  QCString s;
+  QByteArray s;
   
   for (;;) {
     if ((s = Lex::read_word()).isEmpty()) {
@@ -1354,7 +1354,7 @@ bool Class::manage_enum_items(
   }
 }
 
-Class * Class::define(const QCString & name, char st) {
+Class * Class::define(const QByteArray & name, char st) {
   Class * cl = Defined[name];
   
   if (!Package::scanning() || (cl != 0))
@@ -1381,7 +1381,7 @@ Class * Class::localy_defined(QString name) const {
 }
 #endif
 
-void Class::compute_type(QCString name, UmlTypeSpec & typespec,
+void Class::compute_type(QByteArray name, UmlTypeSpec & typespec,
 			 const QValueList<FormalParameterList> & tmplts,
 			 Class ** need_object) {
   const QValueList<UmlFormalParameter> formals = get_uml()->formals();
@@ -1408,7 +1408,7 @@ void Class::compute_type(QCString name, UmlTypeSpec & typespec,
     }
   }
   
-  QCString s = name;
+  QByteArray s = name;
   Class * cl = this;
   
   for (;;) {
@@ -1452,10 +1452,10 @@ void Class::compute_type(QCString name, UmlTypeSpec & typespec,
     ((Package *) p)->compute_type(name, typespec, tmplts, need_object);
 }
 
-void Class::declare(const QCString & name, Class * cl) {
+void Class::declare(const QByteArray & name, Class * cl) {
   Defined.insert(name, cl);
   
-  QCString s = QCString(text(0)) + '.' + name;
+  QByteArray s = QByteArray(text(0)) + '.' + name;
   ((BrowserNode *) parent())->declare(s, cl);
 }
 
@@ -1753,7 +1753,7 @@ void Class::restore(QDataStream  & dt, char c, BrowserNode * parent)
     cl->from_lib = TRUE;
 #endif
   
-    QCString name(n);
+    QByteArray name(n);
     
     parent->declare(n, cl);
     

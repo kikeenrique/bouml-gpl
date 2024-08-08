@@ -8,7 +8,7 @@
 
 class UmlComponent : public UmlBaseComponent {
   public:
-    UmlComponent(void * id, const QCString & n)
+    UmlComponent(void * id, const QByteArray & n)
       : UmlBaseComponent(id, n) {};
 };
 

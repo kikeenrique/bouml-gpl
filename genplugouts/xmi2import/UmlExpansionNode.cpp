@@ -17,7 +17,7 @@ void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where->kind() != anExpansionRegion) 
     in.bypass(token);
   else {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlExpansionNode * e =
       UmlExpansionNode::create((UmlExpansionRegion *) where, s);
     
@@ -40,7 +40,7 @@ void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
       e->setType(s);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr)) {

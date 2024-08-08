@@ -1,7 +1,7 @@
 
 #include "UmlClassDiagram.h"
 
-QCString UmlClassDiagram::sKind() {
+QByteArray UmlClassDiagram::sKind() {
   return "class diagram";
 }
 

@@ -9,15 +9,15 @@
 class UmlActivity : public UmlBaseActivity {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivity(void * id, const QCString & s) : UmlBaseActivity(id, s) {
+     UmlActivity(void * id, const QByteArray & s) : UmlBaseActivity(id, s) {
     }
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
     //set the html ref
     //set the activity list

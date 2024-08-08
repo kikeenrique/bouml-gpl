@@ -3,7 +3,7 @@
 #include "UmlBaseActivityAction.h"
 #include "UmlDiagram.h"
 
-const QCString & UmlBaseActivityAction::preCondition() {
+const QByteArray & UmlBaseActivityAction::preCondition() {
   read_if_needed_();
   return _pre_condition;
 }
@@ -12,7 +12,7 @@ bool UmlBaseActivityAction::set_PreCondition(const char * v) {
   return set_it_(_pre_condition, v, setUmlEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseActivityAction::postCondition() {
+const QByteArray & UmlBaseActivityAction::postCondition() {
   read_if_needed_();
   return _post_condition;
 }
@@ -22,7 +22,7 @@ bool UmlBaseActivityAction::set_PostCondition(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseActivityAction::cppPreCondition() {
+const QByteArray & UmlBaseActivityAction::cppPreCondition() {
   read_if_needed_();
   return _cpp_pre_condition;
 }
@@ -31,7 +31,7 @@ bool UmlBaseActivityAction::set_CppPreCondition(const char * v) {
   return set_it_(_cpp_pre_condition, v, setCppEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseActivityAction::cppPostCondition() {
+const QByteArray & UmlBaseActivityAction::cppPostCondition() {
   read_if_needed_();
   return _cpp_post_condition;
 }
@@ -42,7 +42,7 @@ bool UmlBaseActivityAction::set_CppPostCondition(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseActivityAction::javaPreCondition() {
+const QByteArray & UmlBaseActivityAction::javaPreCondition() {
   read_if_needed_();
   return _java_pre_condition;
 }
@@ -51,7 +51,7 @@ bool UmlBaseActivityAction::set_JavaPreCondition(const char * v) {
   return set_it_(_java_pre_condition, v, setJavaEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseActivityAction::javaPostCondition() {
+const QByteArray & UmlBaseActivityAction::javaPostCondition() {
   read_if_needed_();
   return _java_post_condition;
 }

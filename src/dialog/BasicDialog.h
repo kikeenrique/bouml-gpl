@@ -30,8 +30,8 @@
 
 
 
-#include <qptrlist.h>
-#include <qtabdialog.h>
+#include <qlist.h>
+#include <q3tabdialog.h>
 
 class QComboBox;
 class LineEdit;
@@ -40,31 +40,30 @@ class BasicData;
 class KeyValuesTable;
 class BodyDialog;
 
-class BasicDialog : public QTabDialog
-{
-        Q_OBJECT
-
-    protected:
-        BasicData * data;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QSize & previous_size;
-        QList<BodyDialog> edits;
-
-        static void post_edit_description (BasicDialog * d, QString s);
-
-    public:
-        BasicDialog (BasicData * nd, QString s,
-                     const QStringList & default_stereotypes,
-                     QSize &, bool unnamed = FALSE);
-        virtual ~BasicDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
+class BasicDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    BasicData * data;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QSize & previous_size;
+    QList<BodyDialog *> edits;
+    
+    static void post_edit_description(BasicDialog * d, QString s);
+      
+  public:
+    BasicDialog(BasicData * nd, QString s,
+		const QStringList & default_stereotypes,
+		QSize &, bool unnamed = FALSE);
+    virtual ~BasicDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
 };
 
 #endif

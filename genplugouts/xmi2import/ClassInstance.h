@@ -2,7 +2,7 @@
 #define _CLASSINSTANCE_H
 
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qcstring.h>
 #include <qvaluelist.h>
 
@@ -27,22 +27,22 @@ class ClassInstance {
         //import the activity node starting by 'tk' inside 'where'
         void importIt(FileIn & in, Token & token);
 
-        QCString featureId;
+        QByteArray featureId;
 
-        QCString value;
+        QByteArray value;
 
-        QCString valueId;
+        QByteArray valueId;
 
     };
     
     
     QValueList<Slot> bindings;
 
-    QCString id;
+    QByteArray id;
 
-    QCString name;
+    QByteArray name;
 
-    QCString classifierId;
+    QByteArray classifierId;
 
     UmlItem * where;
 

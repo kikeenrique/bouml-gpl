@@ -28,7 +28,7 @@
 #include "util.h"
 #include "UmlCom.h"
 
-QCString capitalize(const QCString & s)
+QByteArray capitalize(const QByteArray & s)
 {
   return (s.isEmpty())
     ? s
@@ -67,7 +67,7 @@ bool need_equal(const char * p, const char * v)
 
 //
 
-static QCString TraceHeader;
+static QByteArray TraceHeader;
 static bool Verbose = FALSE;
 static bool Preserve = FALSE;
 
@@ -91,12 +91,12 @@ bool preserve()
   return Preserve;
 }
 
-void set_trace_header(QCString s)
+void set_trace_header(QByteArray s)
 {
   TraceHeader = s;
 }
 
-QCString get_trace_header()
+QByteArray get_trace_header()
 {
   return TraceHeader;
 }

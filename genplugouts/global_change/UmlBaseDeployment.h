@@ -8,7 +8,7 @@
 //  Manage the deployments
 class UmlBaseDeployment : public UmlItem {
   protected:
-    UmlBaseDeployment(void * id, QCString n) : UmlItem(id, n){};
+    UmlBaseDeployment(void * id, QByteArray n) : UmlItem(id, n){};
 
 };
 

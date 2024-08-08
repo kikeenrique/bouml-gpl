@@ -4,7 +4,7 @@
 
 #include "UmlBaseTypeSpec.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlArtifact;
 
 // this class memorize a type specification, which may be
@@ -14,8 +14,8 @@ class UmlArtifact;
 // - an explicit type
 class UmlTypeSpec : public UmlBaseTypeSpec {
   public:
-    void generate_require_onces(QTextOStream & f,
-				QCString & made,
+    void generate_require_onces(QTextStream & f,
+				QByteArray & made,
 				UmlArtifact * using_art) const;
 };
 

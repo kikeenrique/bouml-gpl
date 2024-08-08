@@ -32,13 +32,13 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
-			    QCString indent) {
+void UmlAttribute::generate(QTextStream & f, const QByteArray & cl_stereotype,
+			    QByteArray indent) {
   generate(f, cl_stereotype, indent, FALSE);
 }
 
-void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
-			    QCString indent, bool enumitem) {
+void UmlAttribute::generate(QTextStream & f, const QByteArray & cl_stereotype,
+			    QByteArray indent, bool enumitem) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -113,12 +113,12 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
       else if (!strncmp(p, "${multiplicity}", 15)) {
 	p += 15;
 	
-	QCString m = multiplicity();
+	QByteArray m = multiplicity();
 	
 	if (*m != '[')
 	  f << "[]";
 	else {
-	  for (unsigned index = 0; index != m.length(); index += 1) {
+	  for (int index = 0; index != m.length(); index += 1) {
 	    switch (m.at(index)) {
 	    case '[':
 	      f << '[';
@@ -162,9 +162,9 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
   }
 }
 
-void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_value,
-					      const QCString & class_name,
-					      QCString indent) {
+void UmlAttribute::generate_enum_pattern_item(QTextStream & f, int & current_value,
+					      const QByteArray & class_name,
+					      QByteArray indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -202,7 +202,7 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
       else if (!strncmp(p, "${value}", 8)) {
 	p += 8;
 	if (!defaultValue().isEmpty()) {
-	  QCString d = defaultValue().simplifyWhiteSpace();
+	  QByteArray d = defaultValue().simplifyWhiteSpace();
 	  
 	  if (*((const char *) d) == '=')
 	    d = d.mid(1).simplifyWhiteSpace();
@@ -212,7 +212,7 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
 	  
 	  v = d.toInt(&ok);
 	  if (! ok) {
-	    UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b><i>") +
+	    UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b><i>") +
 			  defaultValue() + "</i> wrong value for <i> "
 			  + name() + "</i></b></font><br>");
 	    incr_error();
@@ -244,8 +244,8 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
   }
 }
 
-void UmlAttribute::generate_enum_pattern_case(QTextOStream & f,
-					      QCString indent) {
+void UmlAttribute::generate_enum_pattern_case(QTextStream & f,
+					      QByteArray indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = JavaSettings::enumPatternItemCase();
     const char * pp = 0;
@@ -289,8 +289,8 @@ void UmlAttribute::generate_enum_pattern_case(QTextOStream & f,
   }
 }
 
-void UmlAttribute::generate_enum_item(QTextOStream & f,
-				      QCString indent,
+void UmlAttribute::generate_enum_item(QTextStream & f,
+				      QByteArray indent,
 				      BooL & first) {
   if (stereotype() != "attribute") {
     if (first)
@@ -302,8 +302,8 @@ void UmlAttribute::generate_enum_item(QTextOStream & f,
   }
 }
 
-void UmlAttribute::generate_enum_member(QTextOStream & f,
-					QCString indent) {
+void UmlAttribute::generate_enum_member(QTextStream & f,
+					QByteArray indent) {
   if (stereotype() == "attribute")
     generate(f, "enum", indent, FALSE);
 }

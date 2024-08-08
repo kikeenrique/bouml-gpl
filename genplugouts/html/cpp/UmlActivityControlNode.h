@@ -8,14 +8,14 @@
 class UmlActivityControlNode : public UmlBaseActivityControlNode {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityControlNode(void * id, const QCString & s) : UmlBaseActivityControlNode(id, s) {
+     UmlActivityControlNode(void * id, const QByteArray & s) : UmlBaseActivityControlNode(id, s) {
     }
 
 
   public:
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
 };
 

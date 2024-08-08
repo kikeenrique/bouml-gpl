@@ -32,8 +32,8 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate(QTextOStream & f, const QCString & st,
-			    QCString indent, int & enum_item_rank) {
+void UmlAttribute::generate(QTextStream & f, const QByteArray & st,
+			    QByteArray indent, int & enum_item_rank) {
   if (!phpDecl().isEmpty()) {
     const char * p = phpDecl();
     const char * pp = 0;
@@ -121,7 +121,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
   enum_item_rank += 1;
 }
 
-void UmlAttribute::generate_require_onces(QTextOStream & f, QCString & made) {
+void UmlAttribute::generate_require_onces(QTextStream & f, QByteArray & made) {
   if (!phpDecl().isEmpty())
     type().generate_require_onces(f, made, ((UmlClass *) parent())->assocArtifact());
 }

@@ -65,7 +65,7 @@ bool File::open(int m) {
   return QFile::open(m);
 }
 
-int File::read(QCString & s) {
+int File::read(QByteArray & s) {
   if (unread_k != -1) {
     s = unread_s;
     
@@ -107,7 +107,7 @@ int File::read(QCString & s) {
 }
 
 void File::read(const char * e) {
-  QCString s;
+  QByteArray s;
 
   if (read(s) == -1)
     eof();
@@ -116,18 +116,18 @@ void File::read(const char * e) {
     syntaxError(s, e);
 }
 
-void File::unread(int k, const QCString & s) {
+void File::unread(int k, const QByteArray & s) {
  unread_k = k;
  unread_s = s;
 }
 
-QCString File::context() {
-  QCString s;
+QByteArray File::context() {
+  QByteArray s;
 
-  return QCString(name()) + " line " + s.setNum(line_number);
+  return QByteArray(name()) + " line " + s.setNum(line_number);
 }
 
-int File::readString(QCString & s) {
+int File::readString(QByteArray & s) {
   int c;
 
   while ((c = getch()) != '"') {
@@ -142,7 +142,7 @@ int File::readString(QCString & s) {
   return STRING;
 }
 
-int File::readMLString(QCString & s) {
+int File::readMLString(QByteArray & s) {
   for (;;) {
     int c = getch();
 
@@ -174,7 +174,7 @@ int File::readMLString(QCString & s) {
   }
 }
 
-int File::readAtom(QCString & s) {
+int File::readAtom(QByteArray & s) {
   for (;;) {
     int c = getch();
 
@@ -196,13 +196,13 @@ int File::readAtom(QCString & s) {
   }
 }
 
-void File::syntaxError(const QCString s) {
+void File::syntaxError(const QByteArray s) {
   UmlCom::trace("<br>syntax error near '" + s + "' in " + context());
   throw 0;
 }
 
-void File::syntaxError(const QCString s, const QCString e) {
-  QCString msg = "<br>'" + e + "' expected rather than '" + s + "' in " + context();
+void File::syntaxError(const QByteArray s, const QByteArray e) {
+  QByteArray msg = "<br>'" + e + "' expected rather than '" + s + "' in " + context();
   
   UmlCom::trace(msg);
   throw 0;
@@ -210,7 +210,7 @@ void File::syntaxError(const QCString s, const QCString e) {
 
 void File::skipBlock() {
   int lvl = 1;
-  QCString s;
+  QByteArray s;
 
   for(;;) {
     switch (read(s)) {
@@ -230,7 +230,7 @@ void File::skipBlock() {
 }
 
 void File::skipNextForm() {
-  QCString s;
+  QByteArray s;
 
   switch (read(s)) {
   case ')':
@@ -256,7 +256,7 @@ void File::rewind() {
 }
 
 aVisibility File::readVisibility() {
-  QCString s;
+  QByteArray s;
  
   if (read(s) == STRING) {
     if (s == "Private")
@@ -272,7 +272,7 @@ aVisibility File::readVisibility() {
 }
 
 bool File::readBool() {
-  QCString s;
+  QByteArray s;
  
   if (read(s) == ATOM) {
     if (s == "TRUE")
@@ -286,7 +286,7 @@ bool File::readBool() {
 }
 
 Language File::readLanguage() {
-  QCString s;
+  QByteArray s;
   
   if (read(s) != STRING)
     syntaxError(s, "a language");
@@ -307,7 +307,7 @@ Language File::readLanguage() {
   return None;
 }
 
-int File::readDefinitionBeginning(QCString & s, QCString & id, QCString & ste, QCString & doc, QDict<QCString> & prop) {
+int File::readDefinitionBeginning(QByteArray & s, QByteArray & id, QByteArray & ste, QByteArray & doc, QDict<QByteArray> & prop) {
   for (;;) {
     int k = read(s);
     
@@ -346,7 +346,7 @@ int File::readDefinitionBeginning(QCString & s, QCString & id, QCString & ste, Q
   }
 }
 
-void File::readProperties(QDict<QCString> & d) {
+void File::readProperties(QDict<QByteArray> & d) {
   d.setAutoDelete(TRUE);
   
   read("(");
@@ -354,7 +354,7 @@ void File::readProperties(QDict<QCString> & d) {
   read("Attribute_Set");
   
   for (;;) {
-    QCString s;
+    QByteArray s;
   
     switch (read(s)) {
     case ')':
@@ -369,7 +369,7 @@ void File::readProperties(QDict<QCString> & d) {
       
       read("name");
       {
-	QCString s2;
+	QByteArray s2;
 	
 	if (read(s2) != STRING)
 	  syntaxError(s2, "the name");
@@ -391,7 +391,7 @@ void File::readProperties(QDict<QCString> & d) {
 	  // no break !
 	case STRING:
 	case ATOM:
-	  d.insert(s, new QCString(s2));
+	  d.insert(s, new QByteArray(s2));
 	  break;
 	default:
 	  syntaxError(s, "the value");

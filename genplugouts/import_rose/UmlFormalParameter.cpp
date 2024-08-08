@@ -9,7 +9,7 @@ void UmlFormalParameter::import(File & f, bool scanning) {
   if (f.read(_name) != STRING)
     f.syntaxError(_name, "formal's name");
     
-  QCString s;
+  QByteArray s;
   
   for (;;) {
     switch (f.read(s)) {

@@ -24,7 +24,7 @@ bool UmlBaseExtraClassMember::set_isCppInline(bool y) {
   return set_it_(_cpp_inline, y, setIsCppInlineCmd);
 }
 
-const QCString & UmlBaseExtraClassMember::cppDef() {
+const QByteArray & UmlBaseExtraClassMember::cppDef() {
   read_if_needed_();
     
   return _cpp_def;

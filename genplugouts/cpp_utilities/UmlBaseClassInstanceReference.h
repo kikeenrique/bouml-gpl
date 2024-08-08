@@ -19,7 +19,7 @@ class UmlBaseClassInstanceReference {
     }
 
     // return the name of the instance
-    const QCString & name() const;
+    const QByteArray & name() const;
 
 
   private:
@@ -27,7 +27,7 @@ class UmlBaseClassInstanceReference {
 
     UmlClassInstance * _instance;
 
-    QCString _name;
+    QByteArray _name;
 
     // internal, don't call it
     void read_();

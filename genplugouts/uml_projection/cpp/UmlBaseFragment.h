@@ -3,7 +3,7 @@
 
 
 #include <qcstring.h>
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qptrdict.h>
 
 class UmlFragmentCompartment;
@@ -15,7 +15,7 @@ class UmlFragment;
 class UmlBaseFragment {
   public:
     // return the name
-    const QCString & name() const {
+    const QByteArray & name() const {
         return _name;
     }
 
@@ -38,7 +38,7 @@ class UmlBaseFragment {
 
     // return the form corresponding to the arguments
     // and return value of the interaction use
-    QCString arguments() const {
+    QByteArray arguments() const {
         return _arguments;
     }
 
@@ -53,7 +53,7 @@ class UmlBaseFragment {
 
     QVector<UmlFragmentCompartment> _compartments;
 
-    QCString _name;
+    QByteArray _name;
 
     int _x;
 
@@ -65,7 +65,7 @@ class UmlBaseFragment {
 
     UmlDiagram * _refer;
 
-    QCString _arguments;
+    QByteArray _arguments;
 
     QVector<UmlClassInstanceReference> _covered;
 

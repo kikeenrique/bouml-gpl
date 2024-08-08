@@ -30,26 +30,26 @@
 
 #include "UmlBaseOperation.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlOperation : public UmlBaseOperation {
   private:
     static QIntDict<char> bodies;
 
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int &);
-    virtual void generate_require_onces(QTextOStream & f, QCString & made);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, int &);
+    virtual void generate_require_onces(QTextStream & f, QByteArray & made);
     
-    QCString compute_name();
+    QByteArray compute_name();
     
     static void read_bodies(const char * path);
     
   private:
-    const char * generate_body(QTextOStream & f, QCString indent, const char * p);
+    const char * generate_body(QTextStream & f, QByteArray indent, const char * p);
 };
 
 #endif

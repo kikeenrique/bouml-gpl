@@ -30,7 +30,7 @@
 
 class UmlClass : public UmlBaseClass {
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n) {};
 };
 

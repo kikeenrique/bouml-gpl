@@ -31,73 +31,74 @@
 
 #include "UmlDrag.h"
 #include "BrowserNode.h"
+//Added by qt3to4:
+#include <QDragMoveEvent>
+#include <QDropEvent>
 
 const QString UmlDrag::Key = "Bouml/";
 QString UmlDrag::postfix;
 bool UmlDrag::ro;
 
-UmlDrag::UmlDrag (BrowserNode * bn, QWidget * parent, const char * name)
-    : QStoredDrag (UmlDrag::Key + bn->drag_key(), parent, name)
-{
-    // stay in the same application : can use address directly
-    QByteArray a (sizeof (bn));
-
-    memcpy (a.data(), &bn, sizeof (bn));
-    setEncodedData (a);
-
-    postfix = bn->drag_postfix();
-    ro = ( (bn->parent() != 0) &&
-           ! ( (BrowserNode *) bn->parent())->is_writable());
+UmlDrag::UmlDrag(BrowserNode * bn, QWidget * parent, const char * name)
+    : Q3StoredDrag(UmlDrag::Key + bn->drag_key(), parent, name) {
+  // stay in the same application : can use address directly
+  QByteArray a(sizeof(bn));
+  
+  memcpy(a.data(), &bn, sizeof(bn));
+  setEncodedData(a);
+  
+  postfix = bn->drag_postfix();
+  ro = ((bn->parent() != 0) &&
+	!((BrowserNode *) bn->parent())->is_writable());
 }
 
 
-bool UmlDrag::canDecode (QDragMoveEvent * e, UmlCode type,
-                         bool withpostfix, bool evenro)
+bool UmlDrag::canDecode(QDragMoveEvent * e, UmlCode type,
+			bool withpostfix, bool evenro)
 {
-    if (ro && ! evenro) {
-        return FALSE;
-    }
-
-    return (e->source() != 0) &&
-           e->provides ( (withpostfix) ? UmlDrag::Key + QString::number (type) + postfix
-                         : UmlDrag::Key + QString::number (type));
+  if (ro && ! evenro)
+    return FALSE;
+  
+  return (e->source() != 0) &&
+    e->provides((withpostfix) ? UmlDrag::Key + QString::number(type) + postfix
+			      : UmlDrag::Key + QString::number(type));
 }
 
-bool UmlDrag::canDecode (QDragMoveEvent * e, const QString & type)
+bool UmlDrag::canDecode(QDragMoveEvent * e, const QString & type)
 {
-    return !ro && (e->source() != 0) && e->provides (UmlDrag::Key + type);
+  return !ro && (e->source() != 0) && e->provides(UmlDrag::Key + type);
 }
 
-BrowserNode * UmlDrag::decode (QDropEvent * e, UmlCode type,
-                               bool withpostfix)
+BrowserNode * UmlDrag::decode(QDropEvent * e, UmlCode type,
+			      bool withpostfix)
 {
-    QByteArray payload =
-        e->data ( (withpostfix) ? UmlDrag::Key + QString::number (type) + postfix
-                  : UmlDrag::Key + QString::number (type));
-
-    if (payload.size()) {
-        e->accept();
-        BrowserNode * bn;
-
-        memcpy (&bn, payload.data(), sizeof (bn));
-        return bn;
-    }
-
-    return 0;
+  QByteArray payload =
+    e->data((withpostfix) ? UmlDrag::Key + QString::number(type) + postfix
+			  : UmlDrag::Key + QString::number(type));
+  
+  if (payload.size()) {
+    e->accept();
+    BrowserNode * bn;
+    
+    memcpy(&bn, payload.data(), sizeof(bn));
+    return bn;
+  }
+  
+  return 0;
 }
 
-BrowserNode * UmlDrag::decode (QDropEvent * e, const QString & type)
+BrowserNode * UmlDrag::decode(QDropEvent * e, const QString & type)
 {
-    QByteArray payload = e->data (UmlDrag::Key + type);
-
-    if (payload.size()) {
-        e->accept();
-        BrowserNode * bn;
-
-        memcpy (&bn, payload.data(), sizeof (bn));
-        return bn;
-    }
-
-    return 0;
+  QByteArray payload = e->data(UmlDrag::Key + type);
+  
+  if (payload.size()) {
+    e->accept();
+    BrowserNode * bn;
+    
+    memcpy(&bn, payload.data(), sizeof(bn));
+    return bn;
+  }
+  
+  return 0;
 }
 

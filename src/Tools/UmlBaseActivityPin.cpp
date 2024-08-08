@@ -3,13 +3,12 @@
 #include "UmlActivityPin.h"
 #include "UmlActivityAction.h"
 
-UmlActivityPin * UmlBaseActivityPin::create (UmlActivityAction * parent, const char * s)
+UmlActivityPin * UmlBaseActivityPin::create(UmlActivityAction * parent, const char * s)
 {
-    return (UmlActivityPin *) parent->create_ (anActivityPin, s);
+  return (UmlActivityPin *) parent->create_(anActivityPin, s);
 }
 
-anItemKind UmlBaseActivityPin::kind()
-{
-    return anActivityPin;
+anItemKind UmlBaseActivityPin::kind() {
+  return anActivityPin;
 }
 

@@ -32,15 +32,15 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate_imports(QTextOStream & f, QCString & made) {
+void UmlAttribute::generate_imports(QTextStream & f, QByteArray & made) {
   if (!pythonDecl().isEmpty())
     type().generate_import(f, ((UmlClass *) parent())->assocArtifact(), 
 			   FALSE, made);
 }
 
-void UmlAttribute::generate(QTextOStream & f, const QCString & st,
-			    QCString indent, BooL & indent_needed,
-			    int & enum_item_rank, const QCString & self) {
+void UmlAttribute::generate(QTextStream & f, const QByteArray & st,
+			    QByteArray indent, BooL & indent_needed,
+			    int & enum_item_rank, const QByteArray & self) {
   if (self.isEmpty() != isClassMember())
     return;
   
@@ -92,7 +92,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
 	f << indent;
       }
       
-      const QCString & v = defaultValue();
+      const QByteArray & v = defaultValue();
       
       if (!v.isEmpty()) {
 	if (need_equal(p, v))

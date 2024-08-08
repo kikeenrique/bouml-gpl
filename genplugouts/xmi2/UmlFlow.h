@@ -11,7 +11,7 @@ class FileOut;
 
 class UmlFlow : public UmlBaseFlow, public UmlActivityItem {
   public:
-     UmlFlow(void * id, const QCString & n) : UmlBaseFlow(id, n), _control_or_data(Unset) {
+     UmlFlow(void * id, const QByteArray & n) : UmlBaseFlow(id, n), _control_or_data(Unset) {
     }
 
     //write the definition if it is not empty for the target language

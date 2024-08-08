@@ -7,7 +7,7 @@
 #include "PythonSettings.h"
 #include "UmlRelation.h"
 
-QCString UmlOperation::sKind() {
+QByteArray UmlOperation::sKind() {
   return "operation";
 }
 
@@ -17,14 +17,14 @@ void UmlOperation::memo_ref() {
   UmlItem::memo_ref();
 }
 
-void UmlOperation::html(QCString, unsigned int, unsigned int) {
+void UmlOperation::html(QByteArray, unsigned int, unsigned int) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Operation <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>");
 
-  QCString s = description();
+  QByteArray s = description();
   
   if (! s.isEmpty()) {
     fw.write("<p>");
@@ -155,7 +155,7 @@ void UmlOperation::gen_uml_decl() {
     fw.write(" : ");
     write(p.type);
     
-    QCString s = p.default_value;
+    QByteArray s = p.default_value;
     
     if (!s.isEmpty()) {
       if (s[0] != '=')
@@ -179,7 +179,7 @@ void UmlOperation::gen_uml_decl() {
   }
 }
 
-void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
+void UmlOperation::gen_cpp_decl(QByteArray s, bool descr) {
   const char * p = bypass_comment(s);
   
   if (! descr) {
@@ -341,7 +341,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
   }
 }
 
-void UmlOperation::gen_java_decl(QCString s, bool descr) {
+void UmlOperation::gen_java_decl(QByteArray s, bool descr) {
   const char * p = bypass_comment(s);
   const QValueList<UmlParameter> & pa = params();
   unsigned npa = pa.count();
@@ -471,8 +471,8 @@ void UmlOperation::gen_java_decl(QCString s, bool descr) {
   }
 }
 
-void UmlOperation::gen_php_decl(QCString s, bool descr) {
-  QCString cl_stereotype = 
+void UmlOperation::gen_php_decl(QByteArray s, bool descr) {
+  QByteArray cl_stereotype = 
      PhpSettings::classStereotype(parent()->stereotype());
   const char * p = bypass_comment(s);
   const QValueList<UmlParameter> & pa = params();
@@ -574,8 +574,8 @@ void UmlOperation::gen_php_decl(QCString s, bool descr) {
   }
 }
 
-void UmlOperation::gen_python_decl(QCString s, bool descr) {
-  QCString cl_stereotype = 
+void UmlOperation::gen_python_decl(QByteArray s, bool descr) {
+  QByteArray cl_stereotype = 
      PythonSettings::classStereotype(parent()->stereotype());
   const char * p = bypass_comment(s);
   const QValueList<UmlParameter> & pa = params();
@@ -682,12 +682,12 @@ void UmlOperation::gen_python_decl(QCString s, bool descr) {
   }
 }
 
-QCString UmlOperation::compute_name(QCString s) {
+QByteArray UmlOperation::compute_name(QByteArray s) {
   if (!s.isEmpty()) {
     UmlClassMember * m = getOf();
     
     if ((m != 0) || ((m = setOf()) != 0)) {
-      QCString n = (m->kind() == aRelation)
+      QByteArray n = (m->kind() == aRelation)
 	? ((UmlRelation *) m)->roleName()
 	: m->name();
       int index;

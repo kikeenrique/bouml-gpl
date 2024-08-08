@@ -5,7 +5,7 @@
 #include "UmlBaseRegion.h"
 #include "UmlStateItem.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class UmlTransition;
 class FileOut;
@@ -13,7 +13,7 @@ class FileOut;
 class UmlRegion : public UmlBaseRegion, public UmlStateItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlRegion(void * id, const QCString & s) : UmlBaseRegion(id, s) {
+     UmlRegion(void * id, const QByteArray & s) : UmlBaseRegion(id, s) {
     }
 
     //goes among tree to memorize incoming transitions

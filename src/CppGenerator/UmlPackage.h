@@ -29,8 +29,8 @@
 #include "UmlBasePackage.h"
 
 struct Dir {
-  QCString src;
-  QCString h;
+  QByteArray src;
+  QByteArray h;
   bool read;
   bool src_absolute;
   bool h_absolute;
@@ -38,19 +38,19 @@ struct Dir {
  
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
   protected:
     Dir dir;
   
   public:
-    QCString source_path(const QCString &, QCString relto = "");
-    QCString header_path(const QCString &, QCString relto = "");
-    QCString text_path(const QCString &, QCString relto = "");
+    QByteArray source_path(const QByteArray &, QByteArray relto = "");
+    QByteArray header_path(const QByteArray &, QByteArray relto = "");
+    QByteArray text_path(const QByteArray &, QByteArray relto = "");
     virtual void generate();
     virtual UmlPackage * package();
     
-    static QCString rootDir();
+    static QByteArray rootDir();
 };
 
 #endif

@@ -11,10 +11,10 @@ class UmlState;
 class UmlExitPointPseudoState : public UmlBaseExitPointPseudoState {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlExitPointPseudoState(void * id, const QCString & s) : UmlBaseExitPointPseudoState(id, s) {
+     UmlExitPointPseudoState(void * id, const QByteArray & s) : UmlBaseExitPointPseudoState(id, s) {
     }
 
-    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
+    virtual void init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState * state);
 
     //  generate code for this pseudo state
     
@@ -22,13 +22,13 @@ class UmlExitPointPseudoState : public UmlBaseExitPointPseudoState {
 
     //  is the target of a transition
     
-    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent);
+    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent);
 
 
   protected:
     //  the name of the operation implementing the exit point
     
-    QCString _oper;
+    QByteArray _oper;
 
     //  to have different name for the operation implementing the exit point
     

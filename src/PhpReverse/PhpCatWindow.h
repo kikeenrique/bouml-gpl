@@ -49,7 +49,7 @@ class PhpCatWindow : public QMainWindow {
     PhpCatWindow();
   
     static void trace(QString);
-    static void trace(QCString);
+    static void trace(QByteArray);
     static void clear_trace();
   
   protected:

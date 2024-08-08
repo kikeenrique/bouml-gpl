@@ -121,7 +121,7 @@ class UmlBaseOperation : public UmlClassMember {
 
     // returns the operation's definition in C++, notes that the declaration
     // is returned by the inherited ClassItemBase::CppDecl() operation
-    const QCString & cppDef();
+    const QByteArray & cppDef();
 
     // sets the operation's definition in C++, notes that the declaration
     // is set through the inherited ClassItemBase::set_CppDecl() operation
@@ -132,7 +132,7 @@ class UmlBaseOperation : public UmlClassMember {
     // returns the operation's body in C++, useless if the def does not
     // contains ${body}. Note that the body is get each time from BOUML
     // for memory size reason
-    QCString cppBody();
+    QByteArray cppBody();
 
     // sets the operation's body in C++, useless if the def does not 
     // contains ${body}
@@ -142,7 +142,7 @@ class UmlBaseOperation : public UmlClassMember {
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's C++ name must be generated
-    const QCString & cppNameSpec();
+    const QByteArray & cppNameSpec();
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's C++ name must be generated
@@ -170,7 +170,7 @@ class UmlBaseOperation : public UmlClassMember {
 
     // returns the operation's definition in Java, notes that it is
     // already made by the inherited JavaDecl operation
-    const QCString & javaDef();
+    const QByteArray & javaDef();
 
     // sets the operation's definition in Java, notes that it is
     // already made by the inherited set_JavaDecl operation
@@ -181,7 +181,7 @@ class UmlBaseOperation : public UmlClassMember {
     // returns the operation's body in Java++, useless if the def does
     // not contains ${body} Note that the body is get each time from BOUML
     // for memory size reason
-    QCString javaBody();
+    QByteArray javaBody();
 
     // sets the operation's body in Java, useless if the def does not 
     // contains ${body}
@@ -191,7 +191,7 @@ class UmlBaseOperation : public UmlClassMember {
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's JAVA name must be generated
-    const QCString & javaNameSpec();
+    const QByteArray & javaNameSpec();
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's JAVA name must be generated
@@ -211,7 +211,7 @@ class UmlBaseOperation : public UmlClassMember {
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's IDL name must be generated
-    const QCString & idlNameSpec();
+    const QByteArray & idlNameSpec();
 
     // in case the operation is a 'get' or 'set' operation, returns how
     // the operation's IDL name must be generated
@@ -255,17 +255,17 @@ class UmlBaseOperation : public UmlClassMember {
     QValueList<UmlTypeSpec> _exceptions;
 
 #ifdef WITHCPP
-    QCString _cpp_def;
+    QByteArray _cpp_def;
 
-    QCString _cpp_name_spec;
+    QByteArray _cpp_name_spec;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_name_spec;
+    QByteArray _java_name_spec;
 #endif
 
 #ifdef WITHIDL
-    QCString _idl_name_spec;
+    QByteArray _idl_name_spec;
 #endif
 
     // exclusive with set_of
@@ -277,7 +277,7 @@ class UmlBaseOperation : public UmlClassMember {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseOperation(void * id, const QCString & n);
+    UmlBaseOperation(void * id, const QByteArray & n);
 
     virtual void read_uml_();
 
@@ -295,7 +295,7 @@ class UmlBaseOperation : public UmlClassMember {
 
 };
 
-inline UmlBaseOperation::UmlBaseOperation(void * id, const QCString & n) : UmlClassMember(id, n) {
+inline UmlBaseOperation::UmlBaseOperation(void * id, const QByteArray & n) : UmlClassMember(id, n) {
   _get_of = 0;
   _set_of = 0;
 }

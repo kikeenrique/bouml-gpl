@@ -34,11 +34,11 @@ void defGetField_(UmlClass * base, const char * where, const char * oper,
 		  const char * if_def, const char * end_if, 
 		  const char * descr, UmlOperation *& op)
 {
-  QCString body = "  read_if_needed_();\n"
-    "  return " + QCString(where) + "."  + QCString(field) + ";\n";
+  QByteArray body = "  read_if_needed_();\n"
+    "  return " + QByteArray(where) + "."  + QByteArray(field) + ";\n";
   
   op = base->add_op(oper, PublicVisibility, type);
-  op->set_Description(" return the " + QCString(descr));
+  op->set_Description(" return the " + QByteArray(descr));
   op->set_cpp("const ${type} &", "", body , FALSE, if_def, end_if);
   op->set_java("${type}", "", body, FALSE);
 }
@@ -49,21 +49,21 @@ void defSetField_(UmlClass * base, const char * where, const char * oper,
 		  const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(" set the " + QCString(descr) + "\n"
+  op->set_Description(" set the " + QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", type);
   
-  QCString body;
+  QByteArray body;
   
-  body = "  return set_it_(" + QCString(where) + "." + QCString(field) + ", v, " + QCString(cmd) + ");\n";
+  body = "  return set_it_(" + QByteArray(where) + "." + QByteArray(field) + ", v, " + QByteArray(cmd) + ");\n";
   op->set_cpp("${type}", "const ${t0} ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", v);\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", v);\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + "." + QCString(field) + " = v;\n";
+  " + QByteArray(where) + "." + QByteArray(field) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -72,12 +72,12 @@ void defGet_(UmlClass * base, const char * where, const char * oper,
 	    const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, type);
-  op->set_Description(" return the " + QCString(descr));
+  op->set_Description(" return the " + QByteArray(descr));
   
-  QCString body;
+  QByteArray body;
   
   body = "  read_if_needed_();\n"
-    "  return " + QCString(where) + ";\n";
+    "  return " + QByteArray(where) + ";\n";
   
   op->set_cpp("const ${type} &", "", body, FALSE, if_def, end_if);
   op->set_java("${type}", "", body, FALSE);
@@ -88,21 +88,21 @@ void defSet_(UmlClass * base, const char * where, const char * oper,
 	    const char * end_if, const char * descr, UmlOperation *& op) 
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(" set the " + QCString(descr) + "\n"
+  op->set_Description(" set the " + QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", type);
   
-  QCString body;
+  QByteArray body;
   
-  body = "  return set_it_(" + QCString(where) + ", v, " + QCString(cmd) + ");\n";
+  body = "  return set_it_(" + QByteArray(where) + ", v, " + QByteArray(cmd) + ");\n";
   op->set_cpp("${type}", "const ${t0} ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", v);\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", v);\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 	      
@@ -111,10 +111,10 @@ void defGetPtr_(UmlClass * base, const char * where, const char * oper,
 		const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, type);
-  op->set_Description(" return the " + QCString(descr));
+  op->set_Description(" return the " + QByteArray(descr));
   
-  QCString body = "  read_if_needed_();\n"
-    "  return " + QCString(where) + ";\n";
+  QByteArray body = "  read_if_needed_();\n"
+    "  return " + QByteArray(where) + ";\n";
       
   op->set_cpp("${type} *", "", body, FALSE, if_def, end_if);
   op->set_java("${type}", "", body, FALSE);
@@ -125,17 +125,17 @@ void defSetPtr_(UmlClass * base, const char * where, const char * oper,
 		const char * end_if, const char * descr, UmlOperation *& op) 
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(" set the "  + QCString(descr) + "\n"
+  op->set_Description(" set the "  + QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", type);
   
-  QCString body;
+  QByteArray body;
   
   body = "\
-  UmlCom::send_cmd(_identifier, " + QCString(cmd) + ", (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);\n\
+  UmlCom::send_cmd(_identifier, " + QByteArray(cmd) + ", (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);\n\
   if (UmlCom::read_bool()) {\n\
-    " + QCString(where) + " = v;\n\
+    " + QByteArray(where) + " = v;\n\
     return TRUE;\n\
   }\n\
   else\n\
@@ -143,10 +143,10 @@ void defSetPtr_(UmlClass * base, const char * where, const char * oper,
   op->set_cpp("${type}", "${t0} * ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", (v == null) ? (long) 0 : v.identifier_());\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", (v == null) ? (long) 0 : v.identifier_());\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -155,21 +155,21 @@ void defSetRefType_(UmlClass * base, const char * where, const char * oper,
 		    const char * end_if, const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(" set the "  + QCString(descr) +  "\n"
+  op->set_Description(" set the "  + QByteArray(descr) +  "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", type);
   
-  QCString body;
+  QByteArray body;
   
-  body = "  return set_it_(" + QCString(where) + ", v, " + QCString(cmd) + ");\n";
+  body = "  return set_it_(" + QByteArray(where) + ", v, " + QByteArray(cmd) + ");\n";
   op->set_cpp("${type}", "const ${t0} & ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", v);\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", v);\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -178,12 +178,12 @@ void defGetValue_(UmlClass * base, const char * where, const char * oper,
 	    const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, type);
-  op->set_Description(" return the " + QCString(descr));
+  op->set_Description(" return the " + QByteArray(descr));
   
-  QCString body;
+  QByteArray body;
   
   body = "  read_if_needed_();\n"
-    "  return " + QCString(where) + ";\n";
+    "  return " + QByteArray(where) + ";\n";
   
   op->set_cpp("${type}", "", body, FALSE, if_def, end_if);
   op->set_java("${type}", "", body, FALSE);
@@ -194,21 +194,21 @@ void defSetBool_(UmlClass * base, const char * where, const char * oper,
 		 const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(QCString(descr) + "\n"
+  op->set_Description(QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", "bool");
   
-  QCString body;
+  QByteArray body;
   
-  body = "  return set_it_(" + QCString(where) + ", v, " + QCString(cmd) + ");\n";
+  body = "  return set_it_(" + QByteArray(where) + ", v, " + QByteArray(cmd) + ");\n";
   op->set_cpp("${type}", "${t0} ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", (v) ? (byte) 1 : (byte) 0);\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", (v) ? (byte) 1 : (byte) 0);\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -217,17 +217,17 @@ void defSetEnum_(UmlClass * base, const char * where, const char * oper,
 		 const char * end_if, const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(" set the " + QCString(descr) + "\n"
+  op->set_Description(" set the " + QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", type);
   
-  QCString body;
+  QByteArray body;
   
   body = "\
-  UmlCom::send_cmd(_identifier, " + QCString(cmd) + ", (char) v);\n\
+  UmlCom::send_cmd(_identifier, " + QByteArray(cmd) + ", (char) v);\n\
   if (UmlCom::read_bool()) {\n\
-    " + QCString(where) + " = v;\n\
+    " + QByteArray(where) + " = v;\n\
     return TRUE;\n\
   }\n\
   else\n\
@@ -235,10 +235,10 @@ void defSetEnum_(UmlClass * base, const char * where, const char * oper,
   op->set_cpp("${type}", "${t0} ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", (byte) v.value());\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", (byte) v.value());\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -247,17 +247,17 @@ void defSetBoolBitField_(UmlClass * base, const char * where, const char * oper,
 			 const char * descr, UmlOperation *& op)
 {
   op = base->add_op(oper, PublicVisibility, "bool", TRUE);
-  op->set_Description(QCString(descr) + "\n"
+  op->set_Description(QByteArray(descr) + "\n"
 		      "\n"
 		      " On error return FALSE in C++, produce a RuntimeException in Java");
   op->add_param(0, InputDirection, "v", "bool");
   
-  QCString body;
+  QByteArray body;
   
   body = "\
-  UmlCom::send_cmd(_identifier, " + QCString(cmd) + ", (char) v);\n\
+  UmlCom::send_cmd(_identifier, " + QByteArray(cmd) + ", (char) v);\n\
   if (UmlCom::read_bool()) {\n\
-    " + QCString(where) + " = v;\n\
+    " + QByteArray(where) + " = v;\n\
     return TRUE;\n\
   }\n\
   else\n\
@@ -265,10 +265,10 @@ void defSetBoolBitField_(UmlClass * base, const char * where, const char * oper,
   op->set_cpp("${type}", "${t0} ${p0}", body, FALSE, if_def, end_if);
   
   body = "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QCString(cmd) + ", (v) ? 1 : 0);\n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd." + QByteArray(cmd) + ", (v) ? 1 : 0);\n\
   UmlCom.check();\n\
 \n\
-  " + QCString(where) + " = v;\n";
+  " + QByteArray(where) + " = v;\n";
   op->set_java("void", "${t0} ${p0}", body, FALSE);
 }
 
@@ -277,7 +277,7 @@ void defSetBoolBitField_(UmlClass * base, const char * where, const char * oper,
 void include_umlcom(UmlClass * cl)
 {
   UmlArtifact * art = cl->associatedArtifact();
-  QCString s = art->cppSource();
+  QByteArray s = art->cppSource();
   
   s.insert(s.find("${includes}"), "#include \"UmlCom.h\"\n");
   art->set_CppSource(s);
@@ -285,7 +285,7 @@ void include_umlcom(UmlClass * cl)
 
 void include_umlcom(UmlArtifact * art)
 {
-  QCString s = art->cppSource();
+  QByteArray s = art->cppSource();
   
   s.insert(s.find("${includes}"), "#include \"UmlCom.h\"\n");
   art->set_CppSource(s);
@@ -333,7 +333,7 @@ void add_assoc_diag_ops(UmlClass * base, UmlClass * diag)
 }
 //
 
-void conditional(QCString & s, const char * if_def, const char * end_if)
+void conditional(QByteArray & s, const char * if_def, const char * end_if)
 {
   if (if_def != 0) {
     const char * p = s;
@@ -342,7 +342,7 @@ void conditional(QCString & s, const char * if_def, const char * end_if)
     while ((*p2 == ' ') || (*p2 == '\t'))
       p2 += 1;
     
-    s.insert(p2 - p, QCString("#ifdef ") + if_def + "\n");
+    s.insert(p2 - p, QByteArray("#ifdef ") + if_def + "\n");
   }
   
   if (end_if != 0)
@@ -353,7 +353,7 @@ void conditional(QCString & s, const char * if_def, const char * end_if)
 
 //
 
-QCString java2Php(QCString s)
+QByteArray java2Php(QByteArray s)
 {
   int index;
   
@@ -372,7 +372,7 @@ QCString java2Php(QCString s)
   return s;
 }
 
-QCString java2Python(QCString s)
+QByteArray java2Python(QByteArray s)
 {
   int index;
   
@@ -391,7 +391,7 @@ QCString java2Python(QCString s)
   return s;
 }
 
-QCString cpp2Python(QCString s)
+QByteArray cpp2Python(QByteArray s)
 {
   int index;
   

@@ -4,7 +4,7 @@
 
 #include "UmlBaseUseCaseView.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class FileOut;
 class UmlItem;
@@ -15,7 +15,7 @@ class UmlUseCaseDiagram;
 // You can modify it as you want (except the constructor)
 class UmlUseCaseView : public UmlBaseUseCaseView {
   public:
-    UmlUseCaseView(void * id, const QCString & n) : UmlBaseUseCaseView(id, n) {};
+    UmlUseCaseView(void * id, const QByteArray & n) : UmlBaseUseCaseView(id, n) {};
 
     virtual void write(FileOut & out);
 

@@ -8,7 +8,7 @@ UmlClass * UmlBaseClassInstanceReference::type() const {
   return (_instance) ? _instance->type() : _class;
 }
 
-const QCString & UmlBaseClassInstanceReference::name() const {
+const QByteArray & UmlBaseClassInstanceReference::name() const {
   return (_instance) ? _instance->name() : _name;
 }
 

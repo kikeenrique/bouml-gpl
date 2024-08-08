@@ -18,7 +18,7 @@ class UmlActivityPartition : public UmlBaseActivityPartition, public UmlActivity
     virtual void memo_incoming_flow();
 
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityPartition(void * id, const QCString & s) : UmlBaseActivityPartition(id, s) {
+     UmlActivityPartition(void * id, const QByteArray & s) : UmlBaseActivityPartition(id, s) {
     }
 
 };

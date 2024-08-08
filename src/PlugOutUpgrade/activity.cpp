@@ -169,7 +169,7 @@ void add_activity(UmlClassView * base_class_view, UmlClassView * user_class_view
 	      "#endif\n"
 	      "  UmlBaseItem::unload(rec, del);\n",
 	      FALSE, 0, 0);
-  QCString s = op->cppDecl();
+  QByteArray s = op->cppDecl();
   
   s.replace(s.find("${p0}"), 5, "= FALSE");
   s.replace(s.find("${p1}"), 5, "= FALSE");
@@ -459,7 +459,7 @@ void add_flow(UmlClassView * base_class_view, UmlClassView * user_class_view,
 	      "  UmlBaseItem::unload(rec, del);\n",
 	      FALSE, 0, 0);
 
-  QCString s = op->cppDecl();
+  QByteArray s = op->cppDecl();
   
   s.replace(s.find("${p0}"), 5, "= FALSE");
   s.replace(s.find("${p1}"), 5, "= FALSE");
@@ -722,7 +722,7 @@ void add_activityaction(UmlClassView * base_class_view, UmlClassView * user_clas
 	      "#endif\n"
 	      "  UmlBaseItem::unload(rec, del);\n",
 	      FALSE, 0, 0);
-  QCString s = op->cppDecl();
+  QByteArray s = op->cppDecl();
   
   s.replace(s.find("${p0}"), 5, "= FALSE");
   s.replace(s.find("${p1}"), 5, "= FALSE");
@@ -1754,7 +1754,7 @@ UmlClass * add_activityobject(UmlClassView * base_class_view, UmlClassView * use
 	      "  UmlBaseActivityNode::unload(rec, del);\n",
 	      FALSE, 0, 0);
 
-  QCString s = op->cppDecl();
+  QByteArray s = op->cppDecl();
   
   s.replace(s.find("${p0}"), 5, "= FALSE");
   s.replace(s.find("${p1}"), 5, "= FALSE");
@@ -1924,7 +1924,7 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
   defSetEnum(base_pinparam, _effect, set_Effect, effect, replaceParameterCmd, 0, 0, "effect");
 
   UmlAttribute * att;
-  QCString s;
+  QByteArray s;
   
   base_pinparam->add_attribute("_unique", PrivateVisibility, "bool", 0, 0, " : 1");    
   base_pinparam->add_attribute("_exception", PrivateVisibility, "bool", 0, 0, " : 1");  
@@ -2259,7 +2259,7 @@ void baseitem_read_activities(UmlClass * base_item)
   UmlOperation * op = base_item->get_operation("read_");
   
   if (op != 0) {
-    QCString body;
+    QByteArray body;
     
     body = op->cppBody();
     body.remove(body.findRev("//return new UmlActivityDiagram(id, name);"), 2);
@@ -2400,7 +2400,7 @@ void baseitem_read_activities(UmlClass * base_item)
   
   // update UmlBaseItem artifact
   UmlArtifact * art = base_item->associatedArtifact();
-  QCString s;
+  QByteArray s;
   
   s = art->cppSource();
   s.insert(s.find("#include \"MiscGlobalCmd.h\""),
@@ -2519,7 +2519,7 @@ void fixe_activity(UmlClass * base_pinparam)
  
   // dummy must have 5 bits rather than 4
   UmlAttribute * dummy = base_pinparam->get_attribute("_dummy");
-  QCString cppdecl = dummy->cppDecl();
+  QByteArray cppdecl = dummy->cppDecl();
   int index = cppdecl.find(": 4");
   
   if (index != -1) {
@@ -2563,7 +2563,7 @@ void fixe_activity(UmlClass * base_pinparam)
 			    UmlClass::get("UmlActivityItem", 0));
   
   if (rel == 0) {
-    QCString msg = "UmlParameterSet can't inherit UmlActivityItem<br>\n";
+    QByteArray msg = "UmlParameterSet can't inherit UmlActivityItem<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -2656,7 +2656,7 @@ void add_partition(UmlClass * base_item, UmlClass * user_item)
   op->set_isCppVirtual(TRUE);
   
   // update read_()'s body  
-  QCString s;
+  QByteArray s;
   
   op = base_item->get_operation("read_");
 
@@ -2698,7 +2698,7 @@ void add_additionalactions(UmlClass * base_item, UmlClass * user_item)
   UmlArtifact * user_art = 
     UmlClass::get("UmlAcceptEventAction", 0)->associatedArtifact();
   UmlOperation * op;
-  QCString s;
+  QByteArray s;
   unsigned uid = UmlCom::user_id();
 
   UmlCom::trace("<b>Add some activity actions</b><br>\n");
@@ -3265,7 +3265,7 @@ void add_activity_specification()
 			      "_specification", PrivateVisibility,
 			      uml_oper, 0, 0);  
   
-  QCString s;
+  QByteArray s;
   
   op = base_activity->get_operation("read_uml_");
   

@@ -3,19 +3,19 @@
 #include "UmlOperation.h"
 #include "UmlState.h"
 
-QCString UmlState::sKind() {
+QByteArray UmlState::sKind() {
   return (parent()->kind() == aClassView)
     ? "state machine" : "state";
 }
 
-void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlState::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
 
   chapter((parent()->kind() == aClassView)
 	  ? "StateMachine" : "State",
 	  pfix, rank, "state", level);
 
-  QCString s = description();
+  QByteArray s = description();
   
   if (!s.isEmpty()) {
     fw.write("<p>");
@@ -42,7 +42,7 @@ void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
       fw.write("</p>");
     }
     
-    QCString scpp, sjava;
+    QByteArray scpp, sjava;
     
     s = entryBehavior();
     scpp = cppEntryBehavior();

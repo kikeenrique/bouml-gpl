@@ -36,12 +36,12 @@ class UmlDeploymentView;
 
 class UmlArtifact : public UmlBaseArtifact {
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n) {};
   
   void add_includes(const char *, bool h = TRUE);
   void add_import(const char *);
-  static UmlArtifact * made(UmlDeploymentView * depl_view, const QCString & s);
+  static UmlArtifact * made(UmlDeploymentView * depl_view, const QByteArray & s);
 };
 
 #endif

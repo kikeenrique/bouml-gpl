@@ -32,14 +32,14 @@
 // and sub-classes
 // You can modify it as you want (except the constructor)
 
-class QTextOStream;
+class QTextStream;
 
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n)
+    UmlClassMember(void * id, const QByteArray & n)
       : UmlBaseClassMember(id, n) {}
     
-    virtual void generate_imports(QTextOStream & f, QCString & made);
+    virtual void generate_imports(QTextStream & f, QByteArray & made);
 };
 
 #endif

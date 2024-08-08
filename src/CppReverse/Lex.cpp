@@ -49,7 +49,7 @@ char * Lex::_buffer;
 LexContext Lex::_context;
 LexContext Lex::_mark;
 
-void Lex::defines(const QCString & f)
+void Lex::defines(const QByteArray & f)
 {
   QFile in(f);
   
@@ -115,7 +115,7 @@ void Lex::unget()
     _context.line_number -= 1;
 }
 
-static QCString Separators = " \r\t\f\n&~\"#{'(+-|`^)[]=}%*<>?,.;/:!";
+static QByteArray Separators = " \r\t\f\n&~\"#{'(+-|`^)[]=}%*<>?,.;/:!";
 
 const QString & Lex::filename()
 {
@@ -234,7 +234,7 @@ void Lex::bypass_template()
 
 // the '<' was read, read up to the coresponding '>'
 
-bool Lex::finish_template(QCString & s)
+bool Lex::finish_template(QByteArray & s)
 {
   // template
   unsigned level = 1;
@@ -260,9 +260,9 @@ bool Lex::finish_template(QCString & s)
 // an type is an identifier (probably a type)
 // in case it is followed by '::qsd', '::qsd' is read and added to id
 
-QCString Lex::complete_template_type(QCString id)
+QByteArray Lex::complete_template_type(QByteArray id)
 {
-  QCString s;
+  QByteArray s;
 	
   while (!(s = read_word()).isEmpty()) {
     if ((((const char *) s)[0] != ':') || (((const char *) s)[1] != ':')) {
@@ -376,7 +376,7 @@ void Lex::bypass_c_comment()
   }
 }
 
-QCString Lex::manage_operator(QString & result, int c, bool oper)
+QByteArray Lex::manage_operator(QString & result, int c, bool oper)
 {
   // a comment is not correctly managed !
   result += c;
@@ -437,7 +437,7 @@ QCString Lex::manage_operator(QString & result, int c, bool oper)
 #ifdef DEBUG_BOUML
   cout << "retourne '" << result << "'\n";
 #endif
-  return QCString(result);
+  return QByteArray(result);
 }
 
 char Lex::bypass_operator(int c, bool oper)
@@ -506,7 +506,7 @@ char Lex::bypass_operator(int c, bool oper)
   }
 }
 
-QCString Lex::read_string()
+QByteArray Lex::read_string()
 {
   QString result = "\"";;
   
@@ -522,7 +522,7 @@ QCString Lex::read_string()
       result += c;
       break;
     case '"':
-      return QCString(result += c);
+      return QByteArray(result += c);
     default:
       result += c;
     }
@@ -546,9 +546,9 @@ void Lex::bypass_string()
   }
 }
 
-QCString Lex::read_character()
+QByteArray Lex::read_character()
 {
-  QCString result = "'";
+  QByteArray result = "'";
   
   for (;;) {
     int c = get();
@@ -585,9 +585,9 @@ void Lex::bypass_character()
   }
 }
 
-QCString Lex::read_array_dim() 
+QByteArray Lex::read_array_dim() 
 {
-  QCString result = "[";
+  QByteArray result = "[";
   char * pointer = _context.pointer;
 	  
   for (;;) {
@@ -630,7 +630,7 @@ void Lex::bypass_array_dim()
 
 
 // remove first and last line in comment if non significant
-QCString Lex::simplify_comment(QCString & comment)
+QByteArray Lex::simplify_comment(QByteArray & comment)
 {
   if (comment.isEmpty())
     return comment;
@@ -722,7 +722,7 @@ void Lex::unread_word()
   _context.line_number = _context.read_word_line_number;
 }
 
-QCString Lex::read_word(bool in_expr)
+QByteArray Lex::read_word(bool in_expr)
 {
   goes_to_word_beginning();
 
@@ -731,7 +731,7 @@ QCString Lex::read_word(bool in_expr)
   _context.read_word_description = _context.description;
   _context.read_word_line_number = _context.line_number;
     
-  static QCString spaces = " \t\n\r";
+  static QByteArray spaces = " \t\n\r";
 
   QString result;
   
@@ -772,7 +772,7 @@ QCString Lex::read_word(bool in_expr)
 	  result += ' ';
 	  unget();
 	  
-	  QCString w;
+	  QByteArray w;
 	  
 	  while (!(w = read_word()).isEmpty()) {
 	    if (w == "(") {
@@ -839,7 +839,7 @@ QCString Lex::read_word(bool in_expr)
       cout << "retourne '" << v << "'\n";
 #endif
       
-      return QCString(v);
+      return QByteArray(v);
     }
   }
   
@@ -847,7 +847,7 @@ QCString Lex::read_word(bool in_expr)
   cout << "retourne '" << result << "'\n";
 #endif
   
-  return QCString(result);
+  return QByteArray(result);
 }
 
 char Lex::read_word_bis(bool set_context, bool in_expr)
@@ -861,7 +861,7 @@ char Lex::read_word_bis(bool set_context, bool in_expr)
     _context.read_word_line_number = _context.line_number;
   }
     
-  static QCString spaces = " \t\n\r";
+  static QByteArray spaces = " \t\n\r";
 
   char result = 0;
   bool is_template = FALSE;
@@ -996,17 +996,17 @@ void Lex::finish_line()
   }
 }
 
-QCString Lex::get_comments() 
+QByteArray Lex::get_comments() 
 {
-  QCString result = QCString(_context.comments);
+  QByteArray result = QByteArray(_context.comments);
   
   _context.comments = QString::null;
   return result;
 }
 
-QCString Lex::get_comments(QCString & co) 
+QByteArray Lex::get_comments(QByteArray & co) 
 {
-  QCString result = QCString(_context.comments);
+  QByteArray result = QByteArray(_context.comments);
   
   _context.comments = QString::null;
   
@@ -1015,17 +1015,17 @@ QCString Lex::get_comments(QCString & co)
     : co += "\n" + result;
 }
 
-QCString Lex::get_description() 
+QByteArray Lex::get_description() 
 {
-  QCString result = QCString(_context.description);
+  QByteArray result = QByteArray(_context.description);
   
   _context.description = QString::null;
   return result;
 }
 
-QCString Lex::get_description(QCString & co) 
+QByteArray Lex::get_description(QByteArray & co) 
 {
-  QCString result = QCString(_context.description);
+  QByteArray result = QByteArray(_context.description);
   
   _context.description = QString::null;
   
@@ -1105,13 +1105,13 @@ void Lex::come_back()
   _context = _mark;
 }
 
-QCString Lex::region()
+QByteArray Lex::region()
 {
   char c = *_context.pointer;
   
   *_context.pointer = 0;
   
-  QCString result = _mark.pointer;
+  QByteArray result = _mark.pointer;
   
   *_context.pointer = c;
   
@@ -1128,11 +1128,11 @@ void Lex::set_context(const LexContext & context)
   _context = context;
 }
 
-void Lex::syntax_error(QCString s)
+void Lex::syntax_error(QByteArray s)
 {
-  UmlCom::trace(QCString("<font face=helvetica>syntax error in <i> ")
-		+ QCString(_filename) + "</i> line " +
-		QCString().setNum(_context.line_number) + " <b>"
+  UmlCom::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+		+ QByteArray(_filename) + "</i> line " +
+		QByteArray().setNum(_context.line_number) + " <b>"
 		+ s + "</b></font><br>"); 
   
 #ifdef DEBUG_BOUML
@@ -1141,11 +1141,11 @@ void Lex::syntax_error(QCString s)
 #endif
 }
 
-void Lex::warn(QCString s)
+void Lex::warn(QByteArray s)
 {
-  UmlCom::trace(QCString("<font face=helvetica>in <i> ")
-		+ QCString(_filename) + "</i> line " +
-		QCString().setNum(_context.line_number) + " <b>"
+  UmlCom::trace(QByteArray("<font face=helvetica>in <i> ")
+		+ QByteArray(_filename) + "</i> line " +
+		QByteArray().setNum(_context.line_number) + " <b>"
 		+ s + "</b></font><br>"); 
   
 #ifdef DEBUG_BOUML
@@ -1156,9 +1156,9 @@ void Lex::warn(QCString s)
 
 void Lex::premature_eof()
 {
-  UmlCom::trace(QCString("<font face=helvetica>syntax error in <i> ")
-		+ QCString(_filename) + "</i> line " +
-		QCString().setNum(_context.line_number) +
+  UmlCom::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+		+ QByteArray(_filename) + "</i> line " +
+		QByteArray().setNum(_context.line_number) +
 		" <b>premature eof</b></font><br>"); 
   
 #ifdef DEBUG_BOUML
@@ -1167,11 +1167,11 @@ void Lex::premature_eof()
 #endif
 }
 
-void Lex::error_near(QCString s)
+void Lex::error_near(QByteArray s)
 {
-  UmlCom::trace(QCString("<font face=helvetica>syntax error in <i> ")
-		+ QCString(_filename) + "</i> line " +
-		QCString().setNum(_context.line_number) + " <b>near <font color =\"red\">"
+  UmlCom::trace(QByteArray("<font face=helvetica>syntax error in <i> ")
+		+ QByteArray(_filename) + "</i> line " +
+		QByteArray().setNum(_context.line_number) + " <b>near <font color =\"red\">"
 		+ quote(s) + "</font></b></font><br>"); 
   
 #ifdef DEBUG_BOUML
@@ -1182,9 +1182,9 @@ void Lex::error_near(QCString s)
 
 // allows a string to be written as it is by an html writer
 
-QCString Lex::quote(QCString s)
+QByteArray Lex::quote(QByteArray s)
 {
-  QCString result;
+  QByteArray result;
   const char * p = s;
   
   if (p == 0)
@@ -1223,14 +1223,14 @@ static bool identifierp(char c)
 	  (c == '_'));
 }
 
-QCString Lex::normalize(const QCString & s)
+QByteArray Lex::normalize(const QByteArray & s)
 {
   int index = s.find('<');
   
   if (index == -1)
     return s;
   
-  QCString r;
+  QByteArray r;
   const char * p = s;
   
   index = 0;
@@ -1325,11 +1325,11 @@ QCString Lex::normalize(const QCString & s)
   return r;
 }
 
-QCString Lex::read_list_elt()
+QByteArray Lex::read_list_elt()
 {
   const char * p = _context.pointer;  
   int level = 1;
-  QCString s;
+  QByteArray s;
   
   while (!((s = read_word(TRUE)).isEmpty())) {
     int c = *s;
@@ -1360,7 +1360,7 @@ QCString Lex::read_list_elt()
 
 // to compare strings bypassing \r
 
-bool neq(const QCString & s1, const QCString & s2)
+bool neq(const QByteArray & s1, const QByteArray & s2)
 {
   const char * p1 = (s1.isNull()) ? "" : (const char *) s1;
   const char * p2 = (s2.isNull()) ? "" : (const char *) s2;
@@ -1385,7 +1385,7 @@ inline bool is_white_space(char c)
   return ((c == ' ') || ((c >= '\t') && (c <= '\r')));
 }
 
-bool nequal(const QCString & s1, const QCString & s2)
+bool nequal(const QByteArray & s1, const QByteArray & s2)
 {
   // don't take into account first and last white spaces (like a stripWhiteSpace())
   const char * p1 = (s1.isNull()) ? "" : (const char *) s1;

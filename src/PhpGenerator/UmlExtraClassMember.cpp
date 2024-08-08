@@ -28,13 +28,13 @@
 #include "UmlExtraClassMember.h"
 
 /*
-void UmlExtraClassMember::compute_dependency(QList<PhpRefType> &, QCString) {
+void UmlExtraClassMember::compute_dependency(QList<PhpRefType> &, QByteArray) {
   // does nothing
 }
 */
 
-void UmlExtraClassMember::generate(QTextOStream & f, const QCString &,
-				   QCString, int &) {
+void UmlExtraClassMember::generate(QTextStream & f, const QByteArray &,
+				   QByteArray, int &) {
   f << phpDecl();
 }
 

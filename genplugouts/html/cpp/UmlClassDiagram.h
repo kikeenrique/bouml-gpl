@@ -13,10 +13,10 @@
 // You can modify it as you want (except the constructor)
 class UmlClassDiagram : public UmlBaseClassDiagram {
   public:
-    UmlClassDiagram(void * id, const QCString & n) : UmlBaseClassDiagram(id, n) {};
+    UmlClassDiagram(void * id, const QByteArray & n) : UmlBaseClassDiagram(id, n) {};
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //set he html ref
     //set the diagrams list

@@ -25,7 +25,7 @@ void UmlPseudoState::init()
 
 void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)
 {
-  QCString k = token.valueOf("kind");
+  QByteArray k = token.valueOf("kind");
   
   if (k == "final") {
     // Visual Paradigm 6.1
@@ -37,7 +37,7 @@ void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anInitialPseudoState, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");    
+    QByteArray s = token.valueOf("name");    
     UmlPseudoState * ps;
     
     if ((k == "initial") || k.isEmpty())
@@ -74,7 +74,7 @@ void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)
     ps->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))
@@ -89,9 +89,9 @@ void UmlPseudoState::importRef(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anInitialPseudoState, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");    
+    QByteArray s = token.valueOf("name");    
     UmlPseudoState * ps;
-    QCString idref;
+    QByteArray idref;
     
     if (!(idref = token.valueOf("entry")).isEmpty())
       ps = UmlEntryPointPseudoState::create(where, s);
@@ -109,7 +109,7 @@ void UmlPseudoState::importRef(FileIn & in, Token & token, UmlItem * where)
       Unresolved::addRef(ps, idref);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

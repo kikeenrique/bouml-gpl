@@ -8,7 +8,7 @@
 class UmlExpansionRegion : public UmlBaseExpansionRegion {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlExpansionRegion(void * id, const QCString & s) : UmlBaseExpansionRegion(id, s) {
+     UmlExpansionRegion(void * id, const QByteArray & s) : UmlBaseExpansionRegion(id, s) {
     }
 
 };

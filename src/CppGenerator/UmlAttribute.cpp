@@ -33,12 +33,12 @@
 #include "util.h"
 
 void UmlAttribute::compute_dependency(QList<CppRefType> & dependency,
-				      const QCString & cl_stereotype,
+				      const QByteArray & cl_stereotype,
 				      bool all_in_h) {
   if ((cl_stereotype == "enum") || (cl_stereotype == "typedef"))
     return;
   
-  QCString decl = cppDecl();
+  QByteArray decl = cppDecl();
   
   int index;
   
@@ -65,14 +65,14 @@ void UmlAttribute::compute_dependency(QList<CppRefType> & dependency,
 
   if (!UmlClassMember::compute_dependency(dependency, decl, type(), all_in_h)) {
     write_trace_header();
-    UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>type missing for attribute <i>")
+    UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>type missing for attribute <i>")
 		  + name() + "</i></b></font><br>");
     incr_error();
   }
 }
 
-void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
-				 const QCString & cl_stereotype, QCString indent,
+void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextStream & f_h,
+				 const QByteArray & cl_stereotype, QByteArray indent,
 				 BooL & first, bool last) {
   if (cl_stereotype == "typedef") {
     write_trace_header();
@@ -129,7 +129,7 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
       
-      const QCString & m = multiplicity();
+      const QByteArray & m = multiplicity();
       
       if (!m.isEmpty() && (*((const char *) m) == '['))
 	f_h << m;
@@ -199,9 +199,9 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
   f_h << '\n';
 }
 
-void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
-				QCString templates, QCString cl_names,
-				QCString, QCString) {
+void UmlAttribute::generate_def(QTextStream & f, QByteArray indent, bool h,
+				QByteArray templates, QByteArray cl_names,
+				QByteArray, QByteArray) {
   if (isClassMember() && !cppDecl().isEmpty()) {
     UmlClass * cl = (UmlClass *) parent();
 
@@ -268,7 +268,7 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
       
-	  const QCString & m = multiplicity();
+	  const QByteArray & m = multiplicity();
 	  
 	  if (!m.isEmpty() && (*((const char *) m) == '['))
 	    f << m;

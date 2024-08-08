@@ -26,12 +26,12 @@
 #ifndef UMLCLASS_H
 #define UMLCLASS_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlPackage;
 class UmlClass;
@@ -41,24 +41,24 @@ class UmlClass : public UmlBaseClass {
     bool managed;
     
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n), managed(FALSE) {};
   
-    QCString java_stereotype();
-    void generate(QTextOStream &, QCString indent);
+    QByteArray java_stereotype();
+    void generate(QTextStream &, QByteArray indent);
     
     virtual void generate();
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent);    
-    virtual void generate_enum_pattern_item(QTextOStream &, int &, const QCString &, QCString);
-    virtual void generate_enum_pattern_case(QTextOStream &, QCString);
-    virtual void generate_enum_member(QTextOStream &, QCString);
-    virtual void generate_import(QTextOStream & f, const QCString & indent);    
-    void generate_formals(QTextOStream & f);
-    void import(QTextOStream & f, const QCString & indent);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent);    
+    virtual void generate_enum_pattern_item(QTextStream &, int &, const QByteArray &, QByteArray);
+    virtual void generate_enum_pattern_case(QTextStream &, QByteArray);
+    virtual void generate_enum_member(QTextStream &, QByteArray);
+    virtual void generate_import(QTextStream & f, const QByteArray & indent);    
+    void generate_formals(QTextStream & f);
+    void import(QTextStream & f, const QByteArray & indent);
     
-    void write(QTextOStream &);
-    static void write(QTextOStream &, const UmlTypeSpec &);
+    void write(QTextStream &);
+    static void write(QTextStream &, const UmlTypeSpec &);
 };
 
 #endif

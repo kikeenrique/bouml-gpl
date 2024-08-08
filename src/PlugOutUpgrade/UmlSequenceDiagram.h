@@ -10,7 +10,7 @@
 
 class UmlSequenceDiagram : public UmlBaseSequenceDiagram {
   public:
-    UmlSequenceDiagram(void * id, const QCString & n)
+    UmlSequenceDiagram(void * id, const QByteArray & n)
       : UmlBaseSequenceDiagram(id, n) {};
   
 };

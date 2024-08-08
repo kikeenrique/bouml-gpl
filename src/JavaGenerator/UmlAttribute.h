@@ -26,27 +26,27 @@
 #ifndef UMLATTRIBUTE_H
 #define UMLATTRIBUTE_H
 
-class QTextOStream;
+class QTextStream;
 
 #include "UmlBaseAttribute.h"
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
 
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent);
-    virtual void generate_enum_pattern_item(QTextOStream & f, int & current_value,
-					    const QCString & class_name,
-					    QCString indent);
-    virtual void generate_enum_pattern_case(QTextOStream & f, QCString indent);
-    virtual void generate_enum_item(QTextOStream & f, QCString indent, BooL & first);
-    virtual void generate_enum_member(QTextOStream & f, QCString indent);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent);
+    virtual void generate_enum_pattern_item(QTextStream & f, int & current_value,
+					    const QByteArray & class_name,
+					    QByteArray indent);
+    virtual void generate_enum_pattern_case(QTextStream & f, QByteArray indent);
+    virtual void generate_enum_item(QTextStream & f, QByteArray indent, BooL & first);
+    virtual void generate_enum_member(QTextStream & f, QByteArray indent);
     
   private:
-    void generate(QTextOStream & f, const QCString & cl_stereotype,
-		  QCString indent, bool enumitem);
+    void generate(QTextStream & f, const QByteArray & cl_stereotype,
+		  QByteArray indent, bool enumitem);
 
 };
 

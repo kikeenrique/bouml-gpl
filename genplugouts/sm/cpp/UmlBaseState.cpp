@@ -13,7 +13,7 @@ anItemKind UmlBaseState::kind() {
   return aState;
 }
 
-const QCString & UmlBaseState::entryBehavior() {
+const QByteArray & UmlBaseState::entryBehavior() {
   read_if_needed_();
   return _uml.on_entry;
 }
@@ -22,7 +22,7 @@ bool UmlBaseState::set_EntryBehavior(const char * s) {
   return set_it_(_uml.on_entry, s, setUmlEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseState::exitBehavior() {
+const QByteArray & UmlBaseState::exitBehavior() {
   read_if_needed_();
   return _uml.on_exit;
 }
@@ -31,7 +31,7 @@ bool UmlBaseState::set_ExitBehavior(const char * s) {
   return set_it_(_uml.on_exit, s, setUmlExitBehaviorCmd);
 }
 
-const QCString & UmlBaseState::doActivity() {
+const QByteArray & UmlBaseState::doActivity() {
   read_if_needed_();
   return _uml.do_activity;
 }
@@ -41,7 +41,7 @@ bool UmlBaseState::set_DoActivity(const char * s) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseState::cppEntryBehavior() {
+const QByteArray & UmlBaseState::cppEntryBehavior() {
   read_if_needed_();
   return _cpp.on_entry;
 }
@@ -50,7 +50,7 @@ bool UmlBaseState::set_CppEntryBehavior(const char * s) {
   return set_it_(_cpp.on_entry, s, setCppEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseState::cppExitBehavior() {
+const QByteArray & UmlBaseState::cppExitBehavior() {
   read_if_needed_();
   return _cpp.on_exit;
 }
@@ -59,7 +59,7 @@ bool UmlBaseState::set_CppExitBehavior(const char * s) {
   return set_it_(_cpp.on_exit, s, setCppExitBehaviorCmd);
 }
 
-const QCString & UmlBaseState::cppDoActivity() {
+const QByteArray & UmlBaseState::cppDoActivity() {
   read_if_needed_();
   return _cpp.do_activity;
 }
@@ -70,7 +70,7 @@ bool UmlBaseState::set_CppDoActivity(const char * s) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseState::javaEntryBehavior() {
+const QByteArray & UmlBaseState::javaEntryBehavior() {
   read_if_needed_();
   return _java.on_entry;
 }
@@ -79,7 +79,7 @@ bool UmlBaseState::set_JavaEntryBehavior(const char * s) {
   return set_it_(_java.on_entry, s, setJavaEntryBehaviorCmd);
 }
 
-const QCString & UmlBaseState::javaExitBehavior() {
+const QByteArray & UmlBaseState::javaExitBehavior() {
   read_if_needed_();
   return _java.on_exit;
 }
@@ -88,7 +88,7 @@ bool UmlBaseState::set_JavaExitBehavior(const char * s) {
   return set_it_(_java.on_exit, s, setJavaExitBehaviorCmd);
 }
 
-const QCString & UmlBaseState::javaDoActivity() {
+const QByteArray & UmlBaseState::javaDoActivity() {
   read_if_needed_();
   return _java.do_activity;
 }

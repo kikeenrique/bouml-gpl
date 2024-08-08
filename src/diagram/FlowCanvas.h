@@ -28,6 +28,8 @@
 
 #include "ArrowCanvas.h"
 #include "Settings.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 class BrowserNode;
 class FlowData;
@@ -35,74 +37,73 @@ class InfoCanvas;
 class DiagramItem;
 class StereotypePropertiesCanvas;
 
-class FlowCanvas : public ArrowCanvas
-{
-        Q_OBJECT
+class FlowCanvas : public ArrowCanvas {
+  Q_OBJECT
+    
+  protected:
+    BrowserNode * br_begin;
+    FlowData * data;
+    InfoCanvas * selection;
+    InfoCanvas * transformation;
+    StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
+    ActivityDrawingSettings settings;
+    ActivityDrawingSettings used_settings;
+    Uml3States write_horizontally;
+    
+    void check_sel_trans();
 
-    protected:
-        BrowserNode * br_begin;
-        FlowData * data;
-        InfoCanvas * selection;
-        InfoCanvas * transformation;
-        StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
-        ActivityDrawingSettings settings;
-        ActivityDrawingSettings used_settings;
-        Uml3States write_horizontally;
-
-        void check_sel_trans();
-
-    public:
-        FlowCanvas (UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-                    BrowserNode * bb, int id, float d_start, float d_end,
-                    FlowData * d = 0);
-        virtual ~FlowCanvas();
-
-        virtual void delete_it();
-        virtual void delete_available (BooL & in_model, BooL & out_model) const;
-        virtual void remove (bool from_model);
-        virtual void unconnect();
-
-        virtual ArrowPointCanvas * brk (const QPoint &);
-        virtual ArrowCanvas * join (ArrowCanvas * other, ArrowPointCanvas * ap);
-
-        virtual void default_label_position() const;
-        void stereotype_default_position() const;
-
-        virtual void save (QTextStream & st, bool ref, QString & warning) const;
-
-        virtual void history_load (QBuffer &);
-        virtual void history_hide();
-
-        virtual bool has_drawing_settings() const;
-        virtual void edit_drawing_settings (QList<DiagramItem> &);
-        virtual void same_drawing_settings (QList<DiagramItem> &);
-        void edit_drawing_settings();
-
-        virtual void apply_shortcut (QString s);
-
-        static FlowCanvas * read (char * & st, UmlCanvas * canvas, char *);
-        virtual BasicData * get_data() const;
-
-        virtual void open();
-        virtual void menu (const QPoint&);
-
-        virtual void setVisible (bool yes);
-        virtual void moveBy (double dx, double dy);
-        virtual void select_associated();
-        virtual void check_stereotypeproperties();
-
-        static void drop (BrowserNode *, UmlCanvas *);
-
-        virtual bool represents (BrowserNode *);
-
-    protected:
-        BrowserNode * update_begin (DiagramItem * cnend);
-        void update (bool updatepos);
-        void propagate_drawing_settings();
-
-    private slots:
-        void modified();	// canvas must be updated
-        void deleted();	// the relation is deleted
+  public:
+    FlowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
+	       BrowserNode * bb, int id, float d_start, float d_end,
+	       FlowData * d = 0);
+    virtual ~FlowCanvas();
+    
+    virtual void delete_it();
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
+    virtual void remove(bool from_model);
+    virtual void unconnect();
+    
+    virtual ArrowPointCanvas * brk(const QPoint &);
+    virtual ArrowCanvas * join(ArrowCanvas * other, ArrowPointCanvas * ap);
+    
+    virtual void default_label_position() const;
+    void stereotype_default_position() const;
+    
+    virtual void save(QTextStream & st, bool ref, QString & warning) const;
+    
+    virtual void history_load(QBuffer &);
+    virtual void history_hide();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem *> &);
+    virtual void same_drawing_settings(QList<DiagramItem *> &);
+    void edit_drawing_settings();
+    
+    virtual void apply_shortcut(QString s);
+  
+    static FlowCanvas * read(char * & st, UmlCanvas * canvas, char *);
+    virtual BasicData * get_data() const;
+    
+    virtual void open();
+    virtual void menu(const QPoint&);
+    
+    virtual void setVisible( bool yes);
+    virtual void moveBy(double dx, double dy);
+    virtual void select_associated();
+    virtual void check_stereotypeproperties();
+    
+    static void drop(BrowserNode *, UmlCanvas *);
+    
+    virtual bool represents(BrowserNode *);
+    
+  protected:
+    BrowserNode * update_begin(DiagramItem * cnend);
+    void update(bool updatepos);
+    void propagate_drawing_settings();
+    
+  private slots:
+    void modified();	// canvas must be updated
+    void deleted();	// the relation is deleted
 };
 
 #endif

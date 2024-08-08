@@ -14,11 +14,11 @@
 class UmlObjectDiagram : public UmlBaseObjectDiagram {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlObjectDiagram(void * id, const QCString & s) : UmlBaseObjectDiagram(id, s) {
+     UmlObjectDiagram(void * id, const QByteArray & s) : UmlBaseObjectDiagram(id, s) {
     }
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //set he html ref
     //set the diagrams list

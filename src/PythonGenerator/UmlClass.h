@@ -26,12 +26,12 @@
 #ifndef UMLCLASS_H
 #define UMLCLASS_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlPackage;
 class UmlClass;
@@ -41,26 +41,26 @@ class UmlClass : public UmlBaseClass {
     bool managed;
     
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n), managed(FALSE) {};
   
-    QCString python_stereotype();
+    QByteArray python_stereotype();
     
     virtual void generate();
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, BooL & indent_needed,
-			  int & enum_item_rank, const QCString & self);    
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, BooL & indent_needed,
+			  int & enum_item_rank, const QByteArray & self);    
     
-    void generate_imports(QTextOStream & f, QCString & made);
-    void generate_import(QTextOStream & f, UmlArtifact * using_art, bool from, QCString & made);
-    void generate(QTextOStream &, QCString indent, BooL & indent_needed);
-    void generate_instance_att_rel(QTextOStream & f, QCString indent,
-				   BooL & indent_needed, QCString self);
+    void generate_imports(QTextStream & f, QByteArray & made);
+    void generate_import(QTextStream & f, UmlArtifact * using_art, bool from, QByteArray & made);
+    void generate(QTextStream &, QByteArray indent, BooL & indent_needed);
+    void generate_instance_att_rel(QTextStream & f, QByteArray indent,
+				   BooL & indent_needed, QByteArray self);
     
     UmlArtifact * assocArtifact();
 
-    void write(QTextOStream &);
-    static void write(QTextOStream &, const UmlTypeSpec &);
+    void write(QTextStream &);
+    static void write(QTextStream &, const UmlTypeSpec &);
 };
 
 #endif

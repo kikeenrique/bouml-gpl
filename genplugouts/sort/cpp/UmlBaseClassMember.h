@@ -56,7 +56,7 @@ class UmlBaseClassMember : public UmlClassItem {
 
 #ifdef WITHJAVA
     // returns the Java annotations
-    QCString javaAnnotations();
+    QByteArray javaAnnotations();
 
     // set the Java annotations
     //
@@ -78,7 +78,7 @@ class UmlBaseClassMember : public UmlClassItem {
 
 
   protected:
-    UmlBaseClassMember(void * id, const QCString & n) : UmlClassItem(id, n) {};
+    UmlBaseClassMember(void * id, const QByteArray & n) : UmlClassItem(id, n) {};
 
     //internal, do NOT use it
     
@@ -101,7 +101,7 @@ class UmlBaseClassMember : public UmlClassItem {
 
   private:
 #ifdef WITHJAVA
-    QCString _java_annotation;
+    QByteArray _java_annotation;
 #endif
 
 };

@@ -8,7 +8,7 @@
 
 class UmlNode : public UmlBaseNode {
   public:
-    UmlNode(void * id, const QCString & n)
+    UmlNode(void * id, const QByteArray & n)
       : UmlBaseNode(id, n) {};
 };
 

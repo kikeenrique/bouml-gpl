@@ -32,8 +32,8 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-				 QCString indent, bool islast) {
+void UmlAttribute::generate_decl(QTextStream & f, const QByteArray & cl_stereotype,
+				 QByteArray indent, bool islast) {
   if (!idlDecl().isEmpty()) {
     if (cl_stereotype == "typedef") {
       write_trace_header();
@@ -129,11 +129,11 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
       else if (!strncmp(p, "${case}", 7)) {
 	p += 7;
 	
-	QCString idl_case = idlCase();
+	QByteArray idl_case = idlCase();
 	
 	if (idl_case.isEmpty()) {
 	  write_trace_header();
-	  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>unspecified <i>case</i> for <i>")
+	  UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>unspecified <i>case</i> for <i>")
 			+ name() + "</b></font><br>");
 	  incr_error();
 	}

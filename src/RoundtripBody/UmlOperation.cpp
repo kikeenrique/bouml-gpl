@@ -63,7 +63,7 @@ static char * read_file(const char * filename)
     return 0;
 }
 
-static QCString linenumber(char * all, char * here)
+static QByteArray linenumber(char * all, char * here)
 {
   char c = *here;
   int n = 1;
@@ -90,7 +90,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
   if (s != 0) {
     char * p1 = s;
     char * p2;
-    QCString (UmlOperation::*get_body)();
+    QByteArray (UmlOperation::*get_body)();
     bool (UmlOperation::*set_body)(const char * s);
     bool (UmlOperation::*set_contextualbodyindent)(bool v);
     const char * prefix;
@@ -134,7 +134,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       long id = strtol(p2, &body, 16);
       
       if (body != (p2 + 8)) {
-	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
+	UmlCom::trace(QByteArray("<font color =\"red\"> Error in ") + path +
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body identifier</font><br>");
 	UmlCom::bye(n_errors() + 1);
@@ -146,7 +146,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       if (*body == '\n')
 	body += 1;
       else {
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, end of line expected</font><br>");
 	UmlCom::bye(n_errors() + 1);
@@ -157,10 +157,10 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	UmlBaseItem::from_id((unsigned) id, anOperation);
       
       if (op == 0) {
-	QCString n;
+	QByteArray n;
 	
 	n.sprintf("%x", (unsigned) id);
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid operation id " + n + "</font><br>");
 	UmlCom::bye(n_errors() + 1);
@@ -170,7 +170,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       
       if (((p1 = strstr(body, postfix)) == 0) ||
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
-	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+	UmlCom::trace(QByteArray("<font  color =\"red\"> Error in ") + path + 
 		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, wrong balanced</font><br>");
 	UmlCom::bye(n_errors() + 1);
@@ -185,7 +185,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       
       *p2 = 0;
       
-      QCString previous = (op->*get_body)();
+      QByteArray previous = (op->*get_body)();
 	  
       if (!op->isBodyGenerationForced() && (body != previous)) {	
 	if (! (op->*set_body)(body)) {

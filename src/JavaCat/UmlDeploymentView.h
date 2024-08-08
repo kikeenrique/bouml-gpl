@@ -33,7 +33,7 @@
 
 class UmlDeploymentView : public UmlBaseDeploymentView {
   public:
-    UmlDeploymentView(void * id, const QCString & n)
+    UmlDeploymentView(void * id, const QByteArray & n)
       : UmlBaseDeploymentView(id, n) {}
   
 #ifdef ROUNDTRIP

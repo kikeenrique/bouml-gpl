@@ -13,7 +13,7 @@
 #include "UmlRelation.h"
 #include "UmlCom.h"
 
-QCString UmlClass::sKind() {
+QByteArray UmlClass::sKind() {
   return (stereotype() == "stereotype") 
     ? "stereotype" : "class";
 }
@@ -40,8 +40,8 @@ void UmlClass::memo_ref() {
   unload(TRUE, FALSE);
 }
 
-void UmlClass::html(QCString pfix, unsigned int rank, unsigned int level) {
-  QCString s = stereotype();
+void UmlClass::html(QByteArray pfix, unsigned int rank, unsigned int level) {
+  QByteArray s = stereotype();
   
   if (flat) {
     define();
@@ -67,7 +67,7 @@ void UmlClass::html(QCString pfix, unsigned int rank, unsigned int level) {
 }
 
 void UmlClass::html() {
-  QCString s;
+  QByteArray s;
   
   UmlCom::message(name());
   
@@ -84,10 +84,10 @@ void UmlClass::html() {
   unload(FALSE, FALSE);
 }
 
-void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlClass::gen_html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlCom::message(name());
   
-  QCString s;
+  QByteArray s;
  
   s = description();
   
@@ -294,7 +294,7 @@ void UmlClass::write() {
   if (!known)
     writeq(name());
   else {
-    QCString s = stereotype();
+    QByteArray s = stereotype();
     
     if ((s != "stereotype") && (s != "metaclass"))
       s = "class";
@@ -315,9 +315,9 @@ void UmlClass::write() {
   }
 }
 
-void UmlClass::write(QCString target) {
+void UmlClass::write(QByteArray target) {
   if (known) {
-    QCString s = stereotype();
+    QByteArray s = stereotype();
     
     if ((s != "stereotype") && (s != "metaclass"))
       s = "class";
@@ -410,7 +410,7 @@ void UmlClass::add_inherited_opers(Vector * ops) {
 
 Vector UmlClass::classes;
 
-void UmlClass::gen_cpp_decl(QCString s, bool descr) {
+void UmlClass::gen_cpp_decl(QByteArray s, bool descr) {
   const char * p = (descr)
     ? (const char *) s
     : (const char *) bypass_comment(s);
@@ -470,7 +470,7 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 	       (k == aRealization)) &&
 	      !rel->cppDecl().isEmpty()) {
 	    fw.write(sep);
-	    // UmlItem::write else G++ call UmlClass::write(QCString) !
+	    // UmlItem::write else G++ call UmlClass::write(QByteArray) !
 	    UmlItem::write((rel->cppVisibility() == DefaultVisibility)
 		           ? rel->visibility() : rel->cppVisibility(),
 			   cppLanguage);
@@ -511,7 +511,7 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 
 }
 
-void UmlClass::gen_java_decl(QCString s, bool descr) {
+void UmlClass::gen_java_decl(QByteArray s, bool descr) {
   const char * p = bypass_comment(s);
   UmlRelation * extend = 0;
 
@@ -622,8 +622,8 @@ void UmlClass::gen_java_decl(QCString s, bool descr) {
   }
 }
 
-void UmlClass::gen_php_decl(QCString s, bool descr) {
-  QCString st = PhpSettings::classStereotype(stereotype());
+void UmlClass::gen_php_decl(QByteArray s, bool descr) {
+  QByteArray st = PhpSettings::classStereotype(stereotype());
   
   if (st == "ignored")
     return;
@@ -729,8 +729,8 @@ void UmlClass::gen_php_decl(QCString s, bool descr) {
   }
 }
 
-void UmlClass::gen_python_decl(QCString s, bool descr) {
-  QCString st = PythonSettings::classStereotype(stereotype());
+void UmlClass::gen_python_decl(QByteArray s, bool descr) {
+  QByteArray st = PythonSettings::classStereotype(stereotype());
   
   if (st == "ignored")
     return;

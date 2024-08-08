@@ -1,4 +1,6 @@
 #include "UmlPixmap.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 // toolbar buttons
 

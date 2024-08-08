@@ -24,7 +24,7 @@ void FileOut::idref(const UmlItem * x) {
 
 }
 
-void FileOut::idref(QCString s, const UmlItem * x) {
+void FileOut::idref(QByteArray s, const UmlItem * x) {
   QString keys;
   {
     QTextStream keyst(&keys, IO_WriteOnly);
@@ -32,7 +32,7 @@ void FileOut::idref(QCString s, const UmlItem * x) {
     keyst << ((void *) x) << "_" << s;
   }
 
-  QMap<QCString, int>::ConstIterator it =
+  QMap<QByteArray, int>::ConstIterator it =
     _modifiedtypes.find((const char *) keys);
   
   if (it == _modifiedtypes.end())
@@ -47,8 +47,8 @@ void FileOut::ref(const UmlItem * x) {
   ((QTextStream &) *this) << "BOUML_" << ((void *) x); 
 }
 
-void FileOut::idref_datatype(const QCString & t) {
-  QMap<QCString, int>::ConstIterator it = _datatypes.find(t);
+void FileOut::idref_datatype(const QByteArray & t) {
+  QMap<QByteArray, int>::ConstIterator it = _datatypes.find(t);
   
   if (it == _datatypes.end())
     it = _datatypes.insert(t, _datatypes.count());
@@ -59,7 +59,7 @@ void FileOut::idref_datatype(const QCString & t) {
 }
 
 void FileOut::define_datatypes(int taggedvalue_mode) {
-  QMap<QCString, int>::ConstIterator it;
+  QMap<QByteArray, int>::ConstIterator it;
   
   for (it = _datatypes.begin();
        it != _datatypes.end();
@@ -74,7 +74,7 @@ void FileOut::define_datatypes(int taggedvalue_mode) {
   for (it = _modifiedtypes.begin();
        it != _modifiedtypes.end();
        ++it) {
-    QCString k = it.key();
+    QByteArray k = it.key();
     int index = k.find('_');
     
     indent();

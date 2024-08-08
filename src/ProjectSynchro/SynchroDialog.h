@@ -27,7 +27,7 @@
 #define SYNCHRODIALOG_H
 
 #include <qdialog.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class QCheckBox;
 class BrowserView;

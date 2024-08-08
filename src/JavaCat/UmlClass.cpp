@@ -39,7 +39,7 @@
 #endif
 
 
-UmlClass::UmlClass(void * id, const QCString & n) 
+UmlClass::UmlClass(void * id, const QByteArray & n) 
     : UmlBaseClass(id, n) 
 #ifdef ROUNDTRIP
     , created(FALSE), the_class(0)
@@ -52,7 +52,7 @@ UmlClass::UmlClass(void * id, const QCString & n)
 void UmlClass::need_artifact(const QStringList & imports,
 			     bool remove_java_lang,
 			     const QStringList & static_imports,
-			     const QCString & path, UmlArtifact *& cp) {
+			     const QByteArray & path, UmlArtifact *& cp) {
   if (parent()->kind() == aClassView) {
     if (cp != 0)
       cp->addAssociatedClass(this);
@@ -62,10 +62,10 @@ void UmlClass::need_artifact(const QStringList & imports,
       if ((cp = associatedArtifact()) == 0) {
 	// create associated artifact
 	QFileInfo fi(path);
-	QCString artname = QCString(fi.baseName());
+	QByteArray artname = QByteArray(fi.baseName());
 	
 	if ((cp = UmlBaseArtifact::create(pack->get_deploymentview(), artname)) == 0) {
-	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create<i> artifact ")
+	  UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create<i> artifact ")
 			+ artname + "</i></b></font><br>"); 
 	  return;
 	}
@@ -74,14 +74,14 @@ void UmlClass::need_artifact(const QStringList & imports,
       
       cp->set_Stereotype("source");
       
-      QCString s = JavaSettings::sourceContent();
+      QByteArray s = JavaSettings::sourceContent();
       int index = s.find("${definition}");
       
       if (index != -1) {
 	QStringList::ConstIterator it;
 	
 	for (it = imports.begin(); *it; ++it) {
-	  QCString import = QCString(*it);
+	  QByteArray import = QByteArray(*it);
 	  
 	  if (!remove_java_lang || (import != "java.lang.")) {
 	    import += (((const char *) import)[import.length() - 1] == '.')
@@ -93,12 +93,12 @@ void UmlClass::need_artifact(const QStringList & imports,
 	}
 	
 	for (it = static_imports.begin(); *it; ++it) {
-	  s.insert(index, "import static" + QCString(*it) + '\n');
+	  s.insert(index, "import static" + QByteArray(*it) + '\n');
 	  index = s.find("${definition}", index);
 	}
       }
       
-      cp->set_JavaSource(QCString(s));
+      cp->set_JavaSource(QByteArray(s));
     }
   }
 }
@@ -157,7 +157,7 @@ void UmlClass::send_it(int n) {
     associatedArtifact()->send_it(n);
 }
 
-UmlItem * UmlClass::search_for_att_rel(const QCString & name) {
+UmlItem * UmlClass::search_for_att_rel(const QByteArray & name) {
   const QVector<UmlItem> & ch = UmlItem::children();
   UmlItem ** v = ch.data();
   UmlItem ** const vsup = v + ch.size();
@@ -194,7 +194,7 @@ void UmlClass::reorder(QList<UmlItem> & expected_order) {
   QListIterator<UmlItem> expected_it(expected_order);
   UmlItem * expected;
   
-  while ((expected = expected_it.current()) != 0) {
+  while ((expected = expected_(*it)) != 0) {
     if (*v != expected) {
       //updated = TRUE;
       expected->moveAfter(expected_previous);
@@ -222,8 +222,8 @@ void UmlClass::reorder(QList<UmlItem> & expected_order) {
 
 #endif
 
-void UmlClass::manage_generic(QCString & form, UmlTypeSpec & typespec,
-			      QCString str_actuals, const char * k)
+void UmlClass::manage_generic(QByteArray & form, UmlTypeSpec & typespec,
+			      QByteArray str_actuals, const char * k)
 {
   if (typespec.type != 0) {
     int index;

@@ -23,7 +23,7 @@ bool UmlBaseActivityObject::set_Type(const UmlTypeSpec & v) {
     return set_it_(_type, v, setTypeCmd);
 }
 
-const QCString & UmlBaseActivityObject::multiplicity() {
+const QByteArray & UmlBaseActivityObject::multiplicity() {
     read_if_needed_();
     return _multiplicity;
 }
@@ -32,7 +32,7 @@ bool UmlBaseActivityObject::set_Multiplicity(const char * v) {
     return set_it_(_multiplicity, v, setMultiplicityCmd);
 }
 
-const QCString & UmlBaseActivityObject::inState() {
+const QByteArray & UmlBaseActivityObject::inState() {
     read_if_needed_();
     return _in_state;
 }
@@ -41,7 +41,7 @@ bool UmlBaseActivityObject::set_InState(const char * v) {
     return set_it_(_in_state, v, setInStateCmd);
 }
 
-const QCString & UmlBaseActivityObject::selection() {
+const QByteArray & UmlBaseActivityObject::selection() {
     read_if_needed_();
     return _selection;
 }
@@ -51,7 +51,7 @@ bool UmlBaseActivityObject::set_Selection(const char * v) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseActivityObject::cppSelection() {
+const QByteArray & UmlBaseActivityObject::cppSelection() {
     read_if_needed_();
     return _cpp_selection;
 }
@@ -62,7 +62,7 @@ bool UmlBaseActivityObject::set_CppSelection(const char * v) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseActivityObject::javaSelection() {
+const QByteArray & UmlBaseActivityObject::javaSelection() {
     read_if_needed_();
     return _java_selection;
 }

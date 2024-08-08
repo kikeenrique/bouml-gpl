@@ -14,7 +14,7 @@ void UmlClass::defaultDef() {
   setUsed();
 }
 
-UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anystate) {
+UmlOperation * UmlClass::trigger(QByteArray s, UmlClass * machine, UmlClass * anystate) {
   UmlOperation * tr;
   bool completion = (s == "_completion");
   bool create = (s == "create");
@@ -105,7 +105,7 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
 }
 
 void UmlClass::addDestructor() {
-  QCString s = "~" + name();
+  QByteArray s = "~" + name();
   UmlOperation * destr = (UmlOperation *) getChild(anOperation, s);
   
   if (destr == 0) {

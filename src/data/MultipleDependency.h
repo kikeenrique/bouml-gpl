@@ -38,64 +38,55 @@ template <class K> class MultipleDependencyIterator;
 #endif
 
 template <class K>
-class MultipleDependency
-{
-        friend class MultipleDependencyIterator<K>;
+class MultipleDependency {
+  friend class MultipleDependencyIterator<K>;
 
-    protected:
-        QMap<const K *, unsigned> map;
+  protected:
+    QMap<const K *, unsigned> map;
 
-    public:
-        MultipleDependency() {};
+  public:
+    MultipleDependency() {};
 
-        bool subscribe (const K *);
-        bool unsubscribe (const K *);
-        void unsubscribe_all() {
-            map.clear();
-        };
+    bool subscribe(const K *);
+    bool unsubscribe(const K *);
+    void unsubscribe_all() { map.clear(); };
 };
 
 template <class K>
-bool MultipleDependency<K>::subscribe (const K * k)
-{
-    if (map.contains (k)) {
-        map[k] += 1;
-        return FALSE;
-    } else {
-        map.insert (k, 1);
-        return TRUE;
-    }
+bool MultipleDependency<K>::subscribe(const K * k) {
+  if (map.contains(k)) {
+    map[k] += 1;
+    return FALSE;
+  }
+  else {
+    map.insert(k, 1);
+    return TRUE;
+  }
 }
 
 template <class K>
-bool MultipleDependency<K>::unsubscribe (const K * k)
-{
-    if (map.contains (k) && ( (map[k] -= 1) == 0)) {
-        map.remove (k);
-        return TRUE;
-    } else {
-        return FALSE;
-    }
+bool MultipleDependency<K>::unsubscribe(const K * k) {
+  if (map.contains(k) && ((map[k] -= 1) == 0)) {
+    map.remove(k);
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 template <class K>
-class MultipleDependencyIterator
-{
-    protected:
-        QMap<const K *, unsigned> & map;
-        typedef TYPENAME QMap<const K *, unsigned>::Iterator Iter;
-        Iter iter;
+class MultipleDependencyIterator {
+  protected:
+    QMap<const K *, unsigned> & map;
+    typedef TYPENAME QMap<const K *, unsigned>::iterator Iter;
+    Iter iter;
 
-    public:
-        MultipleDependencyIterator (MultipleDependency<K> * m)
-            : map (m->map), iter (m->map.begin()) {
-        };
-        const K * current() const {
-            return (iter == map.end()) ? 0 : iter.key();
-        };
-        void operator++() {
-            iter++;
-        };
+  public:
+    MultipleDependencyIterator(MultipleDependency<K> * m)
+      : map(m->map), iter(m->map.begin()) {
+    };
+    const K * current() const { return (iter == map.end()) ? 0 : iter.key(); };
+    void operator++() { iter++; };
 };
 
 #endif

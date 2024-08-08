@@ -13,7 +13,7 @@
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qdir.h>
-Dialog::Dialog(bool ci, QCString & cmd, BooL & rec, BooL & reload)
+Dialog::Dialog(bool ci, QByteArray & cmd, BooL & rec, BooL & reload)
   : QDialog(0, 0, TRUE), _cmd(cmd), _rec(rec), _reload(reload) {
     QVBoxLayout * vbox = new QVBoxLayout(this);
     QHBox * htab;

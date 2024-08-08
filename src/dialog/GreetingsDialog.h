@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QCloseEvent>
 // *************************************************************************
 //
 // Copyright 2004-2010 Bruno PAGES  .
@@ -30,19 +32,18 @@ class QPushButton;
 
 #include <qdialog.h>
 
-class GreetingsDialog : public QDialog
-{
-        Q_OBJECT
-
-    private:
-        QPushButton * ok;
-
-    public:
-        GreetingsDialog();
-
-    protected slots:
-        virtual void closeEvent (QCloseEvent * e);
-        void valid_ok();
+class GreetingsDialog : public QDialog {
+  Q_OBJECT
+    
+  private:
+    QPushButton * ok;
+  
+  public:
+    GreetingsDialog();
+  
+  protected slots:
+    virtual void closeEvent(QCloseEvent * e);
+    void valid_ok();
 };
 
 #endif

@@ -32,7 +32,7 @@
 class BrowserView;
 #endif
 
-class QCString;
+class QByteArray;
 class QDataStream;
 class Class;
 
@@ -62,9 +62,9 @@ class BrowserNode : public TreeItem {
 
 // a sortable list of BrowserNode
 
-#include <qptrlist.h>
+#include <qlist.h>
 
-class BrowserNodeList : public QList<BrowserNode> {
+class BrowserNodeList : public QList<BrowserNode *> {
   public:
     void search(BrowserNode * bn, int k, const QString & s, bool cs);
     virtual int compareItems(QCollection::Item item1, QCollection::Item item2);

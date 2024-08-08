@@ -10,7 +10,7 @@
 // You can modify it as you want (except the constructor)
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n) : UmlBaseClassItem(id, n) {};
+    UmlClassItem(void * id, const QByteArray & n) : UmlBaseClassItem(id, n) {};
 
 };
 

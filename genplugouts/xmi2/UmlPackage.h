@@ -4,7 +4,7 @@
 
 #include "UmlBasePackage.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class FileOut;
 class UmlItem;
@@ -15,7 +15,7 @@ class UmlUseCaseDiagram;
 // You can modify it as you want (except the constructor)
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n) : UmlBasePackage(id, n) {};
+    UmlPackage(void * id, const QByteArray & n) : UmlBasePackage(id, n) {};
 
     virtual void xmi(int argc, char ** argv);
 

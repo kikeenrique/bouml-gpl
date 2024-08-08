@@ -10,7 +10,7 @@
 // You can modify it as you want (except the constructor)
 class UmlComponent : public UmlBaseComponent {
   public:
-    UmlComponent(void * id, const QCString & n) : UmlBaseComponent(id, n) {};
+    UmlComponent(void * id, const QByteArray & n) : UmlBaseComponent(id, n) {};
 
     virtual int orderWeight();
 

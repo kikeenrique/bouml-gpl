@@ -33,19 +33,19 @@ class UmlSettings {
 
     static void read_if_needed_();
 
-    static unsigned multiplicity_column(const QCString & mult);
+    static unsigned multiplicity_column(const QByteArray & mult);
 
-    static QCString uml_type(const QCString & t, QCString UmlBuiltin::* f);
+    static QByteArray uml_type(const QByteArray & t, QByteArray UmlBuiltin::* f);
 
-    static QCString uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_rel_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
-    static QCString uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_class_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
-    static UmlBuiltin * add_type(const QCString & s);
+    static UmlBuiltin * add_type(const QByteArray & s);
 
-    static UmlStereotype * add_rel_stereotype(const QCString & s);
+    static UmlStereotype * add_rel_stereotype(const QByteArray & s);
 
-    static UmlStereotype * add_class_stereotype(const QCString & s);
+    static UmlStereotype * add_class_stereotype(const QByteArray & s);
 
 };
 

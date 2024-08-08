@@ -14,15 +14,15 @@
 // You can modify it as you want (except the constructor)
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n) {};
+    UmlItem(void * id, const QByteArray & n) : UmlBaseItem(id, n) {};
 
     virtual ~UmlItem();
 
     virtual void roseImport();
 
-    virtual QCString fullName();
+    virtual QByteArray fullName();
 
-    void setProperties(QDict<QCString> & d);
+    void setProperties(QDict<QByteArray> & d);
 
     static void newItem(UmlItem * x, const char * id);
 

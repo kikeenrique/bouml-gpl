@@ -1,7 +1,7 @@
 
 #include "UmlClassMember.h"
 
-void UmlClassMember::setVisibility(QCString v) {
+void UmlClassMember::setVisibility(QByteArray v) {
   if ((v == "public") || (v == "vis_public"))
     set_Visibility(PublicVisibility);
   else if ((v == "protected") || (v == "vis_protected"))

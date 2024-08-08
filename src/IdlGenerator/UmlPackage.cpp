@@ -30,12 +30,12 @@
 #include "IdlSettings.h"
 #include "util.h"
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   read = FALSE;
 }
 
-static void create_directory(QCString s)
+static void create_directory(QByteArray s)
 {
   int index = 0;
   char sep = QDir::separator();
@@ -51,12 +51,12 @@ static void create_directory(QCString s)
   int index2;
   
   while ((index2 = s.find("/", index + 1)) != -1) {
-    QCString s2 = s.left(index2);
+    QByteArray s2 = s.left(index2);
     QDir sd(s2);
     
     if (!sd.exists()) {
       if (!sd.mkdir(s2)) {
-	UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
+	UmlCom::trace(QByteArray("<font color=\"red\"><b> cannot create directory <i>")
 		      + s2 + "</i></b></font><br>");
 	UmlCom::bye(n_errors() + 1);
 	UmlCom::fatal_error("UmlPackage::file_path");
@@ -67,9 +67,9 @@ static void create_directory(QCString s)
 }
 
 static bool RootDirRead;
-static QCString RootDir;
+static QByteArray RootDir;
 
-QCString UmlPackage::path(const QCString & f) {
+QByteArray UmlPackage::path(const QByteArray & f) {
   if (!read) {
     dir = idlDir();
     
@@ -94,7 +94,7 @@ QCString UmlPackage::path(const QCString & f) {
       dir = d_root.filePath(dir);
 
     if (dir.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Idl')</b></font><br>");
@@ -103,7 +103,7 @@ QCString UmlPackage::path(const QCString & f) {
     }
     
     if (QDir::isRelativePath(dir)) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><i>")
 		    + name() + "</i>'s source path <i>(" + dir
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'Idl')</b></font><br>");
@@ -119,12 +119,12 @@ QCString UmlPackage::path(const QCString & f) {
   if (! d.exists())
     create_directory(dir);	// don't return on error
   
-  return QCString(d.filePath(f)) + QCString(".") + 
+  return QByteArray(d.filePath(f)) + QByteArray(".") + 
     IdlSettings::sourceExtension();
 }
 
-QCString UmlPackage::text_path(const QCString & f) {
-  QCString r = path(f);
+QByteArray UmlPackage::text_path(const QByteArray & f) {
+  QByteArray r = path(f);
   
   return r.left(r.length() - 1 - IdlSettings::sourceExtension().length());
 }

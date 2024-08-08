@@ -89,14 +89,14 @@ void BrowserView::select(QListViewItem * b) {
     QListIterator<BrowserView> it(l);
     QString fn = ((BrowserNode *) b)->file_name();
     
-    for (; it.current(); ++it) {
-      it.current()->clearSelection();
+    for (; (*it); ++it) {
+      (*it)->clearSelection();
       
-      BrowserNode * bn = it.current()->nodes.find(fn);
+      BrowserNode * bn = (*it)->nodes.find(fn);
       
       if (bn != 0) {
-	it.current()->ensureItemVisible(bn);
-	it.current()->QListView::setSelected(bn, TRUE);
+	(*it)->ensureItemVisible(bn);
+	(*it)->QListView::setSelected(bn, TRUE);
       }
     }
     
@@ -204,7 +204,7 @@ void BrowserView::update(const QList<BrowserView> & lv)
   
   for (it = deleted_or_new.begin(); it != deleted_or_new.end(); ++it) {
     QString who = *it;
-    QList<BrowserNode> images;
+    QList<BrowserNode *> images;
     bool young = FALSE;
     
     // set the state in each view without looking at the others

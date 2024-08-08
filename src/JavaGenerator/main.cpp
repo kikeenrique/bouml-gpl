@@ -48,14 +48,14 @@ int main(int argc, char ** argv)
   else
     return 0;
   
-  if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
+  if (UmlCom::connect(QByteArray(argv[port_index]).toUInt())) {
     try {
       UmlCom::trace("<b>Java generator</b> release 2.22<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();
       
-      QCString s;
+      QByteArray s;
       
       s.sprintf("<hr><font face=helvetica>Generation done : %d warnings, %d errors</font><br>",
 		n_warnings(), n_errors());

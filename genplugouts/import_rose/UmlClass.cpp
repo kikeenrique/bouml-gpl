@@ -14,18 +14,18 @@
 #include "util.h"
 #include "Artifact.h"
 
-UmlClass * UmlClass::import(File & f, UmlItem * parent, const QCString & knd)
+UmlClass * UmlClass::import(File & f, UmlItem * parent, const QByteArray & knd)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, "class's name");
     
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
-  QCString s2;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
+  QByteArray s2;
   int k;
   
   do {
@@ -79,7 +79,7 @@ UmlClass * UmlClass::import(File & f, UmlItem * parent, const QCString & knd)
     throw 0;
   }
   
-  QCString art_path;
+  QByteArray art_path;
   
   for (;;) {
     switch (k) {
@@ -152,14 +152,14 @@ UmlClass * UmlClass::import(File & f, UmlItem * parent, const QCString & knd)
   }
 }
 
-bool UmlClass::replaceType(UmlTypeSpec & t, QCString & target_id, const QCString & ts)
+bool UmlClass::replaceType(UmlTypeSpec & t, QByteArray & target_id, const QByteArray & ts)
 {
   UmlClass * cl = (UmlClass *) findItem(target_id, aClass);
   bool result = FALSE;
   
   if (cl != 0) {
     int index = 0;
-    const QCString & s = cl->name();
+    const QByteArray & s = cl->name();
     unsigned ln1 = s.length();
     unsigned ln2 = ts.length();
     
@@ -190,7 +190,7 @@ void UmlClass::importAttributes(File & f) {
   f.read("class_attribute_list");
   
   for (;;) {
-    QCString s;
+    QByteArray s;
   
     switch (f.read(s)) {
     case -1:
@@ -215,7 +215,7 @@ void UmlClass::importOperations(File & f) {
   f.read("Operations");
   
   for (;;) {
-    QCString s;
+    QByteArray s;
   
     switch (f.read(s)) {
     case -1:
@@ -235,7 +235,7 @@ void UmlClass::importOperations(File & f) {
 }
 
 void UmlClass::importRelations(File & f) {
-  QCString s;
+  QByteArray s;
   
   f.read("(");
   f.read("list");
@@ -258,7 +258,7 @@ void UmlClass::importRelations(File & f) {
       f.syntaxError(s, "an atom");
     
     aRelationKind rk;
-    QCString sr;
+    QByteArray sr;
     
     if (s == "Uses_Relationship") {
       rk = aDependency;
@@ -278,18 +278,18 @@ void UmlClass::importRelations(File & f) {
     }
     
     // dependency or generalisation
-    QCString id;
-    QCString ste;
-    QCString doc;
-    QDict<QCString> prop;
-    QCString s2;
+    QByteArray id;
+    QByteArray ste;
+    QByteArray doc;
+    QDict<QByteArray> prop;
+    QByteArray s2;
     int k;
     
     do {
       k = f.readDefinitionBeginning(s2, id, ste, doc, prop);
     } while (id.isEmpty());
     
-    QCString target_id;
+    QByteArray target_id;
     aVisibility visibility = PublicVisibility;
     bool virtual_inheritance = FALSE;
     bool a_friend = FALSE;
@@ -367,11 +367,11 @@ void UmlClass::importInstantiate(File & f) {
   f.read("object");
   f.read("Instantiation_Relationship");
 
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
-  QCString s2;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
+  QByteArray s2;
   int k;
   
   do {
@@ -423,7 +423,7 @@ void UmlClass::importActuals(File & f) {
   f.read("list");
   f.read("Parameters");
   
-  QCString s;
+  QByteArray s;
   unsigned rank = 0;
   
   for (;;) {
@@ -449,7 +449,7 @@ void UmlClass::importFormals(File & f) {
   f.read("list");
   f.read("Parameters");
   
-  QCString s;
+  QByteArray s;
   unsigned rank = 0;
   
   for (;;) {
@@ -478,7 +478,7 @@ void UmlClass::importClasses(File & f) {
   f.read("list");
   f.read("nestedClasses");
   
-  QCString s;
+  QByteArray s;
   
   for (;;) {
     switch (f.read(s)) {
@@ -507,7 +507,7 @@ void UmlClass::importClasses(File & f) {
   }
 }
 
-void UmlClass::importIdlConstant(UmlItem * parent, const QCString & id, const QCString & s, const QCString & doc, QDict<QCString> & prop)
+void UmlClass::importIdlConstant(UmlItem * parent, const QByteArray & id, const QByteArray & s, const QByteArray & doc, QDict<QByteArray> & prop)
 {
   // use a class to define the constant !
   UmlClass * x;
@@ -525,9 +525,9 @@ void UmlClass::importIdlConstant(UmlItem * parent, const QCString & id, const QC
   if (!doc.isEmpty())
     x->set_Description(doc);
 
-  QCString type;
-  QCString value;
-  QCString * v;
+  QByteArray type;
+  QByteArray value;
+  QByteArray * v;
   
   if ((v = prop.find("CORBA/ImplementationType")) != 0) {
     type = *v;
@@ -540,7 +540,7 @@ void UmlClass::importIdlConstant(UmlItem * parent, const QCString & id, const QC
     prop.remove("CORBA/ConstValue");
   }
 
-  QCString d = IdlSettings::constDecl();
+  QByteArray d = IdlSettings::constDecl();
   int index;
   
   if ((index = d.find("${type}")) != -1)
@@ -553,10 +553,10 @@ void UmlClass::importIdlConstant(UmlItem * parent, const QCString & id, const QC
   x->set_IdlDecl(d);
 }
 
-void UmlClass::cplusplus(QDict<QCString> & prop) {
+void UmlClass::cplusplus(QDict<QByteArray> & prop) {
   if (!scanning) {
     if (stereotype() == "typedef") {
-      QCString * bt = prop.find("Cplusplus/ImplementationType");
+      QByteArray * bt = prop.find("Cplusplus/ImplementationType");
       
       if (bt != 0) {
 	UmlTypeSpec t;
@@ -579,7 +579,7 @@ void UmlClass::cplusplus(QDict<QCString> & prop) {
     prop.remove("Cplusplus/ImplementationType");
   }
 
-  QCString * v;
+  QByteArray * v;
   
   if ((v = prop.find("Cplusplus/BodySourceFile")) != 0) {
     _body_file = *v;
@@ -600,12 +600,12 @@ void UmlClass::cplusplus(QDict<QCString> & prop) {
   }
 }
 
-void UmlClass::oracle8(QDict<QCString> &) {
+void UmlClass::oracle8(QDict<QByteArray> &) {
 }
 
-void UmlClass::corba(QDict<QCString> & prop) {
+void UmlClass::corba(QDict<QByteArray> & prop) {
   if (!scanning) {
-    QCString * v;
+    QByteArray * v;
     
     if (stereotype() == "union") {
       if ((v = prop.find("CORBA/ImplementationType")) != 0) {
@@ -655,13 +655,13 @@ void UmlClass::corba(QDict<QCString> & prop) {
   }
 }
 
-void UmlClass::java(QDict<QCString> & prop) {
+void UmlClass::java(QDict<QByteArray> & prop) {
   if (!scanning) {
-    QCString d = (stereotype() == "interface") 
+    QByteArray d = (stereotype() == "interface") 
       ? JavaSettings::interfaceDecl()
       : JavaSettings::classDecl();
     
-    QCString * v;
+    QByteArray * v;
     
     if ((v = prop.find("Java/Final")) != 0) {
       if (*v == "TRUE")
@@ -685,7 +685,7 @@ void UmlClass::java(QDict<QCString> & prop) {
   }
 }
 
-void UmlClass::assocArtifact(Artifact * c, QCString & art_path) {
+void UmlClass::assocArtifact(Artifact * c, QByteArray & art_path) {
   if ((c != 0) && (parent()->kind() == aClassView))
     c->add((UmlPackage *) parent()->parent(), this, art_path);
 }

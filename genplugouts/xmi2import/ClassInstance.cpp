@@ -26,11 +26,11 @@ void ClassInstance::importIt(FileIn & in, Token & token, UmlItem * where)
   cli->where = where;
     
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if (s == "classifier")
 	cli->classifierId = token.xmiIdref();
@@ -62,7 +62,7 @@ void ClassInstance::solveThem()
   QList<UmlClassInstance> insts;
   
   for (cli = All.first(); cli != 0; cli = All.next()) {
-    QMap<QCString, UmlItem *>::Iterator it;
+    QMap<QByteArray, UmlItem *>::Iterator it;
     
     it = UmlItem::All.find(cli->classifierId);
     if (it == UmlItem::All.end()) {
@@ -88,7 +88,7 @@ void ClassInstance::solveThem()
   // set attribute ans relation values
 
   while (! All.isEmpty()) {
-    QMap<QCString, UmlItem *>::Iterator it;
+    QMap<QByteArray, UmlItem *>::Iterator it;
     
     cli = All.take(0);
     
@@ -151,11 +151,11 @@ void ClassInstance::Slot::importIt(FileIn & in, Token & token) {
   valueId = token.valueOf("value");
     
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if (s == "featureid")
 	featureId = token.xmiIdref();

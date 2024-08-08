@@ -18,19 +18,19 @@ class File;
 class UmlRelation : public UmlBaseRelation {
   public:
     struct Role {
-        QDict<QCString> prop;
+        QDict<QByteArray> prop;
 
-        QCString doc;
+        QByteArray doc;
 
-        QCString id;
+        QByteArray id;
 
-        QCString name;
+        QByteArray name;
 
         UmlClass * target;
 
-        QCString target_id;
+        QByteArray target_id;
 
-        QCString cardinality;
+        QByteArray cardinality;
 
         aVisibility visibility;
 
@@ -49,7 +49,7 @@ class UmlRelation : public UmlBaseRelation {
     };
     
     
-    UmlRelation(void * id, const QCString & n) : UmlBaseRelation(id, n) {
+    UmlRelation(void * id, const QByteArray & n) : UmlBaseRelation(id, n) {
       cpt[kind()] += 1;
     };
 

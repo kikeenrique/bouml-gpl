@@ -32,17 +32,17 @@ class Class;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };  
   
-    static bool new_one(Class * container, const QCString & name,
-			UmlClass * dest, const QCString & modifier,
-			const QCString & pretype, const QCString & array,
-			const QCString & typeform, aVisibility visibility,
+    static bool new_one(Class * container, const QByteArray & name,
+			UmlClass * dest, const QByteArray & modifier,
+			const QByteArray & pretype, const QByteArray & array,
+			const QByteArray & typeform, aVisibility visibility,
 			bool staticp, bool constp, bool mutablep, bool volatilep,
-			const QCString & value,	QCString comment,
-			QCString description
+			const QByteArray & value,	QByteArray comment,
+			QByteArray description
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif

@@ -1,8 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-extern QCString legalName(QCString);
-extern QCString replace(QCString f, QCString k, QCString v);
+extern QByteArray legalName(QByteArray);
+extern QByteArray replace(QByteArray f, QByteArray k, QByteArray v);
 extern bool isSep(int c);
 
 #endif

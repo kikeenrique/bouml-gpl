@@ -1,7 +1,7 @@
 
 #include "UmlFinalState.h"
 
-QCString UmlFinalState::sKind() {
+QByteArray UmlFinalState::sKind() {
   return "final state";
 }
 

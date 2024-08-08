@@ -2,14 +2,14 @@
 #include "UmlUseCase.h"
 
 #include "UmlUseCaseDiagram.h"
-QCString UmlUseCase::sKind() {
+QByteArray UmlUseCase::sKind() {
   return "use case";
 }
 
-void UmlUseCase::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlUseCase::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlItem::html(pfix, rank, "Use Case", level, "usecase");
     
-  QCString ep = extensionPoints();
+  QByteArray ep = extensionPoints();
   
   if (! ep.isEmpty()) {
     fw.write("<p>Extension points:<br /><div class=\"sub\">");

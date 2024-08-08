@@ -12,7 +12,7 @@
 // You can modify it as you want (except the constructor)
 class UmlUseCaseDiagram : public UmlBaseUseCaseDiagram {
   public:
-    UmlUseCaseDiagram(void * id, const QCString & n) : UmlBaseUseCaseDiagram(id, n) {};
+    UmlUseCaseDiagram(void * id, const QByteArray & n) : UmlBaseUseCaseDiagram(id, n) {};
 
     virtual int orderWeight();
 

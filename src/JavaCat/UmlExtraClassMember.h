@@ -40,11 +40,11 @@ class UmlClass;
 
 class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
-    UmlExtraClassMember(void * id, const QCString & n)
+    UmlExtraClassMember(void * id, const QByteArray & n)
       : UmlBaseExtraClassMember(id, n) {};
   
 #ifdef ROUNDTRIP
-    static void add_init(UmlClass * cl, QCString def, bool roundtrip,
+    static void add_init(UmlClass * cl, QByteArray def, bool roundtrip,
 			 QList<UmlItem> & expected_order);
 #endif
 };

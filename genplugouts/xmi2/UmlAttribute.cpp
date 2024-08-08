@@ -6,7 +6,7 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 void UmlAttribute::write(FileOut & out) {
-  QCString stp = parent()->stereotype();
+  QByteArray stp = parent()->stereotype();
   bool enum_item = (stp == "enum_pattern") ||
     ((stp == "enum") && (stereotype() != "attribute"));
   const char * k;
@@ -94,7 +94,7 @@ void UmlAttribute::write(FileOut & out) {
 
 void UmlAttribute::write_cpp_type(FileOut & out) {
   // note : doesn't manage function/operation pointer
-  QCString s = cppDecl();
+  QByteArray s = cppDecl();
   int index;
   
   remove_comments(s);
@@ -127,7 +127,7 @@ void UmlAttribute::write_cpp_type(FileOut & out) {
 }
 
 void UmlAttribute::write_java_type(FileOut & out) {
-  QCString s = javaDecl();
+  QByteArray s = javaDecl();
   int index;
   
   remove_comments(s);

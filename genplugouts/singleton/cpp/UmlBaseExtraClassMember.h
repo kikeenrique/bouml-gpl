@@ -36,7 +36,7 @@ class UmlBaseExtraClassMember : public UmlClassItem {
 
     // returns the operation's definition in C++, notes that the declaration
     // is returned by the inherited ClassItemBase::CppDecl() operation
-    const QCString & cppDef();
+    const QByteArray & cppDef();
 
     // sets the operation's definition in C++, notes that the declaration
     // is set through the inherited ClassItemBase::set_CppDecl() operation
@@ -55,12 +55,12 @@ class UmlBaseExtraClassMember : public UmlClassItem {
     bool _cpp_inline;
     
 
-    QCString _cpp_def;
+    QByteArray _cpp_def;
 #endif
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseExtraClassMember(void * id, const QCString & n) : UmlClassItem(id, n) {};
+    UmlBaseExtraClassMember(void * id, const QByteArray & n) : UmlClassItem(id, n) {};
 
 #ifdef WITHCPP
     virtual void read_cpp_();

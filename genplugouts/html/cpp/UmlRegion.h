@@ -9,15 +9,15 @@
 class UmlRegion : public UmlBaseRegion, public UmlStateItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlRegion(void * id, const QCString & s) : UmlBaseRegion(id, s) {
+     UmlRegion(void * id, const QByteArray & s) : UmlBaseRegion(id, s) {
     }
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
     virtual bool chapterp();
 

@@ -1,12 +1,12 @@
 
 #include "UmlOnSignalAction.h"
 
-void UmlOnSignalAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlOnSignalAction::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlActivityAction::html();
 
-  QCString s = signal();
-  QCString scpp = cppSignal();
-  QCString sjava = javaSignal();
+  QByteArray s = signal();
+  QByteArray scpp = cppSignal();
+  QByteArray sjava = javaSignal();
 
   if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
     fw.write("<p>Signal :</p><ul>");

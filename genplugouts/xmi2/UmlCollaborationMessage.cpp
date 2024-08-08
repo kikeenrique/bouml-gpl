@@ -13,7 +13,7 @@ void UmlCollaborationMessage::write(FileOut & out, UmlItem * diagram, const QVec
   
   while (index != sup) {
     const UmlCollaborationMessage * msg = msgs[index++];
-    QCString pfix = msg->hrank() + ".";
+    QByteArray pfix = msg->hrank() + ".";
     unsigned pfixlen = pfix.length();
     
 #define MSG  "MSG", msg->itsrank
@@ -63,7 +63,7 @@ void UmlCollaborationMessage::write(FileOut & out, UmlItem * diagram, const QVec
     out << "/>\n";
     
     if (index != sup) {
-      QCString pfix2 = msgs[index]->hrank() + ".";
+      QByteArray pfix2 = msgs[index]->hrank() + ".";
       
       if ((pfix2.length() > pfixlen) && !strncmp(pfix, pfix2, pfixlen))
 	write(out, diagram, msgs, index);

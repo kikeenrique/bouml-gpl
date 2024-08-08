@@ -46,8 +46,8 @@ using namespace std;
 #endif
 
 #ifdef ROUNDTRIP
-static UmlRelation * search_rel(Class * container, const QCString & name,
-				UmlClass * dest, const QCString & st)
+static UmlRelation * search_rel(Class * container, const QByteArray & name,
+				UmlClass * dest, const QByteArray & st)
 {
   UmlItem * x = container->get_uml()->search_for_att_rel(name);
   
@@ -84,13 +84,13 @@ static UmlRelation * search_rel(Class * container, const QCString & name,
 #endif
 
 // not from a form 'generic<...C...> var' where C is a class
-bool UmlRelation::new_one(Class * container, const QCString & name,
-			  UmlTypeSpec & dest, QCString str_actuals,
+bool UmlRelation::new_one(Class * container, const QByteArray & name,
+			  UmlTypeSpec & dest, QByteArray str_actuals,
 			  aVisibility visibility, bool staticp,
 			  bool constp, bool transientp, bool volatilep,
-			  const QCString & array, const QCString & value,
-			  QCString comment, QCString description,
-			  QCString annotation
+			  const QByteArray & array, const QByteArray & value,
+			  QByteArray comment, QByteArray description,
+			  QByteArray annotation
 #ifdef ROUNDTRIP
 			  , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -123,7 +123,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
     rel = UmlBaseRelation::create(aDirectionalAssociation, cl, dest.type);
     
     if (rel == 0) {
-      JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add relation <i>")
+      JavaCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add relation <i>")
 			   + name + "</i> in <i>" + cl->name() + "</i> to <i>"
 			   + dest.type->name() + "</i></b></font><br>");  
       return FALSE;
@@ -143,7 +143,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
 # endif
 #endif
   
-  QCString decl = JavaSettings::relationDecl(array);
+  QByteArray decl = JavaSettings::relationDecl(array);
   
   UmlClass::manage_generic(decl, dest, str_actuals, "${type}");  
   
@@ -194,7 +194,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
       container->set_updated();
     }
     
-    QCString v = rel->defaultValue();
+    QByteArray v = rel->defaultValue();
     
     if (!v.isEmpty() && (((const char *) v)[0] == '='))
       v = v.mid(1);
@@ -261,14 +261,14 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
 }
 
 // from a form 'generic<...C...> var' where C is a class
-bool UmlRelation::new_one(Class * container, const QCString & name,
-			  UmlClass * type, QCString type_def,
-			  QCString genericname,
+bool UmlRelation::new_one(Class * container, const QByteArray & name,
+			  UmlClass * type, QByteArray type_def,
+			  QByteArray genericname,
 			  aVisibility visibility, bool staticp,
 			  bool constp, bool transientp, bool volatilep,
-			  const QCString & array, const QCString & value,
-			  QCString comment, QCString description,
-			  QCString annotation
+			  const QByteArray & array, const QByteArray & value,
+			  QByteArray comment, QByteArray description,
+			  QByteArray annotation
 #ifdef ROUNDTRIP
 			  , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -289,7 +289,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
     return TRUE;
   }
   
-  QCString st = JavaSettings::umlType(genericname);
+  QByteArray st = JavaSettings::umlType(genericname);
   
   if (st.isEmpty())
     st = genericname;
@@ -306,7 +306,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   rel = UmlBaseRelation::create(aDirectionalAssociation, cl, type);
   
   if (rel == 0) {
-    JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add relation <i>")
+    JavaCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add relation <i>")
 			 + name + "</i> in <i>" + cl->name() + "</i> to <i>"
 			 + type->name() + "</i></b></font><br>");  
     return FALSE;
@@ -331,7 +331,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   comment = Lex::get_comments(comment);
   description = Lex::get_description(description);
   
-  QCString decl = JavaSettings::relationDecl(array);
+  QByteArray decl = JavaSettings::relationDecl(array);
   
   type_def.replace(0, genericname.length(), "${stereotype}");
   decl.replace(decl.find("${type}"), 7, type_def);
@@ -472,8 +472,8 @@ void UmlRelation::set_unidir() {
   UmlRelation * r2 = (r1 != this) ? this : side(FALSE);
   
   if (r1->isReadOnly() || r2->isReadOnly()) {
-    UmlCom::trace(QCString("<font face=helvetica>in <i>") + QCString(Lex::filename())
-		  + "</i> line " + QCString().setNum(Lex::line_number())
+    UmlCom::trace(QByteArray("<font face=helvetica>in <i>") + QByteArray(Lex::filename())
+		  + "</i> line " + QByteArray().setNum(Lex::line_number())
 		  + " <b>cannot remove relation between classes <i>"
 		  + roleType()->name() + "</i> and <i>" + parent()->name()
 		  + "</i> because one is read only</b></font><br>");
@@ -499,7 +499,7 @@ void UmlRelation::set_unidir() {
     UmlRelation * rel = 
       UmlBaseRelation::create(aDirectionalAssociation,
 			      (UmlClass *) parent(), roleType());
-    QCString role = roleName();
+    QByteArray role = roleName();
     
     rel->moveAfter(this);
     rel->set_Visibility(visibility());

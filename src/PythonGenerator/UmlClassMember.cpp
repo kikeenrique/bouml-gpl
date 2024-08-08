@@ -27,6 +27,6 @@
 
 #include "UmlClassMember.h"
 
-void UmlClassMember::generate_imports(QTextOStream &, QCString &) {
+void UmlClassMember::generate_imports(QTextStream &, QByteArray &) {
   // do nothing
 }

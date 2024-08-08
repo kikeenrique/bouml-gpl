@@ -57,7 +57,7 @@
 #include "UmlActivityControlNodeClasses.h"
 #include "MiscGlobalCmd.h"
 
-bool UmlBaseItem::set_Name(const QCString & s) {
+bool UmlBaseItem::set_Name(const QByteArray & s) {
   UmlCom::send_cmd(_identifier, setNameCmd, s);
   if (UmlCom::read_bool()) {
     _name = s;
@@ -67,23 +67,23 @@ bool UmlBaseItem::set_Name(const QCString & s) {
     return FALSE;
 }
 
-const QCString & UmlBaseItem::stereotype() {
+const QByteArray & UmlBaseItem::stereotype() {
   read_if_needed_();
   
   return _stereotype;
 }
 
-bool UmlBaseItem::set_Stereotype(const QCString & s) {
+bool UmlBaseItem::set_Stereotype(const QByteArray & s) {
   return set_it_(_stereotype, s, setStereotypeCmd);
 }
 
-const QCString & UmlBaseItem::description() {
+const QByteArray & UmlBaseItem::description() {
   read_if_needed_();
   
   return _description;
 }
 
-bool UmlBaseItem::set_Description(const QCString & s) {
+bool UmlBaseItem::set_Description(const QByteArray & s) {
   return set_it_(_description, s, setDescriptionCmd);
 }
 
@@ -114,10 +114,10 @@ bool UmlBaseItem::set_childrenVisible(bool y) {
   return UmlCom::read_bool();
 }
 
-bool UmlBaseItem::propertyValue(const QCString & k, QCString & v) {
+bool UmlBaseItem::propertyValue(const QByteArray & k, QByteArray & v) {
   read_if_needed_();
   
-  QCString * s = _dict[k];
+  QByteArray * s = _dict[k];
   
   if (s == 0)
     return FALSE;
@@ -127,16 +127,16 @@ bool UmlBaseItem::propertyValue(const QCString & k, QCString & v) {
 
 }
 
-bool UmlBaseItem::set_PropertyValue(const QCString & k, const QCString & v) {
+bool UmlBaseItem::set_PropertyValue(const QByteArray & k, const QByteArray & v) {
   read_if_needed_();
   
   UmlCom::send_cmd(_identifier, setCoupleValueCmd, k, v);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      QCString * s = _dict[k];
+      QByteArray * s = _dict[k];
       
       if (s == 0)
-	_dict.insert(k, new QCString(v));
+	_dict.insert(k, new QByteArray(v));
       else
 	*s = v;
     }
@@ -147,7 +147,7 @@ bool UmlBaseItem::set_PropertyValue(const QCString & k, const QCString & v) {
     return FALSE;
 }
 
-const QDict<QCString> UmlBaseItem::properties() {
+const QDict<QByteArray> UmlBaseItem::properties() {
   read_if_needed_();
 
   return _dict;
@@ -163,7 +163,7 @@ bool UmlBaseItem::moveAfter(const UmlItem * x) {
     return FALSE;
 }
 
-QCString UmlBaseItem::supportFile() {
+QByteArray UmlBaseItem::supportFile() {
   UmlCom::send_cmd(_identifier, supportFileCmd); 
   return UmlCom::read_string();
 }
@@ -173,7 +173,7 @@ bool UmlBaseItem::isWritable() {
   return UmlCom::read_bool();
 }
 
-int UmlBaseItem::apply(QCString cmd) {
+int UmlBaseItem::apply(QByteArray cmd) {
   UmlCom::send_cmd(_identifier, applyCmd, cmd); 
   return (int) UmlCom::read_unsigned();
 }
@@ -319,9 +319,9 @@ void UmlBaseItem::read_uml_() {
   unsigned n = UmlCom::read_unsigned();
   
   while (n--) {
-    QCString k = UmlCom::read_string();
+    QByteArray k = UmlCom::read_string();
     
-    _dict.insert(k, new QCString(UmlCom::read_string()));
+    _dict.insert(k, new QByteArray(UmlCom::read_string()));
   }
   
   _description = UmlCom::read_string();
@@ -399,7 +399,7 @@ bool UmlBaseItem::set_it_(aDirection & r, aDirection v, OnInstanceCmd cmd) {
     return FALSE;
 }
 
-bool UmlBaseItem::set_it_(QCString & r, const char * v, OnInstanceCmd cmd) {
+bool UmlBaseItem::set_it_(QByteArray & r, const char * v, OnInstanceCmd cmd) {
   UmlCom::send_cmd(_identifier, cmd, v);
   if (UmlCom::read_bool()) {
     if (_defined) r = v;
@@ -581,14 +581,14 @@ UmlItem * UmlBaseItem::read_()
       return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
-      UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
+      UmlCom::fatal_error(QByteArray("unknown item type ") + QByteArray().setNum(kind));
     }
   }
   
   return result;
 }
 
- UmlBaseItem::UmlBaseItem(void * id, const QCString & n)
+ UmlBaseItem::UmlBaseItem(void * id, const QByteArray & n)
     : _defined(FALSE), _identifier(id), _name(n), _parent(0), _children(0)  {
   _all.insert(id, (UmlItem *) this);
   if (_all.count()/_all.size() > 10)

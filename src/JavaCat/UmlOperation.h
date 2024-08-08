@@ -35,22 +35,22 @@ class UmlOperation : public UmlBaseOperation {
   private:
     static bool read_param(Class * container, unsigned rank,
 			   const QValueList<FormalParameterList> & tmplts,
-			   UmlParameter & param, QCString & decl, bool bypass);
+			   UmlParameter & param, QByteArray & decl, bool bypass);
   
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
 	
-    static bool new_one(Class * container, const QCString & name,
+    static bool new_one(Class * container, const QByteArray & name,
 			const QValueList<FormalParameterList> & tmplts,
-			const QCString & oper_templ,
-			UmlTypeSpec & type, QCString str_actuals,
-			UmlClass * first_actual_class, QCString type_def,
+			const QByteArray & oper_templ,
+			UmlTypeSpec & type, QByteArray str_actuals,
+			UmlClass * first_actual_class, QByteArray type_def,
 			aVisibility visibility,
 			bool finalp, bool abstractp, bool staticp,
 			bool nativep, bool strictfp, bool synchronizedp,
-			const QCString & array,	QCString comment,
-			QCString description, QCString annotation
+			const QByteArray & array,	QByteArray comment,
+			QByteArray description, QByteArray annotation
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -61,8 +61,8 @@ class UmlOperation : public UmlBaseOperation {
 
 #ifdef ROUNDTRIP
   private:
-    static UmlOperation * already_exist_from_id(Class * container, QCString & body);
-    static UmlOperation * already_exist(Class * container, const QCString & name,
+    static UmlOperation * already_exist_from_id(Class * container, QByteArray & body);
+    static UmlOperation * already_exist(Class * container, const QByteArray & name,
 					QValueList<UmlParameter> & params);
 #endif
 };

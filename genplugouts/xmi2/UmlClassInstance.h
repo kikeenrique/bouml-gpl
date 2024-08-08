@@ -10,7 +10,7 @@ class FileOut;
 class UmlClassInstance : public UmlBaseClassInstance {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlClassInstance(void * id, const QCString & s) : UmlBaseClassInstance(id, s) {
+     UmlClassInstance(void * id, const QByteArray & s) : UmlBaseClassInstance(id, s) {
     }
 
     virtual void write(FileOut & out);

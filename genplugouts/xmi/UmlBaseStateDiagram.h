@@ -24,7 +24,7 @@ class UmlBaseStateDiagram : public UmlDiagram {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseStateDiagram(void * id, const QCString & s) : UmlDiagram(id, s) {
+     UmlBaseStateDiagram(void * id, const QByteArray & s) : UmlDiagram(id, s) {
     }
 
 };

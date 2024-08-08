@@ -35,7 +35,7 @@
 
 #else
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qstring.h>
 
 class TreeItem {

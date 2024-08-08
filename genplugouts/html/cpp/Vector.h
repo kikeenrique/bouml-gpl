@@ -2,7 +2,7 @@
 #define _VECTOR_H
 
 
-#include <qptrvector.h>
+#include <qvector.h>
 
 class UmlItem;
 
@@ -21,7 +21,7 @@ class Vector {
 
     void setElementAt(const UmlItem * x, unsigned int i) { v.insert(i, x); }
 
-    bool contains(const UmlItem * x) { return (!v.isEmpty() && (v.findRef(x) != -1)); }
+    bool contains(const UmlItem * x) { return (!v.isEmpty() && (v.indexOf(x) != -1)); }
 
 
   protected:

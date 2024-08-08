@@ -29,20 +29,20 @@
 #include "UmlBasePackage.h"
 
 struct Dir {
-  QCString file;
+  QByteArray file;
   bool read;
 };
  
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
   protected:
     Dir dir;
   
   public:
-    QCString file_path(const QCString &);
-    QCString text_path(const QCString &);
+    QByteArray file_path(const QByteArray &);
+    QByteArray text_path(const QByteArray &);
     virtual void generate();
     virtual UmlPackage * package();
 };

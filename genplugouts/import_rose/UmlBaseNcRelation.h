@@ -38,11 +38,11 @@ class UmlBaseNcRelation : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseNcRelation(void * id, const QCString & n);
+    UmlBaseNcRelation(void * id, const QByteArray & n);
 
 };
 
-inline UmlBaseNcRelation::UmlBaseNcRelation(void * id, const QCString & n) : UmlItem(id, n) {
+inline UmlBaseNcRelation::UmlBaseNcRelation(void * id, const QByteArray & n) : UmlItem(id, n) {
   _target = 0;
 }
 

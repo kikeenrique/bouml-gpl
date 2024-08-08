@@ -5,7 +5,7 @@
 #include "UmlClass.h"
 #include "JavaSettings.h"
 
-static inline bool eq(const QCString & s1, const QCString s2)
+static inline bool eq(const QByteArray & s1, const QByteArray s2)
 {
   return (s1.isEmpty()) ? s2.isEmpty() : (s1 == s2);
 }

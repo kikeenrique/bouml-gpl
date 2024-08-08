@@ -30,7 +30,7 @@
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };
 };

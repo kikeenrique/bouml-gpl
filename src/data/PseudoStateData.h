@@ -26,43 +26,42 @@
 #ifndef PSEUDOSTATEDATA_H
 #define PSEUDOSTATEDATA_H
 
-#include <qptrdict.h>
+#include <q3ptrdict.h>
+//Added by qt3to4:
+#include <QTextStream>
 
 #include "SimpleData.h"
 
 class BrowserPseudoState;
 
-class PseudoStateData : public SimpleData
-{
-        Q_OBJECT
-
-        friend class PseudoStateDialog;
-
-    protected:
-        BrowserPseudoState * reference;
-
-        virtual void send_uml_def (ToolCom * com, BrowserNode * bn,
-                                   const QString & comment);
-    public:
-        PseudoStateData();
-        PseudoStateData (PseudoStateData * model, BrowserNode *);
-        virtual ~PseudoStateData();
-
-        BrowserPseudoState * get_reference() const {
-            return reference;
-        }
-        void set_reference (BrowserPseudoState *);
-
-        void edit();
-
-        virtual bool tool_cmd (ToolCom * com, const char * args,
-                               BrowserNode * bn, const QString & comment);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * & st, char * & k);
-
-    protected slots:
-        void on_delete();
+class PseudoStateData : public SimpleData {
+  Q_OBJECT
+    
+  friend class PseudoStateDialog;
+  
+  protected:
+    BrowserPseudoState * reference;
+    
+    virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
+			      const QString & comment);
+  public:
+    PseudoStateData();
+    PseudoStateData(PseudoStateData * model, BrowserNode *);
+    virtual ~PseudoStateData();
+    
+    BrowserPseudoState * get_reference() const { return reference; }
+    void set_reference(BrowserPseudoState *);
+    
+    void edit();
+    
+    virtual bool tool_cmd(ToolCom * com, const char * args,
+			  BrowserNode * bn, const QString & comment);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * & st, char * & k);
+    
+  protected slots:
+    void on_delete();
 };
 
 #endif

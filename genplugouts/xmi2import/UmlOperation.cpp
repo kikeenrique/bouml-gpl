@@ -18,7 +18,7 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where == 0)
     return;
     
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   
   if (s.isEmpty()) {
     static unsigned n = 0;
@@ -46,7 +46,7 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
     op->set_isCppConst(TRUE);
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
@@ -66,7 +66,7 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
 }
 
 void UmlOperation::addException(Token & token, FileIn & in) {
-  QCString idref = token.xmiIdref();
+  QByteArray idref = token.xmiIdref();
   
   if (! idref.isEmpty()) {
     int n = exceptions().count();
@@ -82,7 +82,7 @@ void UmlOperation::addException(Token & token, FileIn & in) {
 
 void UmlOperation::addParameter(Token & token, FileIn & in) {
   UmlParameter p;
-  QCString s;
+  QByteArray s;
   
   p.name = token.valueOf("name");
     
@@ -104,7 +104,7 @@ void UmlOperation::addParameter(Token & token, FileIn & in) {
   if (!(s = token.valueOf("defaultvalue")).isEmpty())
     p.default_value = s;
     
-  QCString typeref = token.valueOf("type");
+  QByteArray typeref = token.valueOf("type");
   
   if (! typeref.isEmpty()) {
     if (p.dir == ReturnDirection) {
@@ -118,7 +118,7 @@ void UmlOperation::addParameter(Token & token, FileIn & in) {
   }
     
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
@@ -153,7 +153,7 @@ void UmlOperation::addParameter(Token & token, FileIn & in) {
 
 }
 
-void UmlOperation::solve(int context, QCString idref) {
+void UmlOperation::solve(int context, QByteArray idref) {
   UmlTypeSpec ts;
   
   if (getType(idref, ts)) {

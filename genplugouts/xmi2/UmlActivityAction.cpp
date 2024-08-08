@@ -3,7 +3,7 @@
 #include "FileOut.h"
 
 #include "UmlActivityObject.h"
-void UmlActivityAction::write_begin(FileOut & out, QCString k) {
+void UmlActivityAction::write_begin(FileOut & out, QByteArray k) {
   out.indent();
   out << ((parent()->kind() == anActivity) ? "<node" : "<containedNode")
     << " xmi:type=\"uml:" << k << '"';
@@ -19,7 +19,7 @@ void UmlActivityAction::write_end(FileOut & out, bool dontclose) {
   out << ">\n";
   out.indent(+1);
   
-  QCString s = constraint();
+  QByteArray s = constraint();
   
   if (! s.isEmpty()) {
     out.indent();
@@ -78,7 +78,7 @@ void UmlActivityAction::write_close(FileOut & out) {
   unload();
 }
 
-void UmlActivityAction::write_condition(FileOut & out, QCString cond, bool pre) {
+void UmlActivityAction::write_condition(FileOut & out, QByteArray cond, bool pre) {
   if (! cond.isEmpty()) {
     const char * k;
     const char * K;

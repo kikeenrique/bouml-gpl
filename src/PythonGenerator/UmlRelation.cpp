@@ -35,12 +35,12 @@
 #include "UmlCom.h"
 
 
-void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
+void UmlRelation::generate_imports(QTextStream & f, QByteArray & made) {
   if (!pythonDecl().isEmpty()) {
     bool from;
     
     if (relationKind() == aDependency) {
-      QCString s = stereotype();
+      QByteArray s = stereotype();
       
       if (s == "import")
 	from = FALSE;
@@ -57,7 +57,7 @@ void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
   }
 }
 
-void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
+void UmlRelation::generate_inherit(const char *& sep, QTextStream & f) {
   switch (relationKind()) {
   default:
     return;
@@ -77,7 +77,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
 	p += 7;
       }
       else if (*p == '@') {
-	QCString indent;
+	QByteArray indent;
 	BooL indent_needed = FALSE;
 	
 	manage_alias(p, f, indent, indent_needed);
@@ -88,9 +88,9 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
   }
 }
 
-void UmlRelation::generate(QTextOStream & f, const QCString &,
-			   QCString indent, BooL & indent_needed,
-			   int &, const QCString & self) {
+void UmlRelation::generate(QTextStream & f, const QByteArray &,
+			   QByteArray indent, BooL & indent_needed,
+			   int &, const QByteArray & self) {
   switch (relationKind()) {
   case aDependency:
   case aGeneralisation:
@@ -166,7 +166,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
 	f << indent;
       }
       
-      const QCString & v = defaultValue();
+      const QByteArray & v = defaultValue();
       
       if (!v.isEmpty()) {
 	if (need_equal(p, v))

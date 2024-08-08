@@ -7,8 +7,8 @@
 #include "UmlCom.h"
 #include "Manifestation.h"
 #include "UmlNcRelation.h"
-void UmlArtifact::solveManifestation(QCString s, QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlArtifact::solveManifestation(QByteArray s, QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))
@@ -61,7 +61,7 @@ void UmlArtifact::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where == 0)
     return;
     
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   
   if (s.isEmpty()) {
     static unsigned n = 0;
@@ -78,7 +78,7 @@ void UmlArtifact::importIt(FileIn & in, Token & token, UmlItem * where)
   artifact->addItem(token.xmiId(), in);
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {

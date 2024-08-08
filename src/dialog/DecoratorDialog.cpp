@@ -27,10 +27,13 @@
 
 
 
-#include <qlabel.h>
-#include <qlayout.h>
+#include <qlabel.h> 
+#include <qlayout.h> 
 #include <qpushbutton.h>
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include "DecoratorDialog.h"
 #include "UmlDesktop.h"
@@ -40,140 +43,135 @@
 QSize DecoratorDialog::previous_size;
 
 static const char * DefaultDecorators[] = {
-    "classmethod"
+  "classmethod"
 };
 
-DecoratorDialog::DecoratorDialog (QWidget * parent, QString & s, bool visit)
-    : QDialog (parent, "decorator editor", TRUE), value (s)
-{
-    setCaption (TR ("decorator dialog"));
+DecoratorDialog::DecoratorDialog(QWidget * parent, QString & s, bool visit)
+    : QDialog(parent, "decorator editor", TRUE), value(s) {
+  setCaption(TR("decorator dialog"));
+  
+  Q3VBoxLayout * vbox = new Q3VBoxLayout(this);
 
-    QVBoxLayout * vbox = new QVBoxLayout (this);
+  vbox->setMargin(5);
 
-    vbox->setMargin (5);
-
-    // multiline edit
-
-    e = new MultiLineEdit (this);
-    e->setText (s);
-    vbox->addWidget (e);
-
-    if (! visit) {
-        e->setFocus();
-
-        // to choose and add an decorator
-
-        QLabel * label =
-            new QLabel (TR ("\nTo add an decorator at the cursor position\n"
-                            "you may select it in the list and press 'add'\n"
-                            "\nSet operation static to add @staticmethod,\n"
-                            "set operation abstract to add @abstractmethod\n"),
-                        this);
-        label->setAlignment (Qt::AlignCenter);
-        vbox->addWidget (label);
-
-        QHBoxLayout * hbox = new QHBoxLayout (vbox);
-        QPushButton * add_button;
-
-        hbox->setMargin (5);
-        add_button = new QPushButton (TR ("Add "), this);
-        hbox->addWidget (add_button);
-        connect (add_button, SIGNAL (clicked()), this, SLOT (add_decorator()));
-
-        cb = new QComboBox (FALSE, this);
-
-        QSizePolicy sp = cb->sizePolicy();
-
-        sp.setHorData (QSizePolicy::Expanding);
-        cb->setSizePolicy (sp);
-        cb->setAutoCompletion (completion());
-
-        for (int i = 0;
-             i != sizeof (DefaultDecorators) /sizeof (*DefaultDecorators);
-             i += 1) {
-            cb->insertItem (DefaultDecorators[i]);
-        }
-
-        BrowserClass::instances (decorators);
-        if (! decorators.isEmpty()) {
-            QStringList list;
-
-            decorators.full_names (list);
-            cb->insertStringList (list);
-        }
-
-        hbox->addWidget (cb);
-
-        // buttons ok, cancel
-
-        vbox->addWidget (new QLabel ("", this));
-
-        hbox = new QHBoxLayout (vbox);
-        hbox->setMargin (5);
-        QPushButton * accept = new QPushButton (TR ("&OK"), this);
-        QPushButton * cancel = new QPushButton (TR ("&Cancel"), this);
-        QSize bs (cancel->sizeHint());
-
-        accept->setDefault (TRUE);
-        accept->setFixedSize (bs);
-        cancel->setFixedSize (bs);
-
-        hbox->addWidget (accept);
-        hbox->addWidget (cancel);
-
-        connect (accept, SIGNAL (clicked()), this, SLOT (accept()));
-        connect (cancel, SIGNAL (clicked()), this, SLOT (reject()));
-    } else {
-        e->setReadOnly (TRUE);
-
-        // buttons cancel
-
-        vbox->addWidget (new QLabel ("", this));
-
-        QHBoxLayout * hbox = new QHBoxLayout (vbox);
-
-        hbox->setMargin (5);
-        QPushButton * close = new QPushButton (TR ("&Close"), this);
-
-        hbox->addWidget (close);
-
-        connect (close, SIGNAL (clicked()), this, SLOT (reject()));
-    }
-
-    // not done in polish else the initial size is too small
-    UmlDesktop::setsize_center (this, previous_size, 0.3, 0.3);
-}
-
-DecoratorDialog::~DecoratorDialog()
-{
-    previous_size = size();
-}
-
-void DecoratorDialog::add_decorator()
-{
-    const int ndefault =
-        sizeof (DefaultDecorators) /sizeof (*DefaultDecorators);
-    int added_index = cb->currentItem();
-    QString added;
-
-    if (added_index < ndefault) {
-        added = DefaultDecorators[added_index];
-    } else {
-        BrowserNode * cl = decorators.at (added_index - ndefault);
-        added = cl->get_name();
-    }
-
-    e->insert ("@" + added + "\n");
+  // multiline edit
+  
+  e = new MultiLineEdit(this);
+  e->setText(s);  
+  vbox->addWidget(e);
+  
+  if (! visit) {
     e->setFocus();
+
+    // to choose and add an decorator
+    
+    QLabel * label =
+      new QLabel(TR("\nTo add an decorator at the cursor position\n"
+		    "you may select it in the list and press 'add'\n"
+		    "\nSet operation static to add @staticmethod,\n"
+		    "set operation abstract to add @abstractmethod\n"),
+		 this);
+    label->setAlignment(Qt::AlignCenter);
+    vbox->addWidget(label);
+    
+    Q3HBoxLayout * hbox = new Q3HBoxLayout(vbox);
+    QPushButton * add_button;
+    
+    hbox->setMargin(5);
+    add_button = new QPushButton(TR("Add "), this);
+    hbox->addWidget(add_button);  
+    connect(add_button, SIGNAL(clicked()), this, SLOT(add_decorator()));
+    
+    cb = new QComboBox(FALSE, this);
+    
+    QSizePolicy sp = cb->sizePolicy();
+    
+    sp.setHorData(QSizePolicy::Expanding);
+    cb->setSizePolicy(sp);
+    cb->setAutoCompletion(completion());
+    
+    for (int i = 0;
+	 i != sizeof(DefaultDecorators)/sizeof(*DefaultDecorators);
+	 i += 1)
+      cb->insertItem(DefaultDecorators[i]);
+    
+    BrowserClass::instances(decorators);
+    if (! decorators.isEmpty()) {
+      QStringList list;
+    
+      decorators.full_names(list);
+      cb->insertStringList(list);
+    }
+    
+    hbox->addWidget(cb);
+    
+    // buttons ok, cancel
+    
+    vbox->addWidget(new QLabel("", this));
+    
+    hbox = new Q3HBoxLayout(vbox);
+    hbox->setMargin(5);
+    QPushButton * accept = new QPushButton(TR("&OK"), this);
+    QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
+    QSize bs(cancel->sizeHint());
+    
+    accept->setDefault( TRUE );
+    accept->setFixedSize(bs);
+    cancel->setFixedSize(bs);
+    
+    hbox->addWidget(accept);
+    hbox->addWidget(cancel);
+    
+    connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  }
+  else {
+    e->setReadOnly(TRUE);
+
+    // buttons cancel
+    
+    vbox->addWidget(new QLabel("", this));
+    
+    Q3HBoxLayout * hbox = new Q3HBoxLayout(vbox);
+    
+    hbox->setMargin(5);
+    QPushButton * close = new QPushButton(TR("&Close"), this);
+
+    hbox->addWidget(close);
+    
+    connect(close, SIGNAL(clicked()), this, SLOT(reject()));
+  }
+  
+  // not done in polish else the initial size is too small
+  UmlDesktop::setsize_center(this, previous_size, 0.3, 0.3);
 }
 
-void DecoratorDialog::accept()
-{
-    value = e->text().stripWhiteSpace();
+DecoratorDialog::~DecoratorDialog() {
+  previous_size = size();
+}
 
-    if (!value.isEmpty()) {
-        value += '\n';
-    }
+void DecoratorDialog::add_decorator() {
+  const int ndefault = 
+    sizeof(DefaultDecorators)/sizeof(*DefaultDecorators);
+  int added_index = cb->currentItem();
+  QString added;
+  
+  if (added_index < ndefault)
+    added = DefaultDecorators[added_index];
+  else {
+    BrowserNode * cl = decorators.at(added_index - ndefault);
+    added = cl->get_name();
+  }
+  
+  e->insert("@" + added + "\n");
+  e->setFocus();
+}
 
-    QDialog::accept();
+void DecoratorDialog::accept() {
+  value = e->text().stripWhiteSpace();
+  
+  if (!value.isEmpty())
+    value += '\n';
+  
+  QDialog::accept();
 }

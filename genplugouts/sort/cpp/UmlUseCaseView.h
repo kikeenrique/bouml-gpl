@@ -12,7 +12,7 @@ class UmlUseCaseView : public UmlBaseUseCaseView {
   public:
     virtual void sort();
 
-    UmlUseCaseView(void * id, const QCString & n) : UmlBaseUseCaseView(id, n) {};
+    UmlUseCaseView(void * id, const QByteArray & n) : UmlBaseUseCaseView(id, n) {};
 
     virtual int orderWeight();
 

@@ -46,9 +46,9 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
   bool has_need_update = FALSE;
   QListIterator<BrowserView> it(browsers);
   
-  for (; it.current(); ++it) {
-    if (it.current()->is_need_update()) {
-      if (it.current()->is_cant_update()) {
+  for (; (*it); ++it) {
+    if ((*it)->is_need_update()) {
+      if ((*it)->is_cant_update()) {
 	has_ro = TRUE;
 	has_ro_need_update = TRUE;
       }
@@ -95,13 +95,13 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
   
   //
   
-  for (it.toFirst() ; it.current(); ++it) {
-    if (it.current()->is_need_update()) {
-      QCheckBox * cb = new QCheckBox(it.current()->get_dir().path(), this);
+  for (it.toFirst() ; (*it); ++it) {
+    if ((*it)->is_need_update()) {
+      QCheckBox * cb = new QCheckBox((*it)->get_dir().path(), this);
       
       vbox->addWidget(cb);
       
-      if (it.current()->is_cant_update())
+      if ((*it)->is_cant_update())
 	cb->setEnabled(FALSE);
       else
 	checks.append(cb);

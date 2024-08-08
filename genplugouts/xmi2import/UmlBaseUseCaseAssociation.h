@@ -12,12 +12,12 @@ class UmlClass;
 class UmlBaseUseCaseAssociation {
   public:
     // return the name
-    const QCString & name() const {
+    const QByteArray & name() const {
         return _name;
     }
 
     // return the stereotype
-    const QCString & stereotype() const {
+    const QByteArray & stereotype() const {
         return _stereotype;
     }
 
@@ -42,9 +42,9 @@ class UmlBaseUseCaseAssociation {
 
     UmlClass * _actor;
 
-    QCString _name;
+    QByteArray _name;
 
-    QCString _stereotype;
+    QByteArray _stereotype;
 
     bool _primary;
 

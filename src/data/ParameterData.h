@@ -26,44 +26,41 @@
 #ifndef PARAMETERDATA_H
 #define PARAMETERDATA_H
 
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 #include "PinParamData.h"
 
-class ParameterData : public SimpleData, public PinParamData
-{
-        Q_OBJECT
+class ParameterData : public SimpleData, public PinParamData {
+  Q_OBJECT
+    
+  friend class ParameterDialog;
+  
+  protected:
+    MyStr default_value;
 
-        friend class ParameterDialog;
+  public:
+    ParameterData();
+    ParameterData(ParameterData * model, BrowserNode * bn);
+  
+    virtual void do_connect(BrowserClass * c);
+    virtual void do_disconnect(BrowserClass * c);
+    
+    const char * get_default_value() const { return default_value; };
 
-    protected:
-        MyStr default_value;
-
-    public:
-        ParameterData();
-        ParameterData (ParameterData * model, BrowserNode * bn);
-
-        virtual void do_connect (BrowserClass * c);
-        virtual void do_disconnect (BrowserClass * c);
-
-        const char * get_default_value() const {
-            return default_value;
-        };
-
-        void edit();
-
-        virtual void send_uml_def (ToolCom * com, BrowserNode * bn,
-                                   const QString & comment);
-        virtual bool tool_cmd (ToolCom * com, const char * args,
-                               BrowserNode * bn, const QString & comment);
-        virtual void send_cpp_def (ToolCom * com);
-        virtual void send_java_def (ToolCom * com);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * &, char * &);
-
-    protected slots:
-        void on_delete();
+    void edit();
+    
+    virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
+			      const QString & comment);
+    virtual bool tool_cmd(ToolCom * com, const char * args,
+			  BrowserNode * bn, const QString & comment);
+    virtual void send_cpp_def(ToolCom * com);
+    virtual void send_java_def(ToolCom * com);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * &, char * &);
+    
+  protected slots:
+    void on_delete();
 };
 
 #endif

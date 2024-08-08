@@ -32,19 +32,19 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f, 
-				   const QCString & cl_stereotype,
+void UmlRelation::generate_inherit(const char *& sep, QTextStream & f, 
+				   const QByteArray & cl_stereotype,
 				   BooL & already) {
   if ((relationKind() == aGeneralisation) || (relationKind() == aRealization)) {
     UmlClass * role_type = roleType();
-    QCString other_stereotype = role_type->idl_stereotype();
+    QByteArray other_stereotype = role_type->idl_stereotype();
     
     if (other_stereotype == "ignored")
       return;
     
     if ((cl_stereotype == "union") || (cl_stereotype == "enum")) {
       write_trace_header();
-      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
+      UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
 		    + cl_stereotype + "</i> cannot inherits</b></font><br>");
       incr_warning();
       return;
@@ -55,7 +55,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
 	(other_stereotype == "enum") ||
 	(other_stereotype == "typedef")) {
       write_trace_header();
-      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot inherits an <i>")
+      UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot inherits an <i>")
 		    + other_stereotype + "</i></b></font><br>");
       incr_warning();
       return;
@@ -98,9 +98,9 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
   }
 }
 
-void UmlRelation::generate_decl(QTextOStream & f,
-				const QCString & cl_stereotype,
-				QCString indent, bool) {
+void UmlRelation::generate_decl(QTextStream & f,
+				const QByteArray & cl_stereotype,
+				QByteArray indent, bool) {
   if ((relationKind() != aGeneralisation) && 
       (relationKind() != aRealization) && 
       (relationKind() != aDependency)) {
@@ -119,7 +119,7 @@ void UmlRelation::generate_decl(QTextOStream & f,
     if (!idlDecl().isEmpty()) {
       const char * p = idlDecl();
       const char * pp = 0;
-      QCString s;
+      QByteArray s;
       
       while ((*p == ' ') || (*p == '\t'))
 	indent += *p++;
@@ -186,11 +186,11 @@ void UmlRelation::generate_decl(QTextOStream & f,
 	else if (!strncmp(p, "${case}", 7)) {
 	  p += 7;
 	  
-	  QCString idl_case = idlCase();
+	  QByteArray idl_case = idlCase();
 	  
 	  if (idl_case.isEmpty()) {
 	    write_trace_header();
-	    UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>unspecified <i>case</i> for <i>")
+	    UmlCom::trace(QByteArray("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>unspecified <i>case</i> for <i>")
 			  + name() + "</b></font><br>");
 	    incr_error();
 	  }

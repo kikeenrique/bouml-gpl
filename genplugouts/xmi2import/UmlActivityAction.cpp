@@ -15,7 +15,7 @@ UmlItem * UmlActivityAction::container(anItemKind kind, Token & token, FileIn & 
 
 void UmlActivityAction::import_it(FileIn & in, Token & token) {
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr))
@@ -24,7 +24,7 @@ void UmlActivityAction::import_it(FileIn & in, Token & token) {
 }
 
 void UmlActivityAction::import(FileIn & in, Token & token) {
-  QCString s = token.what();
+  QByteArray s = token.what();
   
   if ((s == "precondition") || (s == "postcondition") ||
       (s == "localprecondition") || (s == "localpostcondition"))
@@ -38,21 +38,21 @@ void UmlActivityAction::import(FileIn & in, Token & token) {
 
 void UmlActivityAction::readCondition(FileIn & in, Token & token) {
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if (s == "specification") {
-	QCString v = token.valueOf("body");
+	QByteArray v = token.valueOf("body");
 	
 	if (v.isNull())
 	  v = token.valueOf("value");	// UMODEL
 	
 	if (! token.closed()) {
 	  while (in.read(), !token.close("specification")) {
-	    QCString b = token.what();
+	    QByteArray b = token.what();
 	    
 	    if (b == "body")
 	      v = in.body("body");

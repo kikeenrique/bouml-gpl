@@ -39,9 +39,9 @@ int Namespace::AnonymousLevel;
 QValueList<QStringList> Namespace::UsingScope;
 
 // namespace aliases
-QMap<QCString,QCString> Namespace::Aliases;
+QMap<QByteArray,QByteArray> Namespace::Aliases;
 
-void Namespace::set(const QCString & s)
+void Namespace::set(const QByteArray & s)
 {
   // for upload only
   Stack.append(QString(s) + "::");
@@ -53,7 +53,7 @@ void Namespace::unset()
   Stack.remove(Stack.last());
 }
 
-void Namespace::enter(const QCString & s)
+void Namespace::enter(const QByteArray & s)
 {
   save_using_scope();
   Stack.append((Stack.isEmpty())
@@ -73,7 +73,7 @@ void Namespace::restore_using_scope()
   UsingScope.remove(UsingScope.begin());
 }
 
-QString Namespace::namespacify(QCString s, bool local) {
+QString Namespace::namespacify(QByteArray s, bool local) {
   QString r;
   int index = s.find("::");
   
@@ -81,7 +81,7 @@ QString Namespace::namespacify(QCString s, bool local) {
     r = ((const char *) s) + 2;
   else {
     if (index != -1) {
-      QMap<QCString,QCString>::ConstIterator it = 
+      QMap<QByteArray,QByteArray>::ConstIterator it = 
 	Aliases.find(s.left(index));
       
       if (it != Aliases.end())
@@ -98,11 +98,11 @@ QString Namespace::namespacify(QCString s, bool local) {
     : r;
 }
 
-QCString Namespace::current() {
+QByteArray Namespace::current() {
   if (Stack.isEmpty())
     return 0;
   
   QString & s = Stack.last();
   
-  return QCString(s.left(s.length() - 2));
+  return QByteArray(s.left(s.length() - 2));
 }

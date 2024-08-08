@@ -14,7 +14,7 @@
 class UmlActivityDiagram : public UmlBaseActivityDiagram, public UmlActivityItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityDiagram(void * id, const QCString & s) : UmlBaseActivityDiagram(id, s) {
+     UmlActivityDiagram(void * id, const QByteArray & s) : UmlBaseActivityDiagram(id, s) {
     }
 
 };

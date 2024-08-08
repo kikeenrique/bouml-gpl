@@ -26,7 +26,7 @@
 #ifndef SHORTCUTDIALOG_H
 #define SHORTCUTDIALOG_H
 
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "MyTable.h"
 
@@ -35,60 +35,58 @@ class QPushButton;
 
 class ShortcutTable;
 
-class ShortcutDialog : public QTabDialog
-{
-        Q_OBJECT
+class ShortcutDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    ShortcutTable * cmd_table;
+    ShortcutTable * tool_table;
 
-    protected:
-        ShortcutTable * cmd_table;
-        ShortcutTable * tool_table;
+    static QSize previous_size;
+  
+  protected:
 
-        static QSize previous_size;
-
-    protected:
-
-    public:
-        ShortcutDialog();
-        virtual ~ShortcutDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
+  public:
+    ShortcutDialog();
+    virtual ~ShortcutDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
 };
 
-class ShortcutTable : public MyTable
-{
-        Q_OBJECT
+class ShortcutTable : public MyTable {
+  Q_OBJECT
 
-    protected:
-        bool for_tool;
-        QString shift_copy;		// copy/cut/paste
-        QString control_copy;
-        QString alt_copy;
-        QString key_copy;
-        QString val_copy;
-        QStringList keys;
-        QStringList values;
-
-    public:
-        ShortcutTable (QWidget * parent, bool tool, int n);
-
-    protected:
-        void insert_row_before (int row);
-        void insert_row_after (int row);
-        void delete_row (int row);
-        void copy_row (int row);
-        void cut_row (int row);
-        void paste_row (int row);
-        void move_row (int from, int to);
-
-    public:
-        bool check (QStringList &);
-        void accept();
-
-    protected slots:
-        void button_pressed (int row, int col, int button, const QPoint & mousePos);
-        void value_changed (int row, int col);
+  protected:
+    bool for_tool;
+    QString shift_copy;		// copy/cut/paste
+    QString control_copy;
+    QString alt_copy;
+    QString key_copy;
+    QString val_copy;
+    QStringList keys;
+    QStringList values;
+  
+  public:
+    ShortcutTable(QWidget * parent, bool tool, int n);
+  
+  protected:
+    void insert_row_before(int row);
+    void insert_row_after(int row);
+    void delete_row(int row);
+    void copy_row(int row);
+    void cut_row(int row);
+    void paste_row(int row);
+    void move_row(int from, int to);
+    
+  public:
+    bool check(QStringList &);
+    void accept();
+  
+  protected slots:
+    void button_pressed(int row, int col, int button, const QPoint & mousePos);
+    void value_changed(int row, int col);
 };
 
 #endif

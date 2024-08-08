@@ -13,7 +13,7 @@ void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlS
   fr->write(out, diagram, msgs);
 }
 
-void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlSequenceMessage > & msgs, QCString oper) {
+void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlSequenceMessage > & msgs, QByteArray oper) {
   QListIterator<UmlSequenceMessage> it(msgs);
   UmlSequenceMessage * m;
   
@@ -33,7 +33,7 @@ void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlS
       out.id_prefix(diagram, "GUARD", rank);
       out << ">\n";
 
-      QCString txt = texts()[0];
+      QByteArray txt = texts()[0];
       
       txt.stripWhiteSpace();
       if ((txt.at(0) == '[') && (txt.at(txt.length() - 1) == ']'))
@@ -41,8 +41,8 @@ void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlS
       
       if (oper == "loop") {
 	int index;
-	QCString min;
-	QCString max;
+	QByteArray min;
+	QByteArray max;
 	
 	if ((index = txt.find(',')) != -1) {
 	  min = txt.left(index);
@@ -101,7 +101,7 @@ void UmlFragmentCompartment::write(FileOut & out, UmlItem * diagram, QList< UmlS
     out << "\" setting=\"false\"/>\n";
   }
   
-  while ((m = it.current()) != 0) {
+  while ((m = (*it)) != 0) {
     UmlFragmentCompartment * fc = m->fragment();
     
     if (fc == 0)
@@ -153,7 +153,7 @@ void UmlFragmentCompartment::bypass(QList< UmlSequenceMessage > & msgs) {
   QListIterator<UmlSequenceMessage> it(msgs);
   UmlSequenceMessage * m;
   
-  while ((m = it.current()) != 0) {
+  while ((m = (*it)) != 0) {
     UmlFragmentCompartment * fc = m->fragment();
     
     if (fc == 0)
@@ -177,7 +177,7 @@ void UmlFragmentCompartment::bypass(QList< UmlSequenceMessage > & msgs) {
 	// not included in compartment or under
 	++it;
       else
-	msgs.removeRef(m);
+	msgs.removeOne(m);
     }
   }
 }

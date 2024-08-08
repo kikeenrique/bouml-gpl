@@ -52,11 +52,11 @@ void UmlPackage::roseImport() {
   }
 }
 
-QCString UmlPackage::fullName() {
+QByteArray UmlPackage::fullName() {
   return (this == getProject()) ? name() : UmlItem::fullName();
 }
 
-void UmlPackage::subArtifacts(QList<UmlArtifact> & l, QCString name, QCString deplview_name) {
+void UmlPackage::subArtifacts(QList<UmlArtifact> & l, QByteArray name, QByteArray deplview_name) {
   UmlDeploymentView * deplview;
   
   for (deplview = _deplviews.first(); deplview != 0; deplview = _deplviews.next()) {
@@ -75,7 +75,7 @@ void UmlPackage::subArtifacts(QList<UmlArtifact> & l, QCString name, QCString de
 
 }
 
-void UmlPackage::subDeplViews(QList<UmlDeploymentView> & l, QCString s) {
+void UmlPackage::subDeplViews(QList<UmlDeploymentView> & l, QByteArray s) {
   UmlDeploymentView * deplview;
   
   for (deplview = _deplviews.first(); deplview != 0; deplview = _deplviews.next())
@@ -83,7 +83,7 @@ void UmlPackage::subDeplViews(QList<UmlDeploymentView> & l, QCString s) {
       l.append(deplview);
 }
 
-UmlPackage * UmlPackage::addPackage(QCString s) {
+UmlPackage * UmlPackage::addPackage(QByteArray s) {
   UmlPackage * r;
   
   while ((r = UmlPackage::create(this, s)) == 0)
@@ -92,9 +92,9 @@ UmlPackage * UmlPackage::addPackage(QCString s) {
   return r;
 }
 
-UmlDeploymentView * UmlPackage::addDeplView(QCString s, UmlPackage * p) {
+UmlDeploymentView * UmlPackage::addDeplView(QByteArray s, UmlPackage * p) {
   UmlDeploymentView * dpv;
-  QCString bn = s;
+  QByteArray bn = s;
   
   while ((dpv = UmlDeploymentView::create(p, s, bn)) == 0)
     s += '_';
@@ -105,7 +105,7 @@ UmlDeploymentView * UmlPackage::addDeplView(QCString s, UmlPackage * p) {
 }
 
 bool UmlPackage::import(File & f) {
-  QCString s;
+  QByteArray s;
 
   switch (f.read(s)) {
   case -1:

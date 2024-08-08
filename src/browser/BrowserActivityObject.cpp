@@ -27,9 +27,14 @@
 
 
 
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qpainter.h>
 #include <qcursor.h>
+//Added by qt3to4:
+#include <QTextStream>
+#include <QPixmap>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 
 #include "BrowserActivityObject.h"
 #include "ActivityObjectData.h"
@@ -53,787 +58,721 @@
 #include "mu.h"
 #include "translate.h"
 
-IdDict<BrowserActivityObject> BrowserActivityObject::all (257, __FILE__);
+IdDict<BrowserActivityObject> BrowserActivityObject::all(257, __FILE__);
 QStringList BrowserActivityObject::its_default_stereotypes;	// unicode
 
-BrowserActivityObject::BrowserActivityObject (QString s, BrowserNode * p, int id)
-    : BrowserNode (s, p), Labeled<BrowserActivityObject> (all, id),
-      def (new ActivityObjectData), associated_diagram (0)
-{
-    def->set_browser_node (this);
+BrowserActivityObject::BrowserActivityObject(QString s, BrowserNode * p, int id)
+    : BrowserNode(s, p), Labeled<BrowserActivityObject>(all, id),
+      def(new ActivityObjectData), associated_diagram(0) {
+  def->set_browser_node(this);
 }
 
-BrowserActivityObject::BrowserActivityObject (int id)
-    : BrowserNode(), Labeled<BrowserActivityObject> (all, id),
-      def (new ActivityObjectData), associated_diagram (0)
-{
-    // not yet read
-    def->set_browser_node (this);
+BrowserActivityObject::BrowserActivityObject(int id)
+    : BrowserNode(), Labeled<BrowserActivityObject>(all, id),
+      def(new ActivityObjectData), associated_diagram(0) {
+  // not yet read
+  def->set_browser_node(this);
 }
 
-BrowserActivityObject::BrowserActivityObject (const BrowserActivityObject * model, BrowserNode * p)
-    : BrowserNode (model->name, p), Labeled<BrowserActivityObject> (all, 0), associated_diagram (0)
-{
-    def = new ActivityObjectData (model->def, this);
-    comment = model->comment;
+BrowserActivityObject::BrowserActivityObject(const BrowserActivityObject * model, BrowserNode * p)
+    : BrowserNode(model->name, p), Labeled<BrowserActivityObject>(all, 0), associated_diagram(0) {
+  def = new ActivityObjectData(model->def, this);
+  comment = model->comment;
 }
 
-BrowserNode * BrowserActivityObject::duplicate (BrowserNode * p, QString name)
-{
-    BrowserNode * result = new BrowserActivityObject (this, p);
+BrowserNode * BrowserActivityObject::duplicate(BrowserNode * p, QString name) {
+  BrowserNode * result = new BrowserActivityObject(this, p);
 
-    result->set_name ( (const char *) name);
-    result->update_stereotype();
+  result->set_name((const char *) name);
+  result->update_stereotype();
 
-    return result;
+  return result;
 }
 
-BrowserActivityObject::~BrowserActivityObject()
-{
-    all.remove (get_ident());
-    delete def;
+BrowserActivityObject::~BrowserActivityObject() {
+  all.remove(get_ident());
+  delete def;
 }
 
-void BrowserActivityObject::clear (bool old)
+void BrowserActivityObject::clear(bool old)
 {
-    all.clear (old);
+  all.clear(old);
 }
 
 void BrowserActivityObject::update_idmax_for_root()
 {
-    all.update_idmax_for_root();
+  all.update_idmax_for_root();
 }
 
-void BrowserActivityObject::prepare_update_lib() const
-{
-    all.memo_id_oid (get_ident(), original_id);
+void BrowserActivityObject::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 
-    for (QListViewItem * child = firstChild();
-         child != 0;
-         child = child->nextSibling()) {
-        ( (BrowserNode *) child)->prepare_update_lib();
-    }
+  for (Q3ListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
 
-void BrowserActivityObject::referenced_by (QList<BrowserNode> & l, bool ondelete)
-{
-    BrowserNode::referenced_by (l, ondelete);
-    BrowserFlow::compute_referenced_by (l, this);
-    if (! ondelete) {
-        BrowserActivityDiagram::compute_referenced_by (l, this, "activityobjectcanvas", "activityobject_ref");
-    }
+void BrowserActivityObject::referenced_by(QList<BrowserNode *> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  BrowserFlow::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "activityobjectcanvas", "activityobject_ref");
 }
 
-void BrowserActivityObject::compute_referenced_by (QList<BrowserNode> & l,
-        BrowserNode * target)
+void BrowserActivityObject::compute_referenced_by(QList<BrowserNode *> & l,
+						  BrowserNode * target)
 {
-    IdIterator<BrowserActivityObject> it (all);
+  IdIterator<BrowserActivityObject> it(all);
 
-    while (it.current()) {
-        if (!it.current()->deletedp()) {
-            if (it.current()->def->get_type().type == target) {
-                l.append (it.current());
-            }
-        }
-        ++it;
+  while (it.current()) {
+    if (!it.current()->deletedp()) {
+      if (it.current()->def->get_type().type == target)
+	l.append(it.current());
     }
+    ++it;
+  }
 }
 
-void BrowserActivityObject::renumber (int phase)
-{
-    if (phase != -1) {
-        new_ident (phase, all);
-    }
+void BrowserActivityObject::renumber(int phase) {
+  if (phase != -1)
+    new_ident(phase, all);
 }
 
-const QPixmap * BrowserActivityObject::pixmap (int) const
-{
-    if (deletedp()) {
-        return DeletedActionIcon;
-    }
+const QPixmap * BrowserActivityObject::pixmap(int) const {
+  if (deletedp())
+    return DeletedActionIcon;
 
-    const QPixmap * px = ProfiledStereotypes::browserPixmap (def->get_stereotype());
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
 
-    if (px != 0) {
-        return px;
-    } else if (is_marked) {
-        return ActionMarkedIcon;
-    } else {
-        return ActionIcon;
-    }
+  if (px != 0)
+    return px;
+  else if (is_marked)
+    return ActionMarkedIcon;
+  else
+    return ActionIcon;
 }
 
-void BrowserActivityObject::iconChanged()
-{
-    repaint();
-    def->modified();
+void BrowserActivityObject::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 // add flow or dependency
-BasicData * BrowserActivityObject::add_relation (UmlCode l, BrowserNode * end)
-{
-    if (l == UmlFlow) {
-        return (new BrowserFlow (this, end))->get_data();
-    } else {
-        return BrowserNode::add_relation (l, end);
-    }
+BasicData * BrowserActivityObject::add_relation(UmlCode l, BrowserNode * end) {
+  if (l == UmlFlow)
+    return (new BrowserFlow(this, end))->get_data();
+  else
+    return BrowserNode::add_relation(l, end);
 }
 
 // a flow/dependency may be added in all the cases
-QString BrowserActivityObject::may_start() const
-{
-    return 0;
+QString BrowserActivityObject::may_start() const {
+  return 0;
 }
 
 // connexion by a flow or dependency
-QString BrowserActivityObject::may_connect (UmlCode & l, const BrowserNode * dest) const
-{
-    switch (l) {
-        case UmlFlow: {
-            BrowserNode * container = dest->get_container (UmlActivity);
+QString BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode * dest) const {
+  switch (l) {
+  case UmlFlow:
+    {
+      BrowserNode * container = dest->get_container(UmlActivity);
 
-            if (container == 0) {
-                return TR ("illegal");
-            }
+      if (container == 0)
+	return TR("illegal");
 
-            if (get_container (UmlActivity) != container) {
-                return TR ("not in the same activity");
-            }
+      if (get_container(UmlActivity) != container)
+	return TR("not in the same activity");
 
-            const BrowserActivityElement * elt =
-                dynamic_cast<const BrowserActivityElement *> (dest);
+      const BrowserActivityElement * elt =
+	dynamic_cast<const BrowserActivityElement *>(dest);
 
-            return (elt == 0)
-                   ? TR ("illegal")
-                   : elt->connexion_from (def->get_is_control());
-        }
-        case UmlDependency:
-            l = UmlDependOn;
-            // no break;
-        case UmlDependOn:
-            switch (dest->get_type()) {
-                case UmlPackage:
-                case UmlActivity:
-                case UmlActivityAction:
-                case UmlActivityObject:
-                    return 0;
-                default:
-                    return TR ("illegal");
-            }
-        default:
-            return TR ("illegal");
+      return (elt == 0)
+	? TR("illegal")
+	: elt->connexion_from(def->get_is_control());
     }
+  case UmlDependency:
+    l = UmlDependOn;
+    // no break;
+  case UmlDependOn:
+    switch (dest->get_type()) {
+    case UmlPackage:
+    case UmlActivity:
+    case UmlActivityAction:
+    case UmlActivityObject:
+      return 0;
+    default:
+      return TR("illegal");
+    }
+  default:
+      return TR("illegal");
+  }
 }
 
-QString BrowserActivityObject::connexion_from (bool) const
-{
-    return 0;
+QString BrowserActivityObject::connexion_from(bool) const {
+  return 0;
 }
 
 BrowserActivityObject *
-BrowserActivityObject::add_activityobject (BrowserNode * future_parent,
-        const char * s)
+BrowserActivityObject::add_activityobject(BrowserNode * future_parent,
+					  const char * s)
 {
-    QString name;
+  QString name;
 
-    if (s != 0) {
-        name = s;
-    } else if (!future_parent->enter_child_name (name, TR ("enter activity object's \nname (may be empty) : "),
-               UmlActivityObject, TRUE, TRUE)) {
-        return 0;
-    }
+  if (s != 0)
+    name = s;
+  else if (!future_parent->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
+					    UmlActivityObject, TRUE, TRUE))
+    return 0;
 
-    BrowserActivityObject * r =
-        new BrowserActivityObject (name, future_parent);
+  BrowserActivityObject * r =
+    new BrowserActivityObject(name, future_parent);
 
-    future_parent->setOpen (TRUE);
-    future_parent->package_modified();
+  future_parent->setOpen(TRUE);
+  future_parent->package_modified();
 
-    return r;
+  return r;
 }
 
-bool BrowserActivityObject::same_name (const QString &, UmlCode) const
-{
-    // same name allowed
-    return FALSE;
+bool BrowserActivityObject::same_name(const QString &, UmlCode) const {
+  // same name allowed
+  return FALSE;
 }
 
-BrowserActivityObject * BrowserActivityObject::get_activityobject (BrowserNode * future_parent)
+BrowserActivityObject * BrowserActivityObject::get_activityobject(BrowserNode * future_parent)
 {
-    BrowserNodeList l;
-    QListViewItem * child;
+  BrowserNodeList l;
+  Q3ListViewItem * child;
 
-    for (child = future_parent->firstChild(); child != 0; child = child->nextSibling())
-        if (! ( (BrowserNode *) child)->deletedp() &&
-            ( ( (BrowserNode *) child)->get_type() == UmlActivityObject) &&
-            ( ( (BrowserNode *) child)->get_name() [0] != 0)) {
-            l.append ( (BrowserNode *) child);
-        }
+  for (child = future_parent->firstChild(); child != 0; child = child->nextSibling())
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlActivityObject) &&
+	(((BrowserNode *) child)->get_name()[0] != 0))
+      l.append((BrowserNode *) child);
 
-    BrowserNode * old = 0;
-    QString name;
+  BrowserNode * old = 0;
+  QString name;
 
-    if (!future_parent->enter_child_name (name, TR ("enter activity object's \nname (may be empty) : "),
-                                          UmlActivityObject, l, &old, TRUE, TRUE)) {
-        return 0;
-    }
+  if (!future_parent->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
+				       UmlActivityObject, l, &old, TRUE, TRUE))
+    return 0;
 
-    if (old != 0) {
-        return ( (BrowserActivityObject *) old);
-    }
+  if (old != 0)
+    return ((BrowserActivityObject *) old);
 
-    BrowserActivityObject * r =
-        new BrowserActivityObject (name, future_parent);
+  BrowserActivityObject * r =
+    new BrowserActivityObject(name, future_parent);
 
-    future_parent->setOpen (TRUE);
-    future_parent->package_modified();
+  future_parent->setOpen(TRUE);
+  future_parent->package_modified();
 
-    return r;
+  return r;
 }
 
-void BrowserActivityObject::menu()
-{
-    QPopupMenu m (0, "Activity object");
-    QPopupMenu toolm (0);
+void BrowserActivityObject::menu() {
+  Q3PopupMenu m(0, "Activity object");
+  Q3PopupMenu toolm(0);
 
-    m.insertItem (new MenuTitle (def->definition (FALSE, TRUE), m.font()), -1);
-    m.insertSeparator();
-    if (!deletedp()) {
-        m.setWhatsThis (m.insertItem (TR ("Edit"), 1),
-                        TR ("to edit the <i>activity object</i>, \
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
+  m.insertSeparator();
+  if (!deletedp()) {
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>activity object</i>, \
 a double click with the left mouse button does the same thing"));
-        if (!is_read_only) {
-            m.setWhatsThis (m.insertItem (TR ("Duplicate"), 2),
-                            TR ("to copy the <i>activity object</i> in a new one"));
-            m.insertSeparator();
-            if (edition_number == 0)
-                m.setWhatsThis (m.insertItem (TR ("Delete"), 3),
-                                TR ("to delete the <i>activity object</i>. \
+    if (!is_read_only) {
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>activity object</i> in a new one"));
+      m.insertSeparator();
+      if (edition_number == 0)
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>activity object</i>. \
 Note that you can undelete it after"));
-        }
-        m.setWhatsThis (m.insertItem (TR ("Referenced by"), 4),
-                        TR ("to know who reference the <i>activity object</i> \
+    }
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>activity object</i> \
 through a flow or dependency"));
-        mark_menu (m, TR ("the activity object"), 90);
-        ProfiledStereotypes::menu (m, this, 99990);
-        if ( (edition_number == 0) &&
-             Tool::menu_insert (&toolm, get_type(), 100)) {
-            m.insertSeparator();
-            m.insertItem (TR ("Tool"), &toolm);
-        }
-    } else if (!is_read_only && (edition_number == 0)) {
-        m.setWhatsThis (m.insertItem (TR ("Undelete"), 5),
-                        TR ("to undelete the <i>activity object</i>"));
+    mark_menu(m, TR("the activity object"), 90);
+    ProfiledStereotypes::menu(m, this, 99990);
+    if ((edition_number == 0) &&
+	Tool::menu_insert(&toolm, get_type(), 100)) {
+      m.insertSeparator();
+      m.insertItem(TR("Tool"), &toolm);
+    }
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 5),
+		   TR("to undelete the <i>activity object</i>"));
 
-        QListViewItem * child;
+    Q3ListViewItem * child;
 
-        for (child = firstChild(); child != 0; child = child->nextSibling()) {
-            if ( ( (BrowserNode *) child)->deletedp()) {
-                m.setWhatsThis (m.insertItem (TR ("Undelete recursively"), 6),
-                                TR ("undelete the <i>activity object</i> and its <i>expansion nodes</i> and \
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 6),
+		       TR("undelete the <i>activity object</i> and its <i>expansion nodes</i> and \
 <i>flows</i> or <i>dependencies</i>(except if the element at the other side is also deleted)"));
-                break;
-            }
-        }
+	break;
+      }
     }
+  }
 
-    exec_menu_choice (m.exec (QCursor::pos()));
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserActivityObject::exec_menu_choice (int rank)
-{
-    switch (rank) {
-        case 1:
-            open (TRUE);
-            return;
-        case 2: {
-            QString name;
+void BrowserActivityObject::exec_menu_choice(int rank) {
+  switch (rank) {
+  case 1:
+    open(TRUE);
+    return;
+  case 2:
+    {
+      QString name;
 
-            if ( ( (BrowserNode *) parent())->enter_child_name (name, TR ("enter activity object's \nname (may be empty) : "),
-                    get_type(), TRUE, TRUE)) {
-                duplicate ( (BrowserNode *) parent(), name)->select_in_browser();
-            }
-        }
-        break;
-        case 3:
-            delete_it();
-            break;
-        case 4:
-            ReferenceDialog::show (this);
-            return;
-        case 5:
-            BrowserNode::undelete (FALSE);
-            break;
-        case 6:
-            BrowserNode::undelete (TRUE);
-            break;
-        default:
-            if (rank >= 99990) {
-                ProfiledStereotypes::choiceManagement (this, rank - 99990);
-            } else if (rank >= 100) {
-                ToolCom::run (Tool::command (rank - 100), this);
-            } else {
-                mark_management (rank - 90);
-            }
-            return;
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
+						       get_type(), TRUE, TRUE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
-    ( (BrowserNode *) parent())->modified();
-    package_modified();
+    break;
+  case 3:
+    delete_it();
+    break;
+  case 4:
+    ReferenceDialog::show(this);
+    return;
+  case 5:
+    BrowserNode::undelete(FALSE);
+    break;
+  case 6:
+    BrowserNode::undelete(TRUE);
+    break;
+  default:
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
+      ToolCom::run(Tool::command(rank - 100), this);
+    else
+      mark_management(rank - 90);
+    return;
+  }
+  ((BrowserNode *) parent())->modified();
+  package_modified();
 }
 
-void BrowserActivityObject::apply_shortcut (QString s)
-{
-    int choice = -1;
+void BrowserActivityObject::apply_shortcut(QString s) {
+  int choice = -1;
 
-    if (!deletedp()) {
-        if (s == "Edit") {
-            choice = 1;
-        }
-        if (!is_read_only) {
-            if (s == "Duplicate") {
-                choice = 2;
-            } else if (edition_number == 0)
-                if (s == "Delete") {
-                    choice = 3;
-                }
-        }
-        if (s == "Referenced by") {
-            choice = 4;
-        }
-        mark_shortcut (s, choice, 90);
-        if (edition_number == 0) {
-            Tool::shortcut (s, choice, get_type(), 100);
-        }
-    } else if (!is_read_only && (edition_number == 0)) {
-        if (s == "Undelete") {
-            choice = 5;
-        }
-
-        QListViewItem * child;
-
-        for (child = firstChild(); child != 0; child = child->nextSibling()) {
-            if ( ( (BrowserNode *) child)->deletedp()) {
-                if (s == "Undelete recursively") {
-                    choice = 6;
-                }
-                break;
-            }
-        }
+  if (!deletedp()) {
+    if (s == "Edit")
+      choice = 1;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 2;
+      else if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 3;
     }
+    if (s == "Referenced by")
+      choice = 4;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 5;
 
-    exec_menu_choice (choice);
-}
+    Q3ListViewItem * child;
 
-void BrowserActivityObject::open (bool force_edit)
-{
-    if (!force_edit &&
-        (associated_diagram != 0) &&
-        !associated_diagram->deletedp()) {
-        associated_diagram->open (FALSE);
-    } else if (!is_edited) {
-        def->edit ("Activity Object", its_default_stereotypes);
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 6;
+	break;
+      }
     }
+  }
+
+  exec_menu_choice(choice);
 }
 
-void BrowserActivityObject::modified()
-{
-    repaint();
-    ( (BrowserNode *) parent())->modified();
-    // to update drawing
-    def->modified();
+void BrowserActivityObject::open(bool force_edit) {
+  if (!force_edit &&
+      (associated_diagram != 0) &&
+      !associated_diagram->deletedp())
+    associated_diagram->open(FALSE);
+  else if (!is_edited)
+    def->edit("Activity Object", its_default_stereotypes);
 }
 
-UmlCode BrowserActivityObject::get_type() const
-{
-    return UmlActivityObject;
+void BrowserActivityObject::modified() {
+  repaint();
+  ((BrowserNode *) parent())->modified();
+  // to update drawing
+  def->modified();
 }
 
-QString BrowserActivityObject::get_stype() const
-{
-    return TR ("activity object");
+UmlCode BrowserActivityObject::get_type() const {
+  return UmlActivityObject;
 }
 
-int BrowserActivityObject::get_identifier() const
-{
-    return get_ident();
+QString BrowserActivityObject::get_stype() const {
+  return TR("activity object");
 }
 
-const char * BrowserActivityObject::help_topic() const
-{
-    return "activityobject";
+int BrowserActivityObject::get_identifier() const {
+  return get_ident();
 }
 
-BasicData * BrowserActivityObject::get_data() const
-{
-    return def;
+const char * BrowserActivityObject::help_topic() const  {
+  return "activityobject";
 }
 
-bool BrowserActivityObject::allow_empty() const
-{
-    return TRUE;
+BasicData * BrowserActivityObject::get_data() const {
+  return def;
 }
 
-QString BrowserActivityObject::full_name (bool rev, bool) const
-{
-    QString s = name;
-
-    if (s.isEmpty()) {
-        s = "<anonymous activity object>";
-    }
-
-    return fullname (s, rev);
+bool BrowserActivityObject::allow_empty() const {
+  return TRUE;
 }
 
-BrowserNode * BrowserActivityObject::get_associated() const
-{
-    return associated_diagram;
+QString BrowserActivityObject::full_name(bool rev, bool) const {
+  QString s = name;
+
+  if (s.isEmpty())
+    s = "<anonymous activity object>";
+
+  return fullname(s, rev);
 }
 
-void BrowserActivityObject::set_associated_diagram (BrowserActivityDiagram * dg,
-        bool on_read)
-{
-    if (associated_diagram != dg) {
-        if (associated_diagram != 0)
-            QObject::disconnect (associated_diagram->get_data(), SIGNAL (deleted()),
-                                 def, SLOT (on_delete()));
-        if ( (associated_diagram = dg) != 0)
-            QObject::connect (associated_diagram->get_data(), SIGNAL (deleted()),
-                              def, SLOT (on_delete()));
-
-        if (! on_read) {
-            package_modified();
-        }
-    }
+BrowserNode * BrowserActivityObject::get_associated() const {
+  return associated_diagram;
 }
 
-void BrowserActivityObject::on_delete()
-{
-    if (associated_diagram && associated_diagram->deletedp()) {
-        associated_diagram = 0;
-    }
+void BrowserActivityObject::set_associated_diagram(BrowserActivityDiagram * dg,
+						   bool on_read) {
+  if (associated_diagram != dg) {
+    if (associated_diagram != 0)
+      QObject::disconnect(associated_diagram->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+    if ((associated_diagram = dg) != 0)
+      QObject::connect(associated_diagram->get_data(), SIGNAL(deleted()),
+		       def, SLOT(on_delete()));
+
+    if (! on_read)
+      package_modified();
+  }
+}
+
+void BrowserActivityObject::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
 }
 
 void BrowserActivityObject::init()
 {
-    its_default_stereotypes.clear();
+  its_default_stereotypes.clear();
 
-    its_default_stereotypes.append ("datastore");
-    its_default_stereotypes.append ("centralBuffer");
+  its_default_stereotypes.append("datastore");
+  its_default_stereotypes.append("centralBuffer");
 }
 
 // unicode
 const QStringList & BrowserActivityObject::default_stereotypes()
 {
-    return its_default_stereotypes;
+  return its_default_stereotypes;
 }
 
-bool BrowserActivityObject::api_compatible (unsigned v) const
-{
-    return (v > 24);
+bool BrowserActivityObject::api_compatible(unsigned v) const {
+  return (v > 24);
 }
 
-bool BrowserActivityObject::tool_cmd (ToolCom * com, const char * args)
-{
-    switch ( (unsigned char) args[-1]) {
-        case createCmd: {
-            bool ok = TRUE;
+bool BrowserActivityObject::tool_cmd(ToolCom * com, const char * args) {
+  switch ((unsigned char) args[-1]) {
+  case createCmd:
+    {
+      bool ok = TRUE;
 
-            if (is_read_only && !root_permission()) {
-                ok = FALSE;
-            } else {
-                UmlCode k = com->get_kind (args);
+      if (is_read_only && !root_permission())
+	ok = FALSE;
+      else {
+	UmlCode k = com->get_kind(args);
 
-                switch (k) {
-                        // dependency not yet managed
-                    case UmlFlow: {
-                        BrowserNode * end = (BrowserNode *) com->get_id (args);
+	switch (k) {
+	// dependency not yet managed
+	case UmlFlow:
+	  {
+	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 
-                        if (may_connect (k, end).isEmpty()) {
-                            (new BrowserFlow (this, end))->write_id (com);
-                        } else {
-                            ok = FALSE;
-                        }
-                    }
-                    break;
-                    case UmlSimpleRelations: {
-                        UmlCode c;
+	    if (may_connect(k, end).isEmpty())
+	      (new BrowserFlow(this, end))->write_id(com);
+	    else
+	      ok = FALSE;
+	  }
+	  break;
+	case UmlSimpleRelations:
+	  {
+	    UmlCode c;
 
-                        if (!com->get_relation_kind (c, args)) {
-                            ok = FALSE;
-                        } else {
-                            BrowserNode * end = (BrowserNode *) com->get_id (args);
+	    if (!com->get_relation_kind(c, args))
+	      ok = FALSE;
+	    else {
+	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 
-                            if (may_connect (c, end).isEmpty()) {
-                                add_relation (c, end)->get_browser_node()->write_id (com);
-                            } else {
-                                ok = FALSE;
-                            }
-                        }
-                    }
-                    break;
-                    default:
-                        ok = FALSE;
-                }
-            }
+	      if (may_connect(c, end).isEmpty())
+		add_relation(c, end)->get_browser_node()->write_id(com);
+	      else
+		ok = FALSE;
+	    }
+	  }
+	  break;
+	default:
+	  ok = FALSE;
+	}
+      }
 
-            if (! ok) {
-                com->write_id (0);
-            } else {
-                package_modified();
-            }
+      if (! ok)
+	com->write_id(0);
+      else
+	package_modified();
 
-            return TRUE;
-        }
-        case setAssocDiagramCmd:
-            if (is_read_only && !root_permission()) {
-                com->write_ack (FALSE);
-            } else {
-                set_associated_diagram ( (BrowserActivityDiagram *) com->get_id (args));
-                com->write_ack (TRUE);
-            }
-            return TRUE;
-        default:
-            return (def->tool_cmd (com, args, this, comment) ||
-                    BrowserNode::tool_cmd (com, args));
+      return TRUE;
     }
-}
-
-bool BrowserActivityObject::may_contains_them (const QList<BrowserNode> & l,
-        BooL & duplicable) const
-{
-    QListIterator<BrowserNode> it (l);
-
-    for (; it.current(); ++it) {
-        switch (it.current()->get_type()) {
-            case UmlFlow:
-            case UmlDependOn:
-                return ( ( (const BrowserNode *) it.current()->parent()) == this);
-            default:
-                return FALSE;
-        }
-
-        if (! may_contains (it.current(), FALSE)) {
-            return FALSE;
-        }
-
-        duplicable = may_contains_it (it.current());
+  case setAssocDiagramCmd:
+    if (is_read_only && !root_permission())
+      com->write_ack(FALSE);
+    else {
+      set_associated_diagram((BrowserActivityDiagram *) com->get_id(args));
+      com->write_ack(TRUE);
     }
-
     return TRUE;
+  default:
+    return (def->tool_cmd(com, args, this, comment) ||
+	    BrowserNode::tool_cmd(com, args));
+  }
 }
 
-void BrowserActivityObject::DragMoveEvent (QDragMoveEvent * e)
-{
-    if (UmlDrag::canDecode (e, BrowserFlow::drag_key (this)) ||
-        UmlDrag::canDecode (e, BrowserSimpleRelation::drag_key (this))) {
-        if (!is_read_only) {
-            e->accept();
-        } else {
-            e->ignore();
-        }
-    } else {
-        ( (BrowserNode *) parent())->DragMoveInsideEvent (e);
+bool BrowserActivityObject::may_contains_them(const QList<BrowserNode *> & l,
+					      BooL & duplicable) const {
+  QList<BrowserNode*>::const_iterator it;
+  for (it = l.begin(); it!= l.end(); it++) {
+    switch ((*it)->get_type()) {
+    case UmlFlow:
+    case UmlDependOn:
+      return (((const BrowserNode *) (*it)->parent()) == this);
+    default:
+      return FALSE;
     }
+
+    if (! may_contains((*it), FALSE))
+      return FALSE;
+
+    duplicable = may_contains_it((*it));
+  }
+
+  return TRUE;
 }
 
-void BrowserActivityObject::DropEvent (QDropEvent * e)
-{
-    DropAfterEvent (e, 0);
+void BrowserActivityObject::DragMoveEvent(QDragMoveEvent * e) {
+  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)) ||
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
+  else
+    ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
-void BrowserActivityObject::DragMoveInsideEvent (QDragMoveEvent * e)
-{
-    if (!is_read_only &&
-        (UmlDrag::canDecode (e, BrowserFlow::drag_key (this)) ||
-         UmlDrag::canDecode (e, BrowserSimpleRelation::drag_key (this)))) {
-        e->accept();
-    } else {
-        e->ignore();
+void BrowserActivityObject::DropEvent(QDropEvent * e) {
+  DropAfterEvent(e, 0);
+}
+
+void BrowserActivityObject::DragMoveInsideEvent(QDragMoveEvent * e) {
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
+    e->accept();
+  else
+    e->ignore();
+}
+
+void BrowserActivityObject::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
+  BrowserNode * bn;
+
+  if ((((bn = UmlDrag::decode(e, BrowserFlow::drag_key(this))) != 0) ||
+       ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
+      (bn != after) && (bn != this)) {
+    if (may_contains(bn, FALSE))
+      move(bn, after);
+    else {
+      msg_critical(TR("Error"), TR("Forbidden"));
+      e->ignore();
     }
+  }
+  else if ((bn == 0) && (after == 0))
+    ((BrowserNode *) parent())->DropAfterEvent(e, this);
+  else
+    e->ignore();
 }
 
-void BrowserActivityObject::DropAfterEvent (QDropEvent * e, BrowserNode * after)
-{
-    BrowserNode * bn;
+QString BrowserActivityObject::drag_key() const {
+  return QString::number(UmlActivityObject)
+    + "#" + QString::number((unsigned long) get_container(UmlActivity));
+}
 
-    if ( ( ( (bn = UmlDrag::decode (e, BrowserFlow::drag_key (this))) != 0) ||
-           ( (bn = UmlDrag::decode (e, BrowserSimpleRelation::drag_key (this))) != 0)) &&
-         (bn != after) && (bn != this)) {
-        if (may_contains (bn, FALSE)) {
-            move (bn, after);
-        } else {
-            msg_critical (TR ("Error"), TR ("Forbidden"));
-            e->ignore();
-        }
-    } else if ( (bn == 0) && (after == 0)) {
-        ( (BrowserNode *) parent())->DropAfterEvent (e, this);
-    } else {
-        e->ignore();
+QString BrowserActivityObject::drag_postfix() const {
+  return "#" + QString::number((unsigned long) get_container(UmlActivity));
+}
+
+QString BrowserActivityObject::drag_key(BrowserNode * p)
+{
+  return QString::number(UmlActivityObject)
+    + "#" + QString::number((unsigned long) p->get_container(UmlActivity));
+}
+
+void BrowserActivityObject::save_stereotypes(QTextStream & st)
+{
+  nl_indent(st);
+  st << "activityobject_stereotypes ";
+  save_unicode_string_list(its_default_stereotypes, st);
+}
+
+void BrowserActivityObject::read_stereotypes(char * & st, char * & k)
+{
+  if (!strcmp(k, "activityobject_stereotypes")) {
+    read_unicode_string_list(its_default_stereotypes, st);
+    k = read_keyword(st);
+  }
+  else
+    init();
+}
+
+void BrowserActivityObject::save(QTextStream & st, bool ref, QString & warning) {
+  if (ref) {
+    st << "activityobject_ref " << get_ident()
+      << " // activity object " << get_name();
+  }
+  else {
+    nl_indent(st);
+    st << "activityobject " << get_ident() << ' ';
+    save_string(name, st);
+    indent(+1);
+    def->save(st, warning);
+
+    if (associated_diagram != 0) {
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
-}
 
-QString BrowserActivityObject::drag_key() const
-{
-    return QString::number (UmlActivityObject)
-           + "#" + QString::number ( (unsigned long) get_container (UmlActivity));
-}
+    BrowserNode::save(st);
 
-QString BrowserActivityObject::drag_postfix() const
-{
-    return "#" + QString::number ( (unsigned long) get_container (UmlActivity));
-}
+    // saves the sub elts
 
-QString BrowserActivityObject::drag_key (BrowserNode * p)
-{
-    return QString::number (UmlActivityObject)
-           + "#" + QString::number ( (unsigned long) p->get_container (UmlActivity));
-}
+    Q3ListViewItem * child = firstChild();
 
-void BrowserActivityObject::save_stereotypes (QTextStream & st)
-{
-    nl_indent (st);
-    st << "activityobject_stereotypes ";
-    save_unicode_string_list (its_default_stereotypes, st);
-}
+    if (child != 0) {
+      for (;;) {
+	if (! ((BrowserNode *) child)->deletedp()) {
+	  ((BrowserNode *) child)->save(st, FALSE, warning);
 
-void BrowserActivityObject::read_stereotypes (char * & st, char * & k)
-{
-    if (!strcmp (k, "activityobject_stereotypes")) {
-        read_unicode_string_list (its_default_stereotypes, st);
-        k = read_keyword (st);
-    } else {
-        init();
+	  child = child->nextSibling();
+	  if (child != 0)
+	    st << '\n';
+	  else
+	    break;
+	}
+	else if ((child = child->nextSibling()) == 0)
+	  break;
+      }
     }
+
+    indent(-1);
+    nl_indent(st);
+    st << "end";
+
+    // for saveAs
+    if (!is_from_lib() && !is_api_base())
+      is_read_only = FALSE;
+  }
 }
 
-void BrowserActivityObject::save (QTextStream & st, bool ref, QString & warning)
+BrowserActivityObject * BrowserActivityObject::read_ref(char * & st)
 {
-    if (ref) {
-        st << "activityobject_ref " << get_ident()
-           << " // activity object " << get_name();
-    } else {
-        nl_indent (st);
-        st << "activityobject " << get_ident() << ' ';
-        save_string (name, st);
-        indent (+1);
-        def->save (st, warning);
+  read_keyword(st, "activityobject_ref");
 
-        if (associated_diagram != 0) {
-            nl_indent (st);
-            st << "associated_diagram ";
-            associated_diagram->save (st, TRUE, warning);
-        }
+  int id = read_id(st);
+  BrowserActivityObject * result = all[id];
 
-        BrowserNode::save (st);
-
-        // saves the sub elts
-
-        QListViewItem * child = firstChild();
-
-        if (child != 0) {
-            for (;;) {
-                if (! ( (BrowserNode *) child)->deletedp()) {
-                    ( (BrowserNode *) child)->save (st, FALSE, warning);
-
-                    child = child->nextSibling();
-                    if (child != 0) {
-                        st << '\n';
-                    } else {
-                        break;
-                    }
-                } else if ( (child = child->nextSibling()) == 0) {
-                    break;
-                }
-            }
-        }
-
-        indent (-1);
-        nl_indent (st);
-        st << "end";
-
-        // for saveAs
-        if (!is_from_lib() && !is_api_base()) {
-            is_read_only = FALSE;
-        }
-    }
+  return (result == 0)
+    ? new BrowserActivityObject(id)
+    : result;
 }
 
-BrowserActivityObject * BrowserActivityObject::read_ref (char * & st)
+BrowserActivityObject * BrowserActivityObject::read(char * & st, char * k,
+						    BrowserNode * parent)
 {
-    read_keyword (st, "activityobject_ref");
+  BrowserActivityObject * result;
+  int id;
 
-    int id = read_id (st);
-    BrowserActivityObject * result = all[id];
+  if (!strcmp(k, "activityobject_ref")) {
+    id = read_id(st);
+    result = all[id];
 
     return (result == 0)
-           ? new BrowserActivityObject (id)
-           : result;
-}
+      ? new BrowserActivityObject(id)
+      : result;
+  }
+  else if (!strcmp(k, "activityobject")) {
+    id = read_id(st);
+    result = all[id];
 
-BrowserActivityObject * BrowserActivityObject::read (char * & st, char * k,
-        BrowserNode * parent)
-{
-    BrowserActivityObject * result;
-    int id;
+    if (result == 0)
+      result = new BrowserActivityObject(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserActivityObject * already_exist = result;
 
-    if (!strcmp (k, "activityobject_ref")) {
-        id = read_id (st);
-        result = all[id];
+      result = new BrowserActivityObject(read_string(st), parent, id);
 
-        return (result == 0)
-               ? new BrowserActivityObject (id)
-               : result;
-    } else if (!strcmp (k, "activityobject")) {
-        id = read_id (st);
-        result = all[id];
-
-        if (result == 0) {
-            result = new BrowserActivityObject (read_string (st), parent, id);
-        } else if (result->is_defined) {
-            BrowserActivityObject * already_exist = result;
-
-            result = new BrowserActivityObject (read_string (st), parent, id);
-
-            already_exist->must_change_id (all);
-            already_exist->unconsistent_fixed ("activity object", result);
-        } else {
-            result->set_parent (parent);
-            result->set_name (read_string (st));
-        }
-
-        result->is_defined = TRUE;
-        k = read_keyword (st);
-        result->def->read (st, k);
-
-        if (!strcmp (k, "associated_diagram")) {
-            result->set_associated_diagram (BrowserActivityDiagram::read_ref (st, read_keyword (st)),
-                                            TRUE);
-            k = read_keyword (st);
-        }
-
-        result->BrowserNode::read (st, k, id);
-
-        if (strcmp (k, "end")) {
-            while (BrowserFlow::read (st, k, result) ||
-                   BrowserSimpleRelation::read (st, k, result)) {
-                k = read_keyword (st);
-            }
-            if (strcmp (k, "end")) {
-                wrong_keyword (k, "end");
-            }
-        }
-
-        result->is_read_only = (!in_import() && read_only_file()) ||
-                               ( (user_id() != 0) && result->is_api_base());
-
-        return result;
-    } else {
-        return 0;
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity object", result);
     }
+    else {
+      result->set_parent(parent);
+      result->set_name(read_string(st));
+    }
+
+    result->is_defined = TRUE;
+    k = read_keyword(st);
+    result->def->read(st, k);
+
+    if (!strcmp(k, "associated_diagram")) {
+      result->set_associated_diagram(BrowserActivityDiagram::read_ref(st, read_keyword(st)),
+				     TRUE);
+      k = read_keyword(st);
+    }
+
+    result->BrowserNode::read(st, k, id);
+
+    if (strcmp(k, "end")) {
+      while (BrowserFlow::read(st, k, result) ||
+	     BrowserSimpleRelation::read(st, k, result))
+	k = read_keyword(st);
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+
+    result->is_read_only = (!in_import() && read_only_file()) ||
+      ((user_id() != 0) && result->is_api_base());
+
+    return result;
+  }
+  else
+    return 0;
 }
 
-BrowserNode * BrowserActivityObject::get_it (const char * k, int id)
+BrowserNode * BrowserActivityObject::get_it(const char * k, int id)
 {
-    // flow managed in activity
-    return (!strcmp (k, "activityobject_ref")) ? all[id] : 0;
+  // flow managed in activity
+  return (!strcmp(k, "activityobject_ref")) ? all[id] : 0;
 }

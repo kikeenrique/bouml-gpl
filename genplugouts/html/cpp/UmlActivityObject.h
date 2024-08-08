@@ -8,19 +8,19 @@
 class UmlActivityObject : public UmlBaseActivityObject {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityObject(void * id, const QCString & s) : UmlBaseActivityObject(id, s) {
+     UmlActivityObject(void * id, const QByteArray & s) : UmlBaseActivityObject(id, s) {
     }
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html_internal(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html_internal(QByteArray pfix, unsigned int rank, unsigned int level);
 
 };
 

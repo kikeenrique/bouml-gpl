@@ -27,7 +27,7 @@
 #define PACKAGE_H
 
 #include <qstringlist.h> 
-#include <qptrstack.h>
+#include <qstack.h>
 
 #include "Namespace.h"
 #include "Class.h"
@@ -57,9 +57,9 @@ class Package : public BrowserNode, public ClassContainer {
   
     virtual bool isa_package() const;
     
-    void reverse_file(QCString path, QCString f);
+    void reverse_file(QByteArray path, QByteArray f);
     
-    const QCString & get_path() { return path; }
+    const QByteArray & get_path() { return path; }
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifdef REVERSE
     void send_dir(bool rec);
@@ -67,11 +67,11 @@ class Package : public BrowserNode, public ClassContainer {
     
     void new_class(Class *);
     
-    virtual void compute_type(QCString type, UmlTypeSpec & typespec,
+    virtual void compute_type(QByteArray type, UmlTypeSpec & typespec,
 			      Class ** need_object = 0);
-    virtual Class * define(const QCString & name, char st);
+    virtual Class * define(const QByteArray & name, char st);
 #ifdef WITH_PHPCAT
-    virtual void declare(const QCString &, Class *);
+    virtual void declare(const QByteArray &, Class *);
     void restore_children(QDataStream & dts);
     static void restore(QDataStream  & dt, Package *);
 #endif
@@ -97,7 +97,7 @@ class Package : public BrowserNode, public ClassContainer {
     
   private:
     UmlPackage * uml;
-    QCString path;
+    QByteArray path;
     NDict<Class> Undefined;
   
     static bool scan;
@@ -114,16 +114,16 @@ class Package : public BrowserNode, public ClassContainer {
     
     static int file_number(QDir & dir, bool rec);
     
-    void reverse_toplevel_form(QCString s);
+    void reverse_toplevel_form(QByteArray s);
     void reverse_directory(QDir & dir, bool rec);
     
-    Package * find(QCString s, bool nohack);
+    Package * find(QByteArray s, bool nohack);
     static Package * package_unknown();
     
-    static void update_class_list(QCString pack, UmlItem * container);
+    static void update_class_list(QByteArray pack, UmlItem * container);
     
-    Class * declare_if_needed(QCString name, char st);
-    Class * new_class(const QCString & name, char st);
+    Class * declare_if_needed(QByteArray name, char st);
+    Class * new_class(const QByteArray & name, char st);
     
     void use();
 };

@@ -29,14 +29,14 @@
 #include "UmlBaseItem.h"
 
 #ifdef ROUNDTRIP
-#include <qptrlist.h>
+#include <qlist.h>
 
 class ClassContainer;
 #endif
 
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n)
+    UmlItem(void * id, const QByteArray & n)
       : UmlBaseItem(id, n) {
     };
     virtual ~UmlItem();

@@ -3,7 +3,7 @@
 #include "FileOut.h"
 
 void UmlActivityPin::write(FileOut & out) {
-  QCString s = name();
+  QByteArray s = name();
   const char * k;
   const char * K;
   

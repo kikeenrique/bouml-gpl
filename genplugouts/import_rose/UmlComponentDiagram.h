@@ -12,7 +12,7 @@
 // You can modify it as you want (except the constructor)
 class UmlComponentDiagram : public UmlBaseComponentDiagram {
   public:
-    UmlComponentDiagram(void * id, const QCString & n) : UmlBaseComponentDiagram(id, n) {
+    UmlComponentDiagram(void * id, const QByteArray & n) : UmlBaseComponentDiagram(id, n) {
       cpt[kind()] += 1;
     };
 

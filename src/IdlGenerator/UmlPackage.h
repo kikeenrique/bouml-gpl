@@ -30,15 +30,15 @@
 
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
   protected:
-    QCString dir;
+    QByteArray dir;
     bool read;
   
   public:
-    QCString path(const QCString &);
-    QCString text_path(const QCString &);
+    QByteArray path(const QByteArray &);
+    QByteArray text_path(const QByteArray &);
     void generate();
 };
 

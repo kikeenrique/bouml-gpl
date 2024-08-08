@@ -48,7 +48,7 @@ void UmlInterruptibleActivityRegion::importIt(FileIn & in, Token & token, UmlIte
   where = where->container(anInterruptibleActivityRegion, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlInterruptibleActivityRegion * r = create(where, s);
     
     if (r == 0)
@@ -58,7 +58,7 @@ void UmlInterruptibleActivityRegion::importIt(FileIn & in, Token & token, UmlIte
     r->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

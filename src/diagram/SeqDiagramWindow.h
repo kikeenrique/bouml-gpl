@@ -34,58 +34,57 @@ class QSpinBox;
 class SeqDiagramView;
 class BrowserSeqDiagram;
 
-class SeqDiagramWindow : public DiagramWindow
-{
-        Q_OBJECT
+class SeqDiagramWindow : public DiagramWindow {
+  Q_OBJECT
+    
+  protected:
+    SeqDiagramView * view;
+    QToolButton * addClass;
+    QToolButton * addClassInstance;
+    QToolButton * addContinuation;
+    QToolButton * addFragment;
+    QToolButton * syncMsg;
+    QToolButton * asyncMsg;
+    QToolButton * lostsyncMsg;
+    QToolButton * lostasyncMsg;
+    QToolButton * foundsyncMsg;
+    QToolButton * foundasyncMsg;
+    QToolButton * syncSelfMsg;
+    QToolButton * asyncSelfMsg;
+    QToolButton * returnMsg;
+    QToolButton * selfreturnMsg;
+    QToolButton * note;
+    QToolButton * anchor;
+    QToolButton * text;
+    QToolButton * image;
+  
+  public:
+    SeqDiagramWindow(const QString & s, BrowserSeqDiagram *, int id = -1);
+    ~SeqDiagramWindow();
 
-    protected:
-        SeqDiagramView * view;
-        QToolButton * addClass;
-        QToolButton * addClassInstance;
-        QToolButton * addContinuation;
-        QToolButton * addFragment;
-        QToolButton * syncMsg;
-        QToolButton * asyncMsg;
-        QToolButton * lostsyncMsg;
-        QToolButton * lostasyncMsg;
-        QToolButton * foundsyncMsg;
-        QToolButton * foundasyncMsg;
-        QToolButton * syncSelfMsg;
-        QToolButton * asyncSelfMsg;
-        QToolButton * returnMsg;
-        QToolButton * selfreturnMsg;
-        QToolButton * note;
-        QToolButton * anchor;
-        QToolButton * text;
-        QToolButton * image;
+    virtual DiagramView * get_view() const;
+    
+    virtual void hit_button(UmlCode, QToolButton *);
 
-    public:
-        SeqDiagramWindow (const QString & s, BrowserSeqDiagram *, int id = -1);
-        ~SeqDiagramWindow();
-
-        virtual DiagramView * get_view() const;
-
-        virtual void hit_button (UmlCode, QToolButton *);
-
-    protected slots:
-        void hit_class();
-        void hit_classinstance();
-        void hit_continuation();
-        void hit_fragment();
-        void hit_syncmsg();
-        void hit_asyncmsg();
-        void hit_foundsyncmsg();
-        void hit_foundasyncmsg();
-        void hit_lostsyncmsg();
-        void hit_lostasyncmsg();
-        void hit_syncselfmsg();
-        void hit_asyncselfmsg();
-        void hit_returnmsg();
-        void hit_selfreturnmsg();
-        void hit_note();
-        void hit_anchor();
-        void hit_text();
-        void hit_image();
+  protected slots:
+    void hit_class();
+    void hit_classinstance();
+    void hit_continuation();
+    void hit_fragment();
+    void hit_syncmsg();
+    void hit_asyncmsg();
+    void hit_foundsyncmsg();
+    void hit_foundasyncmsg();
+    void hit_lostsyncmsg();
+    void hit_lostasyncmsg();
+    void hit_syncselfmsg();
+    void hit_asyncselfmsg();
+    void hit_returnmsg();
+    void hit_selfreturnmsg();
+    void hit_note();
+    void hit_anchor();
+    void hit_text();
+    void hit_image();
 };
 
 #endif

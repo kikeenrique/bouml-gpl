@@ -1,11 +1,11 @@
 
 #include "UmlComponentView.h"
 
-QCString UmlComponentView::sKind() {
+QByteArray UmlComponentView::sKind() {
   return "component view";
 }
 
-void UmlComponentView::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlComponentView::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlItem::html(pfix, rank, "Component View", level, "view");
 
   unload(FALSE, FALSE);

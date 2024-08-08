@@ -26,24 +26,23 @@
 #ifndef OPERATIONLISTDIALOG_H
 #define OPERATIONLISTDIALOG_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qdialog.h>
 
 class QComboBox;
 class BrowserOperation;
 
-class OperationListDialog : public QDialog
-{
-    protected:
-        QComboBox * cb;
-
-        static QSize previous_size;
-
-    public:
-        OperationListDialog (const char * m, QList<BrowserOperation> & l);
-        virtual ~OperationListDialog();
-
-        int choosen();
+class OperationListDialog : public QDialog {
+  protected:
+    QComboBox * cb;
+  
+    static QSize previous_size;
+  
+  public:
+    OperationListDialog(const char * m, QList<BrowserOperation *> & l);
+    virtual ~OperationListDialog();
+  
+    int choosen();
 };
 
 #endif

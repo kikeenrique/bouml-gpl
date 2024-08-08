@@ -26,27 +26,26 @@
 #ifndef SDDURATIONSUPPORT_H
 #define SDDURATIONSUPPORT_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 class SdDurationCanvas;
 class SdLifeLineCanvas;
 
-class SdDurationSupport
-{
-    public:
-        virtual ~SdDurationSupport() {};
+class SdDurationSupport {
+  public:
+    virtual ~SdDurationSupport() {};
+  
+    virtual void add(SdDurationCanvas *) = 0;
+    virtual void remove(SdDurationCanvas *) = 0;
 
-        virtual void add (SdDurationCanvas *) = 0;
-        virtual void remove (SdDurationCanvas *) = 0;
+    virtual void update_instance_dead() = 0;
+    virtual void update_v_to_contain(SdDurationCanvas *, bool) = 0;
+    virtual int sub_x(int sub_w) const = 0;
+    virtual double min_y() const = 0;
+    virtual double getZ() const = 0;
 
-        virtual void update_instance_dead() = 0;
-        virtual void update_v_to_contain (SdDurationCanvas *, bool) = 0;
-        virtual int sub_x (int sub_w) const = 0;
-        virtual double min_y() const = 0;
-        virtual double getZ() const = 0;
-
-        virtual bool isaDuration() const = 0;
-        virtual SdLifeLineCanvas * get_line() const = 0;
+    virtual bool isaDuration() const = 0;
+    virtual SdLifeLineCanvas * get_line() const = 0;
 };
 
 #endif

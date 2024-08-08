@@ -10,7 +10,7 @@ class FileOut;
 
 class UmlTransition : public UmlBaseTransition, public UmlStateItem {
   public:
-     UmlTransition(void * id, const QCString & n) : UmlBaseTransition(id, n) {
+     UmlTransition(void * id, const QByteArray & n) : UmlBaseTransition(id, n) {
     }
 
     //target memorize this transition as incoming

@@ -31,10 +31,10 @@
 #include "UmlSettings.h"
 #include "PhpSettings.h"
 
-void UmlClassMember::generate_require_onces(QTextOStream &, QCString &) {
+void UmlClassMember::generate_require_onces(QTextStream &, QByteArray &) {
 }
 
-void UmlClassMember::remove_comments(QCString & s)
+void UmlClassMember::remove_comments(QByteArray & s)
 {
   int index1 = 0;
   
@@ -65,7 +65,7 @@ void UmlClassMember::remove_comments(QCString & s)
   }
 }
 
-void UmlClassMember::remove_arrays(QCString & s)
+void UmlClassMember::remove_arrays(QByteArray & s)
 {
   int index1 = 0;
   
@@ -81,7 +81,7 @@ void UmlClassMember::remove_arrays(QCString & s)
   }
 }
 
-void UmlClassMember::generate_visibility(QTextOStream & f) {
+void UmlClassMember::generate_visibility(QTextStream & f) {
   switch (visibility()) {
   case PublicVisibility:
     f << "public ";
@@ -99,7 +99,7 @@ void UmlClassMember::generate_visibility(QTextOStream & f) {
 
 /*
 bool UmlClassMember::compute_dependency(QList<PhpRefType> & dependencies,
-					QCString decl, const UmlTypeSpec & t)
+					QByteArray decl, const UmlTypeSpec & t)
 {
   remove_comments(decl);
   remove_arrays(decl);
@@ -171,7 +171,7 @@ bool UmlClassMember::compute_dependency(QList<PhpRefType> & dependencies,
 	ts.explicit_type = p2 + 1;
       
       if (dontsubstituteuntil == 0) {
-	QCString subst = PhpSettings::type(ts.explicit_type);
+	QByteArray subst = PhpSettings::type(ts.explicit_type);
 	
 	if (subst != ts.explicit_type) {
 	  decl = subst + ' ' + p;

@@ -26,60 +26,49 @@
 #ifndef OBJECTDATA_H
 #define OBJECTDATA_H
 
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 #include "AType.h"
 #include "UmlEnum.h"
 
 class BrowserClass;
 
-class ObjectData
-{
-    private:
-        AType type;
+class ObjectData {
+private:
+  AType type;
 
-    public:
-        SharedStr multiplicity;
-        MyStr in_state;
-        MyStr uml_selection;
-        MyStr cpp_selection;
-        MyStr java_selection;
-        UmlOrderingKind ordering : 8;
-        bool is_control : 1;
-
-        ObjectData();
-        ObjectData (ObjectData * model);
-        virtual ~ObjectData();
-
-        virtual void do_connect (BrowserClass * c) = 0;
-        virtual void do_disconnect (BrowserClass * c) = 0;
-
-        const AType & get_type() const {
-            return type;
-        };
-        void set_type (BrowserClass * c);
-        void set_type (const AType & t);
-        const char * get_multiplicity() const {
-            return multiplicity;
-        };
-        const char * get_in_state() const {
-            return in_state;
-        };
-        const char * get_selection (DrawingLanguage) const;
-        UmlOrderingKind get_ordering() const {
-            return ordering;
-        }
-        bool get_is_control() const {
-            return is_control;
-        }
-
-        void send_uml_def (ToolCom * com);
-        virtual void send_cpp_def (ToolCom * com);
-        virtual void send_java_def (ToolCom * com);
-        bool tool_cmd (ToolCom * com, const char * args);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * &, char * &);
+public:
+  SharedStr multiplicity;
+  MyStr in_state;
+  MyStr uml_selection;
+  MyStr cpp_selection;
+  MyStr java_selection;
+  UmlOrderingKind ordering : 8;
+  bool is_control : 1;
+  
+  ObjectData();
+  ObjectData(ObjectData * model);
+  virtual ~ObjectData();
+  
+  virtual void do_connect(BrowserClass * c) = 0;
+  virtual void do_disconnect(BrowserClass * c) = 0;
+  
+  const AType & get_type() const { return type; };
+  void set_type(BrowserClass * c);
+  void set_type(const AType & t);
+  const char * get_multiplicity() const { return multiplicity; };
+  const char * get_in_state() const { return in_state; };
+  const char * get_selection(DrawingLanguage) const;
+  UmlOrderingKind get_ordering() const { return ordering; }
+  bool get_is_control() const { return is_control; }
+    
+  void send_uml_def(ToolCom * com);
+  virtual void send_cpp_def(ToolCom * com);
+  virtual void send_java_def(ToolCom * com);
+  bool tool_cmd(ToolCom * com, const char * args);
+  
+  void save(QTextStream &, QString & warning) const;
+  void read(char * &, char * &);
 };
 
 #endif

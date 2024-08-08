@@ -78,7 +78,7 @@ UmlClass * Class::get_uml() {
 
   UmlItem * p = // no nested classe in php
     (UmlItem *) ((Package *) parent())->get_uml()->get_classview(get_namespace());
-  QCString str = QCString(text(0));
+  QByteArray str = QByteArray(text(0));
 			  
   uml = UmlBaseClass::create(p, str);
     
@@ -137,13 +137,13 @@ bool Class::already_in_bouml() {
   return FALSE;
 }
 
-bool Class::reverse(Package * container, QCString stereotype,
+bool Class::reverse(Package * container, QByteArray stereotype,
 		    bool abstractp, bool finalp,
-		    QCString & path, UmlArtifact * art)
+		    QByteArray & path, UmlArtifact * art)
 {
-  QCString comment = Lex::get_comments();
-  QCString description = Lex::get_description();
-  QCString name;
+  QByteArray comment = Lex::get_comments();
+  QByteArray description = Lex::get_description();
+  QByteArray name;
   
   if ((name = Lex::read_word()).isEmpty())
     return FALSE;
@@ -186,7 +186,7 @@ bool Class::reverse(Package * container, QCString stereotype,
       cl_uml->set_isPhpFinal(finalp);
   }
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
   if (s.isEmpty()) {
     if (! Package::scanning()) {
@@ -306,7 +306,7 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k) {
     if (!add_inherit(k, typespec))
       return FALSE;
     
-    QCString s = Lex::read_word();
+    QByteArray s = Lex::read_word();
     
     if (s == "{") {
       Lex::unread_word(s);
@@ -352,11 +352,11 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec) {
 // [<visibility>] 'const' ctename '=' value ';'
 // ['final'] [<visibility>] ['static' | 'abstract'] 'function' ...
 
-bool Class::manage_member(QCString s) {
-  QCString comment = Lex::get_comments();
-  QCString description = Lex::get_description();
+bool Class::manage_member(QByteArray s) {
+  QByteArray comment = Lex::get_comments();
+  QByteArray description = Lex::get_description();
   int index;
-  QCString access = value_of(description, "@access", index);
+  QByteArray access = value_of(description, "@access", index);
   aVisibility visibility;
   
   if (access == "public")
@@ -412,8 +412,8 @@ bool Class::manage_member(QCString s) {
   }
 
   for (;;) {
-    QCString name = s;  
-    QCString value;
+    QByteArray name = s;  
+    QByteArray value;
     
     s = Lex::read_word();
     
@@ -463,7 +463,7 @@ bool Class::manage_member(QCString s) {
   }
 }
 
-void Class::compute_type(QCString name, UmlTypeSpec & typespec,
+void Class::compute_type(QByteArray name, UmlTypeSpec & typespec,
 			 Class ** need_object) {
    // no nested classe in php
   ((Package *) parent())->compute_type(name, typespec, need_object);
@@ -739,7 +739,7 @@ void Class::restore(QDataStream  & dt, char c, Package * parent)
   cl->from_lib = TRUE;
 #endif
   
-  QCString name(n);
+  QByteArray name(n);
   
   parent->declare(n, cl);
   

@@ -80,7 +80,7 @@ void UmlBaseSequenceDiagramDefinition::read_() {
 
 
   while (UmlCom::read_bool()) {
-    QCString s = UmlCom::read_string();
+    QByteArray s = UmlCom::read_string();
     int x = (int) UmlCom::read_unsigned();
     int y = (int) UmlCom::read_unsigned();
     int w = (int) UmlCom::read_unsigned();
@@ -91,7 +91,7 @@ void UmlBaseSequenceDiagramDefinition::read_() {
   }
 
   while (UmlCom::read_bool()) {
-    QCString s = UmlCom::read_string();
+    QByteArray s = UmlCom::read_string();
     int x = (int) UmlCom::read_unsigned();
     int y = (int) UmlCom::read_unsigned();
     int w = (int) UmlCom::read_unsigned();

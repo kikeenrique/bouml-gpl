@@ -8,7 +8,7 @@
 //  Represent an operation's parameter
 
 struct UmlParameter : public UmlBaseParameter {
-    QCString cpp(unsigned rank) const;
+    QByteArray cpp(unsigned rank) const;
 
 };
 

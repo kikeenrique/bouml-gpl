@@ -26,24 +26,25 @@
 #ifndef CLASSLISTDIALOG_H
 #define CLASSLISTDIALOG_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 class QComboBox;
 class BrowserClass;
 
-class ClassListDialog : public QDialog
-{
-    protected:
-        QComboBox * cb;
-
-        static QSize previous_size;
-
-    public:
-        ClassListDialog (const char * m, const QValueList<BrowserClass *> & l);
-        virtual ~ClassListDialog();
-
-        int choosen();
+class ClassListDialog : public QDialog {
+  protected:
+    QComboBox * cb;
+  
+    static QSize previous_size;  
+  
+  public:
+    ClassListDialog(const char * m, const Q3ValueList<BrowserClass *> & l);
+    virtual ~ClassListDialog();
+  
+    int choosen();
 };
 
 #endif

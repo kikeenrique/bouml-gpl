@@ -7,7 +7,7 @@
 #include "UmlDeploymentDiagram.h"
 #include "UmlCom.h"
 void UmlDeploymentView::import(File & f) {
-  QCString s;
+  QByteArray s;
   
   for (;;) {
     switch (f.read(s)) {
@@ -33,7 +33,7 @@ void UmlDeploymentView::import(File & f) {
 
 void UmlDeploymentView::readObjects(File & f) {
   for (;;) {
-    QCString s;
+    QByteArray s;
 
     switch (f.read(s)) {
     case ')':
@@ -54,13 +54,13 @@ void UmlDeploymentView::readObjects(File & f) {
     else if (s == "Process_Diagram")
       UmlDeploymentDiagram::import(f, this);
     else {
-      UmlCom::trace("<br>" + s + " in " + QCString(f.name()) + " NOT MANAGED by DeploymentView::readObject()");
+      UmlCom::trace("<br>" + s + " in " + QByteArray(f.name()) + " NOT MANAGED by DeploymentView::readObject()");
       f.skipBlock();
     }
   }
 }
 
-UmlDeploymentView * UmlDeploymentView::create(UmlPackage * parent, const char * s, QCString bn)
+UmlDeploymentView * UmlDeploymentView::create(UmlPackage * parent, const char * s, QByteArray bn)
 {
   UmlDeploymentView * r = UmlBaseDeploymentView::create(parent, s);
   
@@ -72,11 +72,11 @@ UmlDeploymentView * UmlDeploymentView::create(UmlPackage * parent, const char * 
 
 void UmlDeploymentView::import(UmlPackage * parent, File & f)
 {
-  QCString s;
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
+  QByteArray s;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
   int k;
   
   for (;;) {
@@ -90,7 +90,7 @@ void UmlDeploymentView::import(UmlPackage * parent, File & f)
       
       if (! f2.open(IO_ReadOnly))
 	UmlCom::trace("<br>cannot open '" + s + "' referenced in "
-		      + QCString(f.name()));
+		      + QByteArray(f.name()));
       else {     
         f2.read("(");
         f2.read("object");

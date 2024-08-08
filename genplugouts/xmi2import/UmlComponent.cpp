@@ -18,7 +18,7 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where == 0)
     return;
     
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   
   if (s.isEmpty()) {
     static unsigned n = 0;
@@ -35,11 +35,11 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
   component->addItem(token.xmiId(), in);
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
-      QCString ks = token.what();
+      QByteArray ks = token.what();
       
       if ((ks == "interfacerealization") || (ks == "realization"))
 	component->manageInterface(token, in);
@@ -52,9 +52,9 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
 }
 
 void UmlComponent::manageInterface(Token & token, FileIn & in) {
-  QCString idref = token.valueOf("supplier");
+  QByteArray idref = token.valueOf("supplier");
   
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   int c = ((const char *) token.what())[0];
   
   if (it != All.end()) {
@@ -95,8 +95,8 @@ UmlItem * UmlComponent::container(anItemKind kind, Token & token, FileIn & in) {
   }
 }
 
-void UmlComponent::solve(int context, QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlComponent::solve(int context, QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it != All.end()) {
     if ((*it)->kind() == aClass) {
@@ -124,7 +124,7 @@ void UmlComponent::solve(int context, QCString idref) {
     UmlCom::trace("component : unknown reference '" + idref + "'<br>");
 }
 
-void UmlComponent::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint) {
+void UmlComponent::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QByteArray label, QByteArray constraint) {
   if ((context == 3) && (target->kind() == aClass)) {
     // usage indicate a required interface
     QVector<UmlClass> required = requiredClasses();
@@ -138,8 +138,8 @@ void UmlComponent::generalizeDependRealize(UmlItem * target, FileIn & in, int co
     UmlItem::generalizeDependRealize(target, in, context, label, constraint);
 }
 
-void UmlComponent::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint) {
-  QMap<QCString, UmlItem *>::Iterator it;
+void UmlComponent::solveGeneralizationDependencyRealization(int context, QByteArray idref, QByteArray label, QByteArray constraint) {
+  QMap<QByteArray, UmlItem *>::Iterator it;
   
   if ((context == 3) &&
       ((it = All.find(idref)) != All.end()) &&

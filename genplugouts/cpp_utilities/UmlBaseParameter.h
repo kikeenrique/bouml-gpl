@@ -9,9 +9,9 @@
 //  Represent an operation's parameter
 
 struct UmlBaseParameter {
-    QCString name;
+    QByteArray name;
 
-    QCString default_value;
+    QByteArray default_value;
 
     UmlTypeSpec type;
 

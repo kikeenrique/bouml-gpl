@@ -30,21 +30,20 @@
 
 #include "DialogUtil.h"
 
-class DialogTimer : public QTimer
-{
-        Q_OBJECT
-
-    protected:
-        QString current;
-        QString path;
-        QTabDialog * dlg;
-        post_edit f;
-
-    public:
-        DialogTimer (QString s, QString p, QTabDialog * d, post_edit pf);
-
-    protected slots:
-        virtual void readfile();
+class DialogTimer : public QTimer {
+  Q_OBJECT
+    
+  protected:
+    QString current;
+    QString path;
+    Q3TabDialog * dlg;
+    post_edit f;
+    
+  public:
+    DialogTimer(QString s, QString p, Q3TabDialog * d, post_edit pf);
+  
+  protected slots:
+    virtual void readfile();
 };
 
 #endif

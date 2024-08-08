@@ -13,7 +13,7 @@ anItemKind UmlBaseActivityParameter::kind() {
     return anActivityParameter;
 }
 
-const QCString & UmlBaseActivityParameter::defaultValue() {
+const QByteArray & UmlBaseActivityParameter::defaultValue() {
     read_if_needed_();
     return _default_value;
 }

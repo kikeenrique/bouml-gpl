@@ -5,7 +5,7 @@
 
 #include "UmlCom.h"
 #include "UmlTransition.h"
-void UmlEntryPointPseudoState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent) {
+void UmlEntryPointPseudoState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent) {
   // check transition number
   const QVector<UmlItem> ch = children();
   

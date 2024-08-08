@@ -27,8 +27,8 @@
 
 #include "UmlExtraClassMember.h"
 
-void UmlExtraClassMember::generate_decl(QTextOStream & f, const QCString &,
-					QCString indent, bool) {
+void UmlExtraClassMember::generate_decl(QTextStream & f, const QByteArray &,
+					QByteArray indent, bool) {
   f << indent << idlDecl();
 }
 

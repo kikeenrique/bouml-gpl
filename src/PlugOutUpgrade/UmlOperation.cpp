@@ -30,7 +30,7 @@
 #include "JavaSettings.h"
 #include "util.h"
 
-static QCString remove_throw(QCString d)
+static QByteArray remove_throw(QByteArray d)
 {
   int index;
   
@@ -56,7 +56,7 @@ void UmlOperation::add_param(int rank, aDirection dir,
   p.name = name;
   
   if (!addParameter(rank, p)) {
-    QCString msg = QCString("can't add parameter '") + name +
+    QByteArray msg = QByteArray("can't add parameter '") + name +
       "' to " + parent()->name() + "::" + this->name() + "<br>\n";
 
     UmlCom::trace(msg);
@@ -65,13 +65,13 @@ void UmlOperation::add_param(int rank, aDirection dir,
 }
 
 void UmlOperation::set_cpp(const char * return_form_or_inherit,
-			   const char * params, QCString body,
+			   const char * params, QByteArray body,
 			   bool inlinep, const char * if_def,
 			   const char * end_if) {
   if (*return_form_or_inherit == ':') {
     // inherit
     if (inlinep) {
-      QCString s = remove_throw(CppSettings::operationDecl());
+      QByteArray s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${)}");
       
       s.resize(index + 5);
@@ -91,7 +91,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       set_CppDef("");
     }
     else {
-      QCString s = remove_throw(CppSettings::operationDecl());
+      QByteArray s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${)}");
       
       s.resize(index + 5);
@@ -120,7 +120,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
   else {
     // return
     if (inlinep) {
-      QCString s = remove_throw(CppSettings::operationDecl());
+      QByteArray s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${type}");
       
       s.replace(index, 7, return_form_or_inherit);
@@ -139,7 +139,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       set_CppDef("");
     }
     else {
-      QCString s = remove_throw(CppSettings::operationDecl());
+      QByteArray s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${type}");
       
       s.replace(index, 7, return_form_or_inherit);
@@ -161,9 +161,9 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
 
 
 void UmlOperation::set_java(const char * return_form,
-			    const char * params, QCString body,
+			    const char * params, QByteArray body,
 			    bool inlinep) {
-  QCString s = JavaSettings::operationDef();
+  QByteArray s = JavaSettings::operationDef();
   int index = s.find("${type}");
   
   s.replace(index, 7, return_form);
@@ -191,7 +191,7 @@ static bool is_sep(char c)
 	   ((c >= '0') && (c <= '9')));
 }
 
-static bool rename(QCString & s, bool java, bool javasettings)
+static bool rename(QByteArray & s, bool java, bool javasettings)
 {
   static const struct {
     const char * o;
@@ -222,13 +222,13 @@ static bool rename(QCString & s, bool java, bool javasettings)
   
   for (t_index = 0; t_index != sizeof(T)/sizeof(T[0]); t_index += 1) {
     if (!T[t_index].java_only || java) {
-      QCString o = T[t_index].o;
+      QByteArray o = T[t_index].o;
       
       if (!javasettings)
 	o = ((java) ? "JavaSettings." : "JavaSettings::") + o;
       
       int o_len = o.length();
-      QCString n = T[t_index].n;
+      QByteArray n = T[t_index].n;
       
       if (!javasettings)
 	n = ((java) ? "JavaSettings." : "JavaSettings::") + n;
@@ -253,7 +253,7 @@ static bool rename(QCString & s, bool java, bool javasettings)
 }
 
 void UmlOperation::rename_jdk5() {
-  QCString s;
+  QByteArray s;
   bool changed = FALSE;
   bool javasettings = (parent()->name() == "JavaSettings");
   
@@ -304,9 +304,9 @@ UmlOperation * UmlOperation::java2Php(UmlClass * php, UmlClass * java,
   UmlOperation * from = java->get_operation(javaname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find operation '") + 
-      javaname + QCString("' in class '") + java->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find operation '") + 
+      javaname + QByteArray("' in class '") + java->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -314,9 +314,9 @@ UmlOperation * UmlOperation::java2Php(UmlClass * php, UmlClass * java,
   UmlOperation * to = UmlBaseOperation::create(php, phpname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create operation '") + 
-      phpname + QCString("' in class '") + php->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create operation '") + 
+      phpname + QByteArray("' in class '") + php->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -364,9 +364,9 @@ UmlOperation * UmlOperation::java2Python(UmlClass * python, UmlClass * java,
   UmlOperation * from = java->get_operation(javaname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find operation '") + 
-      javaname + QCString("' in class '") + java->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find operation '") + 
+      javaname + QByteArray("' in class '") + java->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -374,9 +374,9 @@ UmlOperation * UmlOperation::java2Python(UmlClass * python, UmlClass * java,
   UmlOperation * to = UmlBaseOperation::create(python, pythonname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create operation '") + 
-      pythonname + QCString("' in class '") + python->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create operation '") + 
+      pythonname + QByteArray("' in class '") + python->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -424,9 +424,9 @@ UmlOperation * UmlOperation::cpp2Python(UmlClass * python, UmlClass * cpp,
   UmlOperation * from = cpp->get_operation(cppname);
   
   if (from == 0) {
-    QCString err = QCString("cannot find operation '") + 
-      cppname + QCString("' in class '") + cpp->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find operation '") + 
+      cppname + QByteArray("' in class '") + cpp->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -434,9 +434,9 @@ UmlOperation * UmlOperation::cpp2Python(UmlClass * python, UmlClass * cpp,
   UmlOperation * to = UmlBaseOperation::create(python, pythonname);
   
   if (to == 0) {
-    QCString err = QCString("cannot create operation '") + 
-      pythonname + QCString("' in class '") + python->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create operation '") + 
+      pythonname + QByteArray("' in class '") + python->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }

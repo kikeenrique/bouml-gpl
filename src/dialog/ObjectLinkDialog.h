@@ -26,51 +26,46 @@
 #ifndef OBJECTLINKDIALOG_H
 #define OBJECTLINKDIALOG_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qdialog.h>
 
 class MyTable;
 class RelationData;
 class BrowserClassInstance;
 
-class ObjectLinkDialog : public QDialog
-{
-        Q_OBJECT
-
-    public:
-        ObjectLinkDialog (BrowserClassInstance * a, BrowserClassInstance * b,
-                          QList<RelationData> & l, RelationData * current,
-                          int nfirstdir);
-        virtual ~ObjectLinkDialog();
-
-        RelationData * rel() const {
-            return choozen;
-        }
-        bool rev() const {
-            return reverse;
-        }
-
-    protected:
-        void init (RelationData * current);
-
-        QList<RelationData> & rels;
-        int nforward;
-        int ninputrels;
-        BrowserClassInstance * clia;
-        BrowserClassInstance * clib;
-        QString ra;
-        QString rb;
-        MyTable * table;
-        RelationData * choozen;
-        bool reverse;
-
-        static QSize previous_size;
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        virtual void unselect();
-        virtual void create();
+class ObjectLinkDialog : public QDialog {
+  Q_OBJECT
+    
+  public:
+    ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstance * b,
+		     QList<RelationData *> & l, RelationData * current,
+		     int nfirstdir);
+    virtual ~ObjectLinkDialog();
+  
+    RelationData * rel() const { return choozen; }
+    bool rev() const { return reverse; }
+    
+  protected:
+    void init(RelationData * current);
+    
+    QList<RelationData *> & rels;
+    int nforward;
+    int ninputrels;
+    BrowserClassInstance * clia;
+    BrowserClassInstance * clib;
+    QString ra;
+    QString rb;
+    MyTable * table;
+    RelationData * choozen;
+    bool reverse;
+    
+    static QSize previous_size;
+    
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    virtual void unselect();
+    virtual void create();
 };
 
 #endif

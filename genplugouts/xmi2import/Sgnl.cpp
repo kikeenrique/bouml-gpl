@@ -20,21 +20,21 @@ void Signal::importIt(FileIn & in, Token & token, UmlItem *)
     in.finish(token.what());
 }
 
-QCString Signal::get(QCString idref)
+QByteArray Signal::get(QByteArray idref)
 {
-  QMap<QCString, QCString>::Iterator iter = All.find(idref);
-  static QCString null_str;
+  QMap<QByteArray, QByteArray>::Iterator iter = All.find(idref);
+  static QByteArray null_str;
   
   return (iter == All.end()) ? null_str : *iter;
 }
 
-void Signal::add(FileIn & in, Token & token, QCString & name, QCString & idref)
+void Signal::add(FileIn & in, Token & token, QByteArray & name, QByteArray & idref)
 {
   // token is <signal ...>
-  QCString t = token.xmiIdref();
+  QByteArray t = token.xmiIdref();
   
   if (! t.isEmpty()) {
-    QMap<QCString, QCString>::Iterator iter = All.find(t);
+    QMap<QByteArray, QByteArray>::Iterator iter = All.find(t);
     
     if (iter == All.end()) {
       idref = t;
@@ -56,5 +56,5 @@ void Signal::add(FileIn & in, Token & token, QCString & name, QCString & idref)
 
 }
 
-QMap<QCString, QCString> Signal::All;
+QMap<QByteArray, QByteArray> Signal::All;
 

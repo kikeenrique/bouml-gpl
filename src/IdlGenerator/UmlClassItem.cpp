@@ -27,7 +27,7 @@
 #include "UmlCom.h"
 #include "UmlSettings.h"
 
-void UmlClassItem::remove_comments(QCString & s)
+void UmlClassItem::remove_comments(QByteArray & s)
 {
   int index1 = 0;
   
@@ -53,7 +53,7 @@ void UmlClassItem::remove_comments(QCString & s)
   }
 }
 
-void UmlClassItem::remove_preprocessor(QCString & s)
+void UmlClassItem::remove_preprocessor(QByteArray & s)
 {
   int index = 0;
   
@@ -78,7 +78,7 @@ void UmlClassItem::remove_preprocessor(QCString & s)
   }
 }
 
-void UmlClassItem::remove_arrays(QCString & s)
+void UmlClassItem::remove_arrays(QByteArray & s)
 {
   int index1 = 0;
   

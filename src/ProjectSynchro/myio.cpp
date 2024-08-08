@@ -290,7 +290,7 @@ void purge(QDir & dir, QDict<void> & useful)
     QListIterator<QFileInfo> it(*l);
     QFileInfo *fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       if ((useful.find(fi->fileName()) == 0) &&
 	  ! QFile::remove(fi->absFilePath()))
 	QMessageBox::critical(0, "Project synchro",
@@ -305,7 +305,7 @@ void purge(QDir & dir, QDict<void> & useful)
     QListIterator<QFileInfo> it(*l);
     QFileInfo *fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       QString s = fi->fileName();
       const char * p = s;
       

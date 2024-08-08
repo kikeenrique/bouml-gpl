@@ -1,7 +1,7 @@
 
 #include "UmlJunctionPseudoState.h"
 
-QCString UmlJunctionPseudoState::sKind() {
+QByteArray UmlJunctionPseudoState::sKind() {
   return "junction pseudo state";
 }
 

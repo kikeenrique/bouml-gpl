@@ -27,39 +27,40 @@
 #define TEMPLATECANVAS_H
 
 #include "DiagramCanvas.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 class CdClassCanvas;
 
 #define TEMPLATE_CANVAS_MIN_SIZE 1
 
-class TemplateCanvas : public DiagramCanvas
-{
-    protected:
-        DiagramCanvas * cl;
-        QString text;
+class TemplateCanvas : public DiagramCanvas {
+  protected:
+    DiagramCanvas * cl;
+    QString text;
+  
+  public:
+    TemplateCanvas(DiagramCanvas * c);
+    virtual ~TemplateCanvas();
 
-    public:
-        TemplateCanvas (DiagramCanvas * c);
-        virtual ~TemplateCanvas();
-
-        virtual void draw (QPainter & p);
-
-        virtual UmlCode type() const;
-        virtual void open();
-        virtual void menu (const QPoint&);
-        virtual QString may_start (UmlCode &) const;
-        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
-        virtual void moveBy (double dx, double dy);
-        virtual void change_scale();
-        virtual void upper();
-        virtual void lower();
-        virtual void z_up();
-        virtual void z_down();
-        virtual bool primaryItem() const;
-        virtual void set_z (double z);	// only called by upper() & lower()
-        virtual void save (QTextStream &, bool ref, QString & warning) const;
-
-        void update();
+    virtual void draw(QPainter & p);
+    
+    virtual UmlCode type() const;
+    virtual void open();
+    virtual void menu(const QPoint&);
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual void moveBy(double dx, double dy);
+    virtual void change_scale();
+    virtual void upper();
+    virtual void lower();
+    virtual void z_up();
+    virtual void z_down();
+    virtual bool primaryItem() const;
+    virtual void set_z(double z);	// only called by upper() & lower()
+    virtual void save(QTextStream &, bool ref, QString & warning) const;
+    
+    void update();
 };
 
 #endif

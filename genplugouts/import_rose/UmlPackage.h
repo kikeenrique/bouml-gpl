@@ -4,7 +4,7 @@
 
 #include "UmlBasePackage.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlDeploymentView.h"
 class UmlArtifact;
@@ -16,21 +16,21 @@ class File;
 // You can modify it as you want (except the constructor)
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n) : UmlBasePackage(id, n) {
+    UmlPackage(void * id, const QByteArray & n) : UmlBasePackage(id, n) {
       cpt[kind()] += 1;
     };
 
     virtual void roseImport();
 
-    virtual QCString fullName();
+    virtual QByteArray fullName();
 
-    void subArtifacts(QList<UmlArtifact> & l, QCString name, QCString deplview_name);
+    void subArtifacts(QList<UmlArtifact> & l, QByteArray name, QByteArray deplview_name);
 
-    void subDeplViews(QList<UmlDeploymentView> & l, QCString s);
+    void subDeplViews(QList<UmlDeploymentView> & l, QByteArray s);
 
-    UmlPackage * addPackage(QCString s);
+    UmlPackage * addPackage(QByteArray s);
 
-    UmlDeploymentView * addDeplView(QCString s, UmlPackage * p);
+    UmlDeploymentView * addDeplView(QByteArray s, UmlPackage * p);
 
 
   private:

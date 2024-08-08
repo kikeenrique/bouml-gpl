@@ -1,3 +1,8 @@
+//Added by qt3to4:
+#include <QPixmap>
+#include <QDropEvent>
+#include <QTextStream>
+#include <QDragMoveEvent>
 // *************************************************************************
 //
 // Copyright 2004-2010 Bruno PAGES  .
@@ -33,74 +38,73 @@ class ParameterData;
 #include "Labeled.h"
 #include "BrowserActivityElement.h"
 
-class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter>, public BrowserActivityElement
-{
-        friend class StereotypesDialog;
+class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter>, public BrowserActivityElement {
+  friend class StereotypesDialog;
+  
+  protected:
+    static IdDict<BrowserParameter> all;
+    static QStringList its_default_stereotypes;
+  
+    ParameterData * def;
+    
+  protected:
+    BrowserParameter(int id);
+  
+    void exec_menu_choice(int rank);
+    
+  public:
+    BrowserParameter(QString s, BrowserNode * p, int id = 0);
+    BrowserParameter(const BrowserParameter * model, BrowserNode * p);
+    virtual ~BrowserParameter();
+  
+    virtual BrowserNode * duplicate(BrowserNode * p,
+				    QString name = QString::null);
+    
+    virtual BasicData * add_relation(UmlCode, BrowserNode * end);
+    QString may_start() const;
+    QString may_connect(const BrowserNode * dest) const;
+    virtual QString connexion_from(bool control) const;
 
-    protected:
-        static IdDict<BrowserParameter> all;
-        static QStringList its_default_stereotypes;
+    virtual const QPixmap* pixmap (int) const;
 
-        ParameterData * def;
-
-    protected:
-        BrowserParameter (int id);
-
-        void exec_menu_choice (int rank);
-
-    public:
-        BrowserParameter (QString s, BrowserNode * p, int id = 0);
-        BrowserParameter (const BrowserParameter * model, BrowserNode * p);
-        virtual ~BrowserParameter();
-
-        virtual BrowserNode * duplicate (BrowserNode * p,
-                                         QString name = QString::null);
-
-        virtual BasicData * add_relation (UmlCode, BrowserNode * end);
-        QString may_start() const;
-        QString may_connect (const BrowserNode * dest) const;
-        virtual QString connexion_from (bool control) const;
-
-        virtual const QPixmap* pixmap (int) const;
-
-        virtual void menu();
-        virtual void apply_shortcut (QString s);
-        virtual void open (bool);
-        virtual UmlCode get_type() const;
-        virtual QString get_stype() const;
-        virtual int get_identifier() const;
-        virtual void modified();
-        virtual BasicData * get_data() const;
-        virtual QString full_name (bool rev = FALSE, bool itself = TRUE) const;
-
-        virtual void save (QTextStream &, bool ref, QString & warning);
-        static BrowserParameter * read_ref (char * &);
-        static BrowserParameter * read (char * &, char *, BrowserNode *);
-        static BrowserNode * get_it (const char * k, int id);
-
-        static void clear (bool old);
-        static void update_idmax_for_root();
-        virtual void renumber (int phase);
-        virtual void prepare_update_lib() const;
-
-        virtual void referenced_by (QList<BrowserNode> &, bool ondelete = FALSE);
-        static void compute_referenced_by (QList<BrowserNode> &, BrowserNode *);
-
-        virtual bool tool_cmd (ToolCom * com, const char * args);
-        virtual bool api_compatible (unsigned v) const;
-
-        virtual void DragMoveEvent (QDragMoveEvent * e);
-        virtual void DropEvent (QDropEvent * e);
-        virtual void DragMoveInsideEvent (QDragMoveEvent * e);
-        virtual void DropAfterEvent (QDropEvent * e, BrowserNode * after);
-        QString drag_key() const;
-        QString drag_postfix() const;
-        static QString drag_key (BrowserNode * p);
-
-        static void init();
-        static const QStringList & default_stereotypes();
-        static void read_stereotypes (char * &, char * & k);
-        static void save_stereotypes (QTextStream &);
+    virtual void menu();
+    virtual void apply_shortcut(QString s);
+    virtual void open(bool);
+    virtual UmlCode get_type() const;
+    virtual QString get_stype() const;
+    virtual int get_identifier() const;
+    virtual void modified();
+    virtual BasicData * get_data() const;
+    virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
+    
+    virtual void save(QTextStream &, bool ref, QString & warning);
+    static BrowserParameter * read_ref(char * &);
+    static BrowserParameter * read(char * &, char *, BrowserNode *);
+    static BrowserNode * get_it(const char * k, int id);
+    
+    static void clear(bool old);
+    static void update_idmax_for_root();
+    virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
+    
+    virtual void referenced_by(QList<BrowserNode *> &, bool ondelete = FALSE);
+    static void compute_referenced_by(QList<BrowserNode *> &, BrowserNode *);
+    
+    virtual bool tool_cmd(ToolCom * com, const char * args);
+    virtual bool api_compatible(unsigned v) const;
+    
+    virtual void DragMoveEvent(QDragMoveEvent * e);
+    virtual void DropEvent(QDropEvent * e);
+    virtual void DragMoveInsideEvent(QDragMoveEvent * e);
+    virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    QString drag_key() const;
+    QString drag_postfix() const;
+    static QString drag_key(BrowserNode * p);
+    
+    static void init();
+    static const QStringList & default_stereotypes();
+    static void read_stereotypes(char * &, char * & k);
+    static void save_stereotypes(QTextStream &);
 };
 
 #endif

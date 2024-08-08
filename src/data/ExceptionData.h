@@ -27,25 +27,24 @@
 #define EXCEPTIONDATA_H
 
 #include "AType.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 class QTextStream;
 
-class ExceptionData
-{
-    protected:
-        AType type;
-    public:
-        ExceptionData() {};
+class ExceptionData {
+  protected:
+    AType type;
+  public:
+    ExceptionData(){};
+  
+    const AType & get_type() const { return type; };
+    void set_type(const AType & t);
 
-        const AType & get_type() const {
-            return type;
-        };
-        void set_type (const AType & t);
-
-        void send_uml_def (ToolCom * com);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * &, char * &);
+    void send_uml_def(ToolCom * com);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * &, char * &);
 };
 
 #endif

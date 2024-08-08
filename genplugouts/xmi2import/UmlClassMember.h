@@ -11,9 +11,9 @@
 // You can modify it as you want (except the constructor)
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n) : UmlBaseClassMember(id, n) {};
+    UmlClassMember(void * id, const QByteArray & n) : UmlBaseClassMember(id, n) {};
 
-    void setVisibility(QCString v);
+    void setVisibility(QByteArray v);
 
 };
 

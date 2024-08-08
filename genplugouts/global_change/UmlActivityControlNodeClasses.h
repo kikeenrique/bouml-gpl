@@ -8,7 +8,7 @@
 class UmlInitialActivityNode : public UmlBaseInitialActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlInitialActivityNode(void * id, const QCString & s) : UmlBaseInitialActivityNode(id, s) {
+     UmlInitialActivityNode(void * id, const QByteArray & s) : UmlBaseInitialActivityNode(id, s) {
     }
 
 };
@@ -16,7 +16,7 @@ class UmlInitialActivityNode : public UmlBaseInitialActivityNode {
 class UmlFlowFinalActivityNode : public UmlBaseFlowFinalActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlFlowFinalActivityNode(void * id, const QCString & s) : UmlBaseFlowFinalActivityNode(id, s) {
+     UmlFlowFinalActivityNode(void * id, const QByteArray & s) : UmlBaseFlowFinalActivityNode(id, s) {
     }
 
 };
@@ -24,7 +24,7 @@ class UmlFlowFinalActivityNode : public UmlBaseFlowFinalActivityNode {
 class UmlActivityFinalActivityNode : public UmlBaseActivityFinalActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityFinalActivityNode(void * id, const QCString & s) : UmlBaseActivityFinalActivityNode(id, s) {
+     UmlActivityFinalActivityNode(void * id, const QByteArray & s) : UmlBaseActivityFinalActivityNode(id, s) {
     }
 
 };
@@ -32,7 +32,7 @@ class UmlActivityFinalActivityNode : public UmlBaseActivityFinalActivityNode {
 class UmlDecisionActivityNode : public UmlBaseDecisionActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlDecisionActivityNode(void * id, const QCString & s) : UmlBaseDecisionActivityNode(id, s) {
+     UmlDecisionActivityNode(void * id, const QByteArray & s) : UmlBaseDecisionActivityNode(id, s) {
     }
 
 };
@@ -40,7 +40,7 @@ class UmlDecisionActivityNode : public UmlBaseDecisionActivityNode {
 class UmlMergeActivityNode : public UmlBaseMergeActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlMergeActivityNode(void * id, const QCString & s) : UmlBaseMergeActivityNode(id, s) {
+     UmlMergeActivityNode(void * id, const QByteArray & s) : UmlBaseMergeActivityNode(id, s) {
     }
 
 };
@@ -48,7 +48,7 @@ class UmlMergeActivityNode : public UmlBaseMergeActivityNode {
 class UmlForkActivityNode : public UmlBaseForkActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlForkActivityNode(void * id, const QCString & s) : UmlBaseForkActivityNode(id, s) {
+     UmlForkActivityNode(void * id, const QByteArray & s) : UmlBaseForkActivityNode(id, s) {
     }
 
 };
@@ -56,7 +56,7 @@ class UmlForkActivityNode : public UmlBaseForkActivityNode {
 class UmlJoinActivityNode : public UmlBaseJoinActivityNode {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlJoinActivityNode(void * id, const QCString & s) : UmlBaseJoinActivityNode(id, s) {
+     UmlJoinActivityNode(void * id, const QByteArray & s) : UmlBaseJoinActivityNode(id, s) {
     }
 
 };

@@ -10,7 +10,7 @@
 // You can modify it as you want (except the constructor)
 class UmlDeploymentView : public UmlBaseDeploymentView {
   public:
-    UmlDeploymentView(void * id, const QCString & n) : UmlBaseDeploymentView(id, n) {};
+    UmlDeploymentView(void * id, const QByteArray & n) : UmlBaseDeploymentView(id, n) {};
 
 };
 

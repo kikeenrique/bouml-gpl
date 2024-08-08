@@ -11,7 +11,7 @@
 // You can modify it as you want (except the constructor)
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n) {};
+    UmlOperation(void * id, const QByteArray & n) : UmlBaseOperation(id, n) {};
 
 };
 

@@ -54,8 +54,8 @@ UmlItem * UmlActivity::container(anItemKind kind, Token & token, FileIn & in) {
 
 }
 
-void UmlActivity::solve(QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlActivity::solve(QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))
@@ -103,7 +103,7 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anActivity, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     
     if (s.isEmpty()) {
       static unsigned n = 0;
@@ -128,10 +128,10 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
     if (token.valueOf("isactive") == "true")
       a->set_isActive(TRUE);
     
-    QCString spec = token.valueOf("specification");
+    QByteArray spec = token.valueOf("specification");
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr)) {
@@ -158,7 +158,7 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
     }
     
     if (! spec.isEmpty()) {
-      QMap<QCString, UmlItem *>::Iterator it = All.find(spec);
+      QMap<QByteArray, UmlItem *>::Iterator it = All.find(spec);
       
       if (it == All.end())
 	Unresolved::addRef(a, spec);
@@ -172,14 +172,14 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
 
 void UmlActivity::readCondition(FileIn & in, Token & token) {
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if (s == "specification") {
-	QCString v = token.valueOf("body");
+	QByteArray v = token.valueOf("body");
 	
 	if (v.isNull())
 	  v = token.valueOf("value");	// UMODEL
@@ -202,7 +202,7 @@ void UmlActivity::readParameter(FileIn & in, Token & token) {
   // the parameter may already exist because of a 
   // ActivityParameterNode definition, search for it
   UmlActivityParameter * param = 0;
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   const QVector<UmlItem> ch = children();
   unsigned int n = ch.size();
   int i;
@@ -233,7 +233,7 @@ void UmlActivity::readParameterNode(FileIn & in, Token & token) {
   // the parameter node may already exist because of a 
   // ActivityParameter definition, search for it
   UmlActivityParameter * param = 0;
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   const QVector<UmlItem> ch = children();
   unsigned int n = ch.size();
   int i;

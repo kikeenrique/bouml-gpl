@@ -26,8 +26,8 @@
 #ifndef PARAMETERSETDATA_H
 #define PARAMETERSETDATA_H
 
-#include <qtextstream.h>
-#include <qvaluelist.h>
+#include <q3textstream.h>
+#include <q3valuelist.h>
 
 #include "SimpleData.h"
 
@@ -35,38 +35,35 @@ class BrowserPin;
 class ToolCom;
 class BrowserNode;
 
-class ParameterSetData : public SimpleData
-{
-        Q_OBJECT
+class ParameterSetData : public SimpleData {
+  Q_OBJECT
+    
+  friend class ParameterSetDialog;
+  
+  protected:
+    Q3ValueList<BrowserPin *> pins;
 
-        friend class ParameterSetDialog;
+  public:
+    ParameterSetData();
+    ParameterSetData(ParameterSetData * model, BrowserNode * bn);
+  
+    const Q3ValueList<BrowserPin *> & get_pins() const { return pins; }
 
-    protected:
-        QValueList<BrowserPin *> pins;
+    void edit();
+    
+    void send_uml_def(ToolCom * com, BrowserNode * bn,
+		      const QString & comment);
+    bool tool_cmd(ToolCom * com, const char * args,
+		  BrowserNode * bn, const QString & comment);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * &, char * &);
 
-    public:
-        ParameterSetData();
-        ParameterSetData (ParameterSetData * model, BrowserNode * bn);
+  protected:
+    void set_pins(const Q3ValueList<BrowserPin *> & l);
 
-        const QValueList<BrowserPin *> & get_pins() const {
-            return pins;
-        }
-
-        void edit();
-
-        void send_uml_def (ToolCom * com, BrowserNode * bn,
-                           const QString & comment);
-        bool tool_cmd (ToolCom * com, const char * args,
-                       BrowserNode * bn, const QString & comment);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * &, char * &);
-
-    protected:
-        void set_pins (const QValueList<BrowserPin *> & l);
-
-    protected slots:
-        void check();
+  protected slots:
+    void check();
 };
 
 #endif

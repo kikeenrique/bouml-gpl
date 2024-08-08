@@ -39,7 +39,7 @@ class UmlBaseUseCase : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCase(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseUseCase(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 };
 

@@ -15,7 +15,7 @@ class UmlItem;
 // You can modify it as you want (except the constructor)
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n) :  UmlBaseAttribute(id, n) {};
+    UmlAttribute(void * id, const QByteArray & n) :  UmlBaseAttribute(id, n) {};
 
     static void init();
 
@@ -23,7 +23,7 @@ class UmlAttribute : public UmlBaseAttribute {
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
     //  call at end of import : try to solve type
-    virtual void solve(QCString idref);
+    virtual void solve(QByteArray idref);
 
 
   protected:

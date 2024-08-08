@@ -56,7 +56,7 @@ protected slots:    virtual void polish();
 
     void latinize(QString & s);
 
-    QCString fromUnicode(const QString & s);
+    QByteArray fromUnicode(const QString & s);
 
 };
 

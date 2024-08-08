@@ -16,7 +16,7 @@ void UmlUseCase::write(FileOut & out) {
   out.indent(+1); 
   write_description_properties(out);
   
-  QCString eps = extensionPoints().stripWhiteSpace();
+  QByteArray eps = extensionPoints().stripWhiteSpace();
   
   if (! eps.isEmpty()) {
     int index0 = 0;
@@ -24,7 +24,7 @@ void UmlUseCase::write(FileOut & out) {
     
     for (;;) {
       int index1 = eps.find('\n', index0);
-      QCString ep = eps.mid(index0, index1);
+      QByteArray ep = eps.mid(index0, index1);
       
       if (! ep.isEmpty()) {
 	out.indent();

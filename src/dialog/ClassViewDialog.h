@@ -26,7 +26,7 @@
 #ifndef CLASSVIEWDIALOG_H
 #define CLASSVIEWDIALOG_H
 
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "BrowserNode.h"
 
@@ -37,35 +37,34 @@ class BasicData;
 class KeyValuesTable;
 class BodyDialog;
 
-class ClassViewDialog : public QTabDialog
-{
-        Q_OBJECT
+class ClassViewDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    QWidget * umltab;
+    BasicData * data;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    QComboBox * deploymentview;
+    BrowserNodeList deploymentviews;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QList<BodyDialog *> edits;
+  
+    static QSize previous_size;
+    
+    static void post_edit_description(ClassViewDialog * d, QString s);
+    
+  public:
+    ClassViewDialog(BasicData * nd);
+    virtual ~ClassViewDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
 
-    protected:
-        QWidget * umltab;
-        BasicData * data;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        QComboBox * deploymentview;
-        BrowserNodeList deploymentviews;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QList<BodyDialog> edits;
-
-        static QSize previous_size;
-
-        static void post_edit_description (ClassViewDialog * d, QString s);
-
-    public:
-        ClassViewDialog (BasicData * nd);
-        virtual ~ClassViewDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

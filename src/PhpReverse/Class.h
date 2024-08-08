@@ -41,8 +41,8 @@ class QColorGroup;
 
 class Class : public BrowserNode {
   protected:
-    QCString filename;
-    QCString its_namespace;
+    QByteArray filename;
+    QByteArray its_namespace;
     UmlClass * uml;
     char stereotype;	// 'c' : class, 'i' : interface, '@' @interface, 'e' : enum
     bool abstractp;
@@ -51,7 +51,7 @@ class Class : public BrowserNode {
     bool from_lib;
 #else
     bool description_updatedp;
-    QCString description;
+    QByteArray description;
     
     static QList<Class> Historic;
 #endif
@@ -59,7 +59,7 @@ class Class : public BrowserNode {
     bool manage_extends(ClassContainer * container);
     bool manage_implements(ClassContainer * container, aRelationKind k);
     bool add_inherit(aRelationKind k, UmlTypeSpec & typespec);
-    bool manage_member(QCString s);
+    bool manage_member(QByteArray s);
     void set_description(const char * p);
     
 #ifndef REVERSE
@@ -70,15 +70,15 @@ class Class : public BrowserNode {
   public:
     Class(Package * parent, const char * n, char st);
   
-    void compute_type(QCString type, UmlTypeSpec & typespec,
+    void compute_type(QByteArray type, UmlTypeSpec & typespec,
 		      Class ** need_object = 0);
-    const QCString & get_namespace() const { return its_namespace; }
+    const QByteArray & get_namespace() const { return its_namespace; }
     UmlClass * get_uml();
     bool reversed() const { return reversedp; };
     bool already_in_bouml();
     virtual QString get_path() const;
 #ifndef REVERSE
-    const QCString & get_description() const { return description; };
+    const QByteArray & get_description() const { return description; };
     
     virtual void selected();
     virtual void activated();
@@ -97,9 +97,9 @@ class Class : public BrowserNode {
     static void restore(QDataStream & dt, char c, Package * p);
 #endif
     
-    static bool reverse(Package * container, QCString stereotype,
+    static bool reverse(Package * container, QByteArray stereotype,
 			bool abstractp, bool finalp, 
-			QCString & f, UmlArtifact * art);
+			QByteArray & f, UmlArtifact * art);
     
 #ifndef REVERSE
     static void historic_back();

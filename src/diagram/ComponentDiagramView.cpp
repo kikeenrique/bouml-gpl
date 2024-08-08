@@ -29,7 +29,12 @@
 
 #include <qapplication.h>
 #include <qfont.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
+//Added by qt3to4:
+#include <QTextStream>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QDragEnterEvent>
 
 #include "ComponentDiagramWindow.h"
 #include "ComponentDiagramView.h"
@@ -52,163 +57,234 @@
 #include "RelatedElementsDialog.h"
 #include "translate.h"
 
-ComponentDiagramView::ComponentDiagramView (QWidget * parent, UmlCanvas * canvas, int id)
-    : DiagramView (parent, canvas, id)
-{
-    load ("Component");
+ComponentDiagramView::ComponentDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
+    : DiagramView(parent, canvas, id) {
+  load("Component");
 }
 
 // have marked elements not yet drawn ?
-static bool marked_not_yet_drawn (QPtrDict<DiagramItem> & drawn)
+static bool marked_not_yet_drawn(Q3PtrDict<DiagramItem> & drawn)
 {
-    const QList<BrowserNode> & l = BrowserNode::marked_nodes();
-    QListIterator<BrowserNode> it (l);
-    BrowserNode * bn;
+  const QList<BrowserNode *> & l = BrowserNode::marked_nodes();
+  QList<BrowserNode *>::const_iterator it;
 
-    for (; (bn = it.current()) != 0; ++it) {
-        UmlCode k = bn->get_type();
+  for (it = l.begin(); it!= l.end(); it++) {
+    BrowserNode * bn = (*it);
+    UmlCode k = bn->get_type();
 
-        switch (k) {
-            default:
-                if (!IsaSimpleRelation (k)) {
-                    break;
-                }
-                // no break
-            case UmlComponent:
-            case UmlPackage:
-                if (drawn[bn->get_data()] == 0) {
-                    return TRUE;
-                }
+    switch (k) {
+      default:
+        if (!IsaSimpleRelation(k)) {
+          break;
+        }
+        // no break
+      case UmlComponent:
+      case UmlPackage:
+        if (drawn[bn->get_data()] == 0) {
+          return TRUE;
         }
     }
+  }
 
-    return FALSE;
+  return FALSE;
 }
 
-static void get_drawn (DiagramItemList & items,
-                       QPtrDict<DiagramItem> & drawn)
+static void get_drawn(DiagramItemList & items,
+		      Q3PtrDict<DiagramItem> & drawn)
 {
-    DiagramItem * di;
+  QList<DiagramItem *>::const_iterator it;
 
-    for (di = items.first(); di != 0; di = items.next()) {
-        UmlCode k = di->type();
+  for (it = items.begin(); it!= items.end(); it++) {
+    DiagramItem * di = (*it);
+    UmlCode k = di->type();
 
-        switch (k) {
-            case UmlComponent:
-            case UmlPackage:
-                drawn.replace (di->get_bn()->get_data(), di);
-                break;
-            default:
-                if (IsaSimpleRelation (k)) {
-                    drawn.replace ( ( (ArrowCanvas *) di)->get_data(), di);
-                }
+    switch (k) {
+      case UmlComponent:
+      case UmlPackage:
+        drawn.replace(di->get_bn()->get_data(), di);
+        break;
+      default:
+        if (IsaSimpleRelation(k)) {
+          drawn.replace(((ArrowCanvas *) di)->get_data(), di);
         }
     }
+  }
 }
 
-void ComponentDiagramView::menu (const QPoint& p)
-{
-    QPopupMenu m (0);
+void ComponentDiagramView::menu(const QPoint& p) {
+  Q3PopupMenu m(0);
 
-    m.insertItem (new MenuTitle (TR ("Component diagram menu"), m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Component diagram menu"), m.font()), -1);
 
-    if ( ( ( (UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
-        DiagramItemList items (canvas()->allItems());
-        QPtrDict<DiagramItem> drawn;
+  if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
+    DiagramItemList items(canvas()->allItems());
+    Q3PtrDict<DiagramItem> drawn;
 
-        get_drawn (items, drawn);
+    get_drawn(items, drawn);
 
-        if (marked_not_yet_drawn (drawn)) {
-            m.insertItem (TR ("Add marked elements"), 28);
-        }
+    if (marked_not_yet_drawn(drawn))
+      m.insertItem(TR("Add marked elements"), 28);
 
-        switch (default_menu (m, 30)) {
-            case EDIT_DRAWING_SETTING_CMD:
-                ( (BrowserComponentDiagram *) the_canvas()->browser_diagram())->edit_settings();
-                break;
-            case RELOAD_CMD:
-                // pure drawing modifications are lost
-                // mark the diagram modified because the undid modifications
-                // may be saved in the file are not saved in memory
-                load ("Component");
-                window()->package_modified();
-                break;
-            case 28:
-                add_marked_elements (p, drawn);
-                break;
-        }
-    } else {
-        (void) default_menu (m, 30);
+    switch (default_menu(m, 30)) {
+    case EDIT_DRAWING_SETTING_CMD:
+      ((BrowserComponentDiagram *) the_canvas()->browser_diagram())->edit_settings();
+      break;
+    case RELOAD_CMD:
+      // pure drawing modifications are lost
+      // mark the diagram modified because the undid modifications
+      // may be saved in the file are not saved in memory
+      load("Component");
+      window()->package_modified();
+      break;
+    case 28:
+      add_marked_elements(p, drawn);
+      break;
     }
+  }
+  else
+    (void) default_menu(m, 30);
 }
 
 static const int Diagram_Margin = 20;
 
-void ComponentDiagramView::add_marked_elements (const QPoint& p,
-        QPtrDict<DiagramItem> & drawn)
-{
-    QApplication::setOverrideCursor (Qt::waitCursor);
+void ComponentDiagramView::add_marked_elements(const QPoint& p,
+					       Q3PtrDict<DiagramItem> & drawn) {
+  QApplication::setOverrideCursor(Qt::waitCursor);
 
+  history_save();
+  history_protected = TRUE;
+
+  int xmax = canvas()->width() - Diagram_Margin;
+  int ymax = canvas()->height() - Diagram_Margin;
+  int x = p.x();
+  int y = p.y();
+  int future_y = y;
+  const QList<BrowserNode *> & l = BrowserNode::marked_nodes();
+  QList<BrowserNode *>::const_iterator it;
+
+  for (it = l.begin(); it!= l.end(); it++) {
+    BrowserNode * bn = (*it);
+    if (drawn[bn->get_data()] == 0) {
+      DiagramCanvas * dc;
+
+      switch (bn->get_type()) {
+        case UmlComponent:
+          dc = new ComponentCanvas(bn, the_canvas(), x, y);
+          break;
+        case UmlPackage:
+          dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+          break;
+        default:
+          continue;
+      }
+
+      drawn.replace(dc->get_bn()->get_data(), dc);
+
+      if ((x + dc->width()) > xmax) {
+        dc->move(x = Diagram_Margin, y = future_y);
+      }
+
+      if (y + dc->height() > ymax) {
+        dc->move(x = Diagram_Margin, y = Diagram_Margin);
+        future_y = y + dc->height() + Diagram_Margin;
+      }
+      else {
+        int bot = y + dc->height() + Diagram_Margin;
+
+        if (bot > future_y){
+          future_y = bot;
+        }
+      }
+
+      x = x + dc->width() + Diagram_Margin;
+
+      dc->show();
+      dc->upper();
+    }
+  }
+
+  UmlCanvas * cnv = (UmlCanvas *) canvas();
+
+  if (! cnv->must_draw_all_relations()) {
+    for (it = l.begin(); it!= l.end(); it++) {
+      BrowserNode * bn = (*it);
+      if ((drawn[bn->get_data()] == 0) &&
+          IsaSimpleRelation(bn->get_type())) {
+        SimpleRelationCanvas::drop(bn, cnv, drawn);
+      }
+    }
+  }
+
+  canvas()->update();
+  history_protected = FALSE;
+  window()->package_modified();
+
+  QApplication::restoreOverrideCursor();
+}
+
+void ComponentDiagramView::add_related_elements(DiagramItem *  di, QString what,
+						bool inh, bool assoc) {
+  BrowserNodeList l;
+  RelatedElementsDialog dialog(di->get_bn(), what, inh, assoc, l);
+
+  dialog.raise();
+
+  if (dialog.exec() == QDialog::Accepted) {
+    QApplication::setOverrideCursor(Qt::waitCursor);
+
+    DiagramItemList items(canvas()->allItems());
+    Q3PtrDict<DiagramItem> drawn;
+
+    get_drawn(items, drawn);
     history_save();
     history_protected = TRUE;
 
     int xmax = canvas()->width() - Diagram_Margin;
     int ymax = canvas()->height() - Diagram_Margin;
-    int x = p.x();
-    int y = p.y();
+    QRect re = di->rect();
+    int x = re.x();
+    int y = re.bottom() + Diagram_Margin;
     int future_y = y;
-    const QList<BrowserNode> & l = BrowserNode::marked_nodes();
-    QListIterator<BrowserNode> it (l);
-    BrowserNode * bn;
+    QList<BrowserNode *>::const_iterator it;
+    for (it = l.begin(); it!= l.end(); it++) {
+      BrowserNode * bn = (*it);
+      if (drawn[bn->get_data()] == 0) {
+        DiagramCanvas * dc;
 
-    for (; (bn = it.current()) != 0; ++it) {
-        if (drawn[bn->get_data()] == 0) {
-            DiagramCanvas * dc;
-
-            switch (bn->get_type()) {
-                case UmlComponent:
-                    dc = new ComponentCanvas (bn, the_canvas(), x, y);
-                    break;
-                case UmlPackage:
-                    dc = new PackageCanvas (bn, the_canvas(), x, y, 0);
-                    break;
-                default:
-                    continue;
-            }
-
-            drawn.replace (dc->get_bn()->get_data(), dc);
-
-            if ( (x + dc->width()) > xmax) {
-                dc->move (x = Diagram_Margin, y = future_y);
-            }
-
-            if (y + dc->height() > ymax) {
-                dc->move (x = Diagram_Margin, y = Diagram_Margin);
-                future_y = y + dc->height() + Diagram_Margin;
-            } else {
-                int bot = y + dc->height() + Diagram_Margin;
-
-                if (bot > future_y) {
-                    future_y = bot;
-                }
-            }
-
-            x = x + dc->width() + Diagram_Margin;
-
-            dc->show();
-            dc->upper();
+        switch (bn->get_type()) {
+          case UmlComponent:
+            dc = new ComponentCanvas(bn, the_canvas(), x, y);
+            break;
+          case UmlPackage:
+            dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+            break;
+          default:
+            continue;
         }
-    }
 
-    UmlCanvas * cnv = (UmlCanvas *) canvas();
+        drawn.replace(dc->get_bn()->get_data(), dc);
 
-    if (! cnv->must_draw_all_relations()) {
-        for (it.toFirst(); (bn = it.current()) != 0; ++it) {
-            if ( (drawn[bn->get_data()] == 0) &&
-                 IsaSimpleRelation (bn->get_type())) {
-                SimpleRelationCanvas::drop (bn, cnv, drawn);
-            }
+        if ((x + dc->width()) > xmax) {
+          dc->move(x = Diagram_Margin, y = future_y);
         }
+
+        if (y + dc->height() > ymax) {
+          dc->move(x = Diagram_Margin, y = Diagram_Margin);
+          future_y = y + dc->height() + Diagram_Margin;
+        }
+        else {
+          int bot = y + dc->height() + Diagram_Margin;
+
+          if (bot > future_y) {
+            future_y = bot;
+          }
+        }
+
+        x = x + dc->width() + Diagram_Margin;
+
+        dc->show();
+        dc->upper();
+      }
     }
 
     canvas()->update();
@@ -216,300 +292,226 @@ void ComponentDiagramView::add_marked_elements (const QPoint& p,
     window()->package_modified();
 
     QApplication::restoreOverrideCursor();
+  }
 }
 
-void ComponentDiagramView::add_related_elements (DiagramItem *  di, QString what,
-        bool inh, bool assoc)
-{
-    BrowserNodeList l;
-    RelatedElementsDialog dialog (di->get_bn(), what, inh, assoc, l);
+void ComponentDiagramView::contentsMousePressEvent(QMouseEvent * e) {
+  if (!window()->frozen()) {
+    UmlCode action = window()->buttonOn();
 
-    dialog.raise();
+    switch (action) {
+    case UmlComponent:
+      {
+	history_protected = TRUE;
+	unselect_all();
+	window()->selectOn();
+	history_save();
 
-    if (dialog.exec() == QDialog::Accepted) {
-        QApplication::setOverrideCursor (Qt::waitCursor);
+	BrowserNode * b =
+	  BrowserComponent::get_component(((BrowserNode *) window()->browser_diagram()->parent()));
 
-        DiagramItemList items (canvas()->allItems());
-        QPtrDict<DiagramItem> drawn;
+	if (b != 0) {
+	  ComponentCanvas * c =
+	    new ComponentCanvas(b, the_canvas(), e->x(), e->y());
 
-        get_drawn (items, drawn);
-        history_save();
-        history_protected = TRUE;
+	  c->show();
+	  c->upper();
+	  window()->package_modified();
+	}
+	canvas()->update();
+	history_protected = FALSE;
+      }
+      break;
+    default:
+      DiagramView::contentsMousePressEvent(e);
+      break;
+    }
+  }
+  else
+    DiagramView::contentsMousePressEvent(e);
+}
 
-        int xmax = canvas()->width() - Diagram_Margin;
-        int ymax = canvas()->height() - Diagram_Margin;
-        QRect re = di->rect();
-        int x = re.x();
-        int y = re.bottom() + Diagram_Margin;
-        int future_y = y;
-        QListIterator<BrowserNode> it (l);
-        BrowserNode * bn;
+void ComponentDiagramView::dragEnterEvent(QDragEnterEvent * e) {
+  if (!window()->frozen() &&
+      (UmlDrag::canDecode(e, UmlComponent, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlPackage, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlSimpleRelations, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlClassDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlUseCaseDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlSeqDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlColDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlObjectDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlComponentDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlDeploymentDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlStateDiagram, TRUE, TRUE)))
+    e->accept();
+  else
+    e->ignore();
+}
 
-        for (; (bn = it.current()) != 0; ++it) {
-            if (drawn[bn->get_data()] == 0) {
-                DiagramCanvas * dc;
+void ComponentDiagramView::dropEvent(QDropEvent * e) {
+  BrowserNode * bn;
+  QPoint p = viewportToContents(e->pos());
 
-                switch (bn->get_type()) {
-                    case UmlComponent:
-                        dc = new ComponentCanvas (bn, the_canvas(), x, y);
-                        break;
-                    case UmlPackage:
-                        dc = new PackageCanvas (bn, the_canvas(), x, y, 0);
-                        break;
-                    default:
-                        continue;
-                }
+  if ((bn = UmlDrag::decode(e, UmlComponent)) != 0) {
+    history_save();
 
-                drawn.replace (dc->get_bn()->get_data(), dc);
+    ComponentCanvas * c =
+      new ComponentCanvas(bn, the_canvas(), p.x(), p.y());
 
-                if ( (x + dc->width()) > xmax) {
-                    dc->move (x = Diagram_Margin, y = future_y);
-                }
+    history_protected = TRUE;
+    c->show();
+    c->upper();
+    canvas()->update();
+    history_protected = FALSE;
+    window()->package_modified();
+  }
+  else if ((bn = UmlDrag::decode(e, UmlPackage)) != 0) {
+    history_save();
 
-                if (y + dc->height() > ymax) {
-                    dc->move (x = Diagram_Margin, y = Diagram_Margin);
-                    future_y = y + dc->height() + Diagram_Margin;
-                } else {
-                    int bot = y + dc->height() + Diagram_Margin;
+    PackageCanvas * pk =
+      new PackageCanvas(bn, the_canvas(), p.x(), p.y(), 0);
 
-                    if (bot > future_y) {
-                        future_y = bot;
-                    }
-                }
+    history_protected = TRUE;
+    pk->show();
+    pk->upper();
+    canvas()->update();
+    window()->package_modified();
+  }
+  else if ((bn = UmlDrag::decode(e, UmlSimpleRelations, TRUE)) != 0) {
+    history_save();
 
-                x = x + dc->width() + Diagram_Margin;
+    history_protected = TRUE;
+    SimpleRelationCanvas::drop(bn, the_canvas());
+    canvas()->update();
+    history_protected = FALSE;
+  }
+  else if (((bn = UmlDrag::decode(e, UmlClassDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlUseCaseDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlSeqDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlColDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlComponentDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlDeploymentDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlStateDiagram, TRUE)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlActivityDiagram, TRUE)) != 0)) {
+    history_save();
 
-                dc->show();
-                dc->upper();
-            }
+    IconCanvas * ic = new IconCanvas(bn, the_canvas(), p.x(), p.y(), 0);
+
+    history_protected = TRUE;
+    ic->show();
+    ic->upper();
+    canvas()->update();
+    history_protected = FALSE;
+    window()->package_modified();
+  }
+}
+
+void ComponentDiagramView::save(QTextStream & st, QString & warning,
+				bool copy) const {
+  DiagramItemList items(canvas()->allItems());
+  DiagramItem * di;
+
+  if (!copy) {
+    // sort is useless for a copy
+    qSort(items);
+  }
+
+  st << "format " << FILEFORMAT << "\n";
+
+  // save first component packages fragment notes junctions and icons
+  QList<DiagramItem *>::const_iterator it;
+
+  for (it = items.begin(); it!= items.end(); it++) {
+    di = (*it);
+    switch (di->type()) {
+      case UmlComponent:
+      case UmlNote:
+      case UmlText:
+      case UmlImage:
+      case UmlPackage:
+      case UmlFragment:
+      case UmlArrowJunction:
+      case UmlIcon:
+        if (!copy || di->copyable()) {
+          di->save(st, FALSE, warning);
         }
-
-        canvas()->update();
-        history_protected = FALSE;
-        window()->package_modified();
-
-        QApplication::restoreOverrideCursor();
+        // no break
+      default:
+        break;
     }
-}
+  }
 
-void ComponentDiagramView::contentsMousePressEvent (QMouseEvent * e)
-{
-    if (!window()->frozen()) {
-        UmlCode action = window()->buttonOn();
+  // then saves relations
 
-        switch (action) {
-            case UmlComponent: {
-                history_protected = TRUE;
-                unselect_all();
-                window()->selectOn();
-                history_save();
-
-                BrowserNode * b =
-                    BrowserComponent::get_component ( ( (BrowserNode *) window()->browser_diagram()->parent()));
-
-                if (b != 0) {
-                    ComponentCanvas * c =
-                        new ComponentCanvas (b, the_canvas(), e->x(), e->y());
-
-                    c->show();
-                    c->upper();
-                    window()->package_modified();
-                }
-                canvas()->update();
-                history_protected = FALSE;
-            }
-            break;
-            default:
-                DiagramView::contentsMousePressEvent (e);
-                break;
+  for (it = items.begin(); it!= items.end(); it++) {
+    di = (*it);
+    switch (di->type()) {
+      case UmlInherit:
+      case UmlDependency:
+      case UmlDependOn:
+      case UmlRequired:
+      case UmlProvided:
+        if (!copy || di->copyable()) {
+          di->save(st, FALSE, warning);
         }
-    } else {
-        DiagramView::contentsMousePressEvent (e);
+      default:	// to avoid compiler warning
+        break;
     }
+  }
+
+  // then saves anchors
+  for (it = items.begin(); it!= items.end(); it++) {
+    di = (*it);
+    if ((!copy || di->copyable()) && (di->type() == UmlAnchor)) {
+      di->save(st, FALSE, warning);
+    }
+  }
+
+  if (!copy && (preferred_zoom != 0)) {
+    nl_indent(st);
+    st << "preferred_whz " << preferred_size.width() << ' '
+       << preferred_size.height() << ' ' << preferred_zoom;
+  }
+
+  nl_indent(st);
+  st << "end\n";
 }
 
-void ComponentDiagramView::dragEnterEvent (QDragEnterEvent * e)
-{
-    if (!window()->frozen() &&
-        (UmlDrag::canDecode (e, UmlComponent, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlPackage, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlSimpleRelations, TRUE, TRUE) ||
-         UmlDrag::canDecode (e, UmlClassDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlUseCaseDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlSeqDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlColDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlObjectDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlComponentDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlDeploymentDiagram, FALSE, TRUE) ||
-         UmlDrag::canDecode (e, UmlActivityDiagram, TRUE, TRUE) ||
-         UmlDrag::canDecode (e, UmlStateDiagram, TRUE, TRUE))) {
-        e->accept();
-    } else {
-        e->ignore();
-    }
-}
+void ComponentDiagramView::read(char * st, char * k) {
+  UmlCanvas * canvas = the_canvas();
 
-void ComponentDiagramView::dropEvent (QDropEvent * e)
-{
-    BrowserNode * bn;
-    QPoint p = viewportToContents (e->pos());
+  // reads first component package icons notes junctions text and images
+  while (ComponentCanvas::read(st, canvas, k) ||
+	 NoteCanvas::read(st, canvas, k) ||
+	 TextCanvas::read(st, canvas, k) ||
+	 IconCanvas::read(st, canvas, k) ||
+	 PackageCanvas::read(st, canvas, k) ||
+	 FragmentCanvas::read(st, canvas, k) ||
+	 ArrowJunctionCanvas::read(st, canvas, k) ||
+	 ImageCanvas::read(st, canvas, k))
+    k = read_keyword(st);
 
-    if ( (bn = UmlDrag::decode (e, UmlComponent)) != 0) {
-        history_save();
+  // then reads relations and anchors
+  ArrowCanvas * a;
 
-        ComponentCanvas * c =
-            new ComponentCanvas (bn, the_canvas(), p.x(), p.y());
+  while (((a = ArrowCanvas::read(st, canvas, k)) != 0) ||
+	 ((a = SimpleRelationCanvas::read(st, canvas, k)) != 0)) {
+    a->get_start()->check_line(a);
+    k = read_keyword(st);
+  }
 
-        history_protected = TRUE;
-        c->show();
-        c->upper();
-        canvas()->update();
-        history_protected = FALSE;
-        window()->package_modified();
-    } else if ( (bn = UmlDrag::decode (e, UmlPackage)) != 0) {
-        history_save();
+  if (!strcmp(k, "preferred_whz") || !strcmp(k, "prefered_whz")) {
+    preferred_size.setWidth(read_unsigned(st));
+    preferred_size.setHeight(read_unsigned(st));
+    preferred_zoom = read_double(st);
+    k = read_keyword(st);
+  }
 
-        PackageCanvas * pk =
-            new PackageCanvas (bn, the_canvas(), p.x(), p.y(), 0);
-
-        history_protected = TRUE;
-        pk->show();
-        pk->upper();
-        canvas()->update();
-        window()->package_modified();
-    } else if ( (bn = UmlDrag::decode (e, UmlSimpleRelations, TRUE)) != 0) {
-        history_save();
-
-        history_protected = TRUE;
-        SimpleRelationCanvas::drop (bn, the_canvas());
-        canvas()->update();
-        history_protected = FALSE;
-    } else if ( ( (bn = UmlDrag::decode (e, UmlClassDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlUseCaseDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlSeqDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlColDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlObjectDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlComponentDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlDeploymentDiagram)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlStateDiagram, TRUE)) != 0) ||
-                ( (bn = UmlDrag::decode (e, UmlActivityDiagram, TRUE)) != 0)) {
-        history_save();
-
-        IconCanvas * ic = new IconCanvas (bn, the_canvas(), p.x(), p.y(), 0);
-
-        history_protected = TRUE;
-        ic->show();
-        ic->upper();
-        canvas()->update();
-        history_protected = FALSE;
-        window()->package_modified();
-    }
-}
-
-void ComponentDiagramView::save (QTextStream & st, QString & warning,
-                                 bool copy) const
-{
-    DiagramItemList items (canvas()->allItems());
-    DiagramItem * di;
-
-    if (!copy)
-        // sort is useless for a copy
-    {
-        items.sort();
-    }
-
-    st << "format " << FILEFORMAT << "\n";
-
-    // save first component packages fragment notes junctions and icons
-
-    for (di = items.first(); di != 0; di = items.next()) {
-        switch (di->type()) {
-            case UmlComponent:
-            case UmlNote:
-            case UmlText:
-            case UmlImage:
-            case UmlPackage:
-            case UmlFragment:
-            case UmlArrowJunction:
-            case UmlIcon:
-                if (!copy || di->copyable()) {
-                    di->save (st, FALSE, warning);
-                }
-                // no break
-            default:
-                break;
-        }
-    }
-
-    // then saves relations
-
-    for (di = items.first(); di != 0; di = items.next()) {
-        switch (di->type()) {
-            case UmlInherit:
-            case UmlDependency:
-            case UmlDependOn:
-            case UmlRequired:
-            case UmlProvided:
-                if (!copy || di->copyable()) {
-                    di->save (st, FALSE, warning);
-                }
-            default:	// to avoid compiler warning
-                break;
-        }
-    }
-
-    // then saves anchors
-
-    for (di = items.first(); di != 0; di = items.next())
-        if ( (!copy || di->copyable()) && (di->type() == UmlAnchor)) {
-            di->save (st, FALSE, warning);
-        }
-
-    if (!copy && (preferred_zoom != 0)) {
-        nl_indent (st);
-        st << "preferred_whz " << preferred_size.width() << ' '
-           << preferred_size.height() << ' ' << preferred_zoom;
-    }
-
-    nl_indent (st);
-    st << "end\n";
-}
-
-void ComponentDiagramView::read (char * st, char * k)
-{
-    UmlCanvas * canvas = the_canvas();
-
-    // reads first component package icons notes junctions text and images
-    while (ComponentCanvas::read (st, canvas, k) ||
-           NoteCanvas::read (st, canvas, k) ||
-           TextCanvas::read (st, canvas, k) ||
-           IconCanvas::read (st, canvas, k) ||
-           PackageCanvas::read (st, canvas, k) ||
-           FragmentCanvas::read (st, canvas, k) ||
-           ArrowJunctionCanvas::read (st, canvas, k) ||
-           ImageCanvas::read (st, canvas, k)) {
-        k = read_keyword (st);
-    }
-
-    // then reads relations and anchors
-    ArrowCanvas * a;
-
-    while ( ( (a = ArrowCanvas::read (st, canvas, k)) != 0) ||
-            ( (a = SimpleRelationCanvas::read (st, canvas, k)) != 0)) {
-        a->get_start()->check_line (a);
-        k = read_keyword (st);
-    }
-
-    if (!strcmp (k, "preferred_whz") || !strcmp (k, "prefered_whz")) {
-        preferred_size.setWidth (read_unsigned (st));
-        preferred_size.setHeight (read_unsigned (st));
-        preferred_zoom = read_double (st);
-        k = read_keyword (st);
-    }
-
-    if (strcmp (k, "end")) {
-        wrong_keyword (k, "end");
-    }
+  if (strcmp(k, "end"))
+    wrong_keyword(k, "end");
 }
 
 

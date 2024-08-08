@@ -6,7 +6,7 @@
 #include "anItemKind.h"
 #include "UmlTypeSpec.h"
 #include <qvaluelist.h>
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qcstring.h>
 #include <qdict.h>
 
@@ -203,7 +203,7 @@ class UmlBaseClass : public UmlClassMember {
     //exist, else 0/null. In case the package is specified (not 0/null), 
     //the returned class will be defined in a sub-level of the package.
     
-    static UmlClass * get(const QCString & n, const UmlPackage * p);
+    static UmlClass * get(const QByteArray & n, const UmlPackage * p);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
@@ -216,7 +216,7 @@ class UmlBaseClass : public UmlClassMember {
     // to set the name
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    virtual bool set_Name(const QCString & s);
+    virtual bool set_Name(const QByteArray & s);
 
   friend class UmlBaseRelation;
   friend class UmlBaseArtifact;
@@ -263,7 +263,7 @@ class UmlBaseClass : public UmlClassMember {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseClass(void * id, const QCString & n);
+    UmlBaseClass(void * id, const QByteArray & n);
 
     //internal, do NOT use it
     

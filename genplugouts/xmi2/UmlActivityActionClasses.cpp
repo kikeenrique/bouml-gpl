@@ -32,7 +32,7 @@ void UmlBroadcastSignalAction::write(FileOut & out) {
 void UmlValueSpecificationAction::write(FileOut & out) {
   write_begin(out, "ValueSpecificationAction");
   
-  QCString val;
+  QByteArray val;
   
   switch (_lang) {
   case Uml:
@@ -56,7 +56,7 @@ void UmlOpaqueAction::write(FileOut & out) {
   write_begin(out, "OpaqueAction");
   write_end(out, TRUE);
   
-  QCString body;
+  QByteArray body;
   
   switch(_lang) {
   case Uml:
@@ -87,7 +87,7 @@ void UmlAcceptEventAction::write(FileOut & out) {
   if (isUnmarshall())
     out << " isUnmarshall=\"true\"";
   
-  QCString trig;
+  QByteArray trig;
   
   switch (_lang) {
   case Uml:
@@ -189,7 +189,7 @@ void UmlAcceptCallAction::write(FileOut & out) {
   write_begin(out, "AcceptCallAction");
   out << " isUnmarshall=\"true\"";
 
-  QCString trig;
+  QByteArray trig;
   
   switch (_lang) {
   case Uml:
@@ -222,7 +222,7 @@ void UmlAcceptCallAction::write(FileOut & out) {
 void UmlReplyAction::write(FileOut & out) {
   write_begin(out, "ReplyAction");
   
-  QCString trig;
+  QByteArray trig;
   
   switch (_lang) {
   case Uml:

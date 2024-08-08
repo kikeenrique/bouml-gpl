@@ -11,7 +11,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHCPP
     //  return the C++ declaration
     
-    const QCString & cppDecl();
+    const QByteArray & cppDecl();
 
     //  to set the C++ declaration
     //
@@ -22,7 +22,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHJAVA
     //  return the Java defininition
     
-    const QCString & javaDecl();
+    const QByteArray & javaDecl();
 
     //  to set the Java definition
     //
@@ -33,7 +33,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHIDL
     //  return the IDL declaration
     
-    const QCString & idlDecl();
+    const QByteArray & idlDecl();
 
     //  set the IDL declaration
     //
@@ -49,20 +49,20 @@ class UmlBaseClassItem : public UmlItem {
 
   private:
 #ifdef WITHCPP
-    QCString _cpp_decl;
+    QByteArray _cpp_decl;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_decl;
+    QByteArray _java_decl;
 #endif
 
 #ifdef WITHIDL
-    QCString _idl_decl;
+    QByteArray _idl_decl;
 #endif
 
 
   protected:
-    UmlBaseClassItem(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseClassItem(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 #ifdef WITHCPP
     virtual void read_cpp_();

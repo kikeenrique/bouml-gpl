@@ -36,14 +36,14 @@
 
 class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
-    UmlExtraClassMember(void * id, const QCString & n)
+    UmlExtraClassMember(void * id, const QByteArray & n)
       : UmlBaseExtraClassMember(id, n) {};
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent);
-    virtual void generate_enum_pattern_item(QTextOStream &, int &, const QCString &, QCString);
-    virtual void generate_enum_pattern_case(QTextOStream &, QCString);
-    virtual void generate_enum_member(QTextOStream &, QCString);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent);
+    virtual void generate_enum_pattern_item(QTextStream &, int &, const QByteArray &, QByteArray);
+    virtual void generate_enum_pattern_case(QTextStream &, QByteArray);
+    virtual void generate_enum_member(QTextStream &, QByteArray);
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define _UMLBASEUSECASEREFERENCE_H
 
 
-#include <qptrvector.h>
+#include <qvector.h>
 
 class UmlUseCase;
 class UmlFragmentCompartment;

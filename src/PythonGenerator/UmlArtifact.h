@@ -30,7 +30,7 @@
 
 #include "UmlBaseArtifact.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlPackage;
 
 // This class manages 'artifacts'
@@ -42,23 +42,23 @@ class UmlArtifact : public UmlBaseArtifact {
 
     static UmlArtifact * current;
     static UmlPackage * package_of_generated_artifact;
-    static QCString imports;
+    static QByteArray imports;
     
-    void generate_imports(QTextOStream & f, QCString & made);
+    void generate_imports(QTextStream & f, QByteArray & made);
 
     static bool must_be_saved(const char * path, const char * new_contains);
   
     void generate_text();
 
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n), managed(FALSE) {};
     
     virtual void generate();
     
     static UmlArtifact * generated_one();
     static UmlPackage * generation_package();
-    static const QCString & all_imports();
+    static const QByteArray & all_imports();
 };
 
 #endif

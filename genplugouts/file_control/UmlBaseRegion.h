@@ -24,7 +24,7 @@ class UmlBaseRegion : public UmlItem {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseRegion(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseRegion(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 };

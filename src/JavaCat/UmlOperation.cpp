@@ -48,16 +48,16 @@ using namespace std;
 # endif
 #endif
 
-bool UmlOperation::new_one(Class * container, const QCString & name,
+bool UmlOperation::new_one(Class * container, const QByteArray & name,
 			   const QValueList<FormalParameterList> & tmplts,
-			   const QCString & oper_templ,
-			   UmlTypeSpec & type, QCString str_actuals,
-			   UmlClass * first_actual_class, QCString type_def,
+			   const QByteArray & oper_templ,
+			   UmlTypeSpec & type, QByteArray str_actuals,
+			   UmlClass * first_actual_class, QByteArray type_def,
 			   aVisibility visibility,
 			   bool finalp, bool abstractp, bool staticp,
 			   bool nativep, bool strictfp, bool synchronizedp, 
-			   const QCString & array, QCString comment,
-			   QCString description, QCString annotation
+			   const QByteArray & array, QByteArray comment,
+			   QByteArray description, QByteArray annotation
 #ifdef ROUNDTRIP
 			   , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -77,7 +77,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
   UmlTypeSpec return_type;
   QValueList<UmlParameter> params;
   QValueList<UmlTypeSpec> exceptions;
-  QCString body;
+  QByteArray body;
   
   if (may_roundtrip)
 #else
@@ -92,7 +92,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     op = UmlBaseOperation::create(cl, name);
     
     if (op == 0) {
-      JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add operation <i>")
+      JavaCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add operation <i>")
 			   + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
       return FALSE;
@@ -105,7 +105,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 #endif
   }
     
-  QCString def;
+  QByteArray def;
   
 #ifdef ROUNDTRIP
   if (may_roundtrip || (op != 0)) {
@@ -212,7 +212,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 #endif
     while (read_param(container, rank, tmplts, param, def, op == 0)) {
       if ((op != 0) && ! op->addParameter(rank, param)) {
-	JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add param <i>")
+	JavaCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add param <i>")
 			     + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
 # ifdef TRACE
@@ -223,7 +223,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     rank += 1;
   }
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
   if (!s.isEmpty() && (*((const char *) s) == '[')) {
 #ifdef ROUNDTRIP
@@ -333,7 +333,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     // goto the end of the body
     
 #ifndef ROUNDTRIP
-    QCString body;
+    QByteArray body;
 #endif
     int level = 1;	// '{' already read
     char c;
@@ -388,7 +388,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 
       {
 	// remove \r in case of preserve body
-	QCString current_body = op->javaBody();
+	QByteArray current_body = op->javaBody();
 	int index = 0;
 	
 	while ((index = current_body.find('\r', index)) != -1)
@@ -534,7 +534,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     op = UmlBaseOperation::create(cl, name);
     
     if (op == 0) {
-      JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add operation <i>")
+      JavaCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add operation <i>")
 			   + name + "</i> in <i>" + cl->name() 
 			   + "</i></b></font><br>");  
       throw 0;
@@ -583,7 +583,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 
 bool UmlOperation::read_param(Class * container, unsigned rank,
 			      const QValueList<FormalParameterList> & tmplts,
-			      UmlParameter & param, QCString & def, bool bypass)
+			      UmlParameter & param, QByteArray & def, bool bypass)
 {
 #ifdef TRACE
   cout << "UmlOperation::manage_param " << rank << "\n";
@@ -592,15 +592,15 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
   bool finalp = FALSE;
   bool in = FALSE;
   bool ellipsis = FALSE;
-  QCString array;
+  QByteArray array;
   bool type_read = FALSE;
   QValueList<UmlTypeSpec> actuals;
-  QCString str_actuals;
-  QCString annotation;
+  QByteArray str_actuals;
+  QByteArray annotation;
   
   param.name = param.default_value = 0;
   
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
 #ifdef TRACE
   cout << "commence par " << s << '\n';
@@ -640,7 +640,7 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
 	param.dir = (finalp || in)
 	  ? InputDirection : InputOutputDirection;
 	
-	QCString s;
+	QByteArray s;
 	
 	if (rank != 0)
 	  s = ", ";
@@ -653,14 +653,14 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
 	  s += param.type.explicit_type;
 	else {
 	  s += "${t";
-	  s += QCString().setNum(rank);
+	  s += QByteArray().setNum(rank);
 	  s += "}";
 	  if (param.type.type != 0)
 	    s += str_actuals;
 	}
 	s += array;
 	s += (ellipsis) ? " ... ${p": " ${p";
-	s += QCString().setNum(rank);
+	s += QByteArray().setNum(rank);
 	s += "}";
 	def.insert(def.find("${)}"), 	// cannot be -1
 		   s);
@@ -671,7 +671,7 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
       if (!type_read) {
 	while (s.at(s.length() - 1) == '.') {
 	  // type on several lines, managed in this case
-	  QCString s2 = Lex::read_word();
+	  QByteArray s2 = Lex::read_word();
 	  
 	  if (Lex::identifierp(s2))
 	    s += s2;
@@ -684,7 +684,7 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
 	cout << "type = '" << s << "...'\n";
 #endif
 	if (! bypass) {
-	  QCString dummy;
+	  QByteArray dummy;
 	  
 	  container->read_type(param.type, 0, tmplts, 0, str_actuals, s,
 			       0, dummy, dummy);
@@ -798,7 +798,7 @@ char UmlOperation::skip_expr(int level) {
 }
 
 #ifdef ROUNDTRIP
-UmlOperation *  UmlOperation::already_exist_from_id(Class * container, QCString & body)
+UmlOperation *  UmlOperation::already_exist_from_id(Class * container, QByteArray & body)
 {
   const char * BodyPrefix = "// Bouml preserved body begin ";
   const char * BodyPostfix = "// Bouml preserved body end ";
@@ -874,7 +874,7 @@ UmlOperation *  UmlOperation::already_exist_from_id(Class * container, QCString 
   return 0;
 }
 
-UmlOperation * UmlOperation::already_exist(Class * container, const QCString & name,
+UmlOperation * UmlOperation::already_exist(Class * container, const QByteArray & name,
 					   QValueList<UmlParameter> & params)
 {
   const QVector<UmlItem> & ch = container->get_uml()->UmlItem::children();

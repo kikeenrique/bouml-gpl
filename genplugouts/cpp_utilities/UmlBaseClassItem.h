@@ -11,7 +11,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHCPP
     //  return the C++ declaration
     
-    const QCString & cppDecl();
+    const QByteArray & cppDecl();
 
     //  to set the C++ declaration
     //
@@ -22,7 +22,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHJAVA
     //  return the Java defininition
     
-    const QCString & javaDecl();
+    const QByteArray & javaDecl();
 
     //  to set the Java definition
     //
@@ -33,7 +33,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHPHP
     //  return the Php defininition
     
-    const QCString & phpDecl();
+    const QByteArray & phpDecl();
 
     //  to set the Php definition
     //
@@ -44,7 +44,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHPYTHON
     //  return the Python defininition
     
-    const QCString & pythonDecl();
+    const QByteArray & pythonDecl();
 
     //  to set the Python definition
     //
@@ -55,7 +55,7 @@ class UmlBaseClassItem : public UmlItem {
 #ifdef WITHIDL
     //  return the IDL declaration
     
-    const QCString & idlDecl();
+    const QByteArray & idlDecl();
 
     //  set the IDL declaration
     //
@@ -68,28 +68,28 @@ class UmlBaseClassItem : public UmlItem {
 
   private:
 #ifdef WITHCPP
-    QCString _cpp_decl;
+    QByteArray _cpp_decl;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_decl;
+    QByteArray _java_decl;
 #endif
 
 #ifdef WITHPHP
-    QCString _php_decl;
+    QByteArray _php_decl;
 #endif
 
 #ifdef WITHPYTHON
-    QCString _python_decl;
+    QByteArray _python_decl;
 #endif
 
 #ifdef WITHIDL
-    QCString _idl_decl;
+    QByteArray _idl_decl;
 #endif
 
 
   protected:
-    UmlBaseClassItem(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseClassItem(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 #ifdef WITHCPP
     //internal, do NOT use it

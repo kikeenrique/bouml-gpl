@@ -29,10 +29,10 @@ void UmlRelation::uml2cpp(bool) {
     // no break
   default:
     {
-      QCString st = CppSettings::classStereotype(parent()->stereotype());
+      QByteArray st = CppSettings::classStereotype(parent()->stereotype());
       
       set_CppDecl(((st == "enum") || (st == "typedef") || (st == "ignored"))
-		  ? QCString("")
+		  ? QByteArray("")
 		  : CppSettings::relationDecl(composition, multiplicity()));
     }
   }
@@ -48,10 +48,10 @@ void UmlRelation::uml2java(bool) {
     break;
   default:
     {
-      QCString st = JavaSettings::classStereotype(parent()->stereotype());
+      QByteArray st = JavaSettings::classStereotype(parent()->stereotype());
       
       set_JavaDecl(((st == "enum") || (st == "ignored"))
-		   ? QCString("")
+		   ? QByteArray("")
 		   : JavaSettings::relationDecl(multiplicity()));
     }
   }
@@ -66,7 +66,7 @@ void UmlRelation::uml2idl(bool) {
     break;
   default:
     {
-      QCString st = IdlSettings::classStereotype(parent()->stereotype());
+      QByteArray st = IdlSettings::classStereotype(parent()->stereotype());
       
       if ((st == "enum") || (st == "typedef") || (st == "ignored"))
 	set_IdlDecl("");
@@ -89,7 +89,7 @@ void UmlRelation::uml2php(bool) {
     break;
   default:
     {
-      QCString st = PhpSettings::classStereotype(parent()->stereotype());
+      QByteArray st = PhpSettings::classStereotype(parent()->stereotype());
       
       if ((st == "enum") || (st == "ignored"))
 	set_PhpDecl("");
@@ -114,7 +114,7 @@ void UmlRelation::uml2Python(bool) {
     // no break
   default:
     {
-      QCString st = PythonSettings::classStereotype(parent()->stereotype());
+      QByteArray st = PythonSettings::classStereotype(parent()->stereotype());
       
       if ((st == "enum") || (st == "ignored"))
 	set_PythonDecl("");

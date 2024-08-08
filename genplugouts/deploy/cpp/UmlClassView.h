@@ -10,7 +10,7 @@
 // You can modify it as you want (except the constructor)
 class UmlClassView : public UmlBaseClassView {
   public:
-    UmlClassView(void * id, const QCString & n) : UmlBaseClassView(id, n) {};
+    UmlClassView(void * id, const QByteArray & n) : UmlBaseClassView(id, n) {};
 
     virtual void deploy();
 

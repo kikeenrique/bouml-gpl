@@ -5,14 +5,14 @@
 #include "JavaSettings.h"
 #include "PhpSettings.h"
 #include "PythonSettings.h"
-QCString UmlAttribute::sKind() {
+QByteArray UmlAttribute::sKind() {
   return "attribute";
 }
 
 void UmlAttribute::memo_ref() {
   if (visibility() == PublicVisibility) {
    
-    QCString s = parent()->stereotype();
+    QByteArray s = parent()->stereotype();
     
     if ((s != "enum") && (s != "enum_pattern"))
       attrs.addElement(this);
@@ -20,14 +20,14 @@ void UmlAttribute::memo_ref() {
   UmlItem::memo_ref();
 }
 
-void UmlAttribute::html(QCString, unsigned int, unsigned int) {
+void UmlAttribute::html(QByteArray, unsigned int, unsigned int) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Attribute <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
-  QCString s = description();
+  QByteArray s = description();
   
   if (!s.isEmpty()) {
     fw.write("<p>");
@@ -123,7 +123,7 @@ void UmlAttribute::generate_index()
   }
 }
 
-void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
+void UmlAttribute::gen_cpp_decl(QByteArray s, bool descr) {
   const char * p;
   
   if (! descr) {
@@ -152,7 +152,7 @@ void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
       else if (!strncmp(p, "${multiplicity}", 15)) {
 	p += 15;
 	
-	QCString m = multiplicity();
+	QByteArray m = multiplicity();
 	
 	if (m.isEmpty() || (((const char *) m)[0] != '[')) {
 	  fw.write("[");
@@ -226,7 +226,7 @@ void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
   }
 }
 
-void UmlAttribute::gen_java_decl(QCString s, bool descr) {
+void UmlAttribute::gen_java_decl(QByteArray s, bool descr) {
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -241,7 +241,7 @@ void UmlAttribute::gen_java_decl(QCString s, bool descr) {
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
       
-      QCString m = multiplicity();
+      QByteArray m = multiplicity();
 
       if (! m.isEmpty()) {
 	const char * s = m;
@@ -333,8 +333,8 @@ void UmlAttribute::gen_java_decl(QCString s, bool descr) {
   }
 }
 
-void UmlAttribute::gen_php_decl(QCString s, bool descr) {
-  QCString st = PhpSettings::classStereotype(stereotype());
+void UmlAttribute::gen_php_decl(QByteArray s, bool descr) {
+  QByteArray st = PhpSettings::classStereotype(stereotype());
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -406,8 +406,8 @@ void UmlAttribute::gen_php_decl(QCString s, bool descr) {
   }
 }
 
-void UmlAttribute::gen_python_decl(QCString s) {
-  QCString st = PythonSettings::classStereotype(stereotype());
+void UmlAttribute::gen_python_decl(QByteArray s) {
+  QByteArray st = PythonSettings::classStereotype(stereotype());
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -453,7 +453,7 @@ void UmlAttribute::gen_uml_decl() {
   fw.write(" : ");
   write(type());
   
-  QCString s;
+  QByteArray s;
   
   s = defaultValue();
   if (!s.isEmpty()) {

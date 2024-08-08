@@ -15,7 +15,7 @@ class UmlItem;
 // You can modify it as you want (except the constructor)
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n) {};
+    UmlOperation(void * id, const QByteArray & n) : UmlBaseOperation(id, n) {};
 
     static void init();
 
@@ -31,7 +31,7 @@ class UmlOperation : public UmlBaseOperation {
 
   public:
     //  call at end of import : try to solve types
-    virtual void solve(int context, QCString idref);
+    virtual void solve(int context, QByteArray idref);
 
 };
 

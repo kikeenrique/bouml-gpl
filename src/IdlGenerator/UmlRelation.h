@@ -28,19 +28,19 @@
 
 #include "UmlBaseRelation.h"
 
-class QTextOStream;
+class QTextStream;
 class ActualParameter;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };
   
-    void generate_inherit(const char *& sep, QTextOStream & f, 
-			  const QCString & cl_stereotype, BooL & already);
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       QCString indent, bool = FALSE);
+    void generate_inherit(const char *& sep, QTextStream & f, 
+			  const QByteArray & cl_stereotype, BooL & already);
+    virtual void generate_decl(QTextStream & f, const QByteArray & cl_stereotype,
+			       QByteArray indent, bool = FALSE);
 };
 
 #endif

@@ -3,12 +3,12 @@
 
 #include "UmlClassDiagram.h"
 
-QCString UmlPackage::sKind() {
+QByteArray UmlPackage::sKind() {
   return (stereotype() == "profile")
     ? "profile" : "package";
 }
 
-void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlPackage::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
   
   if (stereotype() == "profile")
@@ -16,7 +16,7 @@ void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
   else
     chapter("Package", pfix, rank, "package", level);
 
-  QCString s = description();
+  QByteArray s = description();
   
   if (!s.isEmpty()) {
     fw.write("<p>");

@@ -9,10 +9,10 @@
 
 void UmlPackage::fileControl(bool ci) {
   UmlPackage * prj = getProject();
-  QCString prjfile = prj->supportFile();
+  QByteArray prjfile = prj->supportFile();
   BooL rec;
   BooL reload;
-  QCString cmd;
+  QByteArray cmd;
   
   if (! prj->propertyValue((ci) ? "check-in-cmd" : "check-out-cmd", cmd))
     cmd = "specify the command containing %file and %dir or %dironly";
@@ -51,7 +51,7 @@ void UmlPackage::fileControl(bool ci) {
     while ((index = cmd.find("%dir")) != -1)
       cmd.replace(index, 4, dir);
       
-    while (it.current()) {
+    while ((*it)) {
       QString s = cmd;
   
       while ((index = s.find("%file")) != -1)

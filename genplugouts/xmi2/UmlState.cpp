@@ -39,9 +39,9 @@ void UmlState::write(FileOut & out) {
   write_description_properties(out); 
   
   if (ref == 0) {
-    QCString doentry;
-    QCString doactivity;
-    QCString doexit;
+    QByteArray doentry;
+    QByteArray doactivity;
+    QByteArray doexit;
     
     switch (_lang) {
     case Uml:
@@ -182,12 +182,12 @@ void UmlState::add_incoming_trans(UmlTransition * tr) {
   _incoming_trans.append(tr);
 }
 
-UmlState * UmlState::find(QCString s)
+UmlState * UmlState::find(QByteArray s)
 {
-  QMap<QCString, UmlState *>::Iterator iter = _all.find(s);
+  QMap<QByteArray, UmlState *>::Iterator iter = _all.find(s);
   
   return (iter == _all.end()) ? 0 : *iter;
 }
 
-QMap<QCString, UmlState *> UmlState::_all;
+QMap<QByteArray, UmlState *> UmlState::_all;
 

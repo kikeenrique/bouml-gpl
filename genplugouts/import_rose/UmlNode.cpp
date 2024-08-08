@@ -4,18 +4,18 @@
 #include "UmlDeploymentView.h"
 
 #include "UmlCom.h"
-void UmlNode::import(File & f, UmlDeploymentView * p, const QCString & ste)
+void UmlNode::import(File & f, UmlDeploymentView * p, const QByteArray & ste)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, " deployment node's name expected");
 
-  QCString s2;
-  QCString id;
-  QCString dummy_ste;
-  QCString doc;
-  QDict<QCString> prop;
+  QByteArray s2;
+  QByteArray id;
+  QByteArray dummy_ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
   int k;
   
   do {

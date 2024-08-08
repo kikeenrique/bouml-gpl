@@ -49,7 +49,7 @@ void UmlClassMember::write_visibility(FileOut & out, aVisibility v) {
 
 void UmlClassMember::write_annotation(FileOut & out) {
 if (_lang == Java) {
-  QCString a = javaAnnotations();
+  QByteArray a = javaAnnotations();
   
   if (!a.isEmpty()) {
     switch (_taggedvalue_mode) {
@@ -79,7 +79,7 @@ if (_lang == Java) {
 }
 }
 
-QCString UmlClassMember::true_name(QCString decl) {
+QByteArray UmlClassMember::true_name(QByteArray decl) {
   int index = decl.find("${name}", 0, FALSE);
   
   if (index == -1)
@@ -96,8 +96,8 @@ QCString UmlClassMember::true_name(QCString decl) {
   while (identChar(decl[sup]))
     sup += 1;
   
-  QCString r = decl.mid(begin, index - begin);
-  QCString k = decl.mid(index + 2, 4);
+  QByteArray r = decl.mid(begin, index - begin);
+  QByteArray k = decl.mid(index + 2, 4);
   
   if (k == "name")
     r += name();
@@ -120,7 +120,7 @@ bool UmlClassMember::identChar(char c)
   	(c == '_'));
 }
 
-void UmlClassMember::write_type(FileOut & out, const UmlTypeSpec & t, QCString s, const char * k_name, const char * k_type)
+void UmlClassMember::write_type(FileOut & out, const UmlTypeSpec & t, QByteArray s, const char * k_name, const char * k_type)
 {
   s = s.simplifyWhiteSpace();
   
@@ -172,7 +172,7 @@ void UmlClassMember::write_type(FileOut & out, const UmlTypeSpec & t, QCString s
     out.idref_datatype(t.explicit_type);
 }
 
-void UmlClassMember::remove_comments(QCString & s)
+void UmlClassMember::remove_comments(QByteArray & s)
 {
   int index;
   

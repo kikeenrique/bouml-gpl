@@ -37,17 +37,17 @@ class ClassContainer {
     ClassContainer() {};
     virtual ~ClassContainer();
     
-    virtual void compute_type(QCString type, UmlTypeSpec & typespec,
+    virtual void compute_type(QByteArray type, UmlTypeSpec & typespec,
 			      const QValueList<FormalParameterList> & tmplts,
 			      Class ** need_object = 0) = 0;
-    virtual Class * define(const QCString & name, char st) = 0;
+    virtual Class * define(const QByteArray & name, char st) = 0;
     
     bool read_type(UmlTypeSpec & typespec, Class ** cl, 
 		   const QValueList<FormalParameterList> & tmplts,
 		   QValueList<UmlTypeSpec> * actuals, 
-		   QCString & str_actual, QCString s,
-		   UmlClass ** first_actual_class, QCString & def,
-		   QCString & genericname);
+		   QByteArray & str_actual, QByteArray s,
+		   UmlClass ** first_actual_class, QByteArray & def,
+		   QByteArray & genericname);
 #ifdef ROUNDTRIP
     virtual Class * upload_define(UmlClass *) = 0;
 #endif

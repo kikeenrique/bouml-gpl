@@ -49,7 +49,7 @@ class JavaCatWindow : public QMainWindow {
     JavaCatWindow();
   
     static void trace(QString);
-    static void trace(QCString);
+    static void trace(QByteArray);
     static void clear_trace();
   
   protected:

@@ -37,33 +37,32 @@ class QValidator;
 
 class LineEdit;
 
-class MyInputDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        LineEdit * le;
-        QComboBox * cb;
-
-        static QSize previous_size;
-
-        MyInputDialog (const char * title, const QString & msg,
-                       const QString & init);
-        MyInputDialog (const char * title, const QString & msg,
-                       const QStringList & l, const QString & init, bool existing);
-        virtual ~MyInputDialog();
-
-    public:
-        static QString getText (const char * title, const QString & msg,
-                                const QString & init, BooL & ok,
-                                const QValidator * v = 0);
-        static QString getText (const char * title, const QString & msg,
-                                const QStringList & l, const QString & init,
-                                bool existing, BooL & ok);
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
+class MyInputDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    LineEdit * le;
+    QComboBox * cb;
+    
+    static QSize previous_size;
+      
+    MyInputDialog(const char * title, const QString & msg,
+		  const QString & init);
+    MyInputDialog(const char * title, const QString & msg,
+		  const QStringList & l, const QString & init, bool existing);
+    virtual ~MyInputDialog();
+    
+  public:
+    static QString getText(const char * title, const QString & msg,
+			   const QString & init, BooL & ok,
+			   const QValidator * v = 0);
+    static QString getText(const char * title, const QString & msg,
+			   const QStringList & l, const QString & init,
+			   bool existing, BooL & ok);
+    
+  protected slots:
+    virtual void polish();
+    virtual void accept();
 };
 
 #endif

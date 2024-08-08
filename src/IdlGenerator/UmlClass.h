@@ -30,24 +30,24 @@
 
 #include "UmlBaseClass.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlClass : public UmlBaseClass {
   private:
     bool managed;
   
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n) { managed = FALSE; };
   
-    QCString idl_stereotype();
+    QByteArray idl_stereotype();
     void generate();
-    virtual void generate(QTextOStream & f);
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       QCString indent, bool = FALSE);
+    virtual void generate(QTextStream & f);
+    virtual void generate_decl(QTextStream & f, const QByteArray & cl_stereotype,
+			       QByteArray indent, bool = FALSE);
 
-    void write(QTextOStream & f);
-    static void write(QTextOStream & f, const UmlTypeSpec & t);
+    void write(QTextStream & f);
+    static void write(QTextStream & f, const UmlTypeSpec & t);
 
 };
 

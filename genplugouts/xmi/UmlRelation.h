@@ -14,7 +14,7 @@ class FileOut;
 // You can modify it as you want (except the constructor)
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n) : UmlBaseRelation(id, n) {};
+    UmlRelation(void * id, const QByteArray & n) : UmlBaseRelation(id, n) {};
 
     virtual bool write_if_needed(FileOut & out);
 

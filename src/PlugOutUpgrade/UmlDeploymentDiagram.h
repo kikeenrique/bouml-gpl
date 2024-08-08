@@ -10,7 +10,7 @@
 
 class UmlDeploymentDiagram : public UmlBaseDeploymentDiagram {
   public:
-    UmlDeploymentDiagram(void * id, const QCString & n) 
+    UmlDeploymentDiagram(void * id, const QByteArray & n) 
       : UmlBaseDeploymentDiagram(id, n) {};
 };
 

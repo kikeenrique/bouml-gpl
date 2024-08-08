@@ -8,12 +8,12 @@ void UmlBaseFragmentCompartment::add_contained_(UmlFragment * x) {
   _contained.insert(_contained.size() - 1, x);
 }
 
-void UmlBaseFragmentCompartment::add_text_(QCString x) {
+void UmlBaseFragmentCompartment::add_text_(QByteArray x) {
   _texts.resize(_texts.size() + 1);
   _texts.insert(_texts.size() - 1, strdup(x));
 }
 
-void UmlBaseFragmentCompartment::add_cont_(QCString s, int cy) {
+void UmlBaseFragmentCompartment::add_cont_(QByteArray s, int cy) {
   if (cy < _fragment->vcenter_(_rank))
     _start_continuation = s;
   else

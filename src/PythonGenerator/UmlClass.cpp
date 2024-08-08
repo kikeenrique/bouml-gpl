@@ -38,15 +38,15 @@
 #include "UmlCom.h"
 #include "util.h"
 
-QCString UmlClass::python_stereotype()
+QByteArray UmlClass::python_stereotype()
 {
-  QCString s = PythonSettings::classStereotype(stereotype());
+  QByteArray s = PythonSettings::classStereotype(stereotype());
   
   return ((s == "ignored") || (s == "enum"))
-    ? s : QCString("class");
+    ? s : QByteArray("class");
 }
 
-void UmlClass::generate_imports(QTextOStream & f, QCString & made) {
+void UmlClass::generate_imports(QTextStream & f, QByteArray & made) {
   if (! pythonDecl().isEmpty()) {
     QVector<UmlItem> ch = children();
     unsigned index;
@@ -61,9 +61,9 @@ void UmlClass::generate_imports(QTextOStream & f, QCString & made) {
   }
 }
   
-void UmlClass::generate_import(QTextOStream & f, UmlArtifact * using_art,
-			       bool from, QCString & made) {
-  QCString s;
+void UmlClass::generate_import(QTextStream & f, UmlArtifact * using_art,
+			       bool from, QByteArray & made) {
+  QByteArray s;
   
   if (isPythonExternal()) {
     // get def after first line
@@ -82,9 +82,9 @@ void UmlClass::generate_import(QTextOStream & f, UmlArtifact * using_art,
     if ((art == 0) || (art == using_art))
       return;
     
-    QCString s_art =
+    QByteArray s_art =
       ((UmlPackage *) art->parent()->parent())->pythonPackage();
-    QCString art_name = art->name();
+    QByteArray art_name = art->name();
     
     if (s_art.isEmpty())
       s_art = art_name;
@@ -113,15 +113,15 @@ void UmlClass::generate() {
       if (associatedArtifact() != 0)
 	associatedArtifact()->generate();
       else if ((children().size() != 0) && verbose())
-	UmlCom::trace(QCString("<hr><font face=helvetica><i> ") + name() +
+	UmlCom::trace(QByteArray("<hr><font face=helvetica><i> ") + name() +
 		      " : </i> does not have associated <i>artifact</i></font><br>");
     }
   }
 }
 
-void UmlClass::generate(QTextOStream & f, QCString indent,
+void UmlClass::generate(QTextStream & f, QByteArray indent,
 			BooL & indent_needed) {
-  const QCString & stereotype = python_stereotype();
+  const QByteArray & stereotype = python_stereotype();
   
   if (stereotype == "ignored")
     return;
@@ -136,8 +136,8 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
   int enum_item_rank = 0;
   unsigned index;
   const char * pp = 0;
-  QCString saved_indent = indent;
-  QCString indent_step = PythonSettings::indentStep();
+  QByteArray saved_indent = indent;
+  QByteArray indent_step = PythonSettings::indentStep();
   bool inherits = FALSE;
   
   for (;;) {
@@ -207,7 +207,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
       p += 10;
   
       bool has__init__ = FALSE;
-      QCString noself;
+      QByteArray noself;
       
       for (index = 0; index != sup; index += 1) {
 	UmlClassItem * it = dynamic_cast<UmlClassItem *>(ch[index]);
@@ -227,7 +227,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
 	  f << indent;
 	f << "def __init__(self):\n";
 	indent_needed = TRUE;
-	QCString ind = indent;
+	QByteArray ind = indent;
 	
 	indent += PythonSettings::indentStep();
 	if (inherits)
@@ -251,15 +251,15 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
   }
 }
 
-void UmlClass::generate(QTextOStream & f, const QCString &,
-			QCString indent, BooL & indent_needed,
-			int &, const QCString &) {
+void UmlClass::generate(QTextStream & f, const QByteArray &,
+			QByteArray indent, BooL & indent_needed,
+			int &, const QByteArray &) {
   generate(f, indent, indent_needed);
 }
 
-void UmlClass::generate_instance_att_rel(QTextOStream & f, QCString indent,
-					 BooL & indent_needed, QCString self) {
-  const QCString & stereotype = python_stereotype();
+void UmlClass::generate_instance_att_rel(QTextStream & f, QByteArray indent,
+					 BooL & indent_needed, QByteArray self) {
+  const QByteArray & stereotype = python_stereotype();
   int enum_item_rank = 0;
   
   QVector<UmlItem> ch = children();
@@ -288,7 +288,7 @@ UmlArtifact * UmlClass::assocArtifact() {
   return cl->associatedArtifact();
 }
 
-void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
+void UmlClass::write(QTextStream & f, const UmlTypeSpec & t)
 {
   if (t.type != 0)
     t.type->write(f);
@@ -296,9 +296,9 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
     f << t.explicit_type;
 }
 
-void UmlClass::write(QTextOStream & f) {
+void UmlClass::write(QTextStream & f) {
   if (isPythonExternal()) {
-    QCString s = pythonDecl().stripWhiteSpace();
+    QByteArray s = pythonDecl().stripWhiteSpace();
     int index = s.find('\n');
     
     s = (index == -1) ? s.stripWhiteSpace()
@@ -318,7 +318,7 @@ void UmlClass::write(QTextOStream & f) {
   else {
     UmlClass * toplevel = this;
     UmlItem * p;
-    QCString s2 = name();
+    QByteArray s2 = name();
     
     while ((p = toplevel->parent())->kind() == aClass) {
       toplevel = (UmlClass *) p;
@@ -329,17 +329,17 @@ void UmlClass::write(QTextOStream & f) {
     UmlArtifact * gen_art = UmlArtifact::generated_one();
     
     if ((cl_art != gen_art) && (cl_art != 0)) {
-      QCString cl_pack =
+      QByteArray cl_pack =
 	((UmlPackage *) cl_art->parent()->parent())->pythonPackage();
       
       if (!cl_pack.isEmpty()) {
 	bool is__init__ = (cl_art->name() == "__init__");
-	QCString s = (is__init__)
+	QByteArray s = (is__init__)
 	  ? "from " + cl_pack + " import "
 	  : "from " + cl_pack + "." + cl_art->name() + " import ";
-	const QCString & imports = UmlArtifact::all_imports();
-	QCString importit = s + name();
-	QCString importstar = s + "*";
+	const QByteArray & imports = UmlArtifact::all_imports();
+	QByteArray importit = s + name();
+	QByteArray importstar = s + "*";
 	
 	if ((imports.find(importit) != -1) ||
 	    (imports.find(importstar) != -1) ||
@@ -353,10 +353,10 @@ void UmlClass::write(QTextOStream & f) {
 	  f << cl_pack << "." << cl_art->name() << "." << s2;
       }
       else {
-	QCString s = "from " + cl_art->name() + " import ";
-	const QCString & imports = UmlArtifact::all_imports();
-	QCString importit = s + name();
-	QCString importstar = s + "*";
+	QByteArray s = "from " + cl_art->name() + " import ";
+	const QByteArray & imports = UmlArtifact::all_imports();
+	QByteArray importit = s + name();
+	QByteArray importstar = s + "*";
 	
 	if ((imports.find(importit) == -1) &&
 	    (imports.find(importstar) == -1) &&

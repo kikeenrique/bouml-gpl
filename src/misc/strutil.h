@@ -26,41 +26,41 @@
 #ifndef STRUTIL_H
 #define STRUTIL_H
 
-#include "qstring.h"
+#include <QString>
 
-extern bool manage_comment (QString comment, const char *& p,
-                            const char *& pp, bool javadoc);
-extern bool manage_description (QString comment, const char *& p,
-                                const char *& pp);
-extern bool manage_python_comment (QString comment, const char *& p,
-                                   const char *& pp);
-extern bool manage_python_description (QString comment, const char *& p,
-                                       const char *& pp);
-extern void manage_python_docstring (QString comment, const char *& p, const char *& pp,
-                                     BooL & indent_needed, QString & indent,
-                                     QString & saved_indent);
-extern QString capitalize (const QString & s);
-extern QString true_name (const QString & name, const QString & decl);
-extern bool is_char_of_name (char c);
-extern QString extract_name (QString s);
-extern QString quote (QString s);
-extern void remove_comments (QCString & s);
-extern void remove_comments (QString & s);
-extern void remove_python_comments (QCString & s);
-extern void remove_python_comments (QString & s);
-extern void remove_preprocessor (QCString & s);
-extern QString java_multiplicity (QString m);
-extern bool need_equal (const char * p, QString v, bool cpp);
-extern bool need_equal (const char * p, const char * v, bool cpp);
+extern bool manage_comment(QString comment, const char *& p,
+			   const char *& pp, bool javadoc);
+extern bool manage_description(QString comment, const char *& p,
+			       const char *& pp);
+extern bool manage_python_comment(QString comment, const char *& p,
+				  const char *& pp);
+extern bool manage_python_description(QString comment, const char *& p,
+				      const char *& pp);
+extern void manage_python_docstring(QString comment, const char *& p, const char *& pp,
+				    BooL & indent_needed, QString & indent,
+				    QString & saved_indent);
+extern QString capitalize(const QString & s);
+extern QString true_name(const QString & name, const QString & decl);
+extern bool is_char_of_name(char c);
+extern QString extract_name(QString s);
+extern QString quote(QString s);
+extern void remove_comments(QByteArray & s);
+extern void remove_comments(QString & s);
+extern void remove_python_comments(QByteArray & s);
+extern void remove_python_comments(QString & s);
+extern void remove_preprocessor(QString & s);
+extern QString java_multiplicity(QString m);
+extern bool need_equal(const char * p, QString v, bool cpp);
+extern bool need_equal(const char * p, const char * v, bool cpp);
 
 extern QString codec();
-extern void set_codec (QString);
-extern QString toUnicode (const char *);
-extern QCString fromUnicode (const QString &);
+extern void set_codec(QString);
+extern QString toUnicode(const char *);
+extern QString fromUnicode(const QString &);
 extern bool hasCodec();
 
-extern void remove_crlf (char *);
+extern void remove_crlf(char *);
 
-extern bool is_referenced (const char * s, int id, const char * kc, const char * kr);
+extern bool is_referenced(const char * s, int id, const char * kc, const char * kr);
 
 #endif

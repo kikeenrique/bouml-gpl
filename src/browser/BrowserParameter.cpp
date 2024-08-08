@@ -27,9 +27,14 @@
 
 
 
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qpainter.h>
 #include <qcursor.h>
+//Added by qt3to4:
+#include <QTextStream>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QPixmap>
 
 #include "BrowserParameter.h"
 #include "ParameterData.h"
@@ -54,557 +59,507 @@
 #include "BrowserActivityDiagram.h"
 #include "translate.h"
 
-IdDict<BrowserParameter> BrowserParameter::all (257, __FILE__);
+IdDict<BrowserParameter> BrowserParameter::all(257, __FILE__);
 QStringList BrowserParameter::its_default_stereotypes;	// unicode
 
-BrowserParameter::BrowserParameter (QString s, BrowserNode * p, int id)
-    : BrowserNode (s, p), Labeled<BrowserParameter> (all, id),
-      def (new ParameterData)
-{
-    def->set_browser_node (this);
+BrowserParameter::BrowserParameter(QString s, BrowserNode * p, int id)
+    : BrowserNode(s, p), Labeled<BrowserParameter>(all, id),
+      def(new ParameterData) {
+  def->set_browser_node(this);
 }
 
-BrowserParameter::BrowserParameter (int id)
-    : BrowserNode(), Labeled<BrowserParameter> (all, id),
-      def (new ParameterData)
-{
-    // not yet read
-    def->set_browser_node (this);
+BrowserParameter::BrowserParameter(int id)
+    : BrowserNode(), Labeled<BrowserParameter>(all, id),
+      def(new ParameterData) {
+  // not yet read
+  def->set_browser_node(this);
 }
 
-BrowserParameter::BrowserParameter (const BrowserParameter * model, BrowserNode * p)
-    : BrowserNode (model->name, p), Labeled<BrowserParameter> (all, 0)
-{
-    def = new ParameterData (model->def, this);
-    comment = model->comment;
+BrowserParameter::BrowserParameter(const BrowserParameter * model, BrowserNode * p)
+    : BrowserNode(model->name, p), Labeled<BrowserParameter>(all, 0) {
+  def = new ParameterData(model->def, this);
+  comment = model->comment;
 }
 
-BrowserNode * BrowserParameter::duplicate (BrowserNode * p, QString name)
-{
-    BrowserNode * result = new BrowserParameter (this, p);
+BrowserNode * BrowserParameter::duplicate(BrowserNode * p, QString name) {
+  BrowserNode * result = new BrowserParameter(this, p);
 
-    result->set_name ( (name.isEmpty()) ? get_name() : (const char *) name);
-    result->update_stereotype();
+  result->set_name((name.isEmpty()) ? get_name() : (const char *) name);
+  result->update_stereotype();
 
-    return result;
+  return result;
 }
 
-BrowserParameter::~BrowserParameter()
-{
-    all.remove (get_ident());
-    delete def;
+BrowserParameter::~BrowserParameter() {
+  all.remove(get_ident());
+  delete def;
 }
 
-void BrowserParameter::clear (bool old)
+void BrowserParameter::clear(bool old)
 {
-    all.clear (old);
+  all.clear(old);
 }
 
 void BrowserParameter::update_idmax_for_root()
 {
-    all.update_idmax_for_root();
+  all.update_idmax_for_root();
 }
 
-void BrowserParameter::prepare_update_lib() const
-{
-    all.memo_id_oid (get_ident(), original_id);
+void BrowserParameter::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 
-    for (QListViewItem * child = firstChild();
-         child != 0;
-         child = child->nextSibling()) {
-        ( (BrowserNode *) child)->prepare_update_lib();
-    }
+  for (Q3ListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
 
-void BrowserParameter::renumber (int phase)
-{
-    if (phase != -1) {
-        new_ident (phase, all);
-    }
+void BrowserParameter::renumber(int phase) {
+  if (phase != -1)
+    new_ident(phase, all);
 }
 
-const QPixmap* BrowserParameter::pixmap (int) const
-{
-    if (deletedp()) {
-        return DeletedParameterIcon;
-    }
+const QPixmap* BrowserParameter::pixmap(int) const {
+  if (deletedp())
+    return DeletedParameterIcon;
 
-    const QPixmap * px = ProfiledStereotypes::browserPixmap (def->get_stereotype());
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
 
-    return (px != 0) ? px : ParameterIcon;
+  return (px != 0) ? px : ParameterIcon;
 }
 
 // add flow (dependency not allowed)
-BasicData * BrowserParameter::add_relation (UmlCode, BrowserNode * end)
-{
-    return (new BrowserFlow (this, end))->get_data();
+BasicData * BrowserParameter::add_relation(UmlCode, BrowserNode * end) {
+  return (new BrowserFlow(this, end))->get_data();
 }
 
 // a flow may be added  (dependency not allowed) ?
-QString BrowserParameter::may_start() const
-{
-    switch (def->get_dir()) {
-        case UmlIn:
-        case UmlInOut:
-            return 0;
-        default:
-            return TR ("can't have outgoing flow");
-    }
+QString BrowserParameter::may_start() const {
+  switch (def->get_dir()) {
+  case UmlIn:
+  case UmlInOut:
+    return 0;
+  default:
+    return TR("can't have outgoing flow");
+  }
 }
 
 // connexion by a flow (dependency not allowed)
-QString BrowserParameter::may_connect (const BrowserNode * dest) const
-{
-    BrowserNode * container = dest->get_container (UmlActivity);
+QString BrowserParameter::may_connect(const BrowserNode * dest) const {
+  BrowserNode * container = dest->get_container(UmlActivity);
 
-    if (container == 0) {
-        return TR ("illegal");
-    }
+  if (container == 0)
+    return TR("illegal");
 
-    if (get_container (UmlActivity) != container) {
-        return TR ("not in the same activity");
-    }
+  if (get_container(UmlActivity) != container)
+    return TR("not in the same activity");
 
-    const BrowserActivityElement * elt =
-        dynamic_cast<const BrowserActivityElement *> (dest);
+  const BrowserActivityElement * elt =
+    dynamic_cast<const BrowserActivityElement *>(dest);
 
-    return (elt == 0)
-           ? TR ("illegal")
-           : elt->connexion_from (def->get_is_control());
+  return (elt == 0)
+    ? TR("illegal")
+    : elt->connexion_from(def->get_is_control());
 }
 
-QString BrowserParameter::connexion_from (bool control) const
-{
-    if (def->get_dir() == UmlIn) {
-        return TR ("an input parameter can't have incoming flows");
-    } else if (def->get_is_control() != control)
-        return (control)
-               ? TR ("parameter can't accept control flow (not 'is_control')")
-               : TR ("parameter can't accept data flow (is 'is_control')");
-    else {
-        return 0;
-    }
+QString BrowserParameter::connexion_from(bool control) const {
+  if (def->get_dir() == UmlIn)
+    return TR("an input parameter can't have incoming flows");
+  else if (def->get_is_control() != control)
+    return (control)
+      ? TR("parameter can't accept control flow (not 'is_control')")
+      : TR("parameter can't accept data flow (is 'is_control')");
+  else
+    return 0;
 }
 
-void BrowserParameter::menu()
-{
-    QPopupMenu m (0, name);
-    QPopupMenu toolm (0);
+void BrowserParameter::menu() {
+  Q3PopupMenu m(0, name);
+  Q3PopupMenu toolm(0);
 
-    m.insertItem (new MenuTitle (def->definition (FALSE, TRUE), m.font()), -1);
-    m.insertSeparator();
-    if (!deletedp()) {
-        if (!is_edited)
-            m.setWhatsThis (m.insertItem (TR ("Edit"), 0),
-                            TR ("to edit the <i>parameter</i>, \
+  m.insertItem(new MenuTitle(def->definition(FALSE, TRUE), m.font()), -1);
+  m.insertSeparator();
+  if (!deletedp()) {
+    if (!is_edited)
+    m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		   TR("to edit the <i>parameter</i>, \
 a double click with the left mouse button does the same thing"));
-        if (!is_read_only && (edition_number == 0)) {
-            m.setWhatsThis (m.insertItem (TR ("Duplicate"), 1),
-                            TR ("to copy the <i>parameter</i> in a new one"));
-            m.insertSeparator();
-            m.setWhatsThis (m.insertItem (TR ("Delete"), 2),
-                            TR ("to delete the <i>parameter</i>. \
+    if (!is_read_only && (edition_number == 0)) {
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+		     TR("to copy the <i>parameter</i> in a new one"));
+      m.insertSeparator();
+      m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		     TR("to delete the <i>parameter</i>. \
 Note that you can undelete it after"));
-        }
-        m.setWhatsThis (m.insertItem (TR ("Referenced by"), 4),
-                        TR ("to know who reference the <i>parameter</i> \
+    }
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>parameter</i> \
 through a flow"));
-        mark_menu (m, TR ("the parameter"), 90);
-        ProfiledStereotypes::menu (m, this, 99990);
-        if ( (edition_number == 0) &&
-             Tool::menu_insert (&toolm, get_type(), 100)) {
-            m.insertSeparator();
-            m.insertItem (TR ("Tool"), &toolm);
-        }
-    } else if (!is_read_only && (edition_number == 0))
-        m.setWhatsThis (m.insertItem (TR ("Undelete"), 3),
-                        TR ("to undelete the <i>parameter</i>"));
-
-    exec_menu_choice (m.exec (QCursor::pos()));
-}
-
-void BrowserParameter::exec_menu_choice (int rank)
-{
-    switch (rank) {
-        case 0:
-            open (TRUE);
-            return;
-        case 1:
-            ( (BrowserActivity *) parent())->add_parameter (this);
-            return;
-        case 2:
-            delete_it();
-            break;
-        case 3:
-            undelete (FALSE);
-            break;
-        case 4:
-            ReferenceDialog::show (this);
-            return;
-        default:
-            if (rank >= 99990) {
-                ProfiledStereotypes::choiceManagement (this, rank - 99990);
-            } else if (rank >= 100) {
-                ToolCom::run (Tool::command (rank - 100), this);
-            } else {
-                mark_management (rank - 90);
-            }
-            return;
+    mark_menu(m, TR("the parameter"), 90);
+    ProfiledStereotypes::menu(m, this, 99990);
+    if ((edition_number == 0) &&
+	Tool::menu_insert(&toolm, get_type(), 100)) {
+      m.insertSeparator();
+      m.insertItem(TR("Tool"), &toolm);
     }
-    ( (BrowserNode *) parent())->modified();
-    package_modified();
+  }
+  else if (!is_read_only && (edition_number == 0))
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>parameter</i>"));
+
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserParameter::apply_shortcut (QString s)
-{
-    int choice = -1;
-
-    if (!deletedp()) {
-        if (!is_edited)
-            if (s == "Edit") {
-                choice = 0;
-            }
-        if (!is_read_only && (edition_number == 0)) {
-            if (s == "Duplicate") {
-                choice = 1;
-            } else if (s == "Delete") {
-                choice = 2;
-            }
-        }
-        if (s == "Referenced by") {
-            choice = 4;
-        }
-        mark_shortcut (s, choice, 90);
-        if (edition_number == 0) {
-            Tool::shortcut (s, choice, get_type(), 100);
-        }
-    } else if (!is_read_only && (edition_number == 0))
-        if (s == "Undelete") {
-            choice = 3;
-        }
-
-    exec_menu_choice (choice);
+void BrowserParameter::exec_menu_choice(int rank) {
+  switch (rank) {
+  case 0:
+    open(TRUE);
+    return;
+  case 1:
+    ((BrowserActivity *) parent())->add_parameter(this);
+    return;
+  case 2:
+    delete_it();
+    break;
+  case 3:
+    undelete(FALSE);
+    break;
+  case 4:
+    ReferenceDialog::show(this);
+    return;
+  default:
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
+      ToolCom::run(Tool::command(rank - 100), this);
+    else
+      mark_management(rank - 90);
+    return;
+  }
+  ((BrowserNode *) parent())->modified();
+  package_modified();
 }
 
-void BrowserParameter::open (bool)
-{
-    if (!is_edited) {
-        def->edit();
+void BrowserParameter::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_edited)
+      if (s == "Edit")
+	choice = 0;
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "Duplicate")
+	choice = 1;
+      else if (s == "Delete")
+	choice = 2;
     }
+    if (s == "Referenced by")
+      choice = 4;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 3;
+
+  exec_menu_choice(choice);
 }
 
-void BrowserParameter::modified()
-{
-    repaint();
-    ( (BrowserNode *) parent())->modified();
+void BrowserParameter::open(bool) {
+  if (!is_edited)
+    def->edit();
 }
 
-UmlCode BrowserParameter::get_type() const
-{
-    return UmlParameter;
+void BrowserParameter::modified() {
+  repaint();
+  ((BrowserNode *) parent())->modified();
 }
 
-QString BrowserParameter::get_stype() const
-{
-    return TR ("parameter");
+UmlCode BrowserParameter::get_type() const {
+  return UmlParameter;
 }
 
-int BrowserParameter::get_identifier() const
-{
-    return get_ident();
+QString BrowserParameter::get_stype() const {
+  return TR("parameter");
 }
 
-BasicData * BrowserParameter::get_data() const
-{
-    return def;
+int BrowserParameter::get_identifier() const {
+  return get_ident();
 }
 
-QString BrowserParameter::full_name (bool rev, bool) const
-{
-    return fullname (rev);
+BasicData * BrowserParameter::get_data() const {
+  return def;
 }
 
-void BrowserParameter::referenced_by (QList<BrowserNode> & l, bool ondelete)
+QString BrowserParameter::full_name(bool rev, bool) const {
+  return fullname(rev);
+}
+
+void BrowserParameter::referenced_by(QList<BrowserNode *> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  BrowserFlow::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "parametercanvas", "parameter_ref");
+}
+
+void BrowserParameter::compute_referenced_by(QList<BrowserNode *> & l,
+					     BrowserNode * target)
 {
-    BrowserNode::referenced_by (l, ondelete);
-    BrowserFlow::compute_referenced_by (l, this);
-    if (! ondelete) {
-        BrowserActivityDiagram::compute_referenced_by (l, this, "parametercanvas", "parameter_ref");
+  IdIterator<BrowserParameter> it(all);
+
+  while (it.current()) {
+    if (!it.current()->deletedp()) {
+      const AType & t = it.current()->def->get_type();
+
+      if (t.type == target)
+	l.append(it.current());
     }
+    ++it;
+  }
 }
 
-void BrowserParameter::compute_referenced_by (QList<BrowserNode> & l,
-        BrowserNode * target)
-{
-    IdIterator<BrowserParameter> it (all);
 
-    while (it.current()) {
-        if (!it.current()->deletedp()) {
-            const AType & t = it.current()->def->get_type();
+bool BrowserParameter::api_compatible(unsigned v) const {
+  return (v > 24);
+}
 
-            if (t.type == target) {
-                l.append (it.current());
-            }
-        }
-        ++it;
+bool BrowserParameter::tool_cmd(ToolCom * com, const char * args) {
+  switch ((unsigned char) args[-1]) {
+  case createCmd:
+    {
+      bool ok = TRUE;
+
+      if (is_read_only && !root_permission())
+	ok = FALSE;
+      else {
+	UmlCode k = com->get_kind(args);
+
+	switch (k) {
+	case UmlFlow:
+	  {
+	    BrowserNode * end = (BrowserNode *) com->get_id(args);
+
+	    if (may_connect(end).isEmpty())
+	      (new BrowserFlow(this, end))->write_id(com);
+	    else
+	      ok = FALSE;
+	  }
+	  break;
+	default:
+	  ok = FALSE;
+	}
+      }
+
+      if (! ok)
+	com->write_id(0);
+      else
+	package_modified();
+
+      return TRUE;
     }
+  default:
+    return (def->tool_cmd(com, args, this, comment) ||
+	    BrowserNode::tool_cmd(com, args));
+  }
 }
 
-
-bool BrowserParameter::api_compatible (unsigned v) const
-{
-    return (v > 24);
+void BrowserParameter::DragMoveEvent(QDragMoveEvent * e) {
+  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
+  else
+    ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
-bool BrowserParameter::tool_cmd (ToolCom * com, const char * args)
-{
-    switch ( (unsigned char) args[-1]) {
-        case createCmd: {
-            bool ok = TRUE;
+void BrowserParameter::DropEvent(QDropEvent * e) {
+  DropAfterEvent(e, 0);
+}
 
-            if (is_read_only && !root_permission()) {
-                ok = FALSE;
-            } else {
-                UmlCode k = com->get_kind (args);
+void BrowserParameter::DragMoveInsideEvent(QDragMoveEvent * e) {
+  if (!is_read_only &&
+      UmlDrag::canDecode(e, BrowserFlow::drag_key(this)))
+    e->accept();
+  else
+    e->ignore();
+}
 
-                switch (k) {
-                    case UmlFlow: {
-                        BrowserNode * end = (BrowserNode *) com->get_id (args);
+void BrowserParameter::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
+  BrowserNode * bn;
 
-                        if (may_connect (end).isEmpty()) {
-                            (new BrowserFlow (this, end))->write_id (com);
-                        } else {
-                            ok = FALSE;
-                        }
-                    }
-                    break;
-                    default:
-                        ok = FALSE;
-                }
-            }
-
-            if (! ok) {
-                com->write_id (0);
-            } else {
-                package_modified();
-            }
-
-            return TRUE;
-        }
-        default:
-            return (def->tool_cmd (com, args, this, comment) ||
-                    BrowserNode::tool_cmd (com, args));
+  if (((bn = UmlDrag::decode(e, BrowserFlow::drag_key(this))) != 0) &&
+      (bn != after) && (bn != this)) {
+    if (may_contains(bn, FALSE))
+      move(bn, after);
+    else {
+      msg_critical(TR("Error"), TR("Forbidden"));
+      e->ignore();
     }
+  }
+  else if ((bn == 0) && (after == 0))
+    ((BrowserNode *) parent())->DropAfterEvent(e, this);
+  else
+    e->ignore();
 }
 
-void BrowserParameter::DragMoveEvent (QDragMoveEvent * e)
-{
-    if (UmlDrag::canDecode (e, BrowserFlow::drag_key (this))) {
-        if (!is_read_only) {
-            e->accept();
-        } else {
-            e->ignore();
-        }
-    } else {
-        ( (BrowserNode *) parent())->DragMoveInsideEvent (e);
-    }
+QString BrowserParameter::drag_key() const {
+  return QString::number(UmlParameter)
+      + "#" + QString::number((unsigned long) parent());
 }
 
-void BrowserParameter::DropEvent (QDropEvent * e)
-{
-    DropAfterEvent (e, 0);
+QString BrowserParameter::drag_postfix() const {
+  return "#" + QString::number((unsigned long) parent());
 }
 
-void BrowserParameter::DragMoveInsideEvent (QDragMoveEvent * e)
+QString BrowserParameter::drag_key(BrowserNode * p)
 {
-    if (!is_read_only &&
-        UmlDrag::canDecode (e, BrowserFlow::drag_key (this))) {
-        e->accept();
-    } else {
-        e->ignore();
-    }
-}
-
-void BrowserParameter::DropAfterEvent (QDropEvent * e, BrowserNode * after)
-{
-    BrowserNode * bn;
-
-    if ( ( (bn = UmlDrag::decode (e, BrowserFlow::drag_key (this))) != 0) &&
-         (bn != after) && (bn != this)) {
-        if (may_contains (bn, FALSE)) {
-            move (bn, after);
-        } else {
-            msg_critical (TR ("Error"), TR ("Forbidden"));
-            e->ignore();
-        }
-    } else if ( (bn == 0) && (after == 0)) {
-        ( (BrowserNode *) parent())->DropAfterEvent (e, this);
-    } else {
-        e->ignore();
-    }
-}
-
-QString BrowserParameter::drag_key() const
-{
-    return QString::number (UmlParameter)
-           + "#" + QString::number ( (unsigned long) parent());
-}
-
-QString BrowserParameter::drag_postfix() const
-{
-    return "#" + QString::number ( (unsigned long) parent());
-}
-
-QString BrowserParameter::drag_key (BrowserNode * p)
-{
-    return QString::number (UmlParameter)
-           + "#" + QString::number ( (unsigned long) p);
+  return QString::number(UmlParameter)
+    + "#" + QString::number((unsigned long) p);
 }
 
 void BrowserParameter::init()
 {
-    its_default_stereotypes.clear();
+  its_default_stereotypes.clear();
 }
 
 // unicode
 const QStringList & BrowserParameter::default_stereotypes()
 {
-    return its_default_stereotypes;
+  return its_default_stereotypes;
 }
 
-void BrowserParameter::save_stereotypes (QTextStream & st)
+void BrowserParameter::save_stereotypes(QTextStream & st)
 {
-    nl_indent (st);
-    st << "parameter_stereotypes ";
-    save_unicode_string_list (its_default_stereotypes, st);
+  nl_indent(st);
+  st << "parameter_stereotypes ";
+  save_unicode_string_list(its_default_stereotypes, st);
 }
 
-void BrowserParameter::read_stereotypes (char * & st, char * & k)
+void BrowserParameter::read_stereotypes(char * & st, char * & k)
 {
-    if (!strcmp (k, "parameter_stereotypes")) {
-        read_unicode_string_list (its_default_stereotypes, st);
-        k = read_keyword (st);
+  if (!strcmp(k, "parameter_stereotypes")) {
+    read_unicode_string_list(its_default_stereotypes, st);
+    k = read_keyword(st);
+  }
+}
+
+void BrowserParameter::save(QTextStream & st, bool ref, QString & warning) {
+  if (ref)
+    st << "parameter_ref " << get_ident() << " // " << get_name();
+  else {
+    nl_indent(st);
+    st << "parameter " << get_ident() << ' ';
+    save_string(name, st);
+    indent(+1);
+    def->save(st, warning);
+    BrowserNode::save(st);
+
+    // saves the sub elts
+
+    Q3ListViewItem * child = firstChild();
+
+    if (child != 0) {
+      for (;;) {
+	if (! ((BrowserNode *) child)->deletedp()) {
+	  ((BrowserNode *) child)->save(st, FALSE, warning);
+
+	  child = child->nextSibling();
+	  if (child != 0)
+	    st << '\n';
+	  else
+	    break;
+	}
+	else if ((child = child->nextSibling()) == 0)
+	  break;
+      }
     }
+
+    indent(-1);
+    nl_indent(st);
+    st << "end";
+
+    // for saveAs
+    if (!is_from_lib() && !is_api_base())
+      is_read_only = FALSE;
+  }
 }
 
-void BrowserParameter::save (QTextStream & st, bool ref, QString & warning)
+BrowserParameter * BrowserParameter::read_ref(char * & st)
 {
-    if (ref) {
-        st << "parameter_ref " << get_ident() << " // " << get_name();
-    } else {
-        nl_indent (st);
-        st << "parameter " << get_ident() << ' ';
-        save_string (name, st);
-        indent (+1);
-        def->save (st, warning);
-        BrowserNode::save (st);
+  read_keyword(st, "parameter_ref");
 
-        // saves the sub elts
+  int id = read_id(st);
+  BrowserParameter * result = all[id];
 
-        QListViewItem * child = firstChild();
+  return (result == 0)
+    ? new BrowserParameter(id)
+    : result;
+}
 
-        if (child != 0) {
-            for (;;) {
-                if (! ( (BrowserNode *) child)->deletedp()) {
-                    ( (BrowserNode *) child)->save (st, FALSE, warning);
+BrowserParameter * BrowserParameter::read(char * & st, char * k,
+					  BrowserNode * parent)
+{
+  BrowserParameter * result;
+  int id;
 
-                    child = child->nextSibling();
-                    if (child != 0) {
-                        st << '\n';
-                    } else {
-                        break;
-                    }
-                } else if ( (child = child->nextSibling()) == 0) {
-                    break;
-                }
-            }
-        }
+  if (!strcmp(k, "parameter_ref")) {
+    if ((result = all[id = read_id(st)]) == 0)
+      result = new BrowserParameter(id);
+    return result;
+  }
+  else if (!strcmp(k, "parameter")) {
+    id = read_id(st);
 
-        indent (-1);
-        nl_indent (st);
-        st << "end";
+    QString s = read_string(st);
 
-        // for saveAs
-        if (!is_from_lib() && !is_api_base()) {
-            is_read_only = FALSE;
-        }
+    k = read_keyword(st);
+
+    if ((result = all[id]) == 0) {
+      result = new BrowserParameter(s, parent, id);
+      result->def->read(st, k);	// updates k2
     }
-}
+    else if (result->is_defined) {
+      BrowserParameter * already_exist = result;
 
-BrowserParameter * BrowserParameter::read_ref (char * & st)
-{
-    read_keyword (st, "parameter_ref");
+      result = new BrowserParameter(s, parent, id);
+      result->def->read(st, k);	// updates k2
 
-    int id = read_id (st);
-    BrowserParameter * result = all[id];
-
-    return (result == 0)
-           ? new BrowserParameter (id)
-           : result;
-}
-
-BrowserParameter * BrowserParameter::read (char * & st, char * k,
-        BrowserNode * parent)
-{
-    BrowserParameter * result;
-    int id;
-
-    if (!strcmp (k, "parameter_ref")) {
-        if ( (result = all[id = read_id (st)]) == 0) {
-            result = new BrowserParameter (id);
-        }
-        return result;
-    } else if (!strcmp (k, "parameter")) {
-        id = read_id (st);
-
-        QString s = read_string (st);
-
-        k = read_keyword (st);
-
-        if ( (result = all[id]) == 0) {
-            result = new BrowserParameter (s, parent, id);
-            result->def->read (st, k);	// updates k2
-        } else if (result->is_defined) {
-            BrowserParameter * already_exist = result;
-
-            result = new BrowserParameter (s, parent, id);
-            result->def->read (st, k);	// updates k2
-
-            already_exist->must_change_id (all);
-            already_exist->unconsistent_fixed ("activity parameter", result);
-        } else {
-            result->def->read (st, k);	// updates k2
-            result->set_parent (parent);
-            result->set_name (s);
-        }
-
-        result->is_defined = TRUE;
-        result->BrowserNode::read (st, k, id);
-
-        if (strcmp (k, "end")) {
-            while (BrowserFlow::read (st, k, result)) {
-                k = read_keyword (st);
-            }
-            if (strcmp (k, "end")) {
-                wrong_keyword (k, "end");
-            }
-        }
-
-        result->is_read_only = (!in_import() && read_only_file()) ||
-                               ( (user_id() != 0) && result->is_api_base());
-        result->def->set_browser_node (result);
-
-        if (strcmp (k, "end")) {
-            wrong_keyword (k, "end");
-        }
-
-        return result;
-    } else {
-        return 0;
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity parameter", result);
     }
+    else {
+      result->def->read(st, k);	// updates k2
+      result->set_parent(parent);
+      result->set_name(s);
+    }
+
+    result->is_defined = TRUE;
+    result->BrowserNode::read(st, k, id);
+
+    if (strcmp(k, "end")) {
+      while (BrowserFlow::read(st, k, result))
+	k = read_keyword(st);
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+
+    result->is_read_only = (!in_import() && read_only_file()) ||
+      ((user_id() != 0) && result->is_api_base());
+    result->def->set_browser_node(result);
+
+    if (strcmp(k, "end"))
+      wrong_keyword(k, "end");
+
+    return result;
+  }
+  else
+    return 0;
 }
 
-BrowserNode * BrowserParameter::get_it (const char * k, int id)
+BrowserNode * BrowserParameter::get_it(const char * k, int id)
 {
-    return (!strcmp (k, "parameter_ref")) ? all[id] : 0;
+  return (!strcmp(k, "parameter_ref")) ? all[id] : 0;
 }

@@ -6,16 +6,16 @@ bool UmlActivityPartition::chapterp() {
   return TRUE;
 }
 
-QCString UmlActivityPartition::sKind() {
+QByteArray UmlActivityPartition::sKind() {
   return "activity partition";
 }
 
-void UmlActivityPartition::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlActivityPartition::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
   
   chapter("Activity partition", pfix, rank, "activitypartition", level);
 
-  QCString s = description();
+  QByteArray s = description();
   
   if (!s.isEmpty()) {
     fw.write("<p>");

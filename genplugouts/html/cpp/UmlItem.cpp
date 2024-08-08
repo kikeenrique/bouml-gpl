@@ -31,7 +31,7 @@
  UmlItem::~UmlItem() {
 }
 
-QCString UmlItem::sKind() {
+QByteArray UmlItem::sKind() {
   return "???";
 }
 
@@ -233,9 +233,9 @@ void UmlItem::define() {
   fw.write("\"></a>\n");
 }
 
-void UmlItem::start_file(QCString f, QCString s, bool withrefs)
+void UmlItem::start_file(QByteArray f, QByteArray s, bool withrefs)
 {
-  QCString filename = directory + f;
+  QByteArray filename = directory + f;
   bool is_frame = (f == "index-withframe");
   
   if (! fw.open(filename + ".html"))
@@ -347,7 +347,7 @@ void UmlItem::generate_indexes()
   previous = 0;
   for (i = 0; i != n; i += 1) {
     UmlItem * x = all.elementAt(i);
-    QCString s = x->pretty_name();
+    QByteArray s = x->pretty_name();
     
     if (! s.isEmpty()) {
       char c = *((const char *) s);
@@ -365,7 +365,7 @@ void UmlItem::generate_indexes()
   previous = 0;
   for (i = 0; i != n; i += 1) {
     UmlItem * x = all.elementAt(i);
-    QCString s = x->pretty_name();
+    QByteArray s = x->pretty_name();
     
     if (! s.isEmpty()) {
       char c = *((const char *) s);
@@ -381,11 +381,11 @@ void UmlItem::generate_indexes()
 	
 	previous = c;
 	
-	QCString sn;
+	QByteArray sn;
 	
 	sn.setNum((int) (c & 255));
 	
-	start_file(QCString("index_") + sn, QCString("") + c, TRUE);
+	start_file(QByteArray("index_") + sn, QByteArray("") + c, TRUE);
 	
 	fw.write("<table>\n");
 	fw.write("<tr bgcolor=\"#f0f0f0\"><td align=\"center\"><b>Name</b></td><td align=\"center\"><b>Kind</b></td><td align=\"center\"><b>Description</b></td></tr>\n");
@@ -440,7 +440,7 @@ bool UmlItem::chapterp() {
   return FALSE;
 }
 
-void UmlItem::html(QCString pfix, unsigned int rank, QCString what, unsigned int level, QCString kind) {
+void UmlItem::html(QByteArray pfix, unsigned int rank, QByteArray what, unsigned int level, QByteArray kind) {
   define();
  
   chapter(what, pfix, rank, kind, level);
@@ -457,7 +457,7 @@ void UmlItem::html(QCString pfix, unsigned int rank, QCString what, unsigned int
   unsigned n = ch.size();
   
   if (n != 0) {
-    QCString spfix;
+    QByteArray spfix;
     
     if (rank != 0) {
       spfix.setNum(rank);
@@ -485,7 +485,7 @@ void UmlItem::html(const char * what, UmlDiagram * diagram) {
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
   
-  QCString d = description();
+  QByteArray d = description();
   
   if (!d.isEmpty()) {
     fw.write("<p>");
@@ -504,12 +504,12 @@ void UmlItem::html(const char * what, UmlDiagram * diagram) {
   write_properties();
 }
 
-void UmlItem::write_children(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlItem::write_children(QByteArray pfix, unsigned int rank, unsigned int level) {
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
   
   if (n != 0) {
-    QCString spfix;
+    QByteArray spfix;
     unsigned srank = 1;
     
     if (rank != 0) {
@@ -552,18 +552,18 @@ void UmlItem::write_properties() {
     fw.write("</p>\n");
   }
     
-  const QDict<QCString> d = properties();
+  const QDict<QByteArray> d = properties();
   
   if (! d.isEmpty()) {
     fw.write("<p>Properties:</p><ul>\n");
     
-    QDictIterator<QCString> it(d);
+    QDictIterator<QByteArray> it(d);
     
-    while (it.current()) {
+    while ((*it)) {
       fw.write("<li>");
       writeq(it.currentKey().latin1());
       fw.write(":<br /><div class=\"sub\">");
-      writeq(*(it.current()));
+      writeq(*((*it)));
       fw.write("</div></li>\n");
       ++it;
     }
@@ -572,7 +572,7 @@ void UmlItem::write_properties() {
   }
 }
 
-void UmlItem::chapter(QCString k, QCString pfix, unsigned int rank, QCString kind, unsigned int level) {
+void UmlItem::chapter(QByteArray k, QByteArray pfix, unsigned int rank, QByteArray kind, unsigned int level) {
   if (rank != 0) {
     if (level > 4)
       level = 4;
@@ -640,8 +640,8 @@ void UmlItem::manage_alias(const char *& p) {
   const char * pclosed;
   
   if ((p[1] == '{') && ((pclosed = strchr(p + 2, '}')) != 0)) {
-    QCString key(p + 2, pclosed - p - 1);
-    QCString value;
+    QByteArray key(p + 2, pclosed - p - 1);
+    QByteArray value;
     UmlItem * node = this;
 
     do {
@@ -691,7 +691,7 @@ void UmlItem::write() {
     writeq(name());
 }
 
-void UmlItem::write(QCString target) {
+void UmlItem::write(QByteArray target) {
   if (known) {
     fw.write("<a href=\"index.html#ref");
     fw.write((unsigned) kind());
@@ -707,7 +707,7 @@ void UmlItem::write(QCString target) {
     writeq(name());
 }
 
-void UmlItem::writeq(QCString s)
+void UmlItem::writeq(QByteArray s)
 {
   const char * p = s;
   
@@ -875,7 +875,7 @@ void UmlItem::write(anOrdering d)
   }
 }
 
-void UmlItem::generate_index(Vector & v, QCString k, QCString r)
+void UmlItem::generate_index(Vector & v, QByteArray k, QByteArray r)
 {
   int n = v.size();
   
@@ -942,8 +942,8 @@ void UmlItem::sort(Vector & v, int low, int high)
 }
 
 bool UmlItem::gt(UmlItem * other) {
- QCString s1 = pretty_name();
- QCString s2 = other->pretty_name();
+ QByteArray s1 = pretty_name();
+ QByteArray s2 = other->pretty_name();
  int i = qstricmp((const char *) s1, (const char *) s2);
  
  if ((i == 0) && (parent() != 0) && (other->parent() != 0)) {
@@ -956,7 +956,7 @@ bool UmlItem::gt(UmlItem * other) {
   return (i > 0);
 }
 
-QCString UmlItem::pretty_name() {
+QByteArray UmlItem::pretty_name() {
   return name().isEmpty() ? sKind() : name();
 }
 
@@ -964,11 +964,11 @@ Vector UmlItem::all;
 
 FileWriter UmlItem::fw;
 
-QCString UmlItem::directory;
+QByteArray UmlItem::directory;
 
 unsigned int UmlItem::nrefs= 0;
 
-QCString UmlItem::letters;
+QByteArray UmlItem::letters;
 
 //true => use SVG picture rather than PNG
 bool UmlItem::flat;

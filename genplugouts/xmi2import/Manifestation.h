@@ -14,7 +14,7 @@ class Manifestation {
     //for QValueList
     Manifestation(){}
 
-    Manifestation(QCString s, UmlArtifact * art, QCString client) : name(s), artifact(art), utilized(client) {}
+    Manifestation(QByteArray s, UmlArtifact * art, QByteArray client) : name(s), artifact(art), utilized(client) {}
 
     static void import(FileIn & in, Token & token, UmlArtifact * artifact);
 
@@ -22,11 +22,11 @@ class Manifestation {
 
 
   protected:
-    QCString name;
+    QByteArray name;
 
     UmlArtifact * artifact;
 
-    QCString utilized;
+    QByteArray utilized;
 
     static QValueList<Manifestation> All;
 

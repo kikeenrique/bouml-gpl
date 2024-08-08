@@ -15,7 +15,7 @@ class UmlItem;
 // You can modify it as you want (except the constructor)
 class UmlComponent : public UmlBaseComponent {
   public:
-    UmlComponent(void * id, const QCString & n) : UmlBaseComponent(id, n) { NumberOf += 1; };
+    UmlComponent(void * id, const QByteArray & n) : UmlBaseComponent(id, n) { NumberOf += 1; };
 
     static void init();
 
@@ -28,15 +28,15 @@ class UmlComponent : public UmlBaseComponent {
     virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //  call at end of import : try to solve interfaces
-    virtual void solve(int context, QCString idref);
+    virtual void solve(int context, QByteArray idref);
 
     //  call at end of import : try to solve generalization dependencies and realization
     //  not from a class
-    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint);
+    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QByteArray label, QByteArray constraint);
 
     //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
-    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint);
+    virtual void solveGeneralizationDependencyRealization(int context, QByteArray idref, QByteArray label, QByteArray constraint);
 
     static int numberOf() { return NumberOf; };
 

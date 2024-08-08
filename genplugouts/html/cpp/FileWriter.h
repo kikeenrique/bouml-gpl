@@ -12,11 +12,11 @@ class QTextStream;
 // in C++
 class FileWriter {
   public:
-    bool open(QCString s);
+    bool open(QByteArray s);
 
     void close();
 
-    void write(QCString s);
+    void write(QByteArray s);
 
     void write(const char * s);
 

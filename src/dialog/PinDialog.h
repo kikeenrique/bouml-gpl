@@ -31,7 +31,7 @@
 
 
 #include <qstringlist.h>
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "BrowserNode.h"
 
@@ -47,70 +47,69 @@ class MultiLineEdit;
 class KeyValuesTable;
 class BodyDialog;
 
-class PinDialog : public QTabDialog
-{
-        Q_OBJECT
+class PinDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    bool visit;
+    PinData * pin;
+    QStringList list;
+    BrowserNodeList nodes;
+    QList<BodyDialog *> edits;
+    BrowserNode * view;
+    int offset;
+    
+    // uml tab
+    QWidget * umltab;
+    LineEdit * edname;
+    QComboBox * edtype;
+    QComboBox * edstereotype;
+    QComboBox * eddir;
+    QComboBox * edordering;
+    QComboBox * edeffect;
+    QComboBox * edmultiplicity;
+    LineEdit * edin_state;
+    QCheckBox * is_control_cb;
+    QCheckBox * unique_cb;
+    QRadioButton * standard_rb;
+    QRadioButton * exception_rb;
+    QRadioButton * stream_rb;
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+    MultiLineEdit * eduml_selection;
+    MultiLineEdit * edcpp_selection;
+    MultiLineEdit * edjava_selection;
+    MultiLineEdit * comment;
+    
+    // User tab
+    KeyValuesTable * kvtable;
 
-    protected:
-        bool visit;
-        PinData * pin;
-        QStringList list;
-        BrowserNodeList nodes;
-        QList<BodyDialog> edits;
-        BrowserNode * view;
-        int offset;
+    static QSize previous_size;
+  
+    static void post_edit_description(PinDialog *, QString);
+    static void post_edit_uml_selection(PinDialog * d, QString s);
+    static void post_edit_cpp_selection(PinDialog * d, QString s);
+    static void post_edit_java_selection(PinDialog * d, QString s);
+    
+    void init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
+		  const char * lbl, const char * sl, bool enabled);
+    
+  public:
+    PinDialog(PinData * a);
+    virtual ~PinDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+  
+    void edit_description();
+    void edit_uml_selection();
+    void edit_cpp_selection();
+    void edit_java_selection();
+    void menu_type();
 
-        // uml tab
-        QWidget * umltab;
-        LineEdit * edname;
-        QComboBox * edtype;
-        QComboBox * edstereotype;
-        QComboBox * eddir;
-        QComboBox * edordering;
-        QComboBox * edeffect;
-        QComboBox * edmultiplicity;
-        LineEdit * edin_state;
-        QCheckBox * is_control_cb;
-        QCheckBox * unique_cb;
-        QRadioButton * standard_rb;
-        QRadioButton * exception_rb;
-        QRadioButton * stream_rb;
-        QWidget * ocltab;
-        QWidget * cpptab;
-        QWidget * javatab;
-        MultiLineEdit * eduml_selection;
-        MultiLineEdit * edcpp_selection;
-        MultiLineEdit * edjava_selection;
-        MultiLineEdit * comment;
-
-        // User tab
-        KeyValuesTable * kvtable;
-
-        static QSize previous_size;
-
-        static void post_edit_description (PinDialog *, QString);
-        static void post_edit_uml_selection (PinDialog * d, QString s);
-        static void post_edit_cpp_selection (PinDialog * d, QString s);
-        static void post_edit_java_selection (PinDialog * d, QString s);
-
-        void init_tab (QWidget *& tab, MultiLineEdit *& ed, const char * v,
-                       const char * lbl, const char * sl, bool enabled);
-
-    public:
-        PinDialog (PinData * a);
-        virtual ~PinDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-
-        void edit_description();
-        void edit_uml_selection();
-        void edit_cpp_selection();
-        void edit_java_selection();
-        void menu_type();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

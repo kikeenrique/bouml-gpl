@@ -26,7 +26,7 @@
 #ifndef LEX_H
 #define LEX_H
 
-#include <qptrstack.h>
+#include <qstack.h>
 
 // fstream is bugged under Windows
 #include <stdio.h>
@@ -51,11 +51,11 @@ class Lex {
     static void unget();
     
     static void complete_template(QString & result);
-    static QCString manage_operator(QString  & result, int c);  
-    static QCString read_string();     
-    static QCString read_character();    
-    static QCString read_array_dim();  
-    static QCString read_annotation();
+    static QByteArray manage_operator(QString  & result, int c);  
+    static QByteArray read_string();     
+    static QByteArray read_character();    
+    static QByteArray read_array_dim();  
+    static QByteArray read_annotation();
     static void bypass_template();
     static void bypass_cpp_comment();
     static void bypass_c_comment();
@@ -69,13 +69,13 @@ class Lex {
     static QStack<Context> stack;
     
   public:
-    static QCString read_word(bool in_templ = FALSE);
+    static QByteArray read_word(bool in_templ = FALSE);
     static char read_word_bis(bool in_templ = FALSE);
     static void unread_word(const char * s);
-    static QCString get_comments();
-    static QCString get_comments(QCString & co);
-    static QCString get_description();
-    static QCString get_description(QCString & co);
+    static QByteArray get_comments();
+    static QByteArray get_comments(QByteArray & co);
+    static QByteArray get_description();
+    static QByteArray get_description(QByteArray & co);
     static void clear_comments();
     static void finish_line();
     static bool open(const QString &);
@@ -84,18 +84,18 @@ class Lex {
     static unsigned line_number();
     static bool identifierp(const char *);
     static void mark();
-    static QCString region();
-    static void syntax_error(QCString = 0);
+    static QByteArray region();
+    static void syntax_error(QByteArray = 0);
     static void premature_eof();
-    static void error_near(QCString, const char * m = "");
-    static QCString quote(QCString);
+    static void error_near(QByteArray, const char * m = "");
+    static QByteArray quote(QByteArray);
     static void push_context();
     static void pop_context();
-    static QCString simplify_comment(QCString &);
-    static bool bypass_type(QCString s);
+    static QByteArray simplify_comment(QByteArray &);
+    static bool bypass_type(QByteArray s);
 };
 
-bool neq(const QCString & s1, const QCString & s2);
-bool nequal(const QCString & s1, const QCString & s2);
+bool neq(const QByteArray & s1, const QByteArray & s2);
+bool nequal(const QByteArray & s1, const QByteArray & s2);
 
 #endif

@@ -30,12 +30,12 @@
 #include "UmlClass.h"
 
 // an empty string is != a null string in Qt !
-bool inline neq(const QCString & s1, const QCString & s2)
+bool inline neq(const QByteArray & s1, const QByteArray & s2)
 {
   return (s1.isEmpty()) ? !s2.isEmpty() : (s1 != s2);
 }
 
-void UmlExtraClassMember::add_init(UmlClass * cl, QCString def, bool roundtrip,
+void UmlExtraClassMember::add_init(UmlClass * cl, QByteArray def, bool roundtrip,
 				   QList<UmlItem> & expected_order)
 {
   if (roundtrip) {

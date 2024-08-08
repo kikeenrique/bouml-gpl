@@ -20,8 +20,8 @@ UmlItem * UmlUseCase::container(anItemKind kind, Token & token, FileIn & in) {
 
 }
 
-void UmlUseCase::solve(int context, QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlUseCase::solve(int context, QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
       
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))
@@ -57,7 +57,7 @@ void UmlUseCase::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anUseCase, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     
     if (s.isEmpty()) {
       static unsigned n = 0;
@@ -74,7 +74,7 @@ void UmlUseCase::importIt(FileIn & in, Token & token, UmlItem * where)
     uc->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))
@@ -89,12 +89,12 @@ void UmlUseCase::importExtendInclude(FileIn & in, Token & token, UmlItem * where
 {
   if (where->kind() == anUseCase) {
     bool extend = (token.what() == "extend");
-    QCString other = token.valueOf((extend) ? "extendedcase" : "addition");
+    QByteArray other = token.valueOf((extend) ? "extendedcase" : "addition");
     
     if (other.isEmpty())
       in.warning((extend) ? "extendedCase is missing" : "addition is missing");
     else {
-      QMap<QCString, UmlItem *>::Iterator it = All.find(other);
+      QMap<QByteArray, UmlItem *>::Iterator it = All.find(other);
       
       if (it != All.end())
 	where->solve(extend, other);
@@ -110,10 +110,10 @@ void UmlUseCase::importExtendInclude(FileIn & in, Token & token, UmlItem * where
 void UmlUseCase::importExtensionPoint(FileIn & in, Token & token, UmlItem * where)
 {
   if (where->kind() == anUseCase) {
-    QCString ep = token.valueOf("name");
+    QByteArray ep = token.valueOf("name");
     
     if (!ep.isEmpty()) {
-      QCString eps = ((UmlUseCase *) where)->extensionPoints();
+      QByteArray eps = ((UmlUseCase *) where)->extensionPoints();
       
       if (! eps.isEmpty())
 	eps += "\n" + ep;

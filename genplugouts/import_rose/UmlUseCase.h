@@ -14,13 +14,13 @@ class File;
 // You can modify it as you want (except the constructor)
 class UmlUseCase : public UmlBaseUseCase, public Uc {
   public:
-    UmlUseCase(void * id, const QCString & n) : UmlBaseUseCase(id, n) {
+    UmlUseCase(void * id, const QByteArray & n) : UmlBaseUseCase(id, n) {
       cpt[kind()] += 1;
     };
 
     virtual UmlItem * item();
 
-    virtual void readObject(File & f, QCString s);
+    virtual void readObject(File & f, QByteArray s);
 
     static void import(File & f, UmlItem * parent);
 

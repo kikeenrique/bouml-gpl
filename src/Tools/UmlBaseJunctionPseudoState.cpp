@@ -3,13 +3,12 @@
 #include "UmlJunctionPseudoState.h"
 #include "UmlItem.h"
 
-UmlJunctionPseudoState * UmlBaseJunctionPseudoState::create (UmlItem * parent)
+UmlJunctionPseudoState * UmlBaseJunctionPseudoState::create(UmlItem * parent)
 {
-    return (UmlJunctionPseudoState *) parent->create_ (aJunctionPseudoState, "");
+  return (UmlJunctionPseudoState *) parent->create_(aJunctionPseudoState, "");
 }
 
-anItemKind UmlBaseJunctionPseudoState::kind()
-{
-    return aJunctionPseudoState;
+anItemKind UmlBaseJunctionPseudoState::kind() {
+  return aJunctionPseudoState;
 }
 

@@ -36,29 +36,29 @@ class UmlClass;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };  
   
-    static bool new_one(Class * container, const QCString & name,
-			UmlTypeSpec & dest, QCString str_actuals,
+    static bool new_one(Class * container, const QByteArray & name,
+			UmlTypeSpec & dest, QByteArray str_actuals,
 			aVisibility visibility,	bool staticp,
 			bool constp, bool transientp, bool volatilep,
-			const QCString & array,	const QCString & value,
-			QCString comment, QCString description,
-			QCString annotation
+			const QByteArray & array,	const QByteArray & value,
+			QByteArray comment, QByteArray description,
+			QByteArray annotation
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			);
-    static bool new_one(Class * container, const QCString & name,
-			UmlClass * type, QCString type_def,
-			QCString genericname,
+    static bool new_one(Class * container, const QByteArray & name,
+			UmlClass * type, QByteArray type_def,
+			QByteArray genericname,
 			aVisibility visibility, bool staticp,
 			bool constp, bool transientp, bool volatilep,
-			const QCString & array, const QCString & value,
-			QCString comment, QCString description,
-			QCString annotation
+			const QByteArray & array, const QByteArray & value,
+			QByteArray comment, QByteArray description,
+			QByteArray annotation
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif

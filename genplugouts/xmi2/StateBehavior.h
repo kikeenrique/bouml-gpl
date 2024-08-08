@@ -6,11 +6,11 @@
 
 class StateBehavior {
   public:
-    QCString on_entry;
+    QByteArray on_entry;
 
-    QCString on_exit;
+    QByteArray on_exit;
 
-    QCString do_activity;
+    QByteArray do_activity;
 
     void read();
 

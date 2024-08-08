@@ -34,7 +34,7 @@
 
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n)
+    UmlClassMember(void * id, const QByteArray & n)
       : UmlBaseClassMember(id, n) {};
 
 #ifdef REVERSE

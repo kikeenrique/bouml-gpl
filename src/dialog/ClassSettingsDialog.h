@@ -31,25 +31,24 @@
 class ClassSettings;
 class ComboVisibility;
 
-class ClassSettingsDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        ClassSettings * settings;
-        ComboVisibility * cbattribute;
-        ComboVisibility * cboperation;
-        ComboVisibility * cbrelation;
-
-        static QSize previous_size;
-
-    public:
-        ClassSettingsDialog (ClassSettings *, bool nodefault);
-        virtual ~ClassSettingsDialog();
-
-    protected slots:
-        virtual void polish();
-        void accept();
+class ClassSettingsDialog : public QDialog {
+  Q_OBJECT
+ 
+  protected:
+    ClassSettings * settings;
+    ComboVisibility * cbattribute;
+    ComboVisibility * cboperation;
+    ComboVisibility * cbrelation;
+ 
+    static QSize previous_size;
+  
+ public:
+    ClassSettingsDialog(ClassSettings *, bool nodefault);
+    virtual ~ClassSettingsDialog();
+ 
+  protected slots:
+    virtual void polish();
+    void accept();
 };
 
 #endif

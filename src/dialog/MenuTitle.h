@@ -27,20 +27,20 @@
 #define MENUTITLE_H
 
 #include <qmenudata.h>
+#include <QMenuItem>
 
-class MenuTitle : public QCustomMenuItem
-{
-    protected:
-        QString str;
-        QFont font;
+class MenuTitle : public QMenuItem {
+  protected:
+    QString str;
+    QFont font;
 
-    public:
-        MenuTitle (const QString & s, QFont f);
-        virtual ~MenuTitle() {};
+  public:
+    MenuTitle(const QString & s, QFont f);
+    virtual ~MenuTitle(){};
 
-        virtual void paint (QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
-                            bool /*enabled*/, int x, int y, int w, int h);
-        virtual QSize sizeHint();
+    virtual void paint(QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
+		       bool /*enabled*/, int x, int y, int w, int h);
+    virtual QSize sizeHint();
 };
 
 #endif

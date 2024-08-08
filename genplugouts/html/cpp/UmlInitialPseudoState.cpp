@@ -1,7 +1,7 @@
 
 #include "UmlInitialPseudoState.h"
 
-QCString UmlInitialPseudoState::sKind() {
+QByteArray UmlInitialPseudoState::sKind() {
   return "initial pseudo state";
 }
 

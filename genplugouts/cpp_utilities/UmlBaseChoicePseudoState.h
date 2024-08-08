@@ -24,7 +24,7 @@ class UmlBaseChoicePseudoState : public UmlPseudoState {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseChoicePseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
+     UmlBaseChoicePseudoState(void * id, const QByteArray & s) : UmlPseudoState(id, s) {
     }
 
 };

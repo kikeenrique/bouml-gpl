@@ -61,7 +61,7 @@ class UmlBaseAttribute : public UmlClassMember {
     bool set_isUnique(bool v);
 
     // returns the default attribute value, may be an empty string
-    const QCString & defaultValue();
+    const QByteArray & defaultValue();
 
     // to set the default attribute value ("" allowed)
     // 
@@ -77,7 +77,7 @@ class UmlBaseAttribute : public UmlClassMember {
     bool set_Type(const UmlTypeSpec & t);
 
     // returns the multiplicity (may be an empty string)
-    const QCString & multiplicity();
+    const QByteArray & multiplicity();
 
     // to set the multiplicity
     // 
@@ -124,7 +124,7 @@ class UmlBaseAttribute : public UmlClassMember {
 #ifdef WITHIDL
     // in case the attribute is an IDL union's member returns the
     // corresponding 'case', an empty string in case it is not specified
-    QCString idlCase();
+    QByteArray idlCase();
 
     // to set the 'case' even the attribute is not (already) known as
     // an IDL union's member
@@ -162,9 +162,9 @@ class UmlBaseAttribute : public UmlClassMember {
     bool _java_transient : 1;
 #endif
 
-    QCString _multiplicity;
+    QByteArray _multiplicity;
 
-    QCString _default_value;
+    QByteArray _default_value;
 
     UmlTypeSpec _type;
 
@@ -176,13 +176,13 @@ class UmlBaseAttribute : public UmlClassMember {
     // exclusive with idl_explicit_case
     UmlAttribute * _idl_case;
 
-    QCString _idl_explicit_case;
+    QByteArray _idl_explicit_case;
 #endif
 
 
   public:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseAttribute(void * id, const QCString & n);
+    UmlBaseAttribute(void * id, const QByteArray & n);
 
 
   protected:
@@ -212,7 +212,7 @@ class UmlBaseAttribute : public UmlClassMember {
 
 };
 
-inline UmlBaseAttribute::UmlBaseAttribute(void * id, const QCString & n) : UmlClassMember(id, n) {
+inline UmlBaseAttribute::UmlBaseAttribute(void * id, const QByteArray & n) : UmlClassMember(id, n) {
   _get_oper = 0;
   _set_oper = 0;
   

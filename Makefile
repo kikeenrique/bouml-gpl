@@ -21,29 +21,23 @@ BOUML_ICONS_PREFIX_DIR = /usr/share/icons/hicolor
 #BOUML_UNIX_PIXMAPS_DIR = /usr/share/pixmaps
 
 # for packaging purpose, useless by default
-# DESTDIR = 
+# DESTDIR =
 
 # uncomment if needed
 # MAKE = make
 
 QMAKE=qmake
 
-SRC_DIRS = src \
-	src/CppGenerator \
-	src/CppReverse \
-	src/CppRoundtrip \
-	src/JavaGenerator \
-	src/JavaReverse \
-	src/JavaRoundtrip \
-	src/JavaCat \
-	src/PhpGenerator \
-	src/PhpReverse \
-	src/PythonGenerator \
-	src/IdlGenerator \
-	src/PlugOutUpgrade \
-	src/ProjectControl \
-	src/ProjectSynchro \
-	src/RoundtripBody
+SRC_DIRS = src
+# 	src/CppGenerator \
+# 	src/CppReverse \
+# 	src/CppRoundtrip \
+# 	src/PythonGenerator \
+# 	src/IdlGenerator \
+# 	src/PlugOutUpgrade \
+# 	src/ProjectControl \
+# 	src/ProjectSynchro \
+# 	src/RoundtripBody
 
 PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/gpro \
@@ -61,36 +55,30 @@ PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/deploy/cpp \
 	genplugouts/global_change
 
-PROGS = src/bouml \
-	src/CppGenerator/cpp_generator \
-	src/CppReverse/cpp_reverse \
-	src/CppRoundtrip/cpp_roundtrip \
-	src/JavaGenerator/java_generator \
-	src/JavaReverse/java_reverse \
-	src/JavaRoundtrip/java_roundtrip \
-	src/JavaCat/java_catalog \
-	src/PhpGenerator/php_generator \
-	src/PhpReverse/php_reverse \
-	src/PythonGenerator/python_generator \
-	src/IdlGenerator/idl_generator \
-	src/PlugOutUpgrade/plug_out_upgrade \
-	src/ProjectControl/projectControl \
-	src/ProjectSynchro/projectSynchro \
-	src/RoundtripBody/roundtrip_body \
-	genplugouts/html/cpp/ghtml \
-	genplugouts/gpro/gpro \
-	genplugouts/import_rose/irose \
-	genplugouts/cpp_utilities/cpp_util \
-	genplugouts/xmi/gxmi \
-	genplugouts/xmi2/gxmi2 \
-	genplugouts/xmi2import/ixmi2 \
-	genplugouts/sm/cpp/stmgen \
-	genplugouts/usecasewizard/cpp/usecasewizard \
-	genplugouts/sort/cpp/browsersort \
-	genplugouts/uml_projection/cpp/uml_proj \
-	genplugouts/file_control/file_control \
-	genplugouts/deploy/cpp/deplcl \
-	genplugouts/global_change/global_change
+PROGS = src/bouml
+# 	src/CppGenerator/cpp_generator \
+# 	src/CppReverse/cpp_reverse \
+# 	src/CppRoundtrip/cpp_roundtrip \
+# 	src/PythonGenerator/python_generator \
+# 	src/IdlGenerator/idl_generator \
+# 	src/PlugOutUpgrade/plug_out_upgrade \
+# 	src/ProjectControl/projectControl \
+# 	src/ProjectSynchro/projectSynchro \
+# 	src/RoundtripBody/roundtrip_body \
+# 	genplugouts/html/cpp/ghtml \
+# 	genplugouts/gpro/gpro \
+# 	genplugouts/import_rose/irose \
+# 	genplugouts/cpp_utilities/cpp_util \
+# 	genplugouts/xmi/gxmi \
+# 	genplugouts/xmi2/gxmi2 \
+# 	genplugouts/xmi2import/ixmi2 \
+# 	genplugouts/sm/cpp/stmgen \
+# 	genplugouts/usecasewizard/cpp/usecasewizard \
+# 	genplugouts/sort/cpp/browsersort \
+# 	genplugouts/uml_projection/cpp/uml_proj \
+# 	genplugouts/file_control/file_control \
+# 	genplugouts/deploy/cpp/deplcl \
+# 	genplugouts/global_change/global_change
 
 compile:
 	@echo Generate BOUML and the hand made plug-outs
@@ -99,7 +87,7 @@ compile:
 
 	@echo Generate plug-outs
 
-	for i in $(PLUGOUT_DIRS); do if [ -d $$i ]; then ( cd $$i; $(QMAKE); ) || exit 1 ; $(MAKE) -C $$i || exit 1 ; fi; done
+# 	for i in $(PLUGOUT_DIRS); do if [ -d $$i ]; then ( cd $$i; $(QMAKE); ) || exit 1 ; $(MAKE) -C $$i || exit 1 ; fi; done
 
 clean:
 	for i in $(SRC_DIRS) $(PLUGOUT_DIRS); do if [ -d $$i ]; then (cd $$i ; $(MAKE) clean; rm -f Makefile; ) || exit 1 ; fi; done

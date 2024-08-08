@@ -30,8 +30,8 @@
 
 
 
-#include <qptrlist.h>
-#include <qtabdialog.h>
+#include <qlist.h>
+#include <q3tabdialog.h>
 
 class QComboBox;
 class QCheckBox;
@@ -42,35 +42,34 @@ class ExpansionRegionData;
 class KeyValuesTable;
 class BodyDialog;
 
-class ExpansionRegionDialog : public QTabDialog
-{
-        Q_OBJECT
+class ExpansionRegionDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    QWidget * umltab;
+    ExpansionRegionData * data;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    QComboBox * edmode;
+    QCheckBox * must_isolate_cb;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QList<BodyDialog *> edits;
 
-    protected:
-        QWidget * umltab;
-        ExpansionRegionData * data;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        QComboBox * edmode;
-        QCheckBox * must_isolate_cb;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QList<BodyDialog> edits;
+    static QSize previous_size;
+    
+    static void post_edit_description(ExpansionRegionDialog * d, QString s);
+      
+  public:
+    ExpansionRegionDialog(ExpansionRegionData * nd);
+    virtual ~ExpansionRegionDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
 
-        static QSize previous_size;
-
-        static void post_edit_description (ExpansionRegionDialog * d, QString s);
-
-    public:
-        ExpansionRegionDialog (ExpansionRegionData * nd);
-        virtual ~ExpansionRegionDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

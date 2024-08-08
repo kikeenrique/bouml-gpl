@@ -232,7 +232,7 @@ void Dialog::do_replace() {
   if (err != 0)
     QMessageBox::critical(this, "Global change", err);
   else {
-    ctx.set_stereotype(QCString(stereotype_le->text()), is_rb->isChecked(), isnot_rb->isChecked());
+    ctx.set_stereotype(QByteArray(stereotype_le->text()), is_rb->isChecked(), isnot_rb->isChecked());
     ctx.set_targets(artifact_cb->isChecked(), class_cb->isChecked(),
   		  operation_cb->isChecked(), attribute_cb->isChecked(), relation_cb->isChecked());
     ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(),
@@ -256,8 +256,8 @@ void Dialog::do_replace() {
   }
 }
 
-QCString Dialog::digest(const QString s) {
-  QCString c = (const char *) s;
+QByteArray Dialog::digest(const QString s) {
+  QByteArray c = (const char *) s;
   int index;
   
   index = 0;

@@ -31,15 +31,15 @@
 #include "PythonSettings.h"
 #include "util.h"
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   dir.read = FALSE;
 }
 
 static bool RootDirRead;
-static QCString RootDir;
+static QByteArray RootDir;
 
-QCString UmlPackage::file_path(const QCString & f) {
+QByteArray UmlPackage::file_path(const QByteArray & f) {
   if (!dir.read) {
     dir.file = pythonDir();
     
@@ -64,7 +64,7 @@ QCString UmlPackage::file_path(const QCString & f) {
       dir.file = d_root.filePath(dir.file);
    
     if (dir.file.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Python')</b></font><br>");
@@ -79,7 +79,7 @@ QCString UmlPackage::file_path(const QCString & f) {
   
   if (! d.exists()) {
     // create directory including the intermediates
-    QCString s = dir.file;
+    QByteArray s = dir.file;
     int index = 0;
     char sep = QDir::separator();
     
@@ -94,12 +94,12 @@ QCString UmlPackage::file_path(const QCString & f) {
     int index2;
     
     while ((index2 = s.find("/", index + 1)) != -1) {
-      QCString s2 = s.left(index2);
+      QByteArray s2 = s.left(index2);
       QDir sd(s2);
       
       if (!sd.exists()) {
 	if (!sd.mkdir(s2)) {
-	  UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
+	  UmlCom::trace(QByteArray("<font color=\"red\"><b> cannot create directory <i>")
 			+ s2 + "</i></b></font><br>");
 	  UmlCom::bye(n_errors() + 1);
 	  UmlCom::fatal_error("UmlPackage::file_path");
@@ -109,12 +109,12 @@ QCString UmlPackage::file_path(const QCString & f) {
     }
   }
   
-  return QCString(d.filePath(f)) + QCString(".") + 
+  return QByteArray(d.filePath(f)) + QByteArray(".") + 
     PythonSettings::sourceExtension();
 }
 
-QCString UmlPackage::text_path(const QCString & f) {
-  QCString r = file_path(f);
+QByteArray UmlPackage::text_path(const QByteArray & f) {
+  QByteArray r = file_path(f);
   
   return r.left(r.length() - 1 - PythonSettings::sourceExtension().length());
 }

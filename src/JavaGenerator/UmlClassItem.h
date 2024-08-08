@@ -26,26 +26,26 @@
 #ifndef UMLCLASSITEM_H
 #define UMLCLASSITEM_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClassItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlTypeSpec;
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n) {
     };
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent) = 0;
-    virtual void generate_enum_pattern_item(QTextOStream & f, int & current_value,
-					    const QCString & class_name, QCString indent) = 0;
-    virtual void generate_enum_pattern_case(QTextOStream & f, QCString indent) = 0;
-    virtual void generate_enum_item(QTextOStream & f, QCString indent, BooL & first);
-    virtual void generate_enum_member(QTextOStream & f, QCString indent) = 0;
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent) = 0;
+    virtual void generate_enum_pattern_item(QTextStream & f, int & current_value,
+					    const QByteArray & class_name, QByteArray indent) = 0;
+    virtual void generate_enum_pattern_case(QTextStream & f, QByteArray indent) = 0;
+    virtual void generate_enum_item(QTextStream & f, QByteArray indent, BooL & first);
+    virtual void generate_enum_member(QTextStream & f, QByteArray indent) = 0;
 };
 
 #endif

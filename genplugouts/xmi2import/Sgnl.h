@@ -18,13 +18,13 @@ class Signal {
 
     //the result is null if not find
     
-    static QCString get(QCString idref);
+    static QByteArray get(QByteArray idref);
 
-    static void add(FileIn & in, Token & token, QCString & name, QCString & idref);
+    static void add(FileIn & in, Token & token, QByteArray & name, QByteArray & idref);
 
 
   protected:
-    static QMap<QCString, QCString> All;
+    static QMap<QByteArray, QByteArray> All;
 
 };
 

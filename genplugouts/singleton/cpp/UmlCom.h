@@ -9,7 +9,7 @@
 #include "aRelationKind.h"
 #include <qcstring.h>
 
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qstring.h>
 
 class UmlItem;
@@ -122,7 +122,7 @@ class UmlCom {
     // reads the selected items when the tool is called
     // you MUST call it only one time after the connexion
     static void read_item_list(QVector<UmlItem> & v);
-    static void fatal_error(const QCString & msg);
+    static void fatal_error(const QByteArray & msg);
     static void flush();
 };
 

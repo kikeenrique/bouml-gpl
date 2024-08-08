@@ -5,7 +5,7 @@
 #include "aMessageKind.h"
 #include <qcstring.h>
 #include <qptrdict.h>
-#include <qptrvector.h>
+#include <qvector.h>
 #include "UmlMessage.h"
 
 class UmlFragmentCompartment;
@@ -36,7 +36,7 @@ class UmlBaseSequenceMessage : public UmlMessage {
     }
 
     // return the arguments of the operation, may be empty
-    const QCString & arguments() const {
+    const QByteArray & arguments() const {
         return _args;
     }
 
@@ -52,7 +52,7 @@ class UmlBaseSequenceMessage : public UmlMessage {
 
     int _received_at;
 
-    QCString _args;
+    QByteArray _args;
 
     // internal, don't call it
     void read_(const QPtrDict<UmlClassInstanceReference> & instances, const QVector<UmlFragment> & fragments);

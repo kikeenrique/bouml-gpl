@@ -1,7 +1,7 @@
 
 #include "UmlAccessVariableValueAction.h"
 
-void UmlAccessVariableValueAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlAccessVariableValueAction::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlActivityAction::html();
 
   if (variable() != 0){

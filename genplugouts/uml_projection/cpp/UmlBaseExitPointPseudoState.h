@@ -24,7 +24,7 @@ class UmlBaseExitPointPseudoState : public UmlPseudoState {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseExitPointPseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
+     UmlBaseExitPointPseudoState(void * id, const QByteArray & s) : UmlPseudoState(id, s) {
     }
 
 };

@@ -29,22 +29,22 @@
 #include "UmlBaseRelation.h"
 #include "UmlClass.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int & enum_item_rank);
-    virtual void generate_require_onces(QTextOStream & f, QCString & made);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, int & enum_item_rank);
+    virtual void generate_require_onces(QTextStream & f, QByteArray & made);
     
-    void generate_extends(const char *& sep, QTextOStream & f,
-			  const QCString & stereotype);
-    void generate_implements(const char *& sep, QTextOStream & f,
-			     const QCString & stereotype);
+    void generate_extends(const char *& sep, QTextStream & f,
+			  const QByteArray & stereotype);
+    void generate_implements(const char *& sep, QTextStream & f,
+			     const QByteArray & stereotype);
 };
 
 #endif

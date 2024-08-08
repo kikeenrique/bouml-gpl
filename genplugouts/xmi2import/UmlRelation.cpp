@@ -11,14 +11,14 @@ void UmlRelation::importAsAttribute(FileIn & in, Token & token, UmlItem * where)
     if ((where->stereotype() == "stereotype") &&
 	(token.valueOf("name").left(5) == "base_")) {
       if (! token.closed()) {
-	QCString k = token.what();
+	QByteArray k = token.what();
 	const char * kstr = k;
 	
 	while (in.read(), !token.close(kstr)) {
-	  QCString s = token.what();
+	  QByteArray s = token.what();
 	  
 	  if (s == "type") {
-	    QCString ext = token.valueOf("href");
+	    QByteArray ext = token.valueOf("href");
 	    
 	    if (! ext.isEmpty())
 	      ((UmlClass *) where)->extend(ext);
@@ -49,11 +49,11 @@ void UmlRelation::importIt(FileIn & in, Token & token, UmlItem *)
   Association & assoc = Association::get(token.xmiId(), token.valueOf("name"));
   
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
+      QByteArray s = token.what();
       
       if ((s == "ownedend") && 
 	  ((token.xmiType() == "uml:Property") ||

@@ -4,7 +4,7 @@
 #include "UmlItem.h"
 
 #include <qptrdict.h>
-#include <qptrstack.h>
+#include <qstack.h>
 #include "UmlPackage.h"
 #include "UmlOperation.h"
 #include "UmlFragmentCompartment.h"
@@ -32,7 +32,7 @@ void UmlSequenceMessage::write(FileOut & out, UmlItem * diagram, const QVector< 
 }
 
 void UmlSequenceMessage::write_fragment(FileOut & out, UmlItem * diagram, QList< UmlSequenceMessage > & msgs) {
-  msgs.removeRef(this);
+  msgs.removeOne(this);
   
 #define MSG  "MSG", itsrank
 #define SEND "MSGOCCSPECSEND", itsrank

@@ -105,8 +105,8 @@ void add_umlbaseparameter(UmlClass * uml_base_item, UmlClass * uml_item)
   old->deleteIt();
 
   UmlOperation * op;
-  QCString cpp_body;
-  QCString java_body;
+  QByteArray cpp_body;
+  QByteArray java_body;
   
   op = uml_parameter->get_operation("clone_it");
   cpp_body = op->cppBody();
@@ -133,7 +133,7 @@ void add_umlbaseparameter(UmlClass * uml_base_item, UmlClass * uml_item)
   rel = UmlBaseRelation::create(aGeneralisation, uml_parameter, uml_base_parameter);
 
   if (rel == 0) {
-    QCString msg = "UmlParameter can't inherit UmlBaseParameter<br>\n";
+    QByteArray msg = "UmlParameter can't inherit UmlBaseParameter<br>\n";
     
     UmlCom::trace("<b>" + msg + "</b>");
     throw 0;
@@ -197,8 +197,8 @@ void add_umlbasetypespec(UmlClass * uml_base_item, UmlClass * uml_item)
   old->deleteIt();
 
   UmlOperation * op;
-  QCString cpp_body;
-  QCString java_body;
+  QByteArray cpp_body;
+  QByteArray java_body;
   
   op = uml_typespec->get_operation("clone_it");
   cpp_body = op->cppBody();
@@ -232,7 +232,7 @@ void add_umlbasetypespec(UmlClass * uml_base_item, UmlClass * uml_item)
   rel = UmlBaseRelation::create(aGeneralisation, uml_typespec, uml_base_typespec);
 
   if (rel == 0) {
-    QCString msg = "UmlTypeSpec can't inherit UmlBaseTypeSpec<br>\n";
+    QByteArray msg = "UmlTypeSpec can't inherit UmlBaseTypeSpec<br>\n";
     
     UmlCom::trace("<b>" + msg + "</b>");
     throw 0;
@@ -286,7 +286,7 @@ void add_umlbaseview_umlview(UmlClass * base_item, UmlClass * user_item)
       UmlBaseRelation::create(aGeneralisation, bview, user_view);
     
     if (rel == 0) {
-      QCString msg = QCString(views[i]) + " can't inherit UmlView<br>\n";
+      QByteArray msg = QByteArray(views[i]) + " can't inherit UmlView<br>\n";
       
       UmlCom::trace("<b>" + msg + "</b>");
       throw 0;
@@ -297,7 +297,7 @@ void add_umlbaseview_umlview(UmlClass * base_item, UmlClass * user_item)
     rel->moveAfter(0);	// after old gene del
     
     UmlOperation * op = bview->get_operation(views[i]);
-    QCString s = op->cppDecl();
+    QByteArray s = op->cppDecl();
     
     op->set_CppDecl(s.replace(s.find(": UmlItem"), 9, ": UmlView"));
   }

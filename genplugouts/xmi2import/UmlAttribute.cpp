@@ -22,7 +22,7 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
     where = where->container(anAttribute, token, in);
     
     if (where != 0) {
-      QCString s = token.valueOf("name");
+      QByteArray s = token.valueOf("name");
       
       if (s.isEmpty()) {
 	static unsigned n = 0;
@@ -71,7 +71,7 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	att->set_isClassMember(TRUE);
 	  
       if (! token.closed()) {
-	QCString k = token.what();
+	QByteArray k = token.what();
 	const char * kstr = k;
 	
 	while (in.read(), !token.close(kstr)) {
@@ -112,7 +112,7 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
   }
 }
 
-void UmlAttribute::solve(QCString idref) {
+void UmlAttribute::solve(QByteArray idref) {
   UmlTypeSpec ts;
   
   if (getType(idref, ts))
@@ -122,11 +122,11 @@ void UmlAttribute::solve(QCString idref) {
 }
 
 void UmlAttribute::importMultiplicity(FileIn & in, Token & token, bool upper) {
-  QCString s = token.valueOf("value");
+  QByteArray s = token.valueOf("value");
   
   if (!s.isEmpty() && 
       (s != "Unspecified")) {	// VP
-    QCString m = multiplicity();
+    QByteArray m = multiplicity();
     
     if (m.isEmpty())
       m = s;

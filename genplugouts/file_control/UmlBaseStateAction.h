@@ -24,13 +24,13 @@ class UmlBaseStateAction : public UmlItem {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseStateAction(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseStateAction(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 
   public:
     // return the expression in OCL
-    const QCString & expression();
+    const QByteArray & expression();
 
     // set the expression in OCL
     //
@@ -39,7 +39,7 @@ class UmlBaseStateAction : public UmlItem {
 
 #ifdef WITHCPP
     // return the expression in C++
-    const QCString & cppExpression();
+    const QByteArray & cppExpression();
 
     // set the expression in C++
     //
@@ -49,7 +49,7 @@ class UmlBaseStateAction : public UmlItem {
 
 #ifdef WITHJAVA
     // return the expression in Java
-    const QCString & javaExpression();
+    const QByteArray & javaExpression();
 
     // set the expression in Java
     //
@@ -67,14 +67,14 @@ class UmlBaseStateAction : public UmlItem {
 
 
   private:
-    QCString _uml;
+    QByteArray _uml;
 
 #ifdef WITHCPP
-    QCString _cpp;
+    QByteArray _cpp;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java;
+    QByteArray _java;
 #endif
 
 

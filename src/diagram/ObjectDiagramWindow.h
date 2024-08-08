@@ -34,40 +34,39 @@ class QSpinBox;
 class ObjectDiagramView;
 class BrowserObjectDiagram;
 
-class ObjectDiagramWindow : public DiagramWindow
-{
-        Q_OBJECT
+class ObjectDiagramWindow : public DiagramWindow {
+  Q_OBJECT
+    
+  protected:
+    ObjectDiagramView * view;
+    QToolButton * addClass;
+    QToolButton * addClassInstance;
+    QToolButton * addPackage;
+    QToolButton * addFragment;
+    QToolButton * addLink;
+    QToolButton * note;
+    QToolButton * anchor;
+    QToolButton * text;
+    QToolButton * image;
+  
+  public:
+    ObjectDiagramWindow(const QString & s, BrowserObjectDiagram *, int id = -1);
+    ~ObjectDiagramWindow();
 
-    protected:
-        ObjectDiagramView * view;
-        QToolButton * addClass;
-        QToolButton * addClassInstance;
-        QToolButton * addPackage;
-        QToolButton * addFragment;
-        QToolButton * addLink;
-        QToolButton * note;
-        QToolButton * anchor;
-        QToolButton * text;
-        QToolButton * image;
+    virtual DiagramView * get_view() const;
+    
+    virtual void hit_button(UmlCode, QToolButton *);
 
-    public:
-        ObjectDiagramWindow (const QString & s, BrowserObjectDiagram *, int id = -1);
-        ~ObjectDiagramWindow();
-
-        virtual DiagramView * get_view() const;
-
-        virtual void hit_button (UmlCode, QToolButton *);
-
-    protected slots:
-        void hit_class();
-        void hit_classinstance();
-        void hit_package();
-        void hit_fragment();
-        void hit_link();
-        void hit_note();
-        void hit_anchor();
-        void hit_text();
-        void hit_image();
+  protected slots:
+    void hit_class();
+    void hit_classinstance();
+    void hit_package();
+    void hit_fragment();
+    void hit_link();
+    void hit_note();
+    void hit_anchor();
+    void hit_text();
+    void hit_image();
 };
 
 #endif

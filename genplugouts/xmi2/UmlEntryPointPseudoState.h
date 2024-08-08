@@ -10,7 +10,7 @@ class FileOut;
 class UmlEntryPointPseudoState : public UmlBaseEntryPointPseudoState {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlEntryPointPseudoState(void * id, const QCString & s) : UmlBaseEntryPointPseudoState(id, s) {
+     UmlEntryPointPseudoState(void * id, const QByteArray & s) : UmlBaseEntryPointPseudoState(id, s) {
     }
 
     virtual void write(FileOut & out);

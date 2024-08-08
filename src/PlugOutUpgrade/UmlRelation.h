@@ -11,7 +11,7 @@ class ActualParameter;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {};
     
     static UmlRelation * java2Php(UmlClass * php, UmlClass * java, const char * name);

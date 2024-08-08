@@ -9,7 +9,7 @@
 #include "PhpSettings.h"
 #include "PythonSettings.h"
 void UmlOperation::uml2cpp(bool) {
-  QCString st = CppSettings::classStereotype(parent()->stereotype());
+  QByteArray st = CppSettings::classStereotype(parent()->stereotype());
       
   if ((st == "enum") || (st == "typedef") || (st == "ignored")) {
     set_CppDecl("");
@@ -20,10 +20,10 @@ void UmlOperation::uml2cpp(bool) {
   if (getOf() || setOf())
     return;
     
-  QCString decl = CppSettings::operationDef();
-  QCString def = CppSettings::operationDef();
+  QByteArray decl = CppSettings::operationDef();
+  QByteArray def = CppSettings::operationDef();
   const QValueList<UmlParameter> p = params();
-  QCString sparams;
+  QByteArray sparams;
   
   if (!p.isEmpty()) {
     QValueList<UmlParameter>::ConstIterator it;
@@ -35,7 +35,7 @@ void UmlOperation::uml2cpp(bool) {
   }
 
   UmlTypeSpec t = returnType();
-  QCString returntypeform;
+  QByteArray returntypeform;
 
   if ((name() != parent()->name()) &&
       (name() != "~" + parent()->name())) {
@@ -51,7 +51,7 @@ void UmlOperation::uml2cpp(bool) {
       returntypeform = CppSettings::Return();
   }
     
-  QCString d;
+  QByteArray d;
   
   d = CppSettings::operationDecl();
   d.insert(d.find("${)}"), sparams);
@@ -77,7 +77,7 @@ void UmlOperation::uml2cpp(bool) {
 }
 
 void UmlOperation::uml2java(bool) {
-  QCString st = JavaSettings::classStereotype(parent()->stereotype());
+  QByteArray st = JavaSettings::classStereotype(parent()->stereotype());
       
   if ((st == "enum") || (st == "ignored")) {
     set_JavaDef("");
@@ -87,12 +87,12 @@ void UmlOperation::uml2java(bool) {
   if (getOf() || setOf())
     return;
     
-  QCString def = JavaSettings::operationDef();
+  QByteArray def = JavaSettings::operationDef();
   unsigned nparams = params().count();
   
   if (nparams != 0) {
     const char * sep = "";
-    QCString sparams;
+    QByteArray sparams;
     unsigned rank;
     
     for (rank = 0; rank != nparams; rank += 1) {
@@ -123,7 +123,7 @@ void UmlOperation::uml2java(bool) {
 }
 
 void UmlOperation::uml2idl(bool) {
-  QCString st = IdlSettings::classStereotype(parent()->stereotype());
+  QByteArray st = IdlSettings::classStereotype(parent()->stereotype());
       
   if ((st == "enum") || (st == "typedef") || (st == "ignored")) {
     set_IdlDecl("");
@@ -133,12 +133,12 @@ void UmlOperation::uml2idl(bool) {
   if (getOf() || setOf())
     return;
     
-  QCString def = IdlSettings::operationDecl();
+  QByteArray def = IdlSettings::operationDecl();
   unsigned nparams = params().count();
   
   if (nparams != 0) {
     const char * sep = "";
-    QCString sparams;
+    QByteArray sparams;
     unsigned rank;
     
     for (rank = 0; rank != nparams; rank += 1) {
@@ -164,7 +164,7 @@ void UmlOperation::uml2idl(bool) {
 }
 
 void UmlOperation::uml2php(bool) {
-  QCString st = PhpSettings::classStereotype(parent()->stereotype());
+  QByteArray st = PhpSettings::classStereotype(parent()->stereotype());
       
   if ((st == "enum") || (st == "ignored")) {
     set_PhpDef("");
@@ -174,7 +174,7 @@ void UmlOperation::uml2php(bool) {
   if (getOf() || setOf())
     return;
     
-  QCString def = PhpSettings::operationDef();
+  QByteArray def = PhpSettings::operationDef();
   
   if ((name() == parent()->name()) ||
       (name() == "__construct") ||
@@ -197,7 +197,7 @@ void UmlOperation::uml2php(bool) {
   
   if (nparams != 0) {
     const char * sep = "";
-    QCString sparams;
+    QByteArray sparams;
     unsigned rank;
     
     for (rank = 0; rank != nparams; rank += 1) {
@@ -223,7 +223,7 @@ void UmlOperation::uml2php(bool) {
 }
 
 void UmlOperation::uml2python(bool) {
-  QCString st = PythonSettings::classStereotype(parent()->stereotype());
+  QByteArray st = PythonSettings::classStereotype(parent()->stereotype());
       
   if ((st == "enum") || (st == "ignored")) {
     set_PythonDef("");
@@ -233,12 +233,12 @@ void UmlOperation::uml2python(bool) {
   if (getOf() || setOf())
     return;
     
-  QCString def = PythonSettings::operationDef();
+  QByteArray def = PythonSettings::operationDef();
   unsigned nparams = params().count();
   
   if (nparams != 0) {
     const char * sep = "";
-    QCString sparams;
+    QByteArray sparams;
     unsigned rank;
     
     for (rank = 0; rank != nparams; rank += 1) {

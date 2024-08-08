@@ -8,7 +8,7 @@
 class UmlBaseActivityControlNode : public UmlActivityNode {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivityControlNode(void * id, const QCString & s) : UmlActivityNode(id, s) {
+     UmlBaseActivityControlNode(void * id, const QByteArray & s) : UmlActivityNode(id, s) {
     }
 
 };

@@ -1,18 +1,18 @@
 
 #include "UmlExtraClassMember.h"
 
-QCString UmlExtraClassMember::sKind() {
+QByteArray UmlExtraClassMember::sKind() {
   return "extra class member";
 }
 
-void UmlExtraClassMember::html(QCString, unsigned int, unsigned int) {
+void UmlExtraClassMember::html(QByteArray, unsigned int, unsigned int) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Extra Class Member <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>");
 
-  QCString s;
+  QByteArray s;
   
   if (! cppDecl().isEmpty() || !javaDecl().isEmpty()) {
     fw.write("<p>Definition :</p><ul>");

@@ -48,14 +48,14 @@ class UmlArtifact : public UmlBaseArtifact {
     void generate_text();
 
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n), managed(FALSE), imports(0) {};
     
     virtual void generate();
     
-    void imported(const QCString & s);
-    bool is_imported(const QCString & s);
-    bool is_imported(QCString path, QCString class_name);
+    void imported(const QByteArray & s);
+    bool is_imported(const QByteArray & s);
+    bool is_imported(QByteArray path, QByteArray class_name);
     
     static UmlArtifact * generated_one();
     static UmlPackage * generation_package();

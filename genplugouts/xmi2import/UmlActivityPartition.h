@@ -17,7 +17,7 @@ class UmlActivityPartition : public UmlBaseActivityPartition, public UmlActivity
     virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //  call at end of import : try to solve represented element
-    virtual void solve(QCString idref);
+    virtual void solve(QByteArray idref);
 
     static void init();
 
@@ -25,7 +25,7 @@ class UmlActivityPartition : public UmlBaseActivityPartition, public UmlActivity
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityPartition(void * id, const QCString & s) : UmlBaseActivityPartition(id, s) {
+     UmlActivityPartition(void * id, const QByteArray & s) : UmlBaseActivityPartition(id, s) {
     }
 
 };

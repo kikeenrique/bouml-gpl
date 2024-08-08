@@ -4,7 +4,7 @@
 
 #include "UmlBaseFormalParameter.h"
 
-class QTextOStream;
+class QTextStream;
 
 // This class manages 'formal parameters' of a template class. For instance 'T' in 
 //
@@ -15,7 +15,7 @@ class UmlFormalParameter : public UmlBaseFormalParameter {
   public:
     UmlFormalParameter() {};
 
-    void generate(QTextOStream & f, QCString & s, const char *& sep) const;
+    void generate(QTextStream & f, QByteArray & s, const char *& sep) const;
 };
 
 #endif

@@ -47,7 +47,7 @@ class UmlBaseSendObjectAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseSendObjectAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseSendObjectAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 };
@@ -67,7 +67,7 @@ class UmlBaseUnmarshallAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseUnmarshallAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseUnmarshallAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 };
@@ -87,7 +87,7 @@ class UmlBaseSendSignalAction : public UmlOnSignalAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseSendSignalAction(void * id, const QCString & s) : UmlOnSignalAction(id, s) {
+     UmlBaseSendSignalAction(void * id, const QByteArray & s) : UmlOnSignalAction(id, s) {
     }
 
 };
@@ -107,7 +107,7 @@ class UmlBaseBroadcastSignalAction : public UmlOnSignalAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseBroadcastSignalAction(void * id, const QCString & s) : UmlOnSignalAction(id, s) {
+     UmlBaseBroadcastSignalAction(void * id, const QByteArray & s) : UmlOnSignalAction(id, s) {
     }
 
 };
@@ -127,13 +127,13 @@ class UmlBaseValueSpecificationAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseValueSpecificationAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseValueSpecificationAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the value
-    const QCString & value();
+    const QByteArray & value();
 
     // set the value
     //
@@ -142,7 +142,7 @@ class UmlBaseValueSpecificationAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the value in C++
-    const QCString & cppValue();
+    const QByteArray & cppValue();
 
     // set the value in C++
     //
@@ -152,7 +152,7 @@ class UmlBaseValueSpecificationAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the value in Java
-    const QCString & javaValue();
+    const QByteArray & javaValue();
 
     // set the value in Java
     //
@@ -170,14 +170,14 @@ class UmlBaseValueSpecificationAction : public UmlActivityAction {
 
 
   private:
-    QCString _value;
+    QByteArray _value;
 
 #ifdef WITHCPP
-    QCString _cpp_value;
+    QByteArray _cpp_value;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_value;
+    QByteArray _java_value;
 #endif
 
 
@@ -209,13 +209,13 @@ class UmlBaseOpaqueAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseOpaqueAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseOpaqueAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the behavior
-    const QCString & behavior();
+    const QByteArray & behavior();
 
     // set the behavior
     //
@@ -224,7 +224,7 @@ class UmlBaseOpaqueAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the behavior in C++
-    const QCString & cppBehavior();
+    const QByteArray & cppBehavior();
 
     // set the behavior in C++
     //
@@ -234,7 +234,7 @@ class UmlBaseOpaqueAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the behavior in Java
-    const QCString & javaBehavior();
+    const QByteArray & javaBehavior();
 
     // set the behavior in Java
     //
@@ -252,14 +252,14 @@ class UmlBaseOpaqueAction : public UmlActivityAction {
 
 
   private:
-    QCString _behavior;
+    QByteArray _behavior;
 
 #ifdef WITHCPP
-    QCString _cpp_behavior;
+    QByteArray _cpp_behavior;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_behavior;
+    QByteArray _java_behavior;
 #endif
 
 
@@ -291,7 +291,7 @@ class UmlBaseAcceptEventAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseAcceptEventAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseAcceptEventAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
@@ -313,7 +313,7 @@ class UmlBaseAcceptEventAction : public UmlActivityAction {
     bool set_isTimeEvent(bool v);
 
     // return the trigger
-    const QCString & trigger();
+    const QByteArray & trigger();
 
     // set the trigger
     //
@@ -322,7 +322,7 @@ class UmlBaseAcceptEventAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the trigger in C++
-    const QCString & cppTrigger();
+    const QByteArray & cppTrigger();
 
     // set the trigger in C++
     //
@@ -332,7 +332,7 @@ class UmlBaseAcceptEventAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the trigger in Java
-    const QCString & javaTrigger();
+    const QByteArray & javaTrigger();
 
     // set the trigger in Java
     //
@@ -354,14 +354,14 @@ class UmlBaseAcceptEventAction : public UmlActivityAction {
 
     bool _timeevent;
 
-    QCString _trigger;
+    QByteArray _trigger;
 
 #ifdef WITHCPP
-    QCString _cpp_trigger;
+    QByteArray _cpp_trigger;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_trigger;
+    QByteArray _java_trigger;
 #endif
 
 
@@ -393,7 +393,7 @@ class UmlBaseCallOperationAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseCallOperationAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseCallOperationAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
@@ -441,7 +441,7 @@ class UmlBaseCallBehaviorAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseCallBehaviorAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseCallBehaviorAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
@@ -489,7 +489,7 @@ class UmlBaseClearVariableValueAction : public UmlAccessVariableValueAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseClearVariableValueAction(void * id, const QCString & s) : UmlAccessVariableValueAction(id, s) {
+     UmlBaseClearVariableValueAction(void * id, const QByteArray & s) : UmlAccessVariableValueAction(id, s) {
     }
 
 };
@@ -509,7 +509,7 @@ class UmlBaseReadVariableValueAction : public UmlAccessVariableValueAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseReadVariableValueAction(void * id, const QCString & s) : UmlAccessVariableValueAction(id, s) {
+     UmlBaseReadVariableValueAction(void * id, const QByteArray & s) : UmlAccessVariableValueAction(id, s) {
     }
 
 };
@@ -529,7 +529,7 @@ class UmlBaseWriteVariableValueAction : public UmlAccessVariableValueAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseWriteVariableValueAction(void * id, const QCString & s) : UmlAccessVariableValueAction(id, s) {
+     UmlBaseWriteVariableValueAction(void * id, const QByteArray & s) : UmlAccessVariableValueAction(id, s) {
     }
 
 };
@@ -549,7 +549,7 @@ class UmlBaseAddVariableValueAction : public UmlAccessVariableValueAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseAddVariableValueAction(void * id, const QCString & s) : UmlAccessVariableValueAction(id, s) {
+     UmlBaseAddVariableValueAction(void * id, const QByteArray & s) : UmlAccessVariableValueAction(id, s) {
     }
 
 
@@ -587,7 +587,7 @@ class UmlBaseRemoveVariableValueAction : public UmlAccessVariableValueAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseRemoveVariableValueAction(void * id, const QCString & s) : UmlAccessVariableValueAction(id, s) {
+     UmlBaseRemoveVariableValueAction(void * id, const QByteArray & s) : UmlAccessVariableValueAction(id, s) {
     }
 
 
@@ -625,13 +625,13 @@ class UmlBaseAcceptCallAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseAcceptCallAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseAcceptCallAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the trigger
-    const QCString & trigger();
+    const QByteArray & trigger();
 
     // set the trigger
     //
@@ -640,7 +640,7 @@ class UmlBaseAcceptCallAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the trigger in C++
-    const QCString & cppTrigger();
+    const QByteArray & cppTrigger();
 
     // set the trigger in C++
     //
@@ -650,7 +650,7 @@ class UmlBaseAcceptCallAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the trigger in Java
-    const QCString & javaTrigger();
+    const QByteArray & javaTrigger();
 
     // set the trigger in Java
     //
@@ -668,14 +668,14 @@ class UmlBaseAcceptCallAction : public UmlActivityAction {
 
 
   private:
-    QCString _trigger;
+    QByteArray _trigger;
 
 #ifdef WITHCPP
-    QCString _cpp_trigger;
+    QByteArray _cpp_trigger;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_trigger;
+    QByteArray _java_trigger;
 #endif
 
 
@@ -707,13 +707,13 @@ class UmlBaseReplyAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseReplyAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseReplyAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the replyToCall trigger
-    const QCString & replyToCall();
+    const QByteArray & replyToCall();
 
     // set the replyToCall trigger
     //
@@ -722,7 +722,7 @@ class UmlBaseReplyAction : public UmlActivityAction {
 
 #ifdef WITHCPP
     // return the replyToCall trigger in C++
-    const QCString & cppReplyToCall();
+    const QByteArray & cppReplyToCall();
 
     // set the replyToCall trigger in C++
     //
@@ -732,7 +732,7 @@ class UmlBaseReplyAction : public UmlActivityAction {
 
 #ifdef WITHJAVA
     // return the replyToCall trigger in Java
-    const QCString & javaReplyToCall();
+    const QByteArray & javaReplyToCall();
 
     // set the replyToCall trigger in Java
     //
@@ -750,14 +750,14 @@ class UmlBaseReplyAction : public UmlActivityAction {
 
 
   private:
-    QCString _trigger;
+    QByteArray _trigger;
 
 #ifdef WITHCPP
-    QCString _cpp_trigger;
+    QByteArray _cpp_trigger;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_trigger;
+    QByteArray _java_trigger;
 #endif
 
 
@@ -789,13 +789,13 @@ class UmlBaseCreateObjectAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseCreateObjectAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseCreateObjectAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
   public:
     // return the classifier
-    const QCString & classifier();
+    const QByteArray & classifier();
 
     // set the classifier
     //
@@ -812,7 +812,7 @@ class UmlBaseCreateObjectAction : public UmlActivityAction {
 
 
   private:
-    QCString _classifier;
+    QByteArray _classifier;
 
 
   protected:
@@ -835,7 +835,7 @@ class UmlBaseDestroyObjectAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseDestroyObjectAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseDestroyObjectAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 
@@ -883,7 +883,7 @@ class UmlBaseTestIdentityAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseTestIdentityAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseTestIdentityAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 };
@@ -903,7 +903,7 @@ class UmlBaseRaiseExceptionAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseRaiseExceptionAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseRaiseExceptionAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 };
@@ -923,7 +923,7 @@ class UmlBaseReduceAction : public UmlActivityAction {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseReduceAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+     UmlBaseReduceAction(void * id, const QByteArray & s) : UmlActivityAction(id, s) {
     }
 
 

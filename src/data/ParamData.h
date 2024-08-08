@@ -26,46 +26,37 @@
 #ifndef PARAMDATA_H
 #define PARAMDATA_H
 
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 #include "UmlEnum.h"
 #include "AType.h"
 
-class ParamData
-{
-    protected:
-        MyStr name;
-        UmlParamDirection dir;
-        AType type;
-        MyStr default_value;
+class ParamData {
+  protected:
+    MyStr name;
+    UmlParamDirection dir;
+    AType type;
+    MyStr default_value;
 
-    public:
-        ParamData();
+  public:
+    ParamData();
+  
+    void set_name(const char *);
+    const char * get_name() const { return name; };
+    UmlParamDirection get_dir() const { return dir; };
+    void set_dir(UmlParamDirection d);
+    const AType & get_type() const { return type; };
+    void set_type(const AType & t);
+    const char * get_default_value() const { return default_value; };
+    void set_default_value(const char * s);
 
-        void set_name (const char *);
-        const char * get_name() const {
-            return name;
-        };
-        UmlParamDirection get_dir() const {
-            return dir;
-        };
-        void set_dir (UmlParamDirection d);
-        const AType & get_type() const {
-            return type;
-        };
-        void set_type (const AType & t);
-        const char * get_default_value() const {
-            return default_value;
-        };
-        void set_default_value (const char * s);
-
-        QString definition (bool withdir, bool withname,
-                            ShowContextMode mode = noContext) const;
-
-        void send_uml_def (ToolCom * com);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * &, char * &);
+    QString definition(bool withdir, bool withname,
+		       ShowContextMode mode = noContext) const;
+    
+    void send_uml_def(ToolCom * com);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * &, char * &);
 };
 
 #endif

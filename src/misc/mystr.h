@@ -26,164 +26,132 @@
 #ifndef MY_STR_H
 #define MY_STR_H
 
-// I consider that QString and QCString are too memory expensive
+// I consider that QString and QByteArray are too memory expensive
 
-#include <qstrlist.h>
+#include <q3strlist.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <QStringList>
 
-class SharedStr
-{
-    public:
-        SharedStr() {
-            p = Empty;
-        };
-        SharedStr (const SharedStr & s) {
-            p = s.p;
-        };
-        bool isEmpty() const {
-            return *p == 0;
-        };
-        unsigned int length() const;
-        int find (const char *, int index = 0) const;
-        int find (int c, int index = 0) const;
+class SharedStr {
+  public:
+    SharedStr() { p = Empty; };
+    SharedStr(const SharedStr & s) { p = s.p; };
+    bool isEmpty() const { return *p == 0; };
+    unsigned int length() const;
+    int find(const char *, int index = 0) const;
+    int find(int c, int index = 0) const;
 
-        SharedStr & operator= (const SharedStr & s) {
-            p = s.p;
-            return *this;
-        };
-        SharedStr & operator= (const char *);
-        SharedStr & operator= (const QString &);
-        SharedStr & operator= (const QCString &);
-        operator const char *() const {
-            return p;
-        };
-        operator QString() const {
-            return p;
-        };
-        operator QCString() const {
-            return p;
-        };
+    SharedStr & operator=(const SharedStr & s) { p = s.p; return *this; };
+    SharedStr & operator=(const char *);
+    SharedStr & operator=(const QString &);
+//     SharedStr & operator=(const Q3CString &);
+    operator const char *() const { return p; };
+    operator QString() const { return p; };
+//     operator Q3CString() const { return p; };
 
-        //static void statistics();
+    //static void statistics();
 
-    protected:
-        char * p;
-        static char Empty[1];
+  protected:
+    char * p;
+    static char Empty[1];
 #define SHAREDDICTSIZE 128
-        static QStrList shared[SHAREDDICTSIZE];
+    static QStringList shared[SHAREDDICTSIZE];
 
-        char * assign (const char *, int len);
+    char * assign(const char *, int len);
 };
 
-bool operator== (const SharedStr & s1, const SharedStr & s2);
-bool operator== (const SharedStr & s1, const char * s2);
-bool operator== (const char * s1, const SharedStr & s2);
-bool operator== (const SharedStr & s1, const QString & s2);
-bool operator== (const QString & s1, const SharedStr & s2);
+bool operator==(const SharedStr & s1, const SharedStr & s2);
+bool operator==(const SharedStr & s1, const char * s2);
+bool operator==(const char * s1, const SharedStr & s2);
+bool operator==(const SharedStr & s1, const QString & s2);
+bool operator==(const QString & s1, const SharedStr & s2);
 
-bool operator!= (const SharedStr & s1, const SharedStr & s2);
-bool operator!= (const SharedStr & s1, const char * s2);
-bool operator!= (const char * s1, const SharedStr & s2);
-bool operator!= (const SharedStr & s1, const QString & s2);
-bool operator!= (const QString & s1, const SharedStr & s2);
+bool operator!=(const SharedStr & s1, const SharedStr & s2);
+bool operator!=(const SharedStr & s1, const char * s2);
+bool operator!=(const char * s1, const SharedStr & s2);
+bool operator!=(const SharedStr & s1, const QString & s2);
+bool operator!=(const QString & s1, const SharedStr & s2);
 
 // may be shared
 
-class MayBeSharedStr : public SharedStr
-{
-    private:
-        MayBeSharedStr & operator= (const MayBeSharedStr &) {
-            // must not be used, use assign operation
-            extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
-            return illegal_MayBeSharedStr_usage();
-        };
-        MayBeSharedStr & operator= (const char *) {
-            // must not be used, use assign operation
-            extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
-            return illegal_MayBeSharedStr_usage();
-        };
-        MayBeSharedStr & operator= (const QString &) {
-            // must not be used, use assign operation
-            extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
-            return illegal_MayBeSharedStr_usage();
-        };
-        MayBeSharedStr & operator= (const QCString &) {
-            // must not be used, use assign operation
-            extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
-            return illegal_MayBeSharedStr_usage();
-        };
+class MayBeSharedStr : public SharedStr {
+  private:
+    MayBeSharedStr & operator=(const MayBeSharedStr &) {
+      // must not be used, use assign operation
+      extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
+      return illegal_MayBeSharedStr_usage();
+    };
+    MayBeSharedStr & operator=(const char *) {
+      // must not be used, use assign operation
+      extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
+      return illegal_MayBeSharedStr_usage();
+    };
+    MayBeSharedStr & operator=(const QString &) {
+      // must not be used, use assign operation
+      extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
+      return illegal_MayBeSharedStr_usage();
+    };
+//     MayBeSharedStr & operator=(const Q3CString &) {
+//       // must not be used, use assign operation
+//       extern MayBeSharedStr & illegal_MayBeSharedStr_usage();
+//       return illegal_MayBeSharedStr_usage();
+//     };
 
-    public:
-        MayBeSharedStr() : SharedStr() {};
-        MayBeSharedStr (const MayBeSharedStr &);
-        ~MayBeSharedStr();
-        operator const char *() const {
-            return p;
-        };
-        operator QString() const {
-            return p;
-        };
-        operator QCString() const {
-            return p;
-        };
+  public:
+    MayBeSharedStr() : SharedStr() {};
+    MayBeSharedStr(const MayBeSharedStr &);
+    ~MayBeSharedStr();
+    operator const char *() const { return p; };
+    operator QString() const { return p; };
+//     operator Q3CString() const { return p; };
 
-        char * assign (const char *, bool share);
-        char * assign (const QString &, bool share);
-        char * assign (const QCString &, bool share);
+    char * assign(const char *, bool share);
+    char * assign(const QString &, bool share);
+//     char * assign(const Q3CString &, bool share);
 
-    protected:
-        char * assign (const char * s, int len, bool share);
+  protected:
+    char * assign(const char * s, int len, bool share);
 };
 
 // never shared
 
-class MyStr
-{
-    public:
-        MyStr() {
-            p = 0;
-        };
-        MyStr (const MyStr &);
-        MyStr (const QString &);
-        MyStr (const char *);
-        ~MyStr();
-        MyStr & operator= (const MyStr &);
-        MyStr & operator= (const char *);
-        MyStr & operator= (const QString &);
-        MyStr & operator= (const QCString &);
-        operator const char *() const {
-            return (p != 0) ? p : "";
-        };
-        operator QString() const {
-            return p;
-        };
-        operator QCString() const {
-            return p;
-        };
-        bool isEmpty() const {
-            return p == 0;
-        };
-        unsigned int length() const;
+class MyStr {
+  public:
+    MyStr() { p = 0; };
+    MyStr(const MyStr &);
+    MyStr(const QString &);
+    MyStr(const char *);
+    ~MyStr();
+    MyStr & operator=(const MyStr &);
+    MyStr & operator=(const char *);
+    MyStr & operator=(const QString &);
+//     MyStr & operator=(const Q3CString &);
+    operator const char *() const { return (p != 0) ? p : ""; };
+    operator QString() const { return p; };
+//     operator Q3CString() const { return p; };
+    bool isEmpty() const { return p == 0; };
+    unsigned int length() const;
 
-    protected:
-        char * p;
+  protected:
+    char * p;
 
-        void assign (const char *, int len);
+    void assign(const char *, int len);
 };
 
-bool operator== (const MyStr & s1, const char * s2);
-bool operator== (const char * s1, const MyStr & s2);
-bool operator== (const MyStr & s1, const QString & s2);
-bool operator== (const QString & s1, const MyStr & s2);
+bool operator==(const MyStr & s1, const char * s2);
+bool operator==(const char * s1, const MyStr & s2);
+bool operator==(const MyStr & s1, const QString & s2);
+bool operator==(const QString & s1, const MyStr & s2);
 
-bool operator!= (const MyStr & s1, const char * s2);
-bool operator!= (const char * s1, const MyStr & s2);
-bool operator!= (const MyStr & s1, const QString & s2);
-bool operator!= (const QString & s1, const MyStr & s2);
+bool operator!=(const MyStr & s1, const char * s2);
+bool operator!=(const char * s1, const MyStr & s2);
+bool operator!=(const MyStr & s1, const QString & s2);
+bool operator!=(const QString & s1, const MyStr & s2);
 
-QString operator+ (const MyStr & s1, const char * s2);
-QString operator+ (const char * s1, const MyStr & s2);
-QString operator+ (const MyStr & s1, const QString & s2);
-QString operator+ (const QString & s1, const MyStr & s2);
+QString operator+(const MyStr & s1, const char * s2);
+QString operator+(const char * s1, const MyStr & s2);
+QString operator+(const MyStr & s1, const QString & s2);
+QString operator+(const QString & s1, const MyStr & s2);
 
 #endif

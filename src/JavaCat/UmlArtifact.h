@@ -41,7 +41,7 @@ class UmlArtifact : public UmlBaseArtifact {
     static bool has_roundtrip_expected;
 #endif
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n)
 #ifdef ROUNDTRIP
 	, roundtrip_expected(FALSE), useless(FALSE), fully_updated(FALSE)

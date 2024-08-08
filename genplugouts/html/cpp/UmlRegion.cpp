@@ -1,11 +1,11 @@
 
 #include "UmlRegion.h"
 
-QCString UmlRegion::sKind() {
+QByteArray UmlRegion::sKind() {
   return "region";
 }
 
-void UmlRegion::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlRegion::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   UmlItem::html(pfix, rank, "State region", level, "stateregion");
 
   unload(FALSE, FALSE);

@@ -36,11 +36,11 @@
 
 class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
-    UmlExtraClassMember(void * id, const QCString & n)
+    UmlExtraClassMember(void * id, const QByteArray & n)
       : UmlBaseExtraClassMember(id, n) {};
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int &);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, int &);
 };
 
 #endif

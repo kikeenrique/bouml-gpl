@@ -25,7 +25,7 @@ class UmlBaseUseCaseView : public UmlView {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCaseView(void * id, const QCString & n) : UmlView(id, n) {};
+    UmlBaseUseCaseView(void * id, const QByteArray & n) : UmlView(id, n) {};
 
 };
 

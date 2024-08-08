@@ -13,7 +13,7 @@
 class UmlObjectDiagram : public UmlBaseObjectDiagram {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlObjectDiagram(void * id, const QCString & s) : UmlBaseObjectDiagram(id, s) {
+     UmlObjectDiagram(void * id, const QByteArray & s) : UmlBaseObjectDiagram(id, s) {
     }
 
 };

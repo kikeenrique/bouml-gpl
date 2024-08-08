@@ -8,9 +8,9 @@ UmlRelation * UmlRelation::java2Php(UmlClass * php, UmlClass * java,
   UmlRelation * from = java->get_relation(name);
   
   if (from == 0) {
-    QCString err = QCString("cannot find relation '") + 
-      name + QCString("' in class '") + java->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot find relation '") + 
+      name + QByteArray("' in class '") + java->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }
@@ -19,9 +19,9 @@ UmlRelation * UmlRelation::java2Php(UmlClass * php, UmlClass * java,
     UmlBaseRelation::create(from->relationKind(), php, from->roleType());
   
   if (to == 0) {
-    QCString err = QCString("cannot create relation '") + 
-      name + QCString("' in class '") + php->name()
-	+ QCString("'<br>\n");
+    QByteArray err = QByteArray("cannot create relation '") + 
+      name + QByteArray("' in class '") + php->name()
+	+ QByteArray("'<br>\n");
     UmlCom::trace(err);
     throw 0;
   }

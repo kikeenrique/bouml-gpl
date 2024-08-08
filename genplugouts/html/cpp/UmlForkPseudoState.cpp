@@ -1,7 +1,7 @@
 
 #include "UmlForkPseudoState.h"
 
-QCString UmlForkPseudoState::sKind() {
+QByteArray UmlForkPseudoState::sKind() {
   return "fork pseudo state";
 }
 

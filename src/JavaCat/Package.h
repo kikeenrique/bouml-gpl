@@ -28,7 +28,7 @@
 
 #include <qdict.h>
 #include <qstringlist.h> 
-#include <qptrstack.h>
+#include <qstack.h>
 
 #include "Class.h"
 #include "UmlClass.h"
@@ -61,14 +61,14 @@ class Package : public BrowserNode, public ClassContainer {
     virtual Class * localy_defined(QString name) const;
     void own(UmlArtifact *);
     void reverse(UmlArtifact *);
-    void reverse_file(QCString f, UmlArtifact * art = 0);
+    void reverse_file(QByteArray f, UmlArtifact * art = 0);
 #else
-    void reverse_file(QCString f);    
+    void reverse_file(QByteArray f);    
 #endif
   
     virtual bool isa_package() const;
 
-    const QCString & get_path() { return path; }
+    const QByteArray & get_path() { return path; }
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifdef REVERSE
     void send_dir(int n);
@@ -79,12 +79,12 @@ class Package : public BrowserNode, public ClassContainer {
     
     void new_class(Class *);
     
-    virtual void compute_type(QCString type, UmlTypeSpec & typespec,
+    virtual void compute_type(QByteArray type, UmlTypeSpec & typespec,
 			      const QValueList<FormalParameterList> & tmplts,
 			      Class ** need_object = 0);
-    virtual Class * define(const QCString & name, char st);
-    virtual void declare(const QCString &, Class *);
-    void force_class(QCString name, UmlTypeSpec & typespec, Class ** need_object);
+    virtual Class * define(const QByteArray & name, char st);
+    virtual void declare(const QByteArray &, Class *);
+    void force_class(QByteArray name, UmlTypeSpec & typespec, Class ** need_object);
     
 #ifndef REVERSE
     virtual QString get_path() const;
@@ -116,8 +116,8 @@ class Package : public BrowserNode, public ClassContainer {
     
   private:
     UmlPackage * uml;
-    QCString package;		// java package may be with '.'
-    QCString path;
+    QByteArray package;		// java package may be with '.'
+    QByteArray path;
     QDict<Class> Undefined;
 #ifdef ROUNDTRIP
     QDict<UmlArtifact> roundtriped;
@@ -145,18 +145,18 @@ class Package : public BrowserNode, public ClassContainer {
     static int file_number(QDir & dir, bool rec);
     
     static void manage_import();
-    void reverse_toplevel_form(QCString s);
+    void reverse_toplevel_form(QByteArray s);
     void reverse_directory(QDir & dir, bool rec);
     
-    void set_package(QCString s);
-    Package * find(QCString s, bool nohack);
+    void set_package(QByteArray s);
+    Package * find(QByteArray s, bool nohack);
     static Package * package_unknown();
     
-    static void update_package_list(QCString name);
-    static void update_class_list(QCString pack, UmlItem * container);
+    static void update_package_list(QByteArray name);
+    static void update_class_list(QByteArray pack, UmlItem * container);
     
-    Class * declare_if_needed(QCString name, char st);
-    Class * new_class(const QCString & name, char st);
+    Class * declare_if_needed(QByteArray name, char st);
+    Class * new_class(const QByteArray & name, char st);
 
 #ifdef ROUNDTRIP
     int count_file_number();

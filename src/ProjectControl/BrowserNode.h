@@ -64,9 +64,9 @@ class BrowserNode : public QListViewItem {
 
 // a sortable list of BrowserNode
 
-#include <qptrlist.h>
+#include <qlist.h>
 
-class BrowserNodeList : public QList<BrowserNode> {
+class BrowserNodeList : public QList<BrowserNode *> {
   public:
     void search(BrowserNode * bn, const QString & s, bool cs);
     virtual int compareItems(QCollection::Item item1, QCollection::Item item2);

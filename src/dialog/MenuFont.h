@@ -27,22 +27,21 @@
 #define MENUFONT_H
 
 #include <qmenudata.h>
-
+#include <QMenuItem>
 #include "UmlEnum.h"
 
-class MenuFont : public QCustomMenuItem
-{
-    protected:
-        QString str;
-        QFont font;
+class MenuFont : public QMenuItem {
+  protected:
+    QString str;
+    QFont font;
 
-    public:
-        MenuFont (const QString & s, QFont f);
-        virtual ~MenuFont() {};
+  public:
+    MenuFont(const QString & s, QFont f);
+    virtual ~MenuFont(){};
 
-        virtual void paint (QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
-                            bool /*enabled*/, int x, int y, int w, int h);
-        virtual QSize sizeHint();
+    virtual void paint(QPainter * p, const QColorGroup & /*cg*/, bool /*act*/,
+		       bool /*enabled*/, int x, int y, int w, int h);
+    virtual QSize sizeHint();
 };
 
 #endif

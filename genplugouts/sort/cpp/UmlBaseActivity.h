@@ -25,13 +25,13 @@ class UmlBaseActivity : public UmlItem {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivity(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseActivity(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 
   public:
     // return the pre condition
-    const QCString & preCondition();
+    const QByteArray & preCondition();
 
     // set the pre condition
     //
@@ -39,7 +39,7 @@ class UmlBaseActivity : public UmlItem {
     bool set_PreCondition(const char * v);
 
     // return the post condition
-    const QCString & postCondition();
+    const QByteArray & postCondition();
 
     // set the post condition
     //
@@ -48,7 +48,7 @@ class UmlBaseActivity : public UmlItem {
 
 #ifdef WITHCPP
     // return the pre condition in C++
-    const QCString & cppPreCondition();
+    const QByteArray & cppPreCondition();
 
     // set the pre condition in C++
     //
@@ -56,7 +56,7 @@ class UmlBaseActivity : public UmlItem {
     bool set_CppPreCondition(const char * v);
 
     // return the post condition in C++
-    const QCString & cppPostCondition();
+    const QByteArray & cppPostCondition();
 
     // set the post condition in C++
     //
@@ -66,7 +66,7 @@ class UmlBaseActivity : public UmlItem {
 
 #ifdef WITHJAVA
     // return the pre condition in Java
-    const QCString & javaPreCondition();
+    const QByteArray & javaPreCondition();
 
     // set the pre condition in Java
     //
@@ -74,7 +74,7 @@ class UmlBaseActivity : public UmlItem {
     bool set_JavaPreCondition(const char * v);
 
     // return the post condition in Java
-    const QCString & javaPostCondition();
+    const QByteArray & javaPostCondition();
 
     // set the post condition in Java
     //
@@ -116,20 +116,20 @@ class UmlBaseActivity : public UmlItem {
 
 
   private:
-    QCString _pre_condition;
+    QByteArray _pre_condition;
 
-    QCString _post_condition;
+    QByteArray _post_condition;
 
 #ifdef WITHCPP
-    QCString _cpp_pre_condition;
+    QByteArray _cpp_pre_condition;
 
-    QCString _cpp_post_condition;
+    QByteArray _cpp_post_condition;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_pre_condition;
+    QByteArray _java_pre_condition;
 
-    QCString _java_post_condition;
+    QByteArray _java_post_condition;
 #endif
 
     bool _read_only;

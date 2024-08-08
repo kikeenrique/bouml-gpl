@@ -10,7 +10,7 @@
 class UmlState : public UmlBaseState, public UmlStateItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlState(void * id, const QCString & s)
+     UmlState(void * id, const QByteArray & s)
        : UmlBaseState(id, s), _has_initial(FALSE), _has_completion(FALSE), _class(0) {
     }
 
@@ -26,15 +26,15 @@ class UmlState : public UmlBaseState, public UmlStateItem {
 
     //  the path to the instance of the class managing the state
     
-    QCString path() const;
+    QByteArray path() const;
 
     //  the path of the state to be produced in debug trace
-    QCString prettyPath() const;
+    QByteArray prettyPath() const;
 
     bool inside(UmlState * other);
 
     //  perform initializations before generation
-    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
+    virtual void init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState * state);
 
     //  to indicate that the state has a completion
     
@@ -63,11 +63,11 @@ class UmlState : public UmlBaseState, public UmlStateItem {
 
     //  the path from the machine up to the class instance associated
     //  to the state.
-    QCString _path;
+    QByteArray _path;
 
     //  the path from the machine up to the class instance associated
     //  to the state.
-    QCString _pretty_path;
+    QByteArray _pretty_path;
 
 };
 
@@ -75,11 +75,11 @@ inline UmlClass * UmlState::assocClass() const {
   return _class;
 }
 
-inline QCString UmlState::path() const {
+inline QByteArray UmlState::path() const {
   return _path;
 }
 
-inline QCString UmlState::prettyPath() const {
+inline QByteArray UmlState::prettyPath() const {
   return _pretty_path;
 }
 

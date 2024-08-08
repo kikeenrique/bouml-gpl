@@ -46,7 +46,7 @@ class UmlArtifact : public UmlBaseArtifact {
     static UmlArtifact * main_art;
 #endif
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n)
 #ifdef ROUNDTRIP
 	, h_scanned(FALSE), src_scanned(FALSE),

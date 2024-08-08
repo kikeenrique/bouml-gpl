@@ -12,7 +12,7 @@ class UmlItem;
 class UmlActivityPin : public UmlBaseActivityPin {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityPin(void * id, const QCString & s) : UmlBaseActivityPin(id, s) {
+     UmlActivityPin(void * id, const QByteArray & s) : UmlBaseActivityPin(id, s) {
     }
 
     static void init();

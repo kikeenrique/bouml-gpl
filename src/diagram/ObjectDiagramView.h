@@ -27,30 +27,34 @@
 #define OBJECTDIAGRAMVIEW_H
 
 #include "DiagramView.h"
+//Added by qt3to4:
+#include <QTextStream>
+#include <QMouseEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 
 class ObjectDiagramWindow;
 class DiagramItem;
 class UmlCanvas;
 class OperationData;
 
-class ObjectDiagramView : public DiagramView
-{
-    public:
-        ObjectDiagramView (QWidget * parent, UmlCanvas * canvas, int is);
+class ObjectDiagramView : public DiagramView {
+  public:
+    ObjectDiagramView(QWidget * parent, UmlCanvas * canvas, int is);
 
-        virtual void menu (const QPoint&);
-        virtual void read (char *, char * k);
-        virtual void save (QTextStream & st, QString & warning, bool copy) const;
-
-    private:
-        ObjectDiagramWindow * window() const {
-            return (ObjectDiagramWindow *) parent();
-        };
-
-    protected:
-        virtual void contentsMousePressEvent (QMouseEvent *);
-        virtual void dragEnterEvent (QDragEnterEvent *);
-        virtual void dropEvent (QDropEvent *);
+    virtual void menu(const QPoint&);
+    virtual void read(char *, char * k);
+    virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+  private:
+    ObjectDiagramWindow * window() const {
+      return (ObjectDiagramWindow *) parent();
+    };
+  
+  protected:
+    virtual void contentsMousePressEvent(QMouseEvent *);
+    virtual void dragEnterEvent(QDragEnterEvent *);
+    virtual void dropEvent(QDropEvent *);
 };
 
 #endif

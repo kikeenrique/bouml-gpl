@@ -4,7 +4,7 @@
 
 #include "UmlBaseComponentView.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class FileOut;
 class UmlItem;
@@ -14,7 +14,7 @@ class UmlItem;
 // You can modify it as you want (except the constructor)
 class UmlComponentView : public UmlBaseComponentView {
   public:
-    UmlComponentView(void * id, const QCString & n) : UmlBaseComponentView(id, n) {};
+    UmlComponentView(void * id, const QByteArray & n) : UmlBaseComponentView(id, n) {};
 
     virtual void write(FileOut & out);
 

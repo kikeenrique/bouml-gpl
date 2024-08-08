@@ -6,7 +6,7 @@
 #include "UmlCom.h"
 #include "UmlRelation.h"
 #include "UmlClass.h"
-void Role::setMultiplicity(QCString v, bool upper, const char * dflt) {
+void Role::setMultiplicity(QByteArray v, bool upper, const char * dflt) {
   if (v.isEmpty())
     v = dflt;
     
@@ -24,7 +24,7 @@ void Role::setMultiplicity(QCString v, bool upper, const char * dflt) {
 }
 
 void Association::import(FileIn & in, Token & token) {
-  QCString s = token.xmiId();
+  QByteArray s = token.xmiId();
   int index = ((roles[0].id == s)
 	       ? 0
 	       : ((roles[1].id == s)
@@ -58,7 +58,7 @@ void Association::import(FileIn & in, Token & token) {
     roles[(UmlItem::fromEclipse()) ? 1 - index : index].aggregate = anAggregationByValue;
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
@@ -103,9 +103,9 @@ void Association::import(FileIn & in, Token & token) {
   }
 }
 
-Association & Association::get(QCString id, QCString s)
+Association & Association::get(QByteArray id, QByteArray s)
 {
-  QMap<QCString, Association>::Iterator it = All.find(id);
+  QMap<QByteArray, Association>::Iterator it = All.find(id);
     
   if (it == All.end()) {
     Association a;
@@ -122,7 +122,7 @@ Association & Association::get(QCString id, QCString s)
 
 void Association::solveThem()
 {
-  QMap<QCString,Association>::Iterator it;
+  QMap<QByteArray,Association>::Iterator it;
       
   for (it = All.begin(); it != All.end(); ++it)
     (*it).solve(it.key());
@@ -130,9 +130,9 @@ void Association::solveThem()
   All.clear();
 }
 
-QMap<QCString, Association> Association::All;
+QMap<QByteArray, Association> Association::All;
 
-void Association::solve(QCString id) {
+void Association::solve(QByteArray id) {
   if (roles[0].id.isEmpty() || roles[0].idref.isEmpty() ||
       roles[1].id.isEmpty() || roles[1].idref.isEmpty())
     UmlCom::trace("association '" + id + "' not fully defined<br>");
@@ -150,7 +150,7 @@ void Association::solve(QCString id) {
     
     Role & a = roles[rank];
     Role & b = roles[1 - rank];
-    QMap<QCString, UmlItem *>::Iterator it;
+    QMap<QByteArray, UmlItem *>::Iterator it;
     
     if ((it = UmlItem::All.find(a.idref)) == UmlItem::All.end()) {
       if (!FileIn::isBypassedId(a.idref))
@@ -184,7 +184,7 @@ void Association::solve(QCString id) {
 	
 	UmlRelation * ra = UmlRelation::create(k, clb, cla);
 	UmlRelation * rb = ra->side(FALSE);
-	QCString s;
+	QByteArray s;
 	
 	if (!name.isEmpty()) {
 	  int index = 0;

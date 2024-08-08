@@ -30,8 +30,8 @@
 
 
 
-#include <qptrlist.h>
-#include <qtabdialog.h>
+#include <qlist.h>
+#include <q3tabdialog.h>
 
 class QComboBox;
 class LineEdit;
@@ -40,31 +40,30 @@ class UseCaseData;
 class KeyValuesTable;
 class BodyDialog;
 
-class UseCaseDialog : public QTabDialog
-{
-        Q_OBJECT
-
-    protected:
-        UseCaseData * uc;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        MultiLineEdit * extension_points;
-        MultiLineEdit * comment;
-        KeyValuesTable * kvtable;
-        QList<BodyDialog> edits;
-
-        static QSize previous_size;
-
-        static void post_edit_description (UseCaseDialog * d, QString s);
-
-    public:
-        UseCaseDialog (UseCaseData * u);
-        virtual ~UseCaseDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
+class UseCaseDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    UseCaseData * uc;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    MultiLineEdit * extension_points;
+    MultiLineEdit * comment;
+    KeyValuesTable * kvtable;
+    QList<BodyDialog *> edits;
+    
+    static QSize previous_size;
+    
+    static void post_edit_description(UseCaseDialog * d, QString s);
+      
+  public:
+    UseCaseDialog(UseCaseData * u);
+    virtual ~UseCaseDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
 };
 
 #endif

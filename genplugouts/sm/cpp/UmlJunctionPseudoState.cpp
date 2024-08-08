@@ -28,7 +28,7 @@ void UmlJunctionPseudoState::generate(UmlClass * machine, UmlClass * anystate, U
   junction->addParam(0, InputOutputDirection, "stm", machine);
   junction->setParams("${t0} & ${p0}");
   
-  QCString body;
+  QByteArray body;
   const QVector<UmlItem> ch = children();
   QList<UmlTransition> trs;
   unsigned index;
@@ -43,7 +43,7 @@ void UmlJunctionPseudoState::generate(UmlClass * machine, UmlClass * anystate, U
   junction->set_CppBody(body);
 }
 
-void UmlJunctionPseudoState::generate(UmlClass *, UmlClass *, UmlState * state, QCString & body, QCString indent) {
+void UmlJunctionPseudoState::generate(UmlClass *, UmlClass *, UmlState * state, QByteArray & body, QByteArray indent) {
   if (_oper.isEmpty())
     _oper.sprintf("_junction%d", ++_rank);
 

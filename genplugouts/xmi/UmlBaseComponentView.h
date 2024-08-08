@@ -25,7 +25,7 @@ class UmlBaseComponentView : public UmlItem {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseComponentView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseComponentView(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 };
 

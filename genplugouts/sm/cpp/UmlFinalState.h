@@ -16,7 +16,7 @@ class UmlFinalState : public UmlBaseFinalState {
 
     //  is the target of a transition
     
-    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent);
+    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent);
 
 };
 

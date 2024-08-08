@@ -29,7 +29,7 @@ class UmlBaseMessage {
 
     // return message as a string, may be empty/null,
     // exclusive with operation()
-    const QCString & form() const {
+    const QByteArray & form() const {
         return _form;
     }
 
@@ -41,7 +41,7 @@ class UmlBaseMessage {
 
     UmlOperation * _operation;
 
-    QCString _form;
+    QByteArray _form;
 
     // internal, don't call it
     void read_(const QPtrDict<UmlClassInstanceReference> & instances);

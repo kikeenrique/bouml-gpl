@@ -61,7 +61,7 @@ bool UmlBaseRelation::set_isReadOnly(bool y) {
   return set_it_(_read_only, y, setIsReadOnlyCmd);
 }
 
-const QCString & UmlBaseRelation::defaultValue() {
+const QByteArray & UmlBaseRelation::defaultValue() {
   read_if_needed_();
   
   return _default_value;
@@ -71,7 +71,7 @@ bool UmlBaseRelation::set_DefaultValue(const char * s) {
   return set_it_(_default_value, s, setDefaultValueCmd);
 }
 
-bool UmlBaseRelation::set_Stereotype(const QCString & s) {
+bool UmlBaseRelation::set_Stereotype(const QByteArray & s) {
   if (UmlBaseItem::set_Stereotype(s)) {
     UmlBaseRelation * other = (UmlBaseRelation *) UmlBaseItem::read_();
     
@@ -107,7 +107,7 @@ bool UmlBaseRelation::set_Association(const UmlTypeSpec & t) {
       return FALSE;
 }
 
-const QCString & UmlBaseRelation::roleName() {
+const QByteArray & UmlBaseRelation::roleName() {
   read_if_needed_();
   
   return _role_name;
@@ -117,7 +117,7 @@ bool UmlBaseRelation::set_RoleName(const char * s) {
   return set_it_(_role_name, s, setRoleNameCmd);
 }
 
-const QCString & UmlBaseRelation::multiplicity() {
+const QByteArray & UmlBaseRelation::multiplicity() {
   read_if_needed_();
   
   return _multiplicity;
@@ -233,7 +233,7 @@ bool UmlBaseRelation::set_isIdlTruncatableInheritance(bool y) {
     return FALSE;
 }
 
-QCString UmlBaseRelation::idlCase() {
+QByteArray UmlBaseRelation::idlCase() {
   read_if_needed_();
   
   return (_idl_case != 0) ? _idl_case->name() : _idl_explicit_case;

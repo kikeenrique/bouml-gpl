@@ -14,7 +14,7 @@ void UmlClass::uml2cpp(bool rec) {
   if (isCppExternal())
     set_CppDecl(CppSettings::externalClassDecl());
   else {
-    QCString st = CppSettings::classStereotype(stereotype());
+    QByteArray st = CppSettings::classStereotype(stereotype());
     UmlItem * pack = parent()->parent();
     
     while (pack->kind() != aPackage)
@@ -64,7 +64,7 @@ void UmlClass::uml2java(bool rec) {
   if (isJavaExternal())
     set_JavaDecl(JavaSettings::externalClassDecl());
   else {
-    QCString st = JavaSettings::classStereotype(stereotype());
+    QByteArray st = JavaSettings::classStereotype(stereotype());
     UmlItem * pack = parent()->parent();
     
     while (pack->kind() != aPackage)
@@ -84,7 +84,7 @@ void UmlClass::uml2java(bool rec) {
     else if (st == "interface")
       set_JavaDecl(JavaSettings::interfaceDecl());
     else if (st == "@interface") {
-      QCString s = JavaSettings::interfaceDecl();
+      QByteArray s = JavaSettings::interfaceDecl();
       int index = s.find("interface");
       
       if (index != -1)
@@ -116,7 +116,7 @@ void UmlClass::uml2idl(bool rec) {
   if (isIdlExternal())
     set_IdlDecl(IdlSettings::externalClassDecl());
   else {
-    QCString st = IdlSettings::classStereotype(stereotype());
+    QByteArray st = IdlSettings::classStereotype(stereotype());
     UmlItem * pack = parent()->parent();
     
     while (pack->kind() != aPackage)
@@ -166,7 +166,7 @@ void UmlClass::uml2php(bool rec) {
   if (isPhpExternal())
     set_PhpDecl(PhpSettings::externalClassDecl());
   else {
-    QCString st = PhpSettings::classStereotype(stereotype());
+    QByteArray st = PhpSettings::classStereotype(stereotype());
     UmlItem * pack = parent()->parent();
     
     while (pack->kind() != aPackage)
@@ -209,7 +209,7 @@ void UmlClass::uml2python(bool rec) {
   if (isPythonExternal())
     set_PythonDecl(PythonSettings::externalClassDecl());
   else {
-    QCString st = PythonSettings::classStereotype(stereotype());
+    QByteArray st = PythonSettings::classStereotype(stereotype());
     UmlItem * pack = parent()->parent();
     
     while (pack->kind() != aPackage)

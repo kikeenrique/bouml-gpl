@@ -5,14 +5,14 @@
 #include "UmlSettingsCmd.h"
 #include "UmlBuiltin.h"
 #include "UmlStereotype.h"
-QCString UmlSettings::artifactDescription()
+QByteArray UmlSettings::artifactDescription()
 {
   read_if_needed_();
 
   return _artifact_default_description;
 }
 
-bool UmlSettings::set_ArtifactDescription(QCString v)
+bool UmlSettings::set_ArtifactDescription(QByteArray v)
 {
   UmlCom::send_cmd(umlSettingsCmd, setDefaultArtifactDescriptionCmd, v);
   if (UmlCom::read_bool()) {
@@ -23,14 +23,14 @@ bool UmlSettings::set_ArtifactDescription(QCString v)
     return FALSE;
 }
 
-QCString UmlSettings::classDescription()
+QByteArray UmlSettings::classDescription()
 {
   read_if_needed_();
 
   return _class_default_description;
 }
 
-bool UmlSettings::set_ClassDescription(QCString v)
+bool UmlSettings::set_ClassDescription(QByteArray v)
 {
   UmlCom::send_cmd(umlSettingsCmd, setDefaultClassDescriptionCmd, v);
   if (UmlCom::read_bool()) {
@@ -41,14 +41,14 @@ bool UmlSettings::set_ClassDescription(QCString v)
     return FALSE;
 }
 
-QCString UmlSettings::operationDescription()
+QByteArray UmlSettings::operationDescription()
 {
   read_if_needed_();
 
   return _operation_default_description;
 }
 
-bool UmlSettings::set_OperationDescription(QCString v)
+bool UmlSettings::set_OperationDescription(QByteArray v)
 {
   UmlCom::send_cmd(umlSettingsCmd, setDefaultOperationDescriptionCmd, v);
   if (UmlCom::read_bool()) {
@@ -59,14 +59,14 @@ bool UmlSettings::set_OperationDescription(QCString v)
     return FALSE;
 }
 
-QCString UmlSettings::attributeDescription()
+QByteArray UmlSettings::attributeDescription()
 {
   read_if_needed_();
 
   return _attribute_default_description;
 }
 
-bool UmlSettings::set_AttributeDescription(QCString v)
+bool UmlSettings::set_AttributeDescription(QByteArray v)
 {
   UmlCom::send_cmd(umlSettingsCmd, setDefaultAttributeDescriptionCmd, v);
   if (UmlCom::read_bool()) {
@@ -77,14 +77,14 @@ bool UmlSettings::set_AttributeDescription(QCString v)
     return FALSE;
 }
 
-QCString UmlSettings::relationDescription()
+QByteArray UmlSettings::relationDescription()
 {
   read_if_needed_();
 
   return _relation_default_description;
 }
 
-bool UmlSettings::set_RelationDescription(QCString v)
+bool UmlSettings::set_RelationDescription(QByteArray v)
 {
   UmlCom::send_cmd(umlSettingsCmd, setDefaultRelationDescriptionCmd, v);
   if (UmlCom::read_bool()) {
@@ -137,15 +137,15 @@ aLanguage UmlSettings::_uml_get_name;
 
 aLanguage UmlSettings::_uml_set_name;
 
-QCString UmlSettings::_artifact_default_description;
+QByteArray UmlSettings::_artifact_default_description;
 
-QCString UmlSettings::_class_default_description;
+QByteArray UmlSettings::_class_default_description;
 
-QCString UmlSettings::_operation_default_description;
+QByteArray UmlSettings::_operation_default_description;
 
-QCString UmlSettings::_attribute_default_description;
+QByteArray UmlSettings::_attribute_default_description;
 
-QCString UmlSettings::_relation_default_description;
+QByteArray UmlSettings::_relation_default_description;
 
 QDict<UmlBuiltin> UmlSettings::_map_builtins;
 
@@ -217,7 +217,7 @@ void UmlSettings::read_if_needed_()
   }
 }
 
-unsigned UmlSettings::multiplicity_column(const QCString & mult)
+unsigned UmlSettings::multiplicity_column(const QByteArray & mult)
 {
   if (mult.isEmpty() || (mult == "1"))
     return 0;
@@ -228,7 +228,7 @@ unsigned UmlSettings::multiplicity_column(const QCString & mult)
   return 2;
 }
 
-QCString UmlSettings::uml_type(const QCString & t, QCString UmlBuiltin::* f)
+QByteArray UmlSettings::uml_type(const QByteArray & t, QByteArray UmlBuiltin::* f)
 {
   unsigned index = _map_builtins.count();
   
@@ -239,7 +239,7 @@ QCString UmlSettings::uml_type(const QCString & t, QCString UmlBuiltin::* f)
   return 0;
 }
 
-QCString UmlSettings::uml_rel_attr_stereotype(const QCString & t, QCString UmlStereotype::* f)
+QByteArray UmlSettings::uml_rel_attr_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f)
 {
   unsigned index = _map_relation_attribute_stereotypes.count();
   
@@ -250,7 +250,7 @@ QCString UmlSettings::uml_rel_attr_stereotype(const QCString & t, QCString UmlSt
   return 0;
 }
 
-QCString UmlSettings::uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f)
+QByteArray UmlSettings::uml_class_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f)
 {
   unsigned index = _map_class_stereotypes.count();
   
@@ -261,7 +261,7 @@ QCString UmlSettings::uml_class_stereotype(const QCString & t, QCString UmlStere
   return 0;
 }
 
-UmlBuiltin * UmlSettings::add_type(const QCString & s)
+UmlBuiltin * UmlSettings::add_type(const QByteArray & s)
 {
   unsigned n = _map_builtins.count();
   unsigned index;
@@ -298,7 +298,7 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
   return &_builtins[index];
 }
 
-UmlStereotype * UmlSettings::add_rel_attr_stereotype(const QCString & s)
+UmlStereotype * UmlSettings::add_rel_attr_stereotype(const QByteArray & s)
 {
   unsigned n = _map_relation_attribute_stereotypes.count();
   unsigned index;
@@ -333,7 +333,7 @@ UmlStereotype * UmlSettings::add_rel_attr_stereotype(const QCString & s)
   return &_relation_attribute_stereotypes[index];
 }
 
-UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
+UmlStereotype * UmlSettings::add_class_stereotype(const QByteArray & s)
 {
   unsigned n = _map_class_stereotypes.count();
   unsigned index;

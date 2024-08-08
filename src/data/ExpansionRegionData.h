@@ -28,42 +28,39 @@
 
 #include "SimpleData.h"
 #include "UmlEnum.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 class QTextStream;
 
 class BrowserExpansionRegion;
 class ExpansionRegionDialog;
 
-class ExpansionRegionData : public SimpleData
-{
-        friend class ExpansionRegionDialog;
-
-    protected:
-        bool must_isolate;
-        UmlExpansionKind mode;
-
-        virtual void send_uml_def (ToolCom * com, BrowserNode * bn,
-                                   const QString & comment);
-
-    public:
-        ExpansionRegionData();
-        ExpansionRegionData (ExpansionRegionData * model, BrowserNode * br);
-        virtual ~ExpansionRegionData();
-
-        bool get_is_must_isolate() const {
-            return must_isolate;
-        }
-        UmlExpansionKind get_mode() const {
-            return mode;
-        }
-
-        void edit();
-
-        virtual bool tool_cmd (ToolCom * com, const char * args,
-                               BrowserNode * bn, const QString & comment);
-
-        void save (QTextStream &, QString & warning) const;
-        void read (char * & st, char * & k);
+class ExpansionRegionData : public SimpleData {
+  friend class ExpansionRegionDialog;
+    
+  protected:
+    bool must_isolate;
+    UmlExpansionKind mode;
+    
+    virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
+			      const QString & comment);
+    
+  public:
+    ExpansionRegionData();
+    ExpansionRegionData(ExpansionRegionData * model, BrowserNode * br);
+    virtual ~ExpansionRegionData();
+    
+    bool get_is_must_isolate() const { return must_isolate; }
+    UmlExpansionKind get_mode() const { return mode; }
+    
+    void edit();
+    
+    virtual bool tool_cmd(ToolCom * com, const char * args,
+			  BrowserNode * bn, const QString & comment);
+    
+    void save(QTextStream &, QString & warning) const;
+    void read(char * & st, char * & k);
 };
-
+  
 #endif

@@ -4,18 +4,17 @@
 
 #include <qcstring.h>
 
-class StateBehavior
-{
-    public:
-        QCString on_entry;
+class StateBehavior {
+  public:
+    QByteArray on_entry;
 
-        QCString on_exit;
+    QByteArray on_exit;
 
-        QCString do_activity;
+    QByteArray do_activity;
 
-        void read();
+    void read();
 
-        void unload();
+    void unload();
 
 };
 

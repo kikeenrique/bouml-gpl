@@ -39,7 +39,7 @@ class ClassContainer;
 
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
     UmlClassView * get_classview();
 #ifdef REVERSE

@@ -14,14 +14,14 @@
 
 QAsciiDict<Artifact> Artifact::all;
 
-Artifact * Artifact::find(const QCString & uid)
+Artifact * Artifact::find(const QByteArray & uid)
 {
   return all[uid];
 }
 
 void Artifact::import_component_view(File & f)
 {
-  QCString s;
+  QByteArray s;
   
   f.read(s);
   
@@ -64,7 +64,7 @@ void Artifact::import_component_view(File & f)
       
       if (! f2.open(IO_ReadOnly))
 	UmlCom::trace("<br>cannot open '" + s + "' referenced in "
-		      + QCString(f.name()));
+		      + QByteArray(f.name()));
       else {     
         f2.read("(");
         f2.read("object");
@@ -88,7 +88,7 @@ void Artifact::import_component_view(File & f)
 void Artifact::import_components(File & f)
 {
   for (;;) {
-    QCString s;
+    QByteArray s;
   
     switch (f.read(s)) {
     case '(':
@@ -129,20 +129,20 @@ void Artifact::import_components(File & f)
 
 void Artifact::import(File & f)
 {
-  QCString name;
+  QByteArray name;
   
   if (f.read(name) != STRING)
     f.syntaxError(name, "artifact's name");
   
-  QCString s;
+  QByteArray s;
   
   f.read(s);
   f.read(s);
     
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
   Language lang = None;
   
   while (f.readDefinitionBeginning(s, id, ste, doc, prop) != ')') {
@@ -164,7 +164,7 @@ void Artifact::import(File & f)
   art->description = doc;
   art->language = lang;
   
-  QCString * v;
+  QByteArray * v;
   
   switch (lang) {
   case Cplusplus:
@@ -186,7 +186,7 @@ void Artifact::import(File & f)
   }
 }
 
-void Artifact::add(UmlPackage * pack, UmlClass * cl, QCString & art_path) {
+void Artifact::add(UmlPackage * pack, UmlClass * cl, QByteArray & art_path) {
   //pack, cl
 
   switch (language) {
@@ -196,7 +196,7 @@ void Artifact::add(UmlPackage * pack, UmlClass * cl, QCString & art_path) {
       int index = cpp_path.findRev('.');
       
       if (index != -1) {
-	QCString s = cpp_path.left(index + 1);
+	QByteArray s = cpp_path.left(index + 1);
 	
 	add_cpp(pack, cl,
 		s + CppSettings::headerExtension(),
@@ -208,12 +208,12 @@ void Artifact::add(UmlPackage * pack, UmlClass * cl, QCString & art_path) {
     // cl's header and body files may contains a path part
     {
       QDir d(cpp_path);
-      QCString h = cl->file();
-      QCString body = cl->bodyFile();
+      QByteArray h = cl->file();
+      QByteArray body = cl->bodyFile();
       
       add_cpp(pack, cl,
-	      (h.isEmpty()) ? h : QCString(QDir::cleanDirPath(d.filePath(cl->file()))),
-	      (body.isEmpty()) ? body : QCString(QDir::cleanDirPath(d.filePath(cl->bodyFile()))));
+	      (h.isEmpty()) ? h : QByteArray(QDir::cleanDirPath(d.filePath(cl->file()))),
+	      (body.isEmpty()) ? body : QByteArray(QDir::cleanDirPath(d.filePath(cl->bodyFile()))));
     }
     break;
   case Corba:
@@ -235,10 +235,10 @@ void Artifact::add(UmlPackage * pack, UmlClass * cl, QCString & art_path) {
   }
 }
 
-void Artifact::add_cpp(UmlPackage * pack, UmlClass * cl, QCString h, QCString src) {
-  QCString basename;
-  QCString hpath;
-  QCString srcpath;
+void Artifact::add_cpp(UmlPackage * pack, UmlClass * cl, QByteArray h, QByteArray src) {
+  QByteArray basename;
+  QByteArray hpath;
+  QByteArray srcpath;
   
   if (! h.isEmpty()) {
     h = normalize(h, CppSettings::rootDir());
@@ -345,10 +345,10 @@ void Artifact::add_cpp(UmlPackage * pack, UmlClass * cl, QCString h, QCString sr
   art->addAssociatedClass(cl);
 }
 
-void Artifact::add_corba(UmlPackage * pack, UmlClass * cl, QCString src) {
+void Artifact::add_corba(UmlPackage * pack, UmlClass * cl, QByteArray src) {
   // src if the filename without path
   QFileInfo fi(src);
-  QCString basename;
+  QByteArray basename;
   
   basename = fi.baseName();
   
@@ -394,9 +394,9 @@ void Artifact::add_corba(UmlPackage * pack, UmlClass * cl, QCString src) {
   art->addAssociatedClass(cl);
 }
 
-void Artifact::add_java(UmlPackage * pack, UmlClass * cl, QCString art_path, QCString src) {
-  QCString basename;
-  QCString srcpath;
+void Artifact::add_java(UmlPackage * pack, UmlClass * cl, QByteArray art_path, QByteArray src) {
+  QByteArray basename;
+  QByteArray srcpath;
   
   src = normalize(src, JavaSettings::rootDir());
     
@@ -498,10 +498,10 @@ void Artifact::add_java(UmlPackage * pack, UmlClass * cl, QCString art_path, QCS
   art->addAssociatedClass(cl);
 }
 
-QCString Artifact::normalize(QCString path, QCString root) {
+QByteArray Artifact::normalize(QByteArray path, QByteArray root) {
   File f(path, "");	// normalize, replace $var
   
-  path = QCString(f.name());
+  path = QByteArray(f.name());
   
   int rl = root.length();
   

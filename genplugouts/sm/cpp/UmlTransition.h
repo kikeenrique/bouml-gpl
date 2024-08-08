@@ -5,23 +5,23 @@
 #include "UmlBaseTransition.h"
 #include "UmlStateItem.h"
 #include <qcstring.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 class UmlClass;
 class UmlState;
 
 class UmlTransition : public UmlBaseTransition, public UmlStateItem {
   public:
-     UmlTransition(void * id, const QCString & n) : UmlBaseTransition(id, n), _already_managed(FALSE) {
+     UmlTransition(void * id, const QByteArray & n) : UmlBaseTransition(id, n), _already_managed(FALSE) {
     }
 
     //  return the name of the trigger
     
-    QCString triggerName();
+    QByteArray triggerName();
 
     //  initialization before generation
     
-    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
+    virtual void init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState * state);
 
     //   manage transition from a state or an initial pseudo state
     
@@ -29,11 +29,11 @@ class UmlTransition : public UmlBaseTransition, public UmlStateItem {
 
     //  manage transition from a pseudo state
     
-    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent);
+    virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent);
 
     //  generate all the transition in trs, for a state, junction or choice
     
-    static void generate(QList<UmlTransition> trs, UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent, bool completion);
+    static void generate(QList<UmlTransition> trs, UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent, bool completion);
 
 
   protected:

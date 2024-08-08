@@ -46,7 +46,7 @@ class UmlClass : public UmlBaseClass {
 #endif
   
   public:
-    UmlClass(void * id, const QCString & n);
+    UmlClass(void * id, const QByteArray & n);
   
     bool manage_inherit(ClassContainer * pack, 
 			const QValueList<FormalParameterList> & tmplt
@@ -67,7 +67,7 @@ class UmlClass : public UmlBaseClass {
     
     void set_under_construction(bool y, bool rec = FALSE);
     bool inside_its_definition();
-    bool is_itself(QCString t);
+    bool is_itself(QByteArray t);
     
     static void clear_usings() { Usings.clear(); }
     void using_it() { Usings.replace(name(), this); }
@@ -78,7 +78,7 @@ class UmlClass : public UmlBaseClass {
     static void restore_using_scope();
 
 #ifdef REVERSE
-    void need_artifact(const QCString & nmsp);
+    void need_artifact(const QByteArray & nmsp);
     virtual bool need_source();
     
 # ifdef ROUNDTRIP
@@ -90,15 +90,15 @@ class UmlClass : public UmlBaseClass {
     bool is_created() const { return created; }
     void set_created() { created = TRUE; }
     Class * get_class() const { return the_class; }
-    UmlItem * search_for_att_rel(const QCString & name);
-    UmlExtraClassMember * search_for_extra(const QCString & name, const QCString & decl);
+    UmlItem * search_for_att_rel(const QByteArray & name);
+    UmlExtraClassMember * search_for_extra(const QByteArray & name, const QByteArray & decl);
     UmlRelation * search_for_inherit(UmlClass * mother);
     void reorder(QList<UmlItem> & expected_order);
 # endif
 #endif
     
     private:
-      UmlClass * auxilarily_typedef(const QCString & base
+      UmlClass * auxilarily_typedef(const QByteArray & base
 #ifdef REVERSE
 				    , bool libp
 # ifdef ROUNDTRIP

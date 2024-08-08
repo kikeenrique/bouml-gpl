@@ -30,13 +30,13 @@
 
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
   
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       QCString indent, bool = FALSE);
+    virtual void generate_decl(QTextStream & f, const QByteArray & cl_stereotype,
+			       QByteArray indent, bool = FALSE);
     
-    QCString compute_name();
+    QByteArray compute_name();
 };
 
 #endif

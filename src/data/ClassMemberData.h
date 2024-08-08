@@ -29,16 +29,15 @@
 #include "BasicData.h"
 #include "UmlEnum.h"
 
-class ClassMemberData : public BasicData
-{
-        Q_OBJECT
+class ClassMemberData : public BasicData {
+  Q_OBJECT
+    
+  public:
+    ClassMemberData() : BasicData() {};
+    ClassMemberData(const ClassMemberData * model) : BasicData(model) {};
+    virtual ~ClassMemberData();
 
-    public:
-        ClassMemberData() : BasicData() {};
-        ClassMemberData (const ClassMemberData * model) : BasicData (model) {};
-        virtual ~ClassMemberData();
-
-        virtual UmlVisibility get_visibility (BrowserNode *) = 0;
+    virtual UmlVisibility get_visibility(BrowserNode *) = 0;
 };
 
 #endif

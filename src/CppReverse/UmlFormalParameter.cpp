@@ -28,7 +28,7 @@
 #include "UmlFormalParameter.h"
 #include "UmlClass.h"
 
-UmlFormalParameter::UmlFormalParameter(QCString t, QCString n, QCString v) {
+UmlFormalParameter::UmlFormalParameter(QByteArray t, QByteArray n, QByteArray v) {
   _type = t;
   _name = n;
   _default_value.explicit_type = v;

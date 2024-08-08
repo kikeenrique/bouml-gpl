@@ -12,7 +12,7 @@ class FileOut;
 // You can modify it as you want (except the constructor)
 class UmlUseCase : public UmlBaseUseCase {
   public:
-    UmlUseCase(void * id, const QCString & n) : UmlBaseUseCase(id, n) {};
+    UmlUseCase(void * id, const QByteArray & n) : UmlBaseUseCase(id, n) {};
 
     virtual void write(FileOut & out);
 

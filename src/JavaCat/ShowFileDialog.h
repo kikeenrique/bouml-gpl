@@ -37,7 +37,7 @@ class ShowFileDialog : public QDialog {
     QMultiLineEdit * e;
  
   public:
-    ShowFileDialog(const QCString & fn);
+    ShowFileDialog(const QByteArray & fn);
     ~ShowFileDialog();
 
   protected slots:

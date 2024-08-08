@@ -39,12 +39,12 @@ class ClassContainer;
 
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
-    void reverse_main(const QCString & type, QCString comment);
-    UmlClassView * get_classview(const QCString & nmsp);
+    void reverse_main(const QByteArray & type, QByteArray comment);
+    UmlClassView * get_classview(const QByteArray & nmsp);
 #ifdef REVERSE
-    UmlDeploymentView * get_deploymentview(const QCString & nmsp);  
+    UmlDeploymentView * get_deploymentview(const QByteArray & nmsp);  
 # ifdef ROUNDTRIP
     void init(Package *);
     virtual void upload(ClassContainer *);

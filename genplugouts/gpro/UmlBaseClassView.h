@@ -41,7 +41,7 @@ class UmlBaseClassView : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseClassView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseClassView(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 };
 

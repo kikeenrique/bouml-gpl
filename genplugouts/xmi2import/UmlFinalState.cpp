@@ -23,7 +23,7 @@ void UmlFinalState::importIt(FileIn & in, Token & token, UmlItem * where)
     fs->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

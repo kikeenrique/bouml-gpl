@@ -1,7 +1,7 @@
 #ifndef UMLCLASSITEM_H
 #define UMLCLASSITEM_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClassItem.h"
 
@@ -10,7 +10,7 @@
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n) {};
 };
 

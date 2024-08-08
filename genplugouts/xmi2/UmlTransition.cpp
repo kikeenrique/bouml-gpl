@@ -37,9 +37,9 @@ void UmlTransition::write_it(FileOut & out) {
   out.indent(+1);
   write_description_properties(out);
   
-  QCString trig;
-  QCString grd;
-  QCString effect;
+  QByteArray trig;
+  QByteArray grd;
+  QByteArray effect;
   
   switch (_lang) {
   case Uml:

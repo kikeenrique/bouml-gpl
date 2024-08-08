@@ -35,7 +35,7 @@
 
 class UmlComponentDiagram : public UmlBaseComponentDiagram {
   public:
-    UmlComponentDiagram(void * id, const QCString & n) 
+    UmlComponentDiagram(void * id, const QByteArray & n) 
       : UmlBaseComponentDiagram(id, n) {};
 };
 

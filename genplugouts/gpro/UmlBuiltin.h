@@ -7,24 +7,24 @@
 //  Internal class used to memorize the types defined through the first 'generation settings' tab
 
 struct UmlBuiltin {
-    QCString uml;
+    QByteArray uml;
 
 #ifdef WITHCPP
-    QCString cpp;
+    QByteArray cpp;
 
-    QCString cpp_in;
+    QByteArray cpp_in;
 
-    QCString cpp_out;
+    QByteArray cpp_out;
 
-    QCString cpp_inout;
+    QByteArray cpp_inout;
 #endif
 
 #ifdef WITHJAVA
-    QCString java;
+    QByteArray java;
 #endif
 
 #ifdef WITHIDL
-    QCString idl;
+    QByteArray idl;
 #endif
 
 };

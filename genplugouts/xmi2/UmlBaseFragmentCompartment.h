@@ -5,7 +5,7 @@
 // to avoid compiler warning
 #include "UmlFragment.h"
 
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qcstring.h>
 
 class UmlFragment;
@@ -48,19 +48,19 @@ class UmlBaseFragmentCompartment {
 
     int _y;
 
-    QCString _start_continuation;
+    QByteArray _start_continuation;
 
-    QCString _end_continuation;
+    QByteArray _end_continuation;
 
 
   public:
     void add_contained_(UmlFragment * x);
 
-    void add_text_(QCString x);
+    void add_text_(QByteArray x);
 
     //internal, do NOT use it
     
-    void add_cont_(QCString s, int cy);
+    void add_cont_(QByteArray s, int cy);
 
     int b() const {
         return _y;
@@ -82,12 +82,12 @@ class UmlBaseFragmentCompartment {
   friend class UmlBaseUseCaseDiagramDefinition;
   friend class UmlBaseSequenceDiagramDefinition;
     // return the continuation ('goto' case), or an empty string/null
-    QCString endContinuation() const {
+    QByteArray endContinuation() const {
         return _end_continuation;
     }
 
     // return the continuation ('label' case), or an empty string/null
-    QCString startContinuation() const {
+    QByteArray startContinuation() const {
         return _start_continuation;
     }
 

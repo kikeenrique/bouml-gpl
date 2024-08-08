@@ -10,23 +10,22 @@ class UmlComponentView;
 class UmlPackage;
 
 //  Manage the component views
-class UmlBaseComponentView : public UmlView
-{
-    public:
-        // returns a new component view named 's' created under 'parent'
-        //
-        // In case it cannot be created (the name is already used or
-        // invalid, 'parent' cannot contain it etc ...) return 0 in C++
-        // and produce a RuntimeException in Java
-        static UmlComponentView * create (UmlPackage * parent, const char * s);
+class UmlBaseComponentView : public UmlView {
+  public:
+    // returns a new component view named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlComponentView * create(UmlPackage * parent, const char * s);
 
-        // returns the kind of the item
-        virtual anItemKind kind();
+    // returns the kind of the item
+    virtual anItemKind kind();
 
 
-    protected:
-        // the constructor, do not call it yourself !!!!!!!!!!
-        UmlBaseComponentView (void * id, const QCString & n) : UmlView (id, n) {};
+  protected:
+    // the constructor, do not call it yourself !!!!!!!!!!
+    UmlBaseComponentView(void * id, const QByteArray & n) : UmlView(id, n) {};
 
 };
 

@@ -13,7 +13,7 @@ class FileIn;
 class UmlActivity : public UmlBaseActivity {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivity(void * id, const QCString & s) : UmlBaseActivity(id, s) {
+     UmlActivity(void * id, const QByteArray & s) : UmlBaseActivity(id, s) {
        NumberOf += 1; 
     }
 
@@ -22,7 +22,7 @@ class UmlActivity : public UmlBaseActivity {
 
     //  call at end of import : try to solve reference to operation
     
-    virtual void solve(QCString idref);
+    virtual void solve(QByteArray idref);
 
     static void init();
 

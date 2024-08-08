@@ -30,160 +30,160 @@ class JavaSettings : public UmlSettings {
     // returns the JAVA type corresponding to the 'UML' type given in
     // argument, as it is configured in the first 'Generation settings'
     // dialog's tab
-    static QCString type(const QCString & s);
+    static QByteArray type(const QByteArray & s);
 
     // set the JAVA type corresponding to the 'UML' type given in
     // argument, as it is configured in the first 'Generation settings'
     // dialog's tab
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_Type(QCString s, QCString v);
+    static bool set_Type(QByteArray s, QByteArray v);
 
     // reverse of the Type() operation, returns the 'UML' type corresponding
     // to the JAVA type given in argument
-    static QCString umlType(const QCString & s);
+    static QByteArray umlType(const QByteArray & s);
 
     // returns the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationStereotype(const QCString & s);
+    static QByteArray relationStereotype(const QByteArray & s);
 
     // set the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationStereotype(QCString s, QCString v);
+    static bool set_RelationStereotype(QByteArray s, QByteArray v);
 
     // reverse of the RelationStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the JAVA one given in argument
-    static QCString relationUmlStereotype(const QCString & s);
+    static QByteArray relationUmlStereotype(const QByteArray & s);
 
     // returns the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString classStereotype(const QCString & s);
+    static QByteArray classStereotype(const QByteArray & s);
 
     // set the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ClassStereotype(QCString s, QCString v);
+    static bool set_ClassStereotype(QByteArray s, QByteArray v);
 
     // reverse of the ClassStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the JAVA one given in argument
-    static QCString classUmlStereotype(const QCString & s);
+    static QByteArray classUmlStereotype(const QByteArray & s);
 
     //returns the import or other form specified in the last
     //'Generation settings' tab for the Java type given in argument.
-    static QCString get_import(const QCString & s);
+    static QByteArray get_import(const QByteArray & s);
 
     //  set the import or other form specified in the last
     //  'Generation settings' tab for the Java type given in argument.
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_Import(QCString s, QCString v);
+    static bool set_Import(QByteArray s, QByteArray v);
 
     //  return the 'root' directory
-    static const QCString & rootDir();
+    static const QByteArray & rootDir();
 
     //  set the 'root' directory
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RootDir(QCString v);
+    static bool set_RootDir(QByteArray v);
 
     // returns the default source file content
-    static const QCString & sourceContent();
+    static const QByteArray & sourceContent();
 
     // set the default source file content
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SourceContent(QCString v);
+    static bool set_SourceContent(QByteArray v);
 
     // returns the extension of the file produced by the JAVA code generator
-    static const QCString & sourceExtension();
+    static const QByteArray & sourceExtension();
 
     // set the extension of the file produced by the JAVA code generator
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SourceExtension(QCString v);
+    static bool set_SourceExtension(QByteArray v);
 
     // returns the default definition of a class
-    static const QCString & classDecl();
+    static const QByteArray & classDecl();
 
     // set the default definition of a class
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ClassDecl(QCString v);
+    static bool set_ClassDecl(QByteArray v);
 
     // returns the default specification for an 'external' class
-    static const QCString & externalClassDecl();
+    static const QByteArray & externalClassDecl();
 
     // set the default specification for an 'external' class
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ExternalClassDecl(QCString v);
+    static bool set_ExternalClassDecl(QByteArray v);
 
     // returns the default definition of an enumeration implemented
     // through an abstract class having constant attributes
-    static const QCString & enumDecl();
+    static const QByteArray & enumDecl();
 
     // set the default definition of an enumeration implemented
     // through an abstract class having constant attributes
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_EnumDecl(QCString v);
+    static bool set_EnumDecl(QByteArray v);
 
     // returns the default definition of an interface
-    static const QCString & interfaceDecl();
+    static const QByteArray & interfaceDecl();
 
     // set the default definition of an interface
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_InterfaceDecl(QCString v);
+    static bool set_InterfaceDecl(QByteArray v);
 
     // returns the default definition of an attribute
-    static const QCString & attributeDecl();
+    static const QByteArray & attributeDecl();
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(QCString v);
+    static bool set_AttributeDecl(QByteArray v);
 
     // returns the default definition of an enumeration item
-    static const QCString & enumItemDecl();
+    static const QByteArray & enumItemDecl();
 
     // set the default definition of an enumeration item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_EnumItemDecl(QCString v);
+    static bool set_EnumItemDecl(QByteArray v);
 
     //Returns the 'case' form produced in the fromInt operation
     //for each enumeration item
     
-    static const QCString & enumItemCase();
+    static const QByteArray & enumItemCase();
 
     //  set the 'case' form produced in the fromInt operation
     //  for each enumeration item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     
-    static bool set_EnumItemCase(QCString v);
+    static bool set_EnumItemCase(QByteArray v);
 
     // returns the default definition of a relation depending on the
     // multiplicity given in argument.
-    static const QCString & relationDecl(const char * multiplicity);
+    static const QByteArray & relationDecl(const char * multiplicity);
 
     // set the default definition of a relation depending on the
     // multiplicity given in argument.
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationDecl(const char * multiplicity, QCString v);
+    static bool set_RelationDecl(const char * multiplicity, QByteArray v);
 
     // returns the default definition of an operation
-    static const QCString & operationDef();
+    static const QByteArray & operationDef();
 
     // set the default definition of an operation
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_OperationDef(QCString v);
+    static bool set_OperationDef(QByteArray v);
 
     // returns the default visibility of a 'get' operation generated
     // through the attribute and relation 'add get operation'
@@ -197,23 +197,23 @@ class JavaSettings : public UmlSettings {
 
     // returns the default name of a 'get' operation generated 
     // through the attribute and relation 'add get operation' menu
-    static const QCString & getName();
+    static const QByteArray & getName();
 
     // set the default name of a 'get' operation generated 
     // through the attribute and relation 'add get operation' menu
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_GetName(QCString v);
+    static bool set_GetName(QByteArray v);
 
     // returns the default name of a 'set' operation generated 
     // through the attribute and relation 'add set operation' menu
-    static const QCString & setName();
+    static const QByteArray & setName();
 
     // set the default name of a 'set' operation generated 
     // through the attribute and relation 'add set operation' menu
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_SetName(QCString v);
+    static bool set_SetName(QByteArray v);
 
     //  return if a 'get' operation generated through the attribute
     //  and relation 'add get operation' menu is final by default
@@ -262,45 +262,45 @@ class JavaSettings : public UmlSettings {
 
     static bool _defined;
 
-    static QCString _root;
+    static QByteArray _root;
 
-    static QCString _class_decl;
+    static QByteArray _class_decl;
 
-    static QCString _external_class_decl;
+    static QByteArray _external_class_decl;
 
-    static QCString _enum_decl;
+    static QByteArray _enum_decl;
 
-    static QCString _interface_decl;
+    static QByteArray _interface_decl;
 
-    static QCString _attr_decl;
+    static QByteArray _attr_decl;
 
-    static QCString _enum_item_decl;
+    static QByteArray _enum_item_decl;
 
-    static QCString _enum_item_case;
+    static QByteArray _enum_item_case;
 
-    static QCString _rel_decl[3/*multiplicity*/];
+    static QByteArray _rel_decl[3/*multiplicity*/];
 
-    static QCString _oper_def;
+    static QByteArray _oper_def;
 
     static aVisibility _get_visibility;
 
-    static QCString _get_name;
+    static QByteArray _get_name;
 
     static bool _is_get_final;
 
     static aVisibility _set_visibility;
 
-    static QCString _set_name;
+    static QByteArray _set_name;
 
     static bool _is_set_final;
 
     static bool _is_set_param_final;
 
-    static QCString _src_content;
+    static QByteArray _src_content;
 
-    static QCString _ext;
+    static QByteArray _ext;
 
-    static QDict<QCString> _map_imports;
+    static QDict<QByteArray> _map_imports;
 
 
   protected:

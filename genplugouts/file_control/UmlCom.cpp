@@ -636,7 +636,7 @@ void UmlCom::read_item_list(QVector<UmlItem> & v)
     v.insert(index, UmlBaseItem::read_());
 }
 
-void UmlCom::fatal_error(const QCString & 
+void UmlCom::fatal_error(const QByteArray & 
 #ifdef DEBUG_BOUML
                          msg
 #endif

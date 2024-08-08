@@ -1,7 +1,7 @@
 
 #include "UmlComponentDiagram.h"
 
-QCString UmlComponentDiagram::sKind() {
+QByteArray UmlComponentDiagram::sKind() {
   return "component diagram";
 }
 

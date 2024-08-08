@@ -1,18 +1,18 @@
 
 #include "UmlActivityParameter.h"
 
-QCString UmlActivityParameter::sKind() {
+QByteArray UmlActivityParameter::sKind() {
   return "activity parameter";
 }
 
-void UmlActivityParameter::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlActivityParameter::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Activity action pin <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
-  QCString s = defaultValue();
+  QByteArray s = defaultValue();
   
   if (! s.isEmpty()) {
     fw.write("<p>Default value :</p><ul>");

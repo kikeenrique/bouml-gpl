@@ -82,7 +82,7 @@ QApplication * Package::app;
 // memorise the name of the header currently reversed
 // to create artifact having the right name and respect
 // the classes defined in a same header file
-QCString Package::fname;
+QByteArray Package::fname;
 
 #ifdef ROUNDTRIP
 // currently roundtriped artifact
@@ -95,9 +95,9 @@ static QDict<UmlArtifact> Roundtriped(199);
 #endif
 
 static QString RootSDir;	// empty or finish by a /
-static QCString RootCDir;	// empty or finish by a /
+static QByteArray RootCDir;	// empty or finish by a /
 
-static QCString force_final_slash(QCString p)
+static QByteArray force_final_slash(QByteArray p)
 {
   int ln = p.length();
   
@@ -109,12 +109,12 @@ static QCString force_final_slash(QCString p)
     : p;
 }
 
-static inline QCString force_final_slash(QString p)
+static inline QByteArray force_final_slash(QString p)
 {
-  return force_final_slash(QCString(p));
+  return force_final_slash(QByteArray(p));
 }
 
-static QCString root_relative_if_possible(QCString p)
+static QByteArray root_relative_if_possible(QByteArray p)
 {
   unsigned rln = RootCDir.length();
   
@@ -151,7 +151,7 @@ Package::Package(Package * parent, UmlPackage * pk)
     h_path = RootCDir;
   else if (QDir::isRelativePath(h_path)) {
     if (RootCDir.isEmpty()) {
-      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+      QByteArray err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
 	"don't know where is <i>" + h_path + "<i></b></font><br>";
       
       UmlCom::trace(err);
@@ -165,7 +165,7 @@ Package::Package(Package * parent, UmlPackage * pk)
     src_path = RootCDir;
   else if (QDir::isRelativePath(src_path)) {
     if (RootCDir.isEmpty()) {
-      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+      QByteArray err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
 	"don't know where is <i>" + src_path + "<i></b></font><br>";
       
       UmlCom::trace(err);
@@ -402,11 +402,11 @@ void Package::scan_dirs(int & n) {
 			    err + "Press 'cancel' to reverse selected directories");
     else {
       QDir d(path);
-      QCString s;
+      QByteArray s;
       
       dirs.append(path);
       s.sprintf("<font face=helvetica>%dth directory to reverse : <b>", (int) dirs.count());
-      s += QCString(path) + "</b><br></font>\n";
+      s += QByteArray(path) + "</b><br></font>\n";
       UmlCom::trace(s);
 
       Choozen.append(new Package(Root, path, d.dirName()));
@@ -489,7 +489,7 @@ int Package::file_number(QString path, bool rec, const char * ext)
       QFileInfoListIterator it(*list);
       QFileInfo * fi;
       
-      while ((fi = it.current()) != 0) {
+      while ((fi = (*it)) != 0) {
 	if (fi->extension(FALSE) == ext)
 	  result += 1;
 	++it;
@@ -612,24 +612,24 @@ void Package::reverse_directory(QString path, bool rec,
   if (list != 0) {
     QFileInfoListIterator it(*list);
     
-    while (it.current() != 0) {
-      if (allowed(FileFilter, it.current()->fileName())) {
+    while ((*it) != 0) {
+      if (allowed(FileFilter, (*it)->fileName())) {
 #ifdef ROUNDTRIP
-	QString fn = it.current()->absFilePath();
+	QString fn = (*it)->absFilePath();
 	UmlArtifact * art = Roundtriped.find(fn);
 	
 	if (h)
-	  fname = my_baseName(it.current());
+	  fname = my_baseName((*it));
 	
 	if ((art != 0) && (art->parent()->parent() != uml))
 	  // own by an other package
-	  ((UmlPackage *) art->parent()->parent())->get_package()->reverse_file(QCString(fn), art, h);
+	  ((UmlPackage *) art->parent()->parent())->get_package()->reverse_file(QByteArray(fn), art, h);
 	else
-	  reverse_file(QCString(fn), art, h);
+	  reverse_file(QByteArray(fn), art, h);
 #else
 	if (h)
-	  fname = my_baseName(it.current());
-	reverse_file(QCString(it.current()->filePath()));
+	  fname = my_baseName((*it));
+	reverse_file(QByteArray((*it)->filePath()));
 #endif
       }
       Progress::tic_it();
@@ -658,7 +658,7 @@ void Package::reverse_directory(QString path, bool rec,
 
 #ifdef ROUNDTRIP
 void Package::reverse(UmlArtifact * art) {
-  QCString f;
+  QByteArray f;
   
   f = h_path + art->name() + "." + CppSettings::headerExtension();
   if (allowed(FileFilter, art->name() + "." + CppSettings::headerExtension()) &&
@@ -672,7 +672,7 @@ void Package::reverse(UmlArtifact * art) {
 }
 #endif
 
-void Package::reverse_file(QCString f
+void Package::reverse_file(QByteArray f
 #ifdef ROUNDTRIP
 			   , UmlArtifact * art, bool h
 #endif
@@ -688,14 +688,14 @@ void Package::reverse_file(QCString f
   if (! Lex::open(f)) {
 #ifdef ROUNDTRIP
     if (art != 0) {
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot open <i>")
 		    + f + "</i></b></font><br>");
       throw 0;
     }
     else
 #endif
     // very strange !
-    CppCatWindow::trace(QCString("<font face=helvetica><b>cannot open <i>")
+    CppCatWindow::trace(QByteArray("<font face=helvetica><b>cannot open <i>")
 			+ f + "</i></b></font><br><hr><br>"); 
   }
   else {    
@@ -733,9 +733,9 @@ void Package::reverse_file(QCString f
   }
 }
 
-void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
-  QCString pretype;
-  QCString s;
+void Package::reverse_toplevel_forms(QByteArray f, bool sub_block) {
+  QByteArray pretype;
+  QByteArray s;
   
   while (! (s = Lex::read_word()).isEmpty()) {
     if (s == "template") {
@@ -748,7 +748,7 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
       if ((s == "class") || (s == "struct") || (s == "union")) {
 	Lex::mark();
 	
-	QCString s2 = Lex::read_word();
+	QByteArray s2 = Lex::read_word();
 	
 	if ((strncmp(s2, "Q_EXPORT", 8) == 0) ||
 	    (strncmp(s2, "QM_EXPORT", 9) == 0) ||
@@ -776,7 +776,7 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
       else if (s == "enum") {
 	Lex::mark();
 	
-	QCString s2 = Lex::read_word();
+	QByteArray s2 = Lex::read_word();
 	
 	if (Lex::identifierp(s2, TRUE) && (Lex::read_word() != "{")) {
 	  // form like 'enum X Y'
@@ -814,7 +814,7 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
 	  Namespace::exit_anonymous();
 	}
 	else {
-	  QCString s2 = Lex::read_word();
+	  QByteArray s2 = Lex::read_word();
 	  
 	  if (s2.isEmpty()) {
 	    if (!Scan)
@@ -909,14 +909,14 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
 #endif
 }
 
-void Package::reverse_toplevel_form(QCString f, QCString s) {
-  QCString comment = Lex::get_comments();
-  QCString description = Lex::get_description();
-  QCString q_modifier;	// not yet used
+void Package::reverse_toplevel_form(QByteArray f, QByteArray s) {
+  QByteArray comment = Lex::get_comments();
+  QByteArray description = Lex::get_description();
+  QByteArray q_modifier;	// not yet used
   bool inlinep = FALSE;
-  QCString type;
-  QCString name;
-  QCString array;
+  QByteArray type;
+  QByteArray name;
+  QByteArray array;
 
 #ifdef DEBUG_BOUML
   cout << "Package::reverse_toplevel_form(" << s << ")\n";
@@ -1030,7 +1030,7 @@ void Package::reverse_toplevel_form(QCString f, QCString s) {
       break;
     }
     
-    QCString s2 = Lex::read_word();
+    QByteArray s2 = Lex::read_word();
     
     if (s2.isEmpty())
       break;
@@ -1045,7 +1045,7 @@ void Package::reverse_toplevel_form(QCString f, QCString s) {
   Lex::clear_comments();
 }
 
-void Package::reverse_variable(const QCString & name) {
+void Package::reverse_variable(const QByteArray & name) {
   // '=' or '(' read
   Lex::mark();
   
@@ -1055,7 +1055,7 @@ void Package::reverse_variable(const QCString & name) {
     if (c == 0)
       return;
 
-  QCString init = Lex::region();
+  QByteArray init = Lex::region();
   
   if (name.isEmpty()) {
     Lex::syntax_error();
@@ -1067,11 +1067,11 @@ void Package::reverse_variable(const QCString & name) {
   
   UmlTypeSpec typespec;
   int index = name.findRev("::");
-  QCString varname;
+  QByteArray varname;
   
   if ((index <= 0) ||
       !find_type(Lex::normalize(name.left(index)), typespec)) {
-    Lex::warn(QCString("<font color =\"red\"> ") + Lex::quote(name) +
+    Lex::warn(QByteArray("<font color =\"red\"> ") + Lex::quote(name) +
 	      "</font> is lost");
 #ifdef DEBUG_BOUML
     cout << "ERROR " << name << " lost";
@@ -1081,7 +1081,7 @@ void Package::reverse_variable(const QCString & name) {
   else
     varname = name.mid(index + 2);
   
-  init = QCString("=") + init.left(init.length() - 1);
+  init = QByteArray("=") + init.left(init.length() - 1);
   
   // search the corresponding attribute
   QVector<UmlItem> children = typespec.type->children();
@@ -1098,7 +1098,7 @@ void Package::reverse_variable(const QCString & name) {
 	if (at->isClassMember()) {
 #ifdef ROUNDTRIP
 	  if (at->is_roundtrip_expected()) {
-	    QCString v = at->defaultValue();
+	    QByteArray v = at->defaultValue();
 	    
 	    if (!v.isEmpty() && (((const char *) v)[0] == '='))
 	      v = v.mid(1);
@@ -1110,7 +1110,7 @@ void Package::reverse_variable(const QCString & name) {
 #endif
 	    at->set_DefaultValue(init);
 	  
-	  QCString decl = at->cppDecl();
+	  QByteArray decl = at->cppDecl();
 	  int index = decl.find("${h_value}");
 	  
 	  if (index != -1) {
@@ -1129,7 +1129,7 @@ void Package::reverse_variable(const QCString & name) {
 	if (rel->isClassMember()) {
 #ifdef ROUNDTRIP
 	  if (rel->is_roundtrip_expected()) {
-	    QCString v = rel->defaultValue();
+	    QByteArray v = rel->defaultValue();
 	    
 	    if (!v.isEmpty() && (((const char *) v)[0] == '='))
 	      v = v.mid(1);
@@ -1141,7 +1141,7 @@ void Package::reverse_variable(const QCString & name) {
 #endif
 	    rel->set_DefaultValue(init);
 	  
-	  QCString decl = ((UmlRelation *) it)->cppDecl();
+	  QByteArray decl = ((UmlRelation *) it)->cppDecl();
 	  int index = decl.find("${h_value}");
 	  
 	  if (index != -1) {
@@ -1158,7 +1158,7 @@ void Package::reverse_variable(const QCString & name) {
   }
   
   // no compatible variable
-  Lex::warn(QCString("<font color =\"red\"> ") + Lex::quote(name)
+  Lex::warn(QByteArray("<font color =\"red\"> ") + Lex::quote(name)
 	    + "</font> is not a static attribute of <font color =\"red\"> " +
 	    Lex::quote(typespec.type->name()) + "</font>");
 #ifdef DEBUG_BOUML
@@ -1166,8 +1166,8 @@ void Package::reverse_variable(const QCString & name) {
 #endif
 }
 
-Class * Package::new_class(const QCString & name,
-			   const QCString & stereotype,
+Class * Package::new_class(const QByteArray & name,
+			   const QByteArray & stereotype,
 			   bool declaration) {
   Class * cl = new Class(this, name, stereotype);
         
@@ -1177,28 +1177,28 @@ Class * Package::new_class(const QCString & name,
   return cl;
 }
 
-bool Package::find_type(QCString type, UmlTypeSpec & typespec) {
+bool Package::find_type(QByteArray type, UmlTypeSpec & typespec) {
   return ClassContainer::find_type(type, typespec, Defined);
 }
 
-Class * Package::declare_if_needed(const QCString & name,
-					 QCString stereotype) {
+Class * Package::declare_if_needed(const QByteArray & name,
+					 QByteArray stereotype) {
   FormalParameterList l;
   
   return ClassContainer::declare_if_needed(name, stereotype, l,
 					   Declared, Defined);
 }
 
-void Package::declare_if_needed(QCString name, Class * cl) {
+void Package::declare_if_needed(QByteArray name, Class * cl) {
   if (Defined[name] == 0)
     Declared.replace(name, cl);
 }
 
-Class * Package::define(const QCString & name, QCString stereotype) {
+Class * Package::define(const QByteArray & name, QByteArray stereotype) {
   return ClassContainer::define(name, stereotype, Declared, Defined);
 }
 
-void Package::define(QCString name, Class * cl) {
+void Package::define(QByteArray name, Class * cl) {
   if (! name.isEmpty()) {
     if (Declared[name] != 0)
       Declared.remove(name);
@@ -1207,8 +1207,8 @@ void Package::define(QCString name, Class * cl) {
   }
 }
 
-void Package::declaration(const QCString &, const QCString &,
-			  const QCString &
+void Package::declaration(const QByteArray &, const QByteArray &,
+			  const QByteArray &
 #ifdef ROUNDTRIP
 			  , bool, QList<UmlItem> &
 #endif
@@ -1219,7 +1219,7 @@ void Package::declaration(const QCString &, const QCString &,
 #ifdef ROUNDTRIP
 Class * Package::upload_define(UmlClass * ucl) {
   Class * cl = new Class(this, ucl);
-  QCString s = ucl->name();	// not defined inside an other class
+  QByteArray s = ucl->name();	// not defined inside an other class
   
   Defined.insert(s, cl);
   
@@ -1248,7 +1248,7 @@ UmlPackage * Package::get_uml(bool mandatory) {
 	return 0;
       
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create package <i>")
 		    + name + "</i> under package <i>" + uml_pa->name() +
 		    "</b></font><br>");
       UmlCom::message("");
@@ -1289,7 +1289,7 @@ Package * Package::find(QFileInfo * di) {
 	(child->text(0) == s))
       return (Package *) child;
   
-  return new Package(this, QCString(di->filePath()), QCString(s));
+  return new Package(this, QByteArray(di->filePath()), QByteArray(s));
 }
 
 /*

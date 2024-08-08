@@ -5,18 +5,18 @@
 #include "UmlRelation.h"
 #include "UmlClassInstance.h"
 
-QCString UmlClassInstance::sKind() {
+QByteArray UmlClassInstance::sKind() {
   return "class instance";
 }
 
-void UmlClassInstance::html(QCString, unsigned int, unsigned int) {
+void UmlClassInstance::html(QByteArray, unsigned int, unsigned int) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Class instance  <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>");
   
-  QCString s = description();
+  QByteArray s = description();
 
   if (!s.isEmpty()) {
     fw.write("<p>");

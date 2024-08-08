@@ -25,9 +25,9 @@ const char * UmlFlowFinalActivityNode::sKind() const {
 void UmlFlowFinalActivityNode::solve_output_flows() {
   QListIterator<UmlFlow> it(_incoming_flows);
   
-  while (it.current() != 0) {
-    if (it.current()->control_or_data() == Unset)
-      it.current()->set_control_or_data(IsControl);
+  while ((*it) != 0) {
+    if ((*it)->control_or_data() == Unset)
+      (*it)->set_control_or_data(IsControl);
 
     ++it;
   }
@@ -40,9 +40,9 @@ const char * UmlActivityFinalActivityNode::sKind() const {
 void UmlActivityFinalActivityNode::solve_output_flows() {
   QListIterator<UmlFlow> it(_incoming_flows);
   
-  while (it.current() != 0) {
-    if (it.current()->control_or_data() == Unset)
-      it.current()->set_control_or_data(IsControl);
+  while ((*it) != 0) {
+    if ((*it)->control_or_data() == Unset)
+      (*it)->set_control_or_data(IsControl);
 
     ++it;
   }
@@ -80,8 +80,8 @@ void UmlDecisionActivityNode::solve_output_flows() {
       bool hasunset = FALSE;
       QListIterator<UmlFlow> it(_incoming_flows);
 
-      while (it.current() != 0) {
-	k = it.current()->control_or_data();
+      while ((*it) != 0) {
+	k = (*it)->control_or_data();
 
 	if (k == IsControl) {
 	  hascontrol = TRUE;
@@ -116,8 +116,8 @@ void UmlDecisionActivityNode::solve_output_flows() {
 
       // solve input flows
       it.toFirst();
-      while (it.current() != 0) {
-	((UmlActivityNode *) it.current()->parent())->solve_output_flows();
+      while ((*it) != 0) {
+	((UmlActivityNode *) (*it)->parent())->solve_output_flows();
 	++it;
       }
     }
@@ -133,9 +133,9 @@ void UmlDecisionActivityNode::solve_output_flows() {
 
   QListIterator<UmlFlow> it(_incoming_flows);
 
-  while (it.current() != 0) {
-    if (it.current()->control_or_data() == Unset)
-      it.current()->set_control_or_data(k);
+  while ((*it) != 0) {
+    if ((*it)->control_or_data() == Unset)
+      (*it)->set_control_or_data(k);
 
     ++it;
   }
@@ -172,8 +172,8 @@ void UmlMergeActivityNode::solve_output_flows() {
       bool hasunset = FALSE;
       QListIterator<UmlFlow> it(_incoming_flows);
 
-      while (it.current() != 0) {
-	k = it.current()->control_or_data();
+      while ((*it) != 0) {
+	k = (*it)->control_or_data();
 
 	if (k == IsControl) {
 	  hascontrol = TRUE;
@@ -201,8 +201,8 @@ void UmlMergeActivityNode::solve_output_flows() {
 
       // solve input flows
       it.toFirst();
-      while (it.current() != 0) {
-	((UmlActivityNode *) it.current()->parent())->solve_output_flows();
+      while ((*it) != 0) {
+	((UmlActivityNode *) (*it)->parent())->solve_output_flows();
 	++it;
       }
     }
@@ -218,9 +218,9 @@ void UmlMergeActivityNode::solve_output_flows() {
 
   QListIterator<UmlFlow> it(_incoming_flows);
 
-  while (it.current() != 0) {
-    if (it.current()->control_or_data() == Unset)
-      it.current()->set_control_or_data(k);
+  while ((*it) != 0) {
+    if ((*it)->control_or_data() == Unset)
+      (*it)->set_control_or_data(k);
 
     ++it;
   }
@@ -304,12 +304,12 @@ void UmlJoinActivityNode::solve_output_flows() {
   // look at input flows
   QListIterator<UmlFlow> it(_incoming_flows);
 
-  while (it.current() != 0) {
-    k = it.current()->control_or_data();
+  while ((*it) != 0) {
+    k = (*it)->control_or_data();
 
     if (k == Unset) {
-      ((UmlActivityNode *) it.current()->parent())->solve_output_flows();
-      k = it.current()->control_or_data();
+      ((UmlActivityNode *) (*it)->parent())->solve_output_flows();
+      k = (*it)->control_or_data();
     }
 
     if (k == IsData)

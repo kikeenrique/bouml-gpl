@@ -3,7 +3,7 @@
 #include "FileOut.h"
 
 void UmlOnSignalAction::write_signal(FileOut & out) {
-  QCString sig;
+  QByteArray sig;
   
   switch (_lang) {
   case Uml:

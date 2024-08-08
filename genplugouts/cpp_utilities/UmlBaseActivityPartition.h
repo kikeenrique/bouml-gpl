@@ -24,7 +24,7 @@ class UmlBaseActivityPartition : public UmlItem {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivityPartition(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseActivityPartition(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 

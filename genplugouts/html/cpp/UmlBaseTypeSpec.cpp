@@ -2,7 +2,7 @@
 #include "UmlBaseTypeSpec.h"
 #include "UmlClass.h"
 
-const QCString & UmlBaseTypeSpec::toString() const {
+const QByteArray & UmlBaseTypeSpec::toString() const {
   return (type) ? type->name() : explicit_type;
 }
 

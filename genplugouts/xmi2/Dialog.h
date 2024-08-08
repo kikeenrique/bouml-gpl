@@ -16,38 +16,38 @@ class QRadioButton;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(QCString & path, QCString & encoding, QCString & nomodel, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang);
+    Dialog(QByteArray & path, QByteArray & encoding, QByteArray & nomodel, QByteArray & genview, QByteArray & uml20, QByteArray & pk, QByteArray & vis, QByteArray & primitivetype, QByteArray & genextension, QByteArray & geneclipse, QByteArray & commentexporter, QByteArray & linefeed, Language & lang);
 
 
   protected:
-    QCString & _path;
+    QByteArray & _path;
 
-    QCString & _encoding;
+    QByteArray & _encoding;
 
-    QCString & _nomodel;
+    QByteArray & _nomodel;
 
-    QCString & _genview;
-
-    //yes => generate pk_ prefix
-    QCString & _uml20;
+    QByteArray & _genview;
 
     //yes => generate pk_ prefix
-    QCString & _pk;
+    QByteArray & _uml20;
+
+    //yes => generate pk_ prefix
+    QByteArray & _pk;
 
     //yes => generate vis_ prefix
-    QCString & _vis;
+    QByteArray & _vis;
 
     //yes => use primitiveType rather than dataType for int ...
-    QCString & _primitivetype;
+    QByteArray & _primitivetype;
 
-    QCString & _genextension;
+    QByteArray & _genextension;
 
-    QCString & _geneclipse;
+    QByteArray & _geneclipse;
 
-    QCString & _commentexporter;
+    QByteArray & _commentexporter;
 
     //yes => generate linefeed inside string, else &#10;
-    QCString & _linefeed;
+    QByteArray & _linefeed;
 
     Language & _lang;
 

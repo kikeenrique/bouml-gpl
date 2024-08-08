@@ -13,7 +13,7 @@ class UmlPackage;
 // You can modify it as you want (except the constructor)
 class UmlDeploymentView : public UmlBaseDeploymentView {
   public:
-    UmlDeploymentView(void * id, const QCString & n) : UmlBaseDeploymentView(id, n) {
+    UmlDeploymentView(void * id, const QByteArray & n) : UmlBaseDeploymentView(id, n) {
       cpt[kind()] += 1;
     };
 
@@ -21,21 +21,21 @@ class UmlDeploymentView : public UmlBaseDeploymentView {
 
     void readObjects(File & f);
 
-    static UmlDeploymentView * create(UmlPackage * parent, const char * s, QCString bn);
+    static UmlDeploymentView * create(UmlPackage * parent, const char * s, QByteArray bn);
 
     static void import(UmlPackage * parent, File & f);
 
 
   protected:
-    QCString _base_name;
+    QByteArray _base_name;
 
 
   public:
-    const QCString baseName() const;
+    const QByteArray baseName() const;
 
 };
 
-inline const QCString UmlDeploymentView::baseName() const {
+inline const QByteArray UmlDeploymentView::baseName() const {
   return _base_name;
 }
 

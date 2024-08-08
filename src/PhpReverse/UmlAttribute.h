@@ -32,18 +32,18 @@ class Class;
 
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n)
+    UmlAttribute(void * id, const QByteArray & n)
       :  UmlBaseAttribute(id, n) {};
   
-    static bool new_one(Class * container, QCString name,
+    static bool new_one(Class * container, QByteArray name,
 			aVisibility visibility, bool constp,
-			bool staticp, const QCString & value,
-			QCString comment, QCString description);
+			bool staticp, const QByteArray & value,
+			QByteArray comment, QByteArray description);
 
 			  
 #ifdef REVERSE
-    static bool new_initialization(Class * container, QCString comment,
-				   QCString description);
+    static bool new_initialization(Class * container, QByteArray comment,
+				   QByteArray description);
 #endif
 };
 

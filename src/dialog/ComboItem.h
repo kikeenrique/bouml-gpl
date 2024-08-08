@@ -30,19 +30,18 @@
 
 class QComboBox;
 
-class ComboItem : public TableItem
-{
-    protected:
-        bool editable;
-        QComboBox * cb;
-        const QStringList & types;
-
-    public:
-        ComboItem (QTable * t, const QString & s,
-                   const QStringList & list, bool edit = TRUE);
-
-        virtual QWidget * createEditor() const;
-        virtual void setContentFromEditor (QWidget * w);
+class ComboItem : public TableItem {
+  protected:
+    bool editable;
+    QComboBox * cb;
+    const QStringList & types;
+    
+  public:
+    ComboItem(Q3Table * t, const QString & s,
+	      const QStringList & list, bool edit = TRUE);
+  
+    virtual QWidget * createEditor() const;
+    virtual void setContentFromEditor(QWidget * w);
 };
 
 #endif

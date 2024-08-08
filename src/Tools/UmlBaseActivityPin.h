@@ -9,24 +9,23 @@
 class UmlActivityPin;
 class UmlActivityAction;
 
-class UmlBaseActivityPin : public UmlPinParameter
-{
-    public:
-        //  returns a new activity action pin named 's' created under 'parent'
-        //
-        // In case it cannot be created (the name is already used or
-        // invalid, 'parent' cannot contain it etc ...) return 0 in C++
-        // and produce a RuntimeException in Java
-        static UmlActivityPin * create (UmlActivityAction * parent, const char * s);
+class UmlBaseActivityPin : public UmlPinParameter {
+  public:
+    //  returns a new activity action pin named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlActivityPin * create(UmlActivityAction * parent, const char * s);
 
-        // returns the kind of the item
-        virtual anItemKind kind();
+    // returns the kind of the item
+    virtual anItemKind kind();
 
 
-    protected:
-        //  the constructor, do not call it yourself !!!!!!!!!!
-        UmlBaseActivityPin (void * id, const QCString & s) : UmlPinParameter (id, s) {
-        }
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseActivityPin(void * id, const QByteArray & s) : UmlPinParameter(id, s) {
+    }
 
 };
 

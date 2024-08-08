@@ -8,7 +8,7 @@
 class UmlOnSignalAction : public UmlBaseOnSignalAction {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlOnSignalAction(void * id, const QCString & s) : UmlBaseOnSignalAction(id, s) {
+     UmlOnSignalAction(void * id, const QByteArray & s) : UmlBaseOnSignalAction(id, s) {
     }
 
 };

@@ -12,7 +12,7 @@
 #include "UmlCom.h"
 void Uc::import(File & f) {
   for (;;) {
-    QCString s;
+    QByteArray s;
 
     switch (f.read(s)) {
     case -1:
@@ -39,7 +39,7 @@ void Uc::import(File & f) {
 
 void Uc::readObjects(File & f) {
   for (;;) {
-    QCString s;
+    QByteArray s;
 
     switch (f.read(s)) {
     case ')':
@@ -77,7 +77,7 @@ void Uc::readObjects(File & f) {
     else {
       if ((s != "Association") &&	// actor -----> UC ...
 	  (s != "Mechanism"))		// seq/col diagram
-	UmlCom::trace("<br>" + s + " in " + QCString(f.name()) + " NOT MANAGED by UseCaseView::readObject()");
+	UmlCom::trace("<br>" + s + " in " + QByteArray(f.name()) + " NOT MANAGED by UseCaseView::readObject()");
       f.skipBlock();
     }
   }

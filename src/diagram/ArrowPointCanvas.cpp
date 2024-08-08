@@ -27,9 +27,11 @@
 
 
 
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qcursor.h>
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QTextStream>
 
 #include "ArrowPointCanvas.h"
 #include "ArrowCanvas.h"
@@ -47,213 +49,191 @@
 #include "DiagramView.h"
 #include "translate.h"
 
-ArrowPointCanvas::ArrowPointCanvas (UmlCanvas * canvas, int x, int y)
-    : DiagramCanvas (0, canvas, x, y, ARROW_POINT_SIZE, ARROW_POINT_SIZE, -1)
-{
-    browser_node = canvas->browser_diagram();
+ArrowPointCanvas::ArrowPointCanvas(UmlCanvas * canvas, int x, int y)
+    : DiagramCanvas(0, canvas, x, y, ARROW_POINT_SIZE, ARROW_POINT_SIZE, -1) {
+  browser_node = canvas->browser_diagram();
 }
 
-ArrowPointCanvas::~ArrowPointCanvas()
-{
+ArrowPointCanvas::~ArrowPointCanvas() {
 }
 
-void ArrowPointCanvas::delete_it()
-{
-    if (lines.isEmpty()) {
-        the_canvas()->del (this);
-    } else {
-        lines.first()->delete_it();    // will apply del on this
-    }
+void ArrowPointCanvas::delete_it() {
+  if (lines.isEmpty())
+    the_canvas()->del(this);
+  else
+    lines.first()->delete_it();	// will apply del on this
 }
 
-void ArrowPointCanvas::delete_available (BooL &,
-        BooL & out_model) const
-{
-    out_model |= lines.getFirst()->may_join();
+void ArrowPointCanvas::delete_available(BooL &,
+					BooL & out_model) const {
+  out_model |= lines.first()->may_join();
 }
 
 // not produced in SVG file
 
-void ArrowPointCanvas::change_scale()
-{
-    // the size is not modified
-    QCanvasRectangle::setVisible (FALSE);
-    recenter();
-    QCanvasRectangle::setVisible (TRUE);
+void ArrowPointCanvas::change_scale() {
+  // the size is not modified
+  Q3CanvasRectangle::setVisible(FALSE);
+  recenter();
+  Q3CanvasRectangle::setVisible(TRUE);
 }
 
-void ArrowPointCanvas::draw (QPainter & p)
-{
-    if (! visible()) {
-        return;
-    }
+void ArrowPointCanvas::draw(QPainter & p) {
+  if (! visible()) return;
 
-    QRect r = rect();
+  QRect r = rect();
 
-    r.setX (r.x() + 1);
-    r.setY (r.y() + 1);
-    r.setWidth (r.width() - 1);
-    r.setHeight (r.height() - 1);
+  r.setX(r.x() + 1);
+  r.setY(r.y() + 1);
+  r.setWidth(r.width() - 1);
+  r.setHeight(r.height() - 1);
 
-    p.fillRect (r, ::Qt::black);
+  p.fillRect(r, ::Qt::black);
 
-    if (selected()) {
-        show_mark (p, rect());
-    }
+  if (selected())
+    show_mark(p, rect());
 }
 
-UmlCode ArrowPointCanvas::type() const
-{
-    return UmlArrowPoint;
+UmlCode ArrowPointCanvas::type() const {
+  return UmlArrowPoint;
 }
 
-void ArrowPointCanvas::connexion (UmlCode action, DiagramItem * dest,
-                                  const QPoint &, const QPoint &)
-{
-    ArrowCanvas * a;
+void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
+				 const QPoint &, const QPoint &) {
+  ArrowCanvas * a;
 
-    switch (the_canvas()->browser_diagram()->get_type()) {
-        case UmlClassDiagram:
-            if (IsaRelation (action)) {
-                a = new RelationCanvas (the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-            break;
-        case UmlColDiagram:
-            if (action == UmlLink) {
-                a = new CodLinkCanvas (the_canvas(), this, dest, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-            break;
-        case UmlObjectDiagram:
-            if (action == UmlObjectLink) {
-                a = new ObjectLinkCanvas (the_canvas(), this, dest, UmlObjectLink, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-            break;
-        case UmlDeploymentDiagram:
-        case UmlComponentDiagram:
-            if (action == UmlContain) {
-                a = new AssocContainCanvas (the_canvas(), this, dest, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-        case UmlStateDiagram:
-            if (action == UmlTransition) {
-                a = new TransitionCanvas (the_canvas(), this, dest, 0, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-        case UmlActivityDiagram:
-            if (action == UmlFlow) {
-                a = new FlowCanvas (the_canvas(), this, dest, 0, 0, -1.0, -1.0);
-                a->show();
-                the_canvas()->select (a);
-                return;
-            }
-        default:	// to avoid warning
-            break;
+  switch (the_canvas()->browser_diagram()->get_type()) {
+  case UmlClassDiagram:
+    if (IsaRelation(action)) {
+      a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
     }
-
-    if (IsaSimpleRelation (action)) {
-        a = new SimpleRelationCanvas (the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
-    } else {
-        a = new ArrowCanvas (the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
+    break;
+  case UmlColDiagram:
+    if (action == UmlLink) {
+      a = new CodLinkCanvas(the_canvas(), this, dest, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
     }
+    break;
+  case UmlObjectDiagram:
+    if (action == UmlObjectLink) {
+      a = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
+    }
+    break;
+  case UmlDeploymentDiagram:
+  case UmlComponentDiagram:
+    if (action == UmlContain) {
+      a = new AssocContainCanvas(the_canvas(), this, dest, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
+    }
+  case UmlStateDiagram:
+    if (action == UmlTransition) {
+      a = new TransitionCanvas(the_canvas(), this, dest, 0, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
+    }
+  case UmlActivityDiagram:
+    if (action == UmlFlow) {
+      a = new FlowCanvas(the_canvas(), this, dest, 0, 0, -1.0, -1.0);
+      a->show();
+      the_canvas()->select(a);
+      return;
+    }
+  default:	// to avoid warning
+    break;
+  }
 
-    a->show();
-    the_canvas()->select (a);
+  if (IsaSimpleRelation(action))
+    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
+  else
+    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
+
+  a->show();
+  the_canvas()->select(a);
 }
 
-void ArrowPointCanvas::open()
-{
-    if (lines.at (0)->may_join()) {
-        DiagramView * view = the_canvas()->get_view();
+void ArrowPointCanvas::open() {
+  if (lines.at(0)->may_join()) {
+    DiagramView * view = the_canvas()->get_view();
 
-        view->history_save();
-        view->protect_history (TRUE);
-        lines.at (0)->join (lines.at (1), this);
-        canvas()->update();
-        view->protect_history (FALSE);
-        package_modified();
-    }
-}
-
-void ArrowPointCanvas::menu (const QPoint&)
-{
-    QPopupMenu m;
-
-    m.insertItem (new MenuTitle (TR ("Line break"), m.font()), -1);
-    m.insertSeparator();
-    m.insertItem (TR ("Remove from diagram"), 0);
-    m.setItemEnabled (0, lines.at (0)->may_join());
-
-    switch (m.exec (QCursor::pos())) {
-        case 0:
-            // removes the point replacing the lines around it by a single line
-            lines.at (0)->join (lines.at (1), this);
-            break;
-        default:
-            return;
-    }
-
+    view->history_save();
+    view->protect_history(TRUE);
+    lines.at(0)->join(lines.at(1), this);
+    canvas()->update();
+    view->protect_history(FALSE);
     package_modified();
+  }
 }
 
-QString ArrowPointCanvas::may_start (UmlCode &) const
-{
-    return TR ("illegal");
+void ArrowPointCanvas::menu(const QPoint&) {
+  Q3PopupMenu m;
+
+  m.insertItem(new MenuTitle(TR("Line break"), m.font()), -1);
+  m.insertSeparator();
+  m.insertItem(TR("Remove from diagram"), 0);
+  m.setItemEnabled(0, lines.at(0)->may_join());
+
+  switch (m.exec(QCursor::pos())) {
+  case 0:
+    // removes the point replacing the lines around it by a single line
+    lines.at(0)->join(lines.at(1), this);
+    break;
+  default:
+    return;
+  }
+
+  package_modified();
 }
 
-QString ArrowPointCanvas::may_connect (UmlCode &, const DiagramItem *) const
-{
-    return TR ("illegal");
+QString ArrowPointCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-bool ArrowPointCanvas::alignable() const
-{
-    return TRUE;
+QString ArrowPointCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
-void ArrowPointCanvas::prepare_for_move (bool)
-{
-    // defined to do nothing, else in case the point is
-    // part of a self relation this last and the element defining
-    // the self relation move with the point
+bool ArrowPointCanvas::alignable() const {
+  return TRUE;
 }
 
-ArrowCanvas * ArrowPointCanvas::get_other (const ArrowCanvas * l) const
-{
-    return (lines.getFirst() == l) ? lines.getLast() : lines.getFirst();
+void ArrowPointCanvas::prepare_for_move(bool) {
+  // defined to do nothing, else in case the point is
+  // part of a self relation this last and the element defining
+  // the self relation move with the point
 }
 
-void ArrowPointCanvas::save (QTextStream & st, bool, QString &) const
-{
-    save_xy (st, this, "point");
+ArrowCanvas * ArrowPointCanvas::get_other(const ArrowCanvas * l) const {
+  return (lines.first() == l) ? lines.last() : lines.first();
 }
 
-ArrowPointCanvas * ArrowPointCanvas::read (char * & st, UmlCanvas * canvas,
-        char * k)
+void ArrowPointCanvas::save(QTextStream & st, bool, QString &) const {
+  save_xy(st, this, "point");
+}
+
+ArrowPointCanvas * ArrowPointCanvas::read(char * & st, UmlCanvas * canvas,
+					  char * k)
 {
-    if (strcmp (k, "point")) {
-        return 0;
-    }
+  if (strcmp(k, "point"))
+    return 0;
 
-    int x = (int) read_double (st);
+  int x = (int) read_double(st);
 
-    ArrowPointCanvas * result =
-        new ArrowPointCanvas (canvas, x, (int) read_double (st));
+  ArrowPointCanvas * result =
+    new ArrowPointCanvas(canvas, x, (int) read_double(st));
 
-    result->show();
+  result->show();
 
-    return result;
+  return result;
 }
 

@@ -3,7 +3,7 @@
 
 
 #include "UmlBaseFragmentCompartment.h"
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qcstring.h>
 
 class FileOut;
@@ -20,7 +20,7 @@ class UmlFragmentCompartment : public UmlBaseFragmentCompartment {
 
     //
     
-    void write(FileOut & out, UmlItem * diagram, QList< UmlSequenceMessage > & msgs, QCString oper);
+    void write(FileOut & out, UmlItem * diagram, QList< UmlSequenceMessage > & msgs, QByteArray oper);
 
     //
     

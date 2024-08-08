@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QTextStream>
 // *************************************************************************
 //
 // Copyright 2004-2010 Bruno PAGES  .
@@ -32,37 +34,36 @@ class SdMsgBaseCanvas;
 
 #define LOSTFOUND_SIZE 9
 
-class SdLostFoundMsgSupportCanvas : public SdMsgSupport
-{
-    private:
-        SdMsgBaseCanvas * msg;
-
-    public:
-        SdLostFoundMsgSupportCanvas (UmlCanvas * canvas, int x, int y, int id);
-        virtual ~SdLostFoundMsgSupportCanvas();
-
-        virtual void draw (QPainter & p);
-
-        virtual UmlCode type() const;
-        virtual void delete_available (BooL &, BooL & out_model) const;
-        virtual void delete_it();
-        virtual void change_scale();
-        virtual void open();
-        virtual void menu (const QPoint&);
-        virtual QString may_start (UmlCode &) const;
-        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
-        virtual bool alignable() const;
-        virtual bool copyable() const;
-        virtual void add (SdMsgBaseCanvas *);
-        virtual void remove (SdMsgBaseCanvas *);
-        virtual double min_y() const;
-        virtual void update_v_to_contain (const QRect re);
-        virtual void moveBy (double dx, double dy);
-        virtual void set_z (double);
-        virtual bool isaDuration() const;
-        virtual bool isOverlappingDuration() const;
-        virtual void save (QTextStream & st, bool ref, QString & warning) const;
-        static SdLostFoundMsgSupportCanvas * read (char * & st, UmlCanvas * canvas, char * k);
+class SdLostFoundMsgSupportCanvas : public SdMsgSupport {
+  private:
+    SdMsgBaseCanvas * msg;
+  
+  public:
+    SdLostFoundMsgSupportCanvas(UmlCanvas * canvas, int x, int y, int id);
+    virtual ~SdLostFoundMsgSupportCanvas();
+    
+    virtual void draw(QPainter & p);
+    
+    virtual UmlCode type() const;
+    virtual void delete_available(BooL &, BooL & out_model) const;
+    virtual void delete_it();
+    virtual void change_scale();
+    virtual void open();
+    virtual void menu(const QPoint&);
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual bool alignable() const;
+    virtual bool copyable() const;
+    virtual void add(SdMsgBaseCanvas *);
+    virtual void remove(SdMsgBaseCanvas *);
+    virtual double min_y() const;
+    virtual void update_v_to_contain(const QRect re);
+    virtual void moveBy(double dx, double dy);
+    virtual void set_z(double);
+    virtual bool isaDuration() const;
+    virtual bool isOverlappingDuration() const;
+    virtual void save(QTextStream & st, bool ref, QString & warning) const;
+    static SdLostFoundMsgSupportCanvas * read(char * & st, UmlCanvas * canvas, char * k);
 };
 
 #endif

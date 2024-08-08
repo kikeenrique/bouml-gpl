@@ -1,7 +1,7 @@
 
 #include "UmlUseCaseDiagram.h"
 
-QCString UmlUseCaseDiagram::sKind() {
+QByteArray UmlUseCaseDiagram::sKind() {
   return "use case diagram";
 }
 

@@ -48,10 +48,10 @@ bool UmlState::inside(UmlState * other) {
   }
 }
 
-void UmlState::init(UmlClass * mother, QCString path, QCString pretty_path, UmlState *) {
+void UmlState::init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState *) {
   // create if needed the class implementing the state
 
-  QCString qn = quotedName() + "_State";
+  QByteArray qn = quotedName() + "_State";
     
   if ((_class = (UmlClass*) mother->getChild(aClass, qn)) == 0) {
     if ((_class = UmlBaseClass::create(mother, qn)) == 0) {
@@ -131,7 +131,7 @@ void UmlState::generate() {
     {
       // a class having the normalized name of the state machine 
       // implements it in the class view of the state machine
-      QCString qn = quotedName();
+      QByteArray qn = quotedName();
       UmlClass * machine = (UmlClass *) parent()->getChild(aClass, qn);
       
       if ((machine == 0) &&
@@ -361,7 +361,7 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState *) {
     
   // additional operations
     
-  QCString s;
+  QByteArray s;
     
   s = cppEntryBehavior();
     
@@ -369,7 +369,7 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState *) {
       (_has_completion || !s.isEmpty())) {
     // add a 'create' to do the entry behavior / completion
     UmlOperation * create = _class->trigger("create", machine, anystate);
-    QCString body;
+    QByteArray body;
     
     if (!s.isEmpty())
       body = "\t_doentry(stm);\n";

@@ -22,8 +22,8 @@ void UmlOperation::setType(const char * type, const char * s) {
   t.explicit_type = type;
   set_ReturnType(t);
  
-  static const QCString sep = " \t\n\r";
-  QCString d;
+  static const QByteArray sep = " \t\n\r";
+  QByteArray d;
   int typeindex;
   int nameindex;
   
@@ -54,8 +54,8 @@ void UmlOperation::setType(UmlClass * type, const char * s) {
   t.type = type;
   set_ReturnType(t);
  
-  static const QCString sep = " \t\n\r";
-  QCString d;
+  static const QByteArray sep = " \t\n\r";
+  QByteArray d;
   int typeindex;
   int nameindex;
   
@@ -94,7 +94,7 @@ void UmlOperation::addParam(int rank, aDirection dir, const char * name, UmlClas
 }
 
 void UmlOperation::setParams(const char * s) {
-  QCString d;
+  QByteArray d;
   int index;
   
   d = cppDecl();

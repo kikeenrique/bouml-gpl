@@ -30,34 +30,34 @@
 
 #include "UmlBaseOperation.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlOperation : public UmlBaseOperation {
   private:
     static QIntDict<char> bodies;
 
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
   
     virtual void compute_dependency(QList<CppRefType> & dependency,
-				    const QCString & cl_stereotype,
+				    const QByteArray & cl_stereotype,
 				    bool all_in_h);
-    virtual void generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
-			       const QCString & cl_stereotype, QCString indent,
+    virtual void generate_decl(aVisibility & current_visibility, QTextStream & f_h,
+			       const QByteArray & cl_stereotype, QByteArray indent,
 			       BooL & first, bool last);
-    virtual void generate_def(QTextOStream &, QCString indent, bool h,
-			      QCString templates, QCString cl_names,
-			      QCString templates_tmplop, QCString cl_names_tmplop);
+    virtual void generate_def(QTextStream &, QByteArray indent, bool h,
+			      QByteArray templates, QByteArray cl_names,
+			      QByteArray templates_tmplop, QByteArray cl_names_tmplop);
     
-    QCString compute_name();
+    QByteArray compute_name();
     bool is_template_operation();
     
     static void read_bodies(const char * h_path, const char * src_path);
     
   private:
-    const char * generate_body(QTextOStream & fs, QCString indent, const char * p);
-    void generate_throw(QTextOStream & f_h);
+    const char * generate_body(QTextStream & fs, QByteArray indent, const char * p);
+    void generate_throw(QTextStream & f_h);
 };
 
 #endif

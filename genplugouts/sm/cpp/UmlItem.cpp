@@ -9,7 +9,7 @@
  UmlItem::~UmlItem() {
 }
 
-UmlItem * UmlItem::getChild(anItemKind k, QCString s) {
+UmlItem * UmlItem::getChild(anItemKind k, QByteArray s) {
   const QVector<UmlItem> ch = children();
   unsigned index;
   
@@ -28,8 +28,8 @@ UmlItem * UmlItem::getChild(anItemKind k, QCString s) {
   return 0;
 }
 
-QCString UmlItem::quotedName() {
-  QCString r;
+QByteArray UmlItem::quotedName() {
+  QByteArray r;
   const char * s = name();
 
   for (;;) {
@@ -48,7 +48,7 @@ QCString UmlItem::quotedName() {
 
 }
 
-void UmlItem::init(UmlClass *, QCString, QCString, UmlState *) {
+void UmlItem::init(UmlClass *, QByteArray, QByteArray, UmlState *) {
 }
 
 void UmlItem::generate() {
@@ -58,14 +58,14 @@ void UmlItem::generate() {
 void UmlItem::generate(UmlClass *, UmlClass *, UmlState *) {
 }
 
-void UmlItem::generate(UmlClass *, UmlClass *, UmlState *, QCString &, QCString) {
+void UmlItem::generate(UmlClass *, UmlClass *, UmlState *, QByteArray &, QByteArray) {
 }
 
-void UmlItem::setComment(QCString) {
+void UmlItem::setComment(QByteArray) {
 }
 
 void UmlItem::setUseless() {
- QCString dummy;
+ QByteArray dummy;
  
  if (propertyValue("STM generated", dummy))
    set_PropertyValue("STM generated", "0");
@@ -81,7 +81,7 @@ void UmlItem::setUsed() {
 }
 
 void UmlItem::deleteUseless() {
-  QCString v;
+  QByteArray v;
   
   if (propertyValue("STM generated", v) && (v == "0"))
     // useless

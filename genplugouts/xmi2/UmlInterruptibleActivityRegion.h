@@ -10,7 +10,7 @@ class FileOut;
 class UmlInterruptibleActivityRegion : public UmlBaseInterruptibleActivityRegion {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlInterruptibleActivityRegion(void * id, const QCString & s) : UmlBaseInterruptibleActivityRegion(id, s) {
+     UmlInterruptibleActivityRegion(void * id, const QByteArray & s) : UmlBaseInterruptibleActivityRegion(id, s) {
     }
 
     //write the definition if it is not empty for the target language

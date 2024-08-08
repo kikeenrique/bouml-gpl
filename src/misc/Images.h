@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QPixmap>
 // *************************************************************************
 //
 // Copyright 2004-2010 Bruno PAGES  .
@@ -28,8 +30,8 @@
 
 class QPixmap;
 
-QPixmap * get_pixmap (const char * path);
-QPixmap * get_pixmap (const char * path, double zoom);
+QPixmap * get_pixmap(const char * path);
+QPixmap * get_pixmap(const char * path, double zoom);
 void init_images();
 
 #endif

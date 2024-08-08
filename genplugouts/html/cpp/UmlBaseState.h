@@ -26,13 +26,13 @@ class UmlBaseState : public UmlItem {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseState(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseState(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 
   public:
     // return the entry behavior in OCL
-    const QCString & entryBehavior();
+    const QByteArray & entryBehavior();
 
     // set the entry behavior in OCL
     //
@@ -40,7 +40,7 @@ class UmlBaseState : public UmlItem {
     bool set_EntryBehavior(const char * s);
 
     // return the exit behavior in OCL
-    const QCString & exitBehavior();
+    const QByteArray & exitBehavior();
 
     // set the exit behavior in OCL
     //
@@ -48,7 +48,7 @@ class UmlBaseState : public UmlItem {
     bool set_ExitBehavior(const char * s);
 
     // return the activity in OCL
-    const QCString & doActivity();
+    const QByteArray & doActivity();
 
     // set the activity in OCL
     //
@@ -57,7 +57,7 @@ class UmlBaseState : public UmlItem {
 
 #ifdef WITHCPP
     // return the entry behavior in C++
-    const QCString & cppEntryBehavior();
+    const QByteArray & cppEntryBehavior();
 
     // set the entry behavior in C++
     //
@@ -65,7 +65,7 @@ class UmlBaseState : public UmlItem {
     bool set_CppEntryBehavior(const char * s);
 
     // return the exit behavior in C++
-    const QCString & cppExitBehavior();
+    const QByteArray & cppExitBehavior();
 
     // set the exit behavior in C++
     //
@@ -73,7 +73,7 @@ class UmlBaseState : public UmlItem {
     bool set_CppExitBehavior(const char * s);
 
     // return the activity in C++
-    const QCString & cppDoActivity();
+    const QByteArray & cppDoActivity();
 
     // set the activity in C++
     //
@@ -83,7 +83,7 @@ class UmlBaseState : public UmlItem {
 
 #ifdef WITHJAVA
     // return the entry behavior in Java
-    const QCString & javaEntryBehavior();
+    const QByteArray & javaEntryBehavior();
 
     // set the entry behavior in Java
     //
@@ -91,7 +91,7 @@ class UmlBaseState : public UmlItem {
     bool set_JavaEntryBehavior(const char * s);
 
     // return the exit behavior in Java
-    const QCString & javaExitBehavior();
+    const QByteArray & javaExitBehavior();
 
     // set the exit behavior in Java
     //
@@ -99,7 +99,7 @@ class UmlBaseState : public UmlItem {
     bool set_JavaExitBehavior(const char * s);
 
     // return the activity in Java
-    const QCString & javaDoActivity();
+    const QByteArray & javaDoActivity();
 
     // set the activity in Java
     //

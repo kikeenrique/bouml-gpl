@@ -33,15 +33,15 @@
 #include "PythonSettings.h"
 #include "util.h"
 
-UmlPackage::UmlPackage(void * id, const QCString & n)
+UmlPackage::UmlPackage(void * id, const QByteArray & n)
     : UmlBasePackage(id, n) {
   dir.read = FALSE;
 }
 
 static bool RootDirRead;
-static QCString RootDir;
+static QByteArray RootDir;
 
-QCString UmlPackage::rootDir(aLanguage who)
+QByteArray UmlPackage::rootDir(aLanguage who)
 {
   if (! RootDirRead) {
     RootDirRead = TRUE;
@@ -72,7 +72,7 @@ QCString UmlPackage::rootDir(aLanguage who)
   return RootDir;
 }
 
-QCString UmlPackage::source_path(const QCString & f) {
+QByteArray UmlPackage::source_path(const QByteArray & f) {
   if (!dir.read) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
@@ -90,7 +90,7 @@ QCString UmlPackage::source_path(const QCString & f) {
       dir.h = d_root.filePath(dir.h);
    
     if (dir.src.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'C++')</b></font><br>");
@@ -103,15 +103,15 @@ QCString UmlPackage::source_path(const QCString & f) {
   
   QDir d(dir.src);
   
-  return QCString(d.filePath(f)) + QCString(".") + CppSettings::sourceExtension();
+  return QByteArray(d.filePath(f)) + QByteArray(".") + CppSettings::sourceExtension();
 }
 
-QCString UmlPackage::header_path(const QCString & f) {
+QByteArray UmlPackage::header_path(const QByteArray & f) {
   if (!dir.read) {
     source_path(f);
    
     if (dir.h.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'C++')</b></font><br>");
@@ -120,7 +120,7 @@ QCString UmlPackage::header_path(const QCString & f) {
     }
     
     if (QDir::isRelativePath(dir.h)) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><i>")
 		    + name() + "</i>'s header path <i>(" + dir.h
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'C++')</b></font><br>");
@@ -131,7 +131,7 @@ QCString UmlPackage::header_path(const QCString & f) {
   
   QDir d(dir.h);
   
-  return QCString(d.filePath(f)) + QCString(".") + CppSettings::headerExtension();
+  return QByteArray(d.filePath(f)) + QByteArray(".") + CppSettings::headerExtension();
 }
 
 void UmlPackage::roundtrip_cpp() {
@@ -141,7 +141,7 @@ void UmlPackage::roundtrip_cpp() {
     ch[index]->roundtrip_cpp();
 }
 
-QCString UmlPackage::java_path(const QCString & f) {
+QByteArray UmlPackage::java_path(const QByteArray & f) {
   if (!dir.read) {
     dir.src = javaDir();
     
@@ -153,7 +153,7 @@ QCString UmlPackage::java_path(const QCString & f) {
       dir.src = d_root.filePath(dir.src);
 
     if (dir.src.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'Java')</b></font><br>");
@@ -166,10 +166,10 @@ QCString UmlPackage::java_path(const QCString & f) {
   
   QDir d(dir.src);
   
-  return QCString(d.filePath(f)) + QCString(".") + JavaSettings::sourceExtension();
+  return QByteArray(d.filePath(f)) + QByteArray(".") + JavaSettings::sourceExtension();
 }
 
-QCString UmlPackage::php_path(const QCString & f) {
+QByteArray UmlPackage::php_path(const QByteArray & f) {
   if (!dir.read) {
     dir.src = phpDir();
     
@@ -181,7 +181,7 @@ QCString UmlPackage::php_path(const QCString & f) {
       dir.src = d_root.filePath(dir.src);
 
     if (dir.src.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'php')</b></font><br>");
@@ -194,10 +194,10 @@ QCString UmlPackage::php_path(const QCString & f) {
   
   QDir d(dir.src);
   
-  return QCString(d.filePath(f)) + QCString(".") + PhpSettings::sourceExtension();
+  return QByteArray(d.filePath(f)) + QByteArray(".") + PhpSettings::sourceExtension();
 }
 
-QCString UmlPackage::python_path(const QCString & f) {
+QByteArray UmlPackage::python_path(const QByteArray & f) {
   if (!dir.read) {
     dir.src = pythonDir();
     
@@ -209,7 +209,7 @@ QCString UmlPackage::python_path(const QCString & f) {
       dir.src = d_root.filePath(dir.src);
 
     if (dir.src.isEmpty()) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+      UmlCom::trace(QByteArray("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'python')</b></font><br>");
@@ -222,7 +222,7 @@ QCString UmlPackage::python_path(const QCString & f) {
   
   QDir d(dir.src);
   
-  return QCString(d.filePath(f)) + QCString(".") + PythonSettings::sourceExtension();
+  return QByteArray(d.filePath(f)) + QByteArray(".") + PythonSettings::sourceExtension();
 }
 
 void UmlPackage::roundtrip_java() {

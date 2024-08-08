@@ -24,7 +24,7 @@ class UmlBaseForkPseudoState : public UmlPseudoState {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseForkPseudoState(void * id, const QCString & s) : UmlPseudoState(id, s) {
+     UmlBaseForkPseudoState(void * id, const QByteArray & s) : UmlPseudoState(id, s) {
     }
 
 };

@@ -45,8 +45,8 @@ using namespace std;
 #endif
 
 #ifdef ROUNDTRIP
-static UmlRelation * search_rel(Class * container, const QCString & name,
-				UmlClass * dest, const QCString & st)
+static UmlRelation * search_rel(Class * container, const QByteArray & name,
+				UmlClass * dest, const QByteArray & st)
 {
   UmlItem * x = container->get_uml()->search_for_att_rel(name);
   
@@ -82,13 +82,13 @@ static UmlRelation * search_rel(Class * container, const QCString & name,
 }
 #endif
 
-bool UmlRelation::new_one(Class * container, const QCString & name,
-			  UmlClass * dest, const QCString & modifier, 
-			  const QCString & pretype, const QCString & array, 
-			  const QCString & typeform, aVisibility visibility,
+bool UmlRelation::new_one(Class * container, const QByteArray & name,
+			  UmlClass * dest, const QByteArray & modifier, 
+			  const QByteArray & pretype, const QByteArray & array, 
+			  const QByteArray & typeform, aVisibility visibility,
 			  bool staticp, bool constp, bool mutablep, bool volatilep, 
-			  const QCString & value, QCString comment,
-			  QCString description
+			  const QByteArray & value, QByteArray comment,
+			  QByteArray description
 #ifdef ROUNDTRIP
 			  , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -129,7 +129,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
 				  cl, dest);
   
     if (rel == 0) {
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot add relation <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add relation <i>")
 		    + name + "</i> in <i>" + cl->name() + "</i> to <i>"
 		    + dest->name() + "</i></b></font><br><hr>");  
       return FALSE;
@@ -192,15 +192,15 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   }
 #endif
   
-  QCString decl;
+  QByteArray decl;
   
   if (typeform != "${type}") {
     // array & modified are empty, pretype is empty ?
     decl = CppSettings::relationDecl(TRUE, "*");
     
     int index = typeform.find("<");	// cannot be -1
-    QCString st = typeform.left(index);
-    QCString st_uml = CppSettings::umlType(st);
+    QByteArray st = typeform.left(index);
+    QByteArray st_uml = CppSettings::umlType(st);
 
 #ifdef ROUNDTRIP
     if (roundtrip) {
@@ -258,7 +258,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
 #ifdef ROUNDTRIP
     if (roundtrip) {
       if (!staticp) {
-	QCString v = rel->defaultValue();
+	QByteArray v = rel->defaultValue();
 	
 	if (!v.isEmpty() && (((const char *) v)[0] == '='))
 	  v = v.mid(1);
@@ -315,7 +315,7 @@ bool UmlRelation::new_friend(UmlClass * from, UmlClass * to)
   UmlRelation * rel = UmlBaseRelation::create(aDependency, from, to);
   
   if (rel == 0) {
-    UmlCom::trace(QCString("<font face=helvetica><b>cannot add friend relation in <i>")
+    UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add friend relation in <i>")
 		  + from->name() + "</i> to <i>"
 		  + to->name() + "</i></b></font><br><hr><br>");  
     return FALSE;
@@ -361,7 +361,7 @@ bool UmlRelation::new_friend(Class * container, UmlClass * to,
   UmlRelation * rel = UmlBaseRelation::create(aDependency, from, to);
   
   if (rel == 0) {
-    UmlCom::trace(QCString("<font face=helvetica><b>cannot add friend relation in <i>")
+    UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add friend relation in <i>")
 		  + from->name() + "</i> to <i>"
 		  + to->name() + "</i></b></font><br><hr><br>");  
     return FALSE;
@@ -398,8 +398,8 @@ void UmlRelation::set_unidir() {
   UmlRelation * r2 = (r1 != this) ? this : side(FALSE);
   
   if (r1->isReadOnly() || r2->isReadOnly()) {
-    UmlCom::trace(QCString("<font face=helvetica>in <i>") + QCString(Lex::filename())
-		  + "</i> line " + QCString().setNum(Lex::line_number())
+    UmlCom::trace(QByteArray("<font face=helvetica>in <i>") + QByteArray(Lex::filename())
+		  + "</i> line " + QByteArray().setNum(Lex::line_number())
 		  + " <b>cannot remove relation between classes <i>"
 		  + roleType()->name() + "</i> and <i>" + parent()->name()
 		  + "</i> because one is read only</b></font><br>");
@@ -425,7 +425,7 @@ void UmlRelation::set_unidir() {
     UmlRelation * rel = 
       UmlBaseRelation::create(aDirectionalAssociation,
 			      (UmlClass *) parent(), roleType());
-    QCString role = roleName();
+    QByteArray role = roleName();
     
     rel->moveAfter(this);
     rel->set_Visibility(visibility());

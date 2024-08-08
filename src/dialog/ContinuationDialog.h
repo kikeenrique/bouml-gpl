@@ -30,23 +30,22 @@
 
 class LineEdit;
 
-class ContinuationDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        QString & name;
-        LineEdit * ed;
-
-        static QSize previous_size;
-
-    public:
-        ContinuationDialog (QString & s);
-        ~ContinuationDialog();
-
-    protected slots:
-        virtual void polish();
-        void accept();
+class ContinuationDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    QString & name;
+    LineEdit * ed;
+    
+    static QSize previous_size;
+  
+  public:
+    ContinuationDialog(QString & s);
+    ~ContinuationDialog();
+  
+  protected slots:
+    virtual void polish();
+    void accept();
 };
 
 #endif

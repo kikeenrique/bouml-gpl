@@ -12,7 +12,7 @@ class UmlUseCase : public UmlBaseUseCase {
   public:
     virtual void sort();
 
-    UmlUseCase(void * id, const QCString & n) : UmlBaseUseCase(id, n) {};
+    UmlUseCase(void * id, const QByteArray & n) : UmlBaseUseCase(id, n) {};
 
     virtual int orderWeight();
 

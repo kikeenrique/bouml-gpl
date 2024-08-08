@@ -36,15 +36,15 @@ class UmlClass;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };  
   
-    static bool new_one(Class * container, const QCString & name,
+    static bool new_one(Class * container, const QByteArray & name,
 			UmlTypeSpec & dest, 
 			aVisibility visibility,	bool staticp,
-			bool constp, const QCString & value,
-			QCString comment, QCString description);
+			bool constp, const QByteArray & value,
+			QByteArray comment, QByteArray description);
 };
 
 #endif

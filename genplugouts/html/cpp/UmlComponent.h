@@ -12,11 +12,11 @@ class UmlComponent : public UmlBaseComponent {
   public:
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
-    UmlComponent(void * id, const QCString & n) : UmlBaseComponent(id, n) {};
+    UmlComponent(void * id, const QByteArray & n) : UmlBaseComponent(id, n) {};
 
 };
 

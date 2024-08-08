@@ -33,9 +33,9 @@
 
 class Class : public BrowserNode, public ClassContainer {
   protected:
-    QCString filename;
-    QCString stereotype;
-    QCString its_namespace;
+    QByteArray filename;
+    QByteArray stereotype;
+    QByteArray its_namespace;
     UmlClass * uml;
     bool reversedp;
     bool stereotype_declared;
@@ -51,40 +51,40 @@ class Class : public BrowserNode, public ClassContainer {
     NDict<Class> declared;
     NDict<Class> defined;
     
-    void manage_member(QCString s, aVisibility visibility,
-		       ClassContainer * container, const QCString & path
+    void manage_member(QByteArray s, aVisibility visibility,
+		       ClassContainer * container, const QByteArray & path
 #ifdef ROUNDTRIP
 		       , bool roundtrip, QList<UmlItem> & expected_order
 #endif
 		       );
     
   public:
-    Class(BrowserNode * parent, const char * name, const QCString & st);
+    Class(BrowserNode * parent, const char * name, const QByteArray & st);
 #ifdef ROUNDTRIP
     Class(BrowserNode * parent, UmlClass * ucl);
 #endif
     virtual ~Class();	// just to not have warning
   
-    bool set_stereotype(const QCString & st);
+    bool set_stereotype(const QByteArray & st);
     
-    virtual bool find_type(QCString type, UmlTypeSpec & typespec);
-    virtual Class * declare_if_needed(const QCString & name,
-				      QCString stereotype = 0);
-    virtual Class * define(const QCString & name, QCString stereotype = 0);
-    virtual void declare_if_needed(QCString name, Class * cl);
-    virtual void define(QCString name, Class * cl);
-    virtual Class * new_class(const QCString & name,
-			      const QCString & stereotype,
+    virtual bool find_type(QByteArray type, UmlTypeSpec & typespec);
+    virtual Class * declare_if_needed(const QByteArray & name,
+				      QByteArray stereotype = 0);
+    virtual Class * define(const QByteArray & name, QByteArray stereotype = 0);
+    virtual void declare_if_needed(QByteArray name, Class * cl);
+    virtual void define(QByteArray name, Class * cl);
+    virtual Class * new_class(const QByteArray & name,
+			      const QByteArray & stereotype,
 			      bool declaration);
-    virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl
+    virtual void declaration(const QByteArray & name, const QByteArray & stereotype,
+			     const QByteArray & decl
 #ifdef ROUNDTRIP
 			     , bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			     );
     
     virtual bool isa_package() const;
-    const QCString & get_namespace() const { return its_namespace; }
+    const QByteArray & get_namespace() const { return its_namespace; }
     UmlClass * get_uml();
     void set_uml(UmlClass *);
     bool reversed() const { return reversedp; };
@@ -99,7 +99,7 @@ class Class : public BrowserNode, public ClassContainer {
 #ifdef REVERSE
     bool from_libp() { return from_lib; };
 #else
-    const QCString & get_description() const { return description; };
+    const QByteArray & get_description() const { return description; };
     
     virtual void selected();
     virtual void activated();
@@ -115,20 +115,20 @@ class Class : public BrowserNode, public ClassContainer {
 #endif
     
     static Class * reverse(ClassContainer * container,
-			   QCString stereotype, 
+			   QByteArray stereotype, 
 			   const QValueList<FormalParameterList> & tmplt,
-			   const QCString & path, QCString name
+			   const QByteArray & path, QByteArray name
 #ifdef ROUNDTRIP
 			   , bool rndtrp, QList<UmlItem> & expectedorder
 #endif
 			   );
     static Class * reverse_enum(ClassContainer * container,
-				const QCString & path, QCString name
+				const QByteArray & path, QByteArray name
 #ifdef ROUNDTRIP
 				, bool rndtrp, QList<UmlItem> & expectedorder
 #endif
 			   );
-    static bool reverse_typedef(ClassContainer * container, const QCString & path,
+    static bool reverse_typedef(ClassContainer * container, const QByteArray & path,
 				QValueList<FormalParameterList> & tmplts
 #ifdef ROUNDTRIP
 				, bool rndtrp, QList<UmlItem> & expectedorder

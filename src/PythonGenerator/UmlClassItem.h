@@ -26,22 +26,22 @@
 #ifndef UMLCLASSITEM_H
 #define UMLCLASSITEM_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClassItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlTypeSpec;
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n) {
     };
   
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, BooL & indent_needed,
-			  int & enum_item_rank, const QCString & self) = 0;
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, BooL & indent_needed,
+			  int & enum_item_rank, const QByteArray & self) = 0;
 };
 
 #endif

@@ -7,7 +7,7 @@
 #include "PhpSettings.h"
 #include "PythonSettings.h"
 void UmlAttribute::uml2cpp(bool) {
-  QCString st = CppSettings::classStereotype(parent()->stereotype());
+  QByteArray st = CppSettings::classStereotype(parent()->stereotype());
   
   if ((st == "typedef") || (st == "ignored"))
     set_CppDecl("");
@@ -20,7 +20,7 @@ void UmlAttribute::uml2cpp(bool) {
 }
 
 void UmlAttribute::uml2java(bool) {
-  QCString st = JavaSettings::classStereotype(parent()->stereotype());
+  QByteArray st = JavaSettings::classStereotype(parent()->stereotype());
   
   if (st == "enum_pattern")
     set_JavaDecl(JavaSettings::enumPatternItemDecl());
@@ -33,7 +33,7 @@ void UmlAttribute::uml2java(bool) {
 }
 
 void UmlAttribute::uml2idl(bool) {
-  QCString st = IdlSettings::classStereotype(parent()->stereotype());
+  QByteArray st = IdlSettings::classStereotype(parent()->stereotype());
   
   if (st == "enum")
     set_IdlDecl(IdlSettings::enumItemDecl());
@@ -48,7 +48,7 @@ void UmlAttribute::uml2idl(bool) {
 }
 
 void UmlAttribute::uml2php(bool) {
-  QCString st = PhpSettings::classStereotype(parent()->stereotype());
+  QByteArray st = PhpSettings::classStereotype(parent()->stereotype());
   
   if (st == "enum")
     set_PhpDecl(PhpSettings::enumItemDecl());
@@ -59,7 +59,7 @@ void UmlAttribute::uml2php(bool) {
 }
 
 void UmlAttribute::uml2python(bool) {
-  QCString st = PythonSettings::classStereotype(parent()->stereotype());
+  QByteArray st = PythonSettings::classStereotype(parent()->stereotype());
   
   if (st == "enum")
     set_PythonDecl(PythonSettings::enumItemDecl());

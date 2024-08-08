@@ -9,15 +9,15 @@
 void UmlItem::roseImport() {
 }
 
-QCString UmlItem::fullName() {
+QByteArray UmlItem::fullName() {
   return parent()->fullName() + "::" + name();
 }
 
-void UmlItem::setProperties(QDict<QCString> & d) {
-  QDictIterator<QCString> it(d);
+void UmlItem::setProperties(QDict<QByteArray> & d) {
+  QDictIterator<QByteArray> it(d);
 
-  while (it.current()) {
-    set_PropertyValue(QCString(it.currentKey()), *(it.current()));
+  while ((*it)) {
+    set_PropertyValue(QByteArray(it.currentKey()), *((*it)));
     ++it;
   }
 
@@ -29,7 +29,7 @@ void UmlItem::newItem(UmlItem * x, const char * id)
   QAsciiDict<UmlItem> & d = all_items[x->kind()];
 
   if (d[id] != 0) {
-    UmlCom::trace(QCString("<br>id '") + id + "' used for several objects");
+    UmlCom::trace(QByteArray("<br>id '") + id + "' used for several objects");
     throw 0;
   }
 
@@ -48,11 +48,11 @@ UmlItem * UmlItem::findItem(const char * id, anItemKind k)
 
 void UmlItem::statistic()
 {
-  QCString msg = "<br>";
+  QByteArray msg = "<br>";
 
 #define add_nbr(x, str) \
   if (cpt[x] != 0) { \
-    QCString s; \
+    QByteArray s; \
     \
     s.sprintf("%d %s<br>", cpt[x], str); \
     msg += s; \

@@ -26,9 +26,9 @@
 #ifndef STATEDIALOG_H
 #define STATEDIALOG_H
 
-#include <qwidgetlist.h>
+#include <qwidget.h>
 #include <qstringlist.h>
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "BrowserNode.h"
 
@@ -45,84 +45,83 @@ struct StateBehavior;
 class BodyDialog;
 
 struct StDialog {
-    MultiLineEdit * edentry;
-    MultiLineEdit * edexit;
-    MultiLineEdit * edactivity;
-
-    void accept (StateBehavior &);
+  MultiLineEdit * edentry;
+  MultiLineEdit * edexit;
+  MultiLineEdit * edactivity;
+  
+  void accept(StateBehavior &);
 };
 
-class StateDialog : public QTabDialog
-{
-        Q_OBJECT
+class StateDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    QWidget * umltab;
+    bool visit;
+    StateData * state;
+    QStringList speclist;
+    BrowserNodeList opers;
+    QStringList reflist;
+    BrowserNodeList states;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    QComboBox * edspecification;
+    QComboBox * edreference;
+    QCheckBox * active_cb;
+    MultiLineEdit * comment;
+    QList<BodyDialog *> edits;
+    
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+    StDialog uml;
+    StDialog cpp;
+    StDialog java;
+        
+    // User
+    KeyValuesTable * kvtable;
+    
+    static QSize previous_size;
+  
+    static void post_edit_description(StateDialog * d, QString s);
+    static void post_edit_uml_entry(StateDialog * d, QString s);
+    static void post_edit_uml_exit(StateDialog * d, QString s);
+    static void post_edit_uml_activity(StateDialog * d, QString s);
+    static void post_edit_cpp_entry(StateDialog * d, QString s);
+    static void post_edit_cpp_exit(StateDialog * d, QString s);
+    static void post_edit_cpp_activity(StateDialog * d, QString s);
+    static void post_edit_java_entry(StateDialog * d, QString s);
+    static void post_edit_java_exit(StateDialog * d, QString s);
+    static void post_edit_java_activity(StateDialog * d, QString s);
+  
+  public:
+    StateDialog(StateData * r);
+    virtual ~StateDialog();
+  
+  protected:
+    void init_tab(QWidget *&, StDialog &, StateBehavior & td, const char * lbl,
+		  const char * sl_enbeh, const char * sl_exbeh, const char * sl_beh,
+		  bool enabled);
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+  
+    void menu_specification();
+    void menu_reference();
+    void edit_description();
+    void edit_uml_entry();
+    void edit_uml_exit();
+    void edit_uml_activity();
+    void edit_cpp_entry();
+    void edit_cpp_exit();
+    void edit_cpp_activity();
+    void edit_java_entry();
+    void edit_java_exit();
+    void edit_java_activity();
 
-    protected:
-        QWidget * umltab;
-        bool visit;
-        StateData * state;
-        QStringList speclist;
-        BrowserNodeList opers;
-        QStringList reflist;
-        BrowserNodeList states;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        QComboBox * edspecification;
-        QComboBox * edreference;
-        QCheckBox * active_cb;
-        MultiLineEdit * comment;
-        QList<BodyDialog> edits;
-
-        QWidget * ocltab;
-        QWidget * cpptab;
-        QWidget * javatab;
-        StDialog uml;
-        StDialog cpp;
-        StDialog java;
-
-        // User
-        KeyValuesTable * kvtable;
-
-        static QSize previous_size;
-
-        static void post_edit_description (StateDialog * d, QString s);
-        static void post_edit_uml_entry (StateDialog * d, QString s);
-        static void post_edit_uml_exit (StateDialog * d, QString s);
-        static void post_edit_uml_activity (StateDialog * d, QString s);
-        static void post_edit_cpp_entry (StateDialog * d, QString s);
-        static void post_edit_cpp_exit (StateDialog * d, QString s);
-        static void post_edit_cpp_activity (StateDialog * d, QString s);
-        static void post_edit_java_entry (StateDialog * d, QString s);
-        static void post_edit_java_exit (StateDialog * d, QString s);
-        static void post_edit_java_activity (StateDialog * d, QString s);
-
-    public:
-        StateDialog (StateData * r);
-        virtual ~StateDialog();
-
-    protected:
-        void init_tab (QWidget *&, StDialog &, StateBehavior & td, const char * lbl,
-                       const char * sl_enbeh, const char * sl_exbeh, const char * sl_beh,
-                       bool enabled);
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-
-        void menu_specification();
-        void menu_reference();
-        void edit_description();
-        void edit_uml_entry();
-        void edit_uml_exit();
-        void edit_uml_activity();
-        void edit_cpp_entry();
-        void edit_cpp_exit();
-        void edit_cpp_activity();
-        void edit_java_entry();
-        void edit_java_exit();
-        void edit_java_activity();
-
-        void change_tabs (QWidget *);
-
-        void ed_ref_activated (int);
+    void change_tabs(QWidget *);
+    
+    void ed_ref_activated(int);
 };
 
 #endif

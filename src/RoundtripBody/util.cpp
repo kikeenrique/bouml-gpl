@@ -28,7 +28,7 @@
 #include "util.h"
 #include "UmlCom.h"
 
-static QCString TraceHeader;
+static QByteArray TraceHeader;
 static bool Verbose = FALSE;
 
 void set_verbose()
@@ -41,12 +41,12 @@ bool verbose()
   return Verbose;
 }
 
-void set_trace_header(QCString s)
+void set_trace_header(QByteArray s)
 {
   TraceHeader = s;
 }
 
-QCString get_trace_header()
+QByteArray get_trace_header()
 {
   return TraceHeader;
 }

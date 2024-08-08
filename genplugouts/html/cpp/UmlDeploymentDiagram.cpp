@@ -1,7 +1,7 @@
 
 #include "UmlDeploymentDiagram.h"
 
-QCString UmlDeploymentDiagram::sKind() {
+QByteArray UmlDeploymentDiagram::sKind() {
   return "deployment diagram";
 }
 

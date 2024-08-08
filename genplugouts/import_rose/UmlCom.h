@@ -9,7 +9,7 @@
 #include "aRelationKind.h"
 #include <qcstring.h>
 
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qstring.h>
 
 class UmlItem;
@@ -166,7 +166,7 @@ class UmlCom {
     static void read_item_list(QVector<UmlItem> & v);
     //internal, do NOT use it
     
-    static void fatal_error(const QCString & msg);
+    static void fatal_error(const QByteArray & msg);
     //internal, do NOT use it
     
     static void flush();

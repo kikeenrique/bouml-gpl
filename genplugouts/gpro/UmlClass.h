@@ -11,7 +11,7 @@
 // You can modify it as you want (except the constructor)
 class UmlClass : public UmlBaseClass {
   public:
-    UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n) {};
+    UmlClass(void * id, const QByteArray & n) : UmlBaseClass(id, n) {};
 
 };
 

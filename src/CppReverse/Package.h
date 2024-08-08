@@ -27,7 +27,7 @@
 #define PACKAGE_H
 
 #include <qdict.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "BrowserNode.h"
 #include "ClassContainer.h"
@@ -53,24 +53,24 @@ class Package : public BrowserNode, public ClassContainer {
     void own(UmlArtifact *);
     void reverse(UmlArtifact *);
 #endif
-    void reverse_variable(const QCString & name);
+    void reverse_variable(const QByteArray & name);
     
-    Class * declare_if_needed(const QCString & name,
-			      QCString stereotype = 0);
-    virtual Class * define(const QCString & name, QCString stereotype = 0);
-    virtual void declare_if_needed(QCString name, Class * cl);
-    virtual void define(QCString name, Class * cl);
-    virtual bool find_type(QCString type, UmlTypeSpec & typespec);
-    virtual void declaration(const QCString & name, const QCString & stereotype,
-			     const QCString & decl
+    Class * declare_if_needed(const QByteArray & name,
+			      QByteArray stereotype = 0);
+    virtual Class * define(const QByteArray & name, QByteArray stereotype = 0);
+    virtual void declare_if_needed(QByteArray name, Class * cl);
+    virtual void define(QByteArray name, Class * cl);
+    virtual bool find_type(QByteArray type, UmlTypeSpec & typespec);
+    virtual void declaration(const QByteArray & name, const QByteArray & stereotype,
+			     const QByteArray & decl
 #ifdef ROUNDTRIP
 			     , bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			     );
 
     virtual bool isa_package() const;
-    const QCString & get_h_path() const { return h_path; };
-    const QCString & get_src_path() const { return src_path; };
+    const QByteArray & get_h_path() const { return h_path; };
+    const QByteArray & get_src_path() const { return src_path; };
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifndef REVERSE
     virtual void menu();
@@ -96,7 +96,7 @@ class Package : public BrowserNode, public ClassContainer {
     static void send_dirs(int n, bool rec);
 #endif
     
-    static const QCString & get_fname() { return fname; }
+    static const QByteArray & get_fname() { return fname; }
 #ifdef ROUNDTRIP
     static UmlArtifact * get_artifact() { return artfct; }
 #endif
@@ -105,9 +105,9 @@ class Package : public BrowserNode, public ClassContainer {
     
   private:
     UmlPackage * uml;
-    QCString namespace_;
-    QCString h_path;	// empty or finish by a /
-    QCString src_path;	// empty or finish by a /
+    QByteArray namespace_;
+    QByteArray h_path;	// empty or finish by a /
+    QByteArray src_path;	// empty or finish by a /
     
     static QApplication * app;
     static QList<Package> Choozen;
@@ -123,24 +123,24 @@ class Package : public BrowserNode, public ClassContainer {
     static NDict<Class> Declared;
     static NDict<Class> Defined;
     
-    static QCString fname;	// without extension, empty for non header file
+    static QByteArray fname;	// without extension, empty for non header file
 #ifdef ROUNDTRIP
     static UmlArtifact * artfct; // currently roundtriped artifact
 #endif
     
     void reverse_directory(QString path, bool rec, QString ext, bool h);
 #ifdef ROUNDTRIP
-    void reverse_file(QCString f, UmlArtifact * art, bool h);
+    void reverse_file(QByteArray f, UmlArtifact * art, bool h);
 #else
-    void reverse_file(QCString f);
+    void reverse_file(QByteArray f);
 #endif    
-    void reverse_toplevel_forms(QCString f, bool sub_block);
-    void reverse_toplevel_form(QCString f, QCString s);
+    void reverse_toplevel_forms(QByteArray f, bool sub_block);
+    void reverse_toplevel_form(QByteArray f, QByteArray s);
         
-    Class * new_class(const QCString & name, const QCString & stereotype,
+    Class * new_class(const QByteArray & name, const QByteArray & stereotype,
 		      bool declaration);
 
-    void set_namespace(QCString s);
+    void set_namespace(QByteArray s);
     Package * find(QFileInfo * di);
 
 #ifdef ROUNDTRIP

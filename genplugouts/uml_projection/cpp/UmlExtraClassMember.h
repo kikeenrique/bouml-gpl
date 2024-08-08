@@ -13,7 +13,7 @@
 
 class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
-    UmlExtraClassMember(void * id, const QCString & n) : UmlBaseExtraClassMember(id, n) {};
+    UmlExtraClassMember(void * id, const QByteArray & n) : UmlBaseExtraClassMember(id, n) {};
 
 };
 

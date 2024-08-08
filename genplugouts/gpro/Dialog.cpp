@@ -19,7 +19,7 @@
 #include <qhbox.h>
 #include <qdir.h>
 
-Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir, QCString & footer)
+Dialog::Dialog(UmlArtifact * art, const QByteArray & path_exe, QByteArray & pro, QByteArray & target, QByteArray & tmplt, QByteArray & config, QByteArray & defines, QByteArray & includepath, QByteArray & dependpath, QByteArray & objectsdir, QByteArray & footer)
   : QDialog(0, 0, TRUE), _art(art), _pro(pro), _target(target), _tmplt(tmplt),
     _config(config), _defines(defines), _includepath(includepath), _dependpath(dependpath),
     _objectsdir(objectsdir), _footer(footer) {

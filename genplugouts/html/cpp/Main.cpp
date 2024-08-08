@@ -27,7 +27,7 @@ int main(int argc, char ** argv)
       UmlCom::message("Indexes ...");
       UmlItem::generate_indexes();
       UmlItem::start_file("index", target->name() + "\nDocumentation", FALSE);
-      target->html(QCString(""), 0u, 0u);
+      target->html(QByteArray(""), 0u, 0u);
       UmlItem::end_file();
       UmlItem::start_file("navig", "", TRUE);
       UmlItem::end_file();

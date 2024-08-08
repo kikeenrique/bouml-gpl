@@ -5,14 +5,14 @@
 void UmlArtifact::change(Context & ctx) {
 if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
   if (ctx.cpp()) {
-    const QCString & h = cppHeader();
+    const QByteArray & h = cppHeader();
     
     if (!h.isEmpty() && ctx.match(h)) {
       if (!set_CppHeader(ctx.replace(h)))
 	ctx.err();
     }
     
-    const QCString & c = cppSource();
+    const QByteArray & c = cppSource();
     
     if (!h.isEmpty() && ctx.match(c)) {
       if (!set_CppSource(ctx.replace(c)))
@@ -21,7 +21,7 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.java()) {
-    const QCString & c = javaSource();
+    const QByteArray & c = javaSource();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_JavaSource(ctx.replace(c)))
@@ -30,7 +30,7 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.php()) {
-    const QCString & c = phpSource();
+    const QByteArray & c = phpSource();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_PhpSource(ctx.replace(c)))
@@ -39,7 +39,7 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.python()) {
-    const QCString & c = pythonSource();
+    const QByteArray & c = pythonSource();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_PythonSource(ctx.replace(c)))
@@ -48,7 +48,7 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
   }
   
   if (ctx.idl()) {
-    const QCString & c = idlSource();
+    const QByteArray & c = idlSource();
     
     if (!c.isEmpty() && ctx.match(c)) {
       if (!set_IdlSource(ctx.replace(c)))

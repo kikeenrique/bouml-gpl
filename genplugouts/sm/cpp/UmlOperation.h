@@ -14,7 +14,7 @@ class UmlClass;
 // You can modify it as you want (except the constructor)
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n), _managed(FALSE) {};
+    UmlOperation(void * id, const QByteArray & n) : UmlBaseOperation(id, n), _managed(FALSE) {};
 
     //  set the default C++/Java definition
     //  set it usefull

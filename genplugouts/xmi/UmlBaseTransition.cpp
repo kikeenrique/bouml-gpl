@@ -23,7 +23,7 @@ UmlItem * UmlBaseTransition::target() {
   return _target;
 }
 
-const QCString & UmlBaseTransition::trigger() {
+const QByteArray & UmlBaseTransition::trigger() {
   read_if_needed_();
   return _uml.trigger;
 }
@@ -32,7 +32,7 @@ bool UmlBaseTransition::set_Trigger(const char * s) {
   return set_it_(_uml.trigger, s, setUmlTriggerCmd);
 }
 
-const QCString & UmlBaseTransition::guard() {
+const QByteArray & UmlBaseTransition::guard() {
   read_if_needed_();
   return _uml.guard;
 }
@@ -41,7 +41,7 @@ bool UmlBaseTransition::set_Guard(const char * s) {
   return set_it_(_uml.guard, s, setUmlGuardCmd);
 }
 
-const QCString & UmlBaseTransition::activity() {
+const QByteArray & UmlBaseTransition::activity() {
   read_if_needed_();
   return _uml.activity;
 }
@@ -51,7 +51,7 @@ bool UmlBaseTransition::set_Activity(const char * s) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseTransition::cppTrigger() {
+const QByteArray & UmlBaseTransition::cppTrigger() {
   read_if_needed_();
   return _cpp.trigger;
 }
@@ -60,7 +60,7 @@ bool UmlBaseTransition::set_CppTrigger(const char * s) {
   return set_it_(_cpp.trigger, s, setCppTriggerCmd);
 }
 
-const QCString & UmlBaseTransition::cppGuard() {
+const QByteArray & UmlBaseTransition::cppGuard() {
   read_if_needed_();
   return _cpp.guard;
 }
@@ -69,7 +69,7 @@ bool UmlBaseTransition::set_CppGuard(const char * s) {
   return set_it_(_cpp.guard, s, setCppGuardCmd);
 }
 
-const QCString & UmlBaseTransition::cppActivity() {
+const QByteArray & UmlBaseTransition::cppActivity() {
   read_if_needed_();
   return _cpp.activity;
 }
@@ -80,7 +80,7 @@ bool UmlBaseTransition::set_CppActivity(const char * s) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseTransition::javaTrigger() {
+const QByteArray & UmlBaseTransition::javaTrigger() {
   read_if_needed_();
   return _java.trigger;
 }
@@ -89,7 +89,7 @@ bool UmlBaseTransition::set_JavaTrigger(const char * s) {
   return set_it_(_java.trigger, s, setJavaTriggerCmd);
 }
 
-const QCString & UmlBaseTransition::javaGuard() {
+const QByteArray & UmlBaseTransition::javaGuard() {
   read_if_needed_();
   return _java.guard;
 }
@@ -98,7 +98,7 @@ bool UmlBaseTransition::set_JavaGuard(const char * s) {
   return set_it_(_java.guard, s, setJavaGuardCmd);
 }
 
-const QCString & UmlBaseTransition::javaActivity() {
+const QByteArray & UmlBaseTransition::javaActivity() {
   read_if_needed_();
   return _java.activity;
 }

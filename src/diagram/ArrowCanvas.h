@@ -26,7 +26,11 @@
 #ifndef ARROWCANVAS_H
 #define ARROWCANVAS_H
 
-#include "qcanvas.h"
+#include "q3canvas.h"
+//Added by qt3to4:
+#include <QTextStream>
+#include <Q3PointArray>
+#include <Q3PopupMenu>
 
 #include "DiagramItem.h"
 
@@ -43,141 +47,138 @@ class DiagramCanvas;
 class ArrowPointCanvas;
 class LabelCanvas;
 class UmlCanvas;
-class QPopupMenu;
+class Q3PopupMenu;
 
-class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem
-{
-        Q_OBJECT
+class ArrowCanvas : public QObject, public Q3CanvasPolygon, public DiagramItem {
+  Q_OBJECT
 
-    protected:
-        DiagramItem * begin;
-        DiagramItem * end;
-
+  protected:
+    DiagramItem * begin;
+    DiagramItem * end;
 
 
-        UmlCode itstype : 8;
 
-        // HV : start and point aligned horiz, true end and point aligned vert
-        // HVr : true end and point aligned horiz, start and point aligned vert
-        // HVH = start and point1 aligned horiz,
-        //	     point1 and point2 aligned vert
-        //	     point2 and true end aligned horiz
-        // etc ...
-        // X and Xr seem to be X for the user when he choose the geometry
-        LineGeometry geometry : 8;
-        bool fixed_geometry : 8;
-        bool auto_pos : 8;
-        LabelCanvas * label;
-        LabelCanvas * stereotype;
-        QPoint beginp;
-        QPoint endp;
-        QPointArray boundings;
-        QPoint arrow[3];	// les 2 extremites et le point milieu pour inherit
-        QPointArray poly;   // aggregations
-        float decenter_begin;	// not taken into account if
-        float decenter_end;		// fixed geometry. < 0 means don't care
+    UmlCode itstype : 8;
 
-        // to remove temporary arrows
-        static QList<ArrowCanvas> RelsToDel;
+    // HV : start and point aligned horiz, true end and point aligned vert
+    // HVr : true end and point aligned horiz, start and point aligned vert
+    // HVH = start and point1 aligned horiz,
+    //	     point1 and point2 aligned vert
+    //	     point2 and true end aligned horiz
+    // etc ...
+    // X and Xr seem to be X for the user when he choose the geometry
+    LineGeometry geometry : 8;
+    bool fixed_geometry : 8;
+    bool auto_pos : 8;
+    LabelCanvas * label;
+    LabelCanvas * stereotype;
+    QPoint beginp;
+    QPoint endp;
+    Q3PointArray boundings;
+    QPoint arrow[3];	// les 2 extremites et le point milieu pour inherit
+    Q3PointArray poly;   // aggregations
+    float decenter_begin;	// not taken into account if
+    float decenter_end;		// fixed geometry. < 0 means don't care
 
-        // to remove redondant relation made by release 2.22
-        static QList<ArrowCanvas> RelsToCheck;
+    // to remove temporary arrows
+    static QList<ArrowCanvas *> RelsToDel;
 
-    public:
-        ArrowCanvas (UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-                     UmlCode t, int id, bool own_brk, float d_start, float d_end);
-        virtual ~ArrowCanvas();
+    // to remove redondant relation made by release 2.22
+    static QList<ArrowCanvas *> RelsToCheck;
 
-        virtual void delete_it();
-        virtual void unconnect();
+  public:
+    ArrowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
+		UmlCode t, int id, bool own_brk, float d_start, float d_end);
+    virtual ~ArrowCanvas();
 
-        virtual void setVisible (bool yes);
-        virtual void moveBy (double dx, double dy);
-        void move_self_points (double dx, double dy);
-        virtual void select_associated();
-        virtual bool isSelected() const;
-        virtual void prepare_for_move (bool on_resize);
+    virtual void delete_it();
+    virtual void unconnect();
 
-        virtual void update_pos();
-        void move_outside (QRect r);
-        bool cut_on_move (ArrowPointCanvas *&) const;
-        virtual bool is_decenter (QPoint mousepresspos,
-                                  BooL & start, BooL & horiz) const;
-        void decenter (QPoint, bool start, bool horiz);
-        void cut_self();
-        virtual ArrowPointCanvas * brk (const QPoint &);
-        bool may_join() const;
-        virtual ArrowCanvas * join (ArrowCanvas * other, ArrowPointCanvas * ap);
-        virtual void default_stereotype_position() const;
-        virtual void default_label_position() const;
-        DiagramItem * get_start() const;
-        DiagramItem * get_end() const;
-        void extremities (DiagramItem *& b, DiagramItem *& e) const;
-        void reverse();
-        virtual BasicData * get_data() const;
+    virtual void setVisible( bool yes);
+    virtual void moveBy(double dx, double dy);
+    void move_self_points(double dx, double dy);
+    virtual void select_associated();
+    virtual bool isSelected() const;
+    virtual void prepare_for_move(bool on_resize);
 
-        virtual UmlCode type() const;
-        virtual void delete_available (BooL & in_model, BooL & out_model) const;
-        virtual void remove (bool);
-        virtual int rtti() const;
-        virtual QPoint center() const;
-        virtual QRect rect() const;
-        virtual bool contains (int, int) const;
-        QPoint get_point (int i) {
-            return arrow[i];
-        }
-        virtual void change_scale();
-        virtual void open();
-        bool edit (const QStringList &defaults, ArrowCanvas * plabel,
-                   ArrowCanvas * pstereotype);
-        virtual void menu (const QPoint&);
-        virtual QString may_start (UmlCode &) const;
-        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
-        virtual void connexion (UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-        virtual double get_z() const;
-        virtual void set_z (double z);	// only called by upper() & lower()
-        void go_up (double nz);	// only called by upper(TRUE)
-        virtual bool copyable() const;
-        virtual UmlCanvas * the_canvas() const;
-        ArrowCanvas * next_geometry();
-        void update_geometry();
+    virtual void update_pos();
+    void move_outside(QRect r);
+    bool cut_on_move(ArrowPointCanvas *&) const;
+    virtual bool is_decenter(QPoint mousepresspos,
+			     BooL & start, BooL & horiz) const;
+    void decenter(QPoint, bool start, bool horiz);
+    void cut_self();
+    virtual ArrowPointCanvas * brk(const QPoint &);
+    bool may_join() const;
+    virtual ArrowCanvas * join(ArrowCanvas * other, ArrowPointCanvas * ap);
+    virtual void default_stereotype_position() const;
+    virtual void default_label_position() const;
+    DiagramItem * get_start() const;
+    DiagramItem * get_end() const;
+    void extremities(DiagramItem *& b, DiagramItem *& e) const;
+    void reverse();
+    virtual BasicData * get_data() const;
 
-        void package_modified() const;
+    virtual UmlCode type() const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
+    virtual void remove(bool);
+    virtual int rtti() const;
+    virtual QPoint center() const;
+    virtual QRect rect() const;
+    virtual bool contains(int, int) const;
+    QPoint get_point(int i) { return arrow[i]; }
+    virtual void change_scale();
+    virtual void open();
+    bool edit(const QStringList &defaults, ArrowCanvas * plabel,
+	      ArrowCanvas * pstereotype);
+    virtual void menu(const QPoint&);
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+    virtual double get_z() const;
+    virtual void set_z(double z);	// only called by upper() & lower()
+    void go_up(double nz);	// only called by upper(TRUE)
+    virtual bool copyable() const;
+    virtual UmlCanvas * the_canvas() const;
+    ArrowCanvas * next_geometry();
+    void update_geometry();
 
-        virtual void save (QTextStream  & st, bool ref, QString & warning) const;
-        const ArrowCanvas * save_lines (QTextStream  & st, bool with_label, bool with_stereotype, QString & warning) const;
-        static ArrowCanvas * read (char * & st, UmlCanvas * canvas, char * k);
-        static ArrowCanvas * read_list (char * & st, UmlCanvas * canvas,
-                                        UmlCode t, LineGeometry geo,
-                                        bool fixed, float dbegin, float dend, int id,
-                                        ArrowCanvas * (*pf) (UmlCanvas * canvas, DiagramItem * b,
-                                                DiagramItem * e, UmlCode t,
-                                                float dbegin, float dend, int id));
-        virtual void history_save (QBuffer &) const;
-        virtual void history_load (QBuffer &);
-        virtual void history_hide();
+    void package_modified() const;
 
-        static void remove_redondant_rels();
-        static void post_load();
+    virtual void save(QTextStream  & st, bool ref, QString & warning) const;
+    const ArrowCanvas * save_lines(QTextStream  & st, bool with_label, bool with_stereotype, QString & warning) const;
+    static ArrowCanvas * read(char * & st, UmlCanvas * canvas, char * k);
+    static ArrowCanvas * read_list(char * & st, UmlCanvas * canvas,
+				   UmlCode t, LineGeometry geo,
+				   bool fixed, float dbegin, float dend, int id,
+				   ArrowCanvas * (*pf)(UmlCanvas * canvas, DiagramItem * b,
+						       DiagramItem * e, UmlCode t,
+						       float dbegin, float dend, int id));
+    virtual void history_save(QBuffer &) const;
+    virtual void history_load(QBuffer &);
+    virtual void history_hide();
 
-        void write_uc_rel (ToolCom * com) const;
+    static void remove_redondant_rels();
+    static void post_load();
 
-        virtual void check_stereotypeproperties();
+    void write_uc_rel(ToolCom * com) const;
 
-    protected:
-        void search_supports (ArrowCanvas *& plabel,
-                              ArrowCanvas *& pstereotype) const;
-        void propag_geometry (LineGeometry geo, bool fixed);
-        void propag_decenter (float db, float de);
-        void set_decenter (float db, float de);
-        ArrowCanvas * set_geometry (LineGeometry geo, bool fixed);
-        void init_geometry_menu (QPopupMenu & m, int first);
+    virtual void check_stereotypeproperties();
 
-        virtual void drawShape (QPainter & p);
+  protected:
+    void search_supports(ArrowCanvas *& plabel,
+			 ArrowCanvas *& pstereotype) const;
+    void propag_geometry(LineGeometry geo, bool fixed);
+    void propag_decenter(float db, float de);
+    void set_decenter(float db, float de);
+    ArrowCanvas * set_geometry(LineGeometry geo, bool fixed);
+    void init_geometry_menu(Q3PopupMenu & m, int first);
 
-    protected slots:
-        void modified();
-        void drawing_settings_modified();
+    virtual void drawShape(QPainter & p);
+
+  protected slots:
+    void modified();
+    void drawing_settings_modified();
 };
 
 #endif

@@ -21,7 +21,7 @@ void UmlNode::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where == 0)
     return;
     
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   
   if (s.isEmpty()) {
     static unsigned n = 0;
@@ -41,7 +41,7 @@ void UmlNode::importIt(FileIn & in, Token & token, UmlItem * where)
     node->set_Stereotype("device");
 
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr))

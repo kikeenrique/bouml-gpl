@@ -4,7 +4,7 @@
 
 #include "anItemKind.h"
 #include <qcstring.h>
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qdict.h>
 #include <qptrdict.h>
 #include "OnInstanceCmd.h"
@@ -36,26 +36,26 @@ class UmlBaseItem {
     virtual anItemKind kind() = 0;
 
     // returns the name
-    const QCString & name() { return _name; };
+    const QByteArray & name() { return _name; };
 
     // to set the name
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_Name(const QCString & s);
+    bool set_Name(const QByteArray & s);
 
     // returns the stereotype
-    const QCString & stereotype();
+    const QByteArray & stereotype();
 
     // to set the stereotype
     //  On error return FALSE in C++, produce a RuntimeException in Java
-    virtual bool set_Stereotype(const QCString & s);
+    virtual bool set_Stereotype(const QByteArray & s);
 
     // returns the description
-    const QCString & description();
+    const QByteArray & description();
 
     // to set the description
     //  On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_Description(const QCString & s);
+    bool set_Description(const QByteArray & s);
 
     // returns the parent (0/null if it is applied on the project itself),
     // to go all over the browser tree
@@ -87,16 +87,16 @@ class UmlBaseItem {
     //
     // These properties may be edited through the object dialog last tab
     // named 'user'
-    bool propertyValue(const QCString & k, QCString & v);
+    bool propertyValue(const QByteArray & k, QByteArray & v);
 
     // to set (may be insert a new) the value 'v' associated to the key 'k'
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_PropertyValue(const QCString & k, const QCString & v);
+    bool set_PropertyValue(const QByteArray & k, const QByteArray & v);
 
     // returns all the properties of the object through (in Java a copy of) a dictionnary
     
-    const QDict<QCString> properties();
+    const QDict<QByteArray> properties();
 
     //  Returns the absolute path name of the file memoring the Item.
     //  In general an item is saved in a file associated to its package,
@@ -124,7 +124,7 @@ class UmlBaseItem {
     //    external type and edited through the last Idl tab of the
     //    'Generation Settings' dialog is saved in the file 'idl_includes'
     // 
-    QCString supportFile();
+    QByteArray supportFile();
 
     // return TRUE in case the item may be modified, i.e. it is not
     // an API base 'plug-out' class and the corresponding file(s) are not
@@ -132,7 +132,7 @@ class UmlBaseItem {
     bool isWritable();
 
     //  Apply asynchronously the tool on the item, returns an identifier to call isToolDone()
-    int apply(QCString cmd);
+    int apply(QByteArray cmd);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
@@ -180,19 +180,19 @@ class UmlBaseItem {
 
     void * _identifier;
 
-    QCString _name;
+    QByteArray _name;
 
     //  Note : protected in Java for internal reason, but do NOT
     //  access to this field yourself !
-    QCString _stereotype;
+    QByteArray _stereotype;
 
-    QCString _description;
+    QByteArray _description;
 
     UmlItem * _parent;
 
     QVector<UmlItem> * _children;
 
-    QDict<QCString> _dict;
+    QDict<QByteArray> _dict;
 
     static QPtrDict<UmlItem> _all;
 
@@ -226,7 +226,7 @@ class UmlBaseItem {
 
     bool set_it_(aDirection & r, aDirection v, OnInstanceCmd cmd);
 
-    bool set_it_(QCString & r, const char * v, OnInstanceCmd cmd);
+    bool set_it_(QByteArray & r, const char * v, OnInstanceCmd cmd);
 
     bool set_it_(UmlTypeSpec & r, const UmlTypeSpec & t, OnInstanceCmd cmd);
 
@@ -235,7 +235,7 @@ class UmlBaseItem {
 
   public:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseItem(void * id, const QCString & n);
+    UmlBaseItem(void * id, const QByteArray & n);
 
     // the destructor, do not delete objects yourself !!!!!!!!!!
     virtual ~UmlBaseItem();

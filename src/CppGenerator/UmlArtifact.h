@@ -43,7 +43,7 @@ class UmlArtifact : public UmlBaseArtifact {
     void generate_text();
     
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n), managed(FALSE) {};
     
     virtual void generate();

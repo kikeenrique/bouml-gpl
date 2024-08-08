@@ -2,11 +2,11 @@
 #include "UmlActivityDiagram.h"
 #include "UmlActivityObject.h"
 
-QCString UmlActivityObject::sKind() {
+QByteArray UmlActivityObject::sKind() {
   return "activity object";
 }
 
-void UmlActivityObject::html(QCString pfix, unsigned int rank, unsigned int level) {
+void UmlActivityObject::html(QByteArray pfix, unsigned int rank, unsigned int level) {
   define();
 
   fw.write("<table><tr><td><div class=\"element\">Activity object <b>");
@@ -18,8 +18,8 @@ void UmlActivityObject::html(QCString pfix, unsigned int rank, unsigned int leve
   unload(FALSE, FALSE);
 }
 
-void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned int level) {
-  QCString s = description();
+void UmlActivityObject::html_internal(QByteArray pfix, unsigned int rank, unsigned int level) {
+  QByteArray s = description();
   
   s = description();
   if (!s.isEmpty()) {
@@ -46,8 +46,8 @@ void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned
 
   s = selection();
   
-  QCString scpp = cppSelection();
-  QCString sjava = javaSelection();
+  QByteArray scpp = cppSelection();
+  QByteArray sjava = javaSelection();
   
   if (!s.isEmpty() || !scpp.isEmpty() || !sjava.isEmpty()) {
     fw.write("<p>Selection :</p><ul>");

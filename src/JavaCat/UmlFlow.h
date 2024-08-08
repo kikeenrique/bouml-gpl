@@ -8,7 +8,7 @@
 
 class UmlFlow : public UmlBaseFlow, public UmlActivityItem {
   public:
-     UmlFlow(void * id, const QCString & n) : UmlBaseFlow(id, n) {
+     UmlFlow(void * id, const QByteArray & n) : UmlBaseFlow(id, n) {
     }
 
 };

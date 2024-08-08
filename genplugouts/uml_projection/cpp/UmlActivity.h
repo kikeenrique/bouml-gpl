@@ -8,7 +8,7 @@
 class UmlActivity : public UmlBaseActivity {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivity(void * id, const QCString & s) : UmlBaseActivity(id, s) {
+     UmlActivity(void * id, const QByteArray & s) : UmlBaseActivity(id, s) {
     }
 
 };

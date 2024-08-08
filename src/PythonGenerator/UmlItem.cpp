@@ -31,7 +31,7 @@ UmlItem::~UmlItem() {
 }
 
 void UmlItem::manage_comment(const char *& p, const char *& pp) {
-  static QCString the_comment;
+  static QByteArray the_comment;
   
   p += 10;
   
@@ -62,7 +62,7 @@ void UmlItem::manage_comment(const char *& p, const char *& pp) {
 }
 
 void UmlItem::manage_description(const char *& p, const char *& pp) {
-  static QCString the_comment;
+  static QByteArray the_comment;
   
   p += 14;
   
@@ -77,9 +77,9 @@ void UmlItem::manage_description(const char *& p, const char *& pp) {
 }
 
 void UmlItem::manage_docstring(const char *& p, const char *& pp, BooL & indent_needed,
-			       QCString & indent, QCString & saved_indent)
+			       QByteArray & indent, QByteArray & saved_indent)
 {
-  static QCString the_comment;
+  static QByteArray the_comment;
   
   p += 12;
   
@@ -120,8 +120,8 @@ void UmlItem::manage_docstring(const char *& p, const char *& pp, BooL & indent_
   indent = "";
 }
 
-void UmlItem::manage_alias(const char *& p, QTextOStream & ts,
-			   QCString indent, BooL & indent_needed) {
+void UmlItem::manage_alias(const char *& p, QTextStream & ts,
+			   QByteArray indent, BooL & indent_needed) {
   if (indent_needed) {
     indent_needed = FALSE;
     ts << indent;
@@ -131,8 +131,8 @@ void UmlItem::manage_alias(const char *& p, QTextOStream & ts,
   const char * pclosed;
   
   if ((p[1] == '{') && ((pclosed = strchr(p + 2, '}')) != 0)) {
-    QCString key(p + 2, pclosed - p - 1);
-    QCString value;
+    QByteArray key(p + 2, pclosed - p - 1);
+    QByteArray value;
     UmlItem * node = this;
 
     do {

@@ -1,7 +1,7 @@
 
 #include "UmlJoinPseudoState.h"
 
-QCString UmlJoinPseudoState::sKind() {
+QByteArray UmlJoinPseudoState::sKind() {
   return "join pseudo state";
 }
 

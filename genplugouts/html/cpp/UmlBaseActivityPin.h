@@ -24,7 +24,7 @@ class UmlBaseActivityPin : public UmlPinParameter {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivityPin(void * id, const QCString & s) : UmlPinParameter(id, s) {
+     UmlBaseActivityPin(void * id, const QByteArray & s) : UmlPinParameter(id, s) {
     }
 
 };

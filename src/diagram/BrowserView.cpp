@@ -28,10 +28,15 @@
 
 
 #include <qapplication.h>
-#include <qpopupmenu.h>
-#include <qdragobject.h>
-#include <qheader.h>
+#include <q3popupmenu.h>
+#include <q3dragobject.h>
+#include <q3header.h>
 #include <qcursor.h>
+//Added by qt3to4:
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 #include "BrowserView.h"
 #include "UmlWindow.h"
@@ -49,306 +54,281 @@ QDir BrowserView::dir;
 QDir BrowserView::import_dir;
 BrowserView * BrowserView::the;
 
-BrowserView::BrowserView (QWidget * parent) : QListView (parent)
-{
-    the = this;
+BrowserView::BrowserView(QWidget * parent) : Q3ListView(parent) {
+  the = this;
 
-    project = 0;			// no project yet
-    mousePressed = FALSE;
+  project = 0;			// no project yet
+  mousePressed = FALSE;
 
-    setSorting (-1);		// manual sorting
-    addColumn (TR ("browser          "));
-    setTreeStepSize (18);
-    //setSelectionMode(Extended);	// multi selection
-    header()->setClickEnabled (TRUE);
-    setAcceptDrops (TRUE);
-    viewport()->setAcceptDrops (TRUE);
-    setDragAutoScroll (TRUE);
+  setSorting(-1);		// manual sorting
+  addColumn(TR("browser          "));
+  setTreeStepSize(18);
+  //setSelectionMode(Extended);	// multi selection
+  header()->setClickEnabled(TRUE);
+  setAcceptDrops(TRUE);
+  viewport()->setAcceptDrops(TRUE);
+  setDragAutoScroll(TRUE);
 
-    connect (this, SIGNAL (rightButtonPressed (QListViewItem *, const QPoint &, int)),
-             this, SLOT (rightPressed (QListViewItem *)));
+  connect(this, SIGNAL(rightButtonPressed(Q3ListViewItem *, const QPoint &, int)),
+	  this, SLOT(rightPressed(Q3ListViewItem *)));
 
-    connect (this, SIGNAL (doubleClicked (QListViewItem *)),
-             this, SLOT (doubleClick (QListViewItem *)));
+  connect(this, SIGNAL(doubleClicked(Q3ListViewItem *)),
+  	  this, SLOT(doubleClick(Q3ListViewItem *)));
 
-    connect (header(), SIGNAL (clicked (int)), this, SLOT (menu()));
+  connect(header(), SIGNAL(clicked(int)), this, SLOT(menu()));
 
-    connect (this, SIGNAL (selectionChanged (QListViewItem*)),
-             this, SLOT (selected (QListViewItem*)));
+  connect(this, SIGNAL(selectionChanged(Q3ListViewItem*)),
+	  this, SLOT(selected(Q3ListViewItem*)));
 }
 
 void BrowserView::remove_temporary_files()
 {
-    if (project) {
-        QString filter;
-
-        filter.sprintf ("*_%d.*", user_id());
-
-        const QFileInfoList * l = dir.entryInfoList (filter);
-
-        if (l) {
-            QListIterator<QFileInfo> it (*l);
-            QFileInfo *fi;
-
-            while ( (fi = it.current()) != 0) {
-                if (fi->extension (FALSE).lower() != "prj") {
-                    QFile::remove (fi->absFilePath());
-                }
-                ++it;
-            }
-        }
-    }
-}
-
-BrowserView::~BrowserView()
-{
-    remove_temporary_files();
-    set_user_id (-1);
-}
-
-void BrowserView::clear()
-{
-    remove_temporary_files();
-    set_user_id (-1);
-
-    QListView::clear();
-    project = 0;
-}
-
-void BrowserView::set_project (const QDir & di)
-{
-    dir = di;
-    project = new BrowserPackage (dir.dirName(), the, PROJECT_ID);
-    setRootIsDecorated (TRUE/*FALSE*/);
-}
-
-void BrowserView::set_imported_project (const QDir & di,
-                                        BrowserPackage * p)
-{
-    import_dir = di;
-    imported_project = p;
-}
-
-bool BrowserView::save_as (const QDir & new_dir)
-{
-    // copy USER temporary files
+  if (project) {
     QString filter;
 
-    filter.sprintf ("*_%d.?", user_id());
+    filter.sprintf("*_%d.*", user_id());
 
-    const QFileInfoList * l = dir.entryInfoList (filter);
+    const QFileInfoList l = dir.entryInfoList(filter);
 
-    if (l) {
-        QListIterator<QFileInfo> it (*l);
-        QFileInfo *fi;
-
-        while ( (fi = it.current()) != 0) {
-            if (!copy_file (fi, new_dir)) {
-                return FALSE;
-            }
-            ++it;
+    if (!l.isEmpty()) {
+      QList<QFileInfo>::const_iterator it;
+      for (it = l.begin(); it!= l.end(); it++) {
+        QFileInfo fi = (*it);
+        if (fi.extension(FALSE).lower() != "prj") {
+          QFile::remove(fi.absFilePath());
         }
+      }
     }
-
-    // copy non package non temporary files
-    l = dir.entryInfoList ("*.??*");
-
-    if (l) {
-        QListIterator<QFileInfo> it (*l);
-        QFileInfo *fi;
-
-        while ( (fi = it.current()) != 0) {
-            if ( (fi->extension (FALSE) != "prj") &&
-                 (fi->extension (FALSE) != "lock") &&
-                 !copy_file (fi, new_dir)) {
-                return FALSE;
-            }
-            ++it;
-        }
-    }
-
-    // delete old temporary files and rename the project
-    remove_temporary_files();
-    set_user_id (-1);
-    get_project()->set_name (new_dir.dirName());
-    dir = new_dir;
-
-    // create new lock
-    user_id();
-
-    return TRUE;
+  }
 }
 
-void BrowserView::select (QListViewItem * i)
-{
-    the->ensureItemVisible (i);
-    the->setSelected (i, TRUE);
+BrowserView::~BrowserView() {
+  remove_temporary_files();
+  set_user_id(-1);
 }
 
-void BrowserView::force_visible (QListViewItem * i)
-{
-    the->ensureItemVisible (i);
+void BrowserView::clear() {
+  remove_temporary_files();
+  set_user_id(-1);
+
+  Q3ListView::clear();
+  project = 0;
+}
+
+void BrowserView::set_project(const QDir & di) {
+  dir = di;
+  project = new BrowserPackage(dir.dirName(), the, PROJECT_ID);
+  setRootIsDecorated(TRUE/*FALSE*/);
+}
+
+void BrowserView::set_imported_project(const QDir & di,
+				       BrowserPackage * p) {
+  import_dir = di;
+  imported_project = p;
+}
+
+bool BrowserView::save_as(const QDir & new_dir) {
+  // copy USER temporary files
+  QString filter;
+
+  filter.sprintf("*_%d.?", user_id());
+
+  QFileInfoList l = dir.entryInfoList(filter);
+
+  if (!l.isEmpty()) {
+    QList<QFileInfo>::const_iterator it;
+    for (it = l.begin(); it!= l.end(); it++) {
+      QFileInfo fi = (*it);
+      if (!copy_file(fi, new_dir)) {
+        return FALSE;
+      }
+    }
+  }
+
+  // copy non package non temporary files
+  l = dir.entryInfoList("*.??*");
+
+  if (!l.isEmpty()) {
+    QList<QFileInfo>::const_iterator it;
+
+    for (it = l.begin(); it!= l.end(); it++) {
+      QFileInfo fi = (*it);
+      if ((fi.extension(FALSE) != "prj") &&
+          (fi.extension(FALSE) != "lock") &&
+          !copy_file(fi, new_dir)) {
+        return FALSE;
+      }
+    }
+  }
+
+  // delete old temporary files and rename the project
+  remove_temporary_files();
+  set_user_id(-1);
+  get_project()->set_name(new_dir.dirName());
+  dir = new_dir;
+
+  // create new lock
+  user_id();
+
+  return TRUE;
+}
+
+void BrowserView::select(Q3ListViewItem * i) {
+  the->ensureItemVisible(i);
+  the->setSelected(i, TRUE);
+}
+
+void BrowserView::force_visible(Q3ListViewItem * i) {
+  the->ensureItemVisible(i);
 }
 
 BrowserNode * BrowserView::selected_item()
 {
-    return (BrowserNode *) the->selectedItem();
+  return (BrowserNode *) the->selectedItem();
 }
 
-void BrowserView::rightPressed (QListViewItem * item)
-{
-    if (item &&
-        ( (! ( (BrowserNode *) item)->deletedp()) ||
-          (! ( (BrowserNode *) item->parent())->deletedp())) &&
-        !BrowserNode::popupMenuActive()) {	// Qt bug
-        BrowserNode::setPopupMenuActive (TRUE);
-        ( (BrowserNode *) item)->menu();
-        BrowserNode::setPopupMenuActive (FALSE);
-    }
+void BrowserView::rightPressed(Q3ListViewItem * item) {
+  if (item &&
+      ((!((BrowserNode *) item)->deletedp()) ||
+       (!((BrowserNode *) item->parent())->deletedp())) &&
+      !BrowserNode::popupMenuActive()) {	// Qt bug
+    BrowserNode::setPopupMenuActive(TRUE);
+    ((BrowserNode *) item)->menu();
+    BrowserNode::setPopupMenuActive(FALSE);
+  }
 }
 
-void BrowserView::doubleClick (QListViewItem * item)
-{
-    UmlWindow::abort_line_construction();
+void BrowserView::doubleClick(Q3ListViewItem * item) {
+  UmlWindow::abort_line_construction();
 
-    if (item && ! ( (BrowserNode *) item)->deletedp()) {
-        ( (BrowserNode *) item)->open (FALSE);
-    }
+  if (item && !((BrowserNode *) item)->deletedp())
+    ((BrowserNode *) item)->open(FALSE);
 }
 
-void BrowserView::contentsDragMoveEvent (QDragMoveEvent * e)
-{
-    if (!BrowserNode::edition_active()) {
-        QListViewItem * item = itemAt (contentsToViewport (e->pos()));
+void BrowserView::contentsDragMoveEvent(QDragMoveEvent * e) {
+  if (!BrowserNode::edition_active()) {
+    Q3ListViewItem * item = itemAt(contentsToViewport(e->pos()));
 
-        if (item && ! ( (BrowserNode *) item)->deletedp()) {
-            ( (BrowserNode *) item)->DragMoveEvent (e);
-        }
-    }
+    if (item && !((BrowserNode *) item)->deletedp())
+      ((BrowserNode *) item)->DragMoveEvent(e);
+  }
 }
 
-void BrowserView::contentsDropEvent (QDropEvent * e)
-{
-    if (!BrowserNode::edition_active()) {
-        QListViewItem * item = itemAt (contentsToViewport (e->pos()));
+void BrowserView::contentsDropEvent(QDropEvent * e) {
+  if (!BrowserNode::edition_active()) {
+    Q3ListViewItem * item = itemAt(contentsToViewport(e->pos()));
 
-        if (item && ! ( (BrowserNode *) item)->deletedp()) {
-            ( (BrowserNode *) item)->DropEvent (e);
-        }
-    }
+    if (item && !((BrowserNode *) item)->deletedp())
+      ((BrowserNode *) item)->DropEvent(e);
+  }
 }
 
-void BrowserView::contentsMousePressEvent (QMouseEvent * e)
-{
-    UmlWindow::abort_line_construction();
+void BrowserView::contentsMousePressEvent(QMouseEvent * e) {
+  UmlWindow::abort_line_construction();
 
-    QPoint p (contentsToViewport (e->pos()));
-    QListViewItem * i = itemAt (p);
+  QPoint p(contentsToViewport(e->pos()));
+  Q3ListViewItem * i = itemAt(p);
 
-    if (i != 0) {
-        // to force update of comment else nothing done
-        // when the click is made on the already selected item
-        // (but the comment is one of an other element selected
-        // in a diagram)
-        selected (i);
+  if (i != 0) {
+    // to force update of comment else nothing done
+    // when the click is made on the already selected item
+    // (but the comment is one of an other element selected
+    // in a diagram)
+    selected(i);
 
-        if (e->button() == ::Qt::LeftButton) {
-            if (! ( (BrowserNode *) i)->deletedp() && (i != project)) {
-                if (e->state() & ::Qt::ControlButton) {
-                    ( (BrowserNode *) i)->toggle_mark();
-                } else if (e->pos().x() > header()->cellPos (header()->mapToActual (0)) +
-                           treeStepSize() * (i->depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin() /* ||
+    if (e->button() == ::Qt::LeftButton) {
+      if (!((BrowserNode *) i)->deletedp() && (i != project)) {
+	if (e->state() & ::Qt::ControlModifier)
+	  ((BrowserNode *) i)->toggle_mark();
+	else if (e->pos().x() > header()->cellPos(header()->mapToActual(0)) +
+		 treeStepSize() * (i->depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin()/* ||
 											      p.x() < header()->cellPos(header()->mapToActual(0))*/) {
-                    // if the user clicked into the root decoration of the item, don't try to start a drag!
-                    presspos = e->pos();
-                    mousePressed = TRUE;
-                }
-            }
-        }
+	  // if the user clicked into the root decoration of the item, don't try to start a drag!
+	  presspos = e->pos();
+	  mousePressed = TRUE;
+	}
+      }
     }
+  }
 
-    QListView::contentsMousePressEvent (e);
+  Q3ListView::contentsMousePressEvent(e);
 }
 
-void BrowserView::contentsMouseMoveEvent (QMouseEvent * e)
-{
-    if (mousePressed &&
-        ( (presspos - e->pos()).manhattanLength() > QApplication::startDragDistance())) {
-        mousePressed = FALSE;
-
-        QListViewItem * item = itemAt (contentsToViewport (presspos));
-
-        if (item) {
-            UmlDrag * di = new UmlDrag ( (BrowserNode *) item, this);
-
-            di->setPixmap (* (item->pixmap (0)), QPoint (8,8));
-            di->dragMove();
-        }
-    }
-}
-
-void BrowserView::contentsMouseReleaseEvent (QMouseEvent *)
-{
+void BrowserView::contentsMouseMoveEvent(QMouseEvent * e) {
+  if (mousePressed &&
+      ((presspos - e->pos()).manhattanLength() > QApplication::startDragDistance())) {
     mousePressed = FALSE;
-}
 
-void BrowserView::keyPressEvent (QKeyEvent * e)
-{
-    UmlWindow::abort_line_construction();
+    Q3ListViewItem * item = itemAt(contentsToViewport(presspos));
 
-    QString s = Shortcut::shortcut (e->key(), e->state());
+    if (item) {
+      UmlDrag * di = new UmlDrag((BrowserNode *) item, this);
 
-    if (!s.isEmpty()) {
-        e->accept();
-
-        if (s == "Save") {
-            UmlWindow::save_it();
-        } else if (s == "Save as") {
-            UmlWindow::saveas_it();
-        } else if (s == "Close") {
-            UmlWindow::do_close();
-        } else if (s == "Quit") {
-            UmlWindow::do_quit();
-        } else if (s == "Browser search") {
-            UmlWindow::browser_search_it();
-        } else if (s == "Open project") {
-            UmlWindow::load_it();
-        } else {
-            BrowserNode * bn = (BrowserNode *) selectedItem();
-
-            if (bn != 0) {
-                if (s == "Menu") {
-                    rightPressed (bn);
-                } else if (s == "Delete") {
-                    QApplication::setOverrideCursor (::Qt::waitCursor);
-                    bn->apply_shortcut ("Delete");
-                    QApplication::restoreOverrideCursor();
-                } else if ( (s != "Move left") && (s != "Move right") &&
-                            (s != "Move up") && (s != "Move down")) {
-                    bn->apply_shortcut (s);
-                } else {
-                    QListView::keyPressEvent (e);
-                }
-            }
-        }
-    } else {
-        // no shortcut
-        QListView::keyPressEvent (e);
+      di->setPixmap(*(item->pixmap(0)), QPoint(8,8));
+      di->dragMove();
     }
+  }
 }
 
-void BrowserView::menu()
-{
-    if (project != 0) {
-        if (BrowserSearchDialog::get() == 0) {
-            (new BrowserSearchDialog())->show();
-        } else {
-            BrowserSearchDialog::get()->raise();
-        }
+void BrowserView::contentsMouseReleaseEvent(QMouseEvent *) {
+  mousePressed = FALSE;
+}
+
+void BrowserView::keyPressEvent(QKeyEvent * e) {
+  UmlWindow::abort_line_construction();
+
+  QString s = Shortcut::shortcut(e->key(), e->state());
+
+  if (!s.isEmpty()) {
+    e->accept();
+
+    if (s == "Save")
+      UmlWindow::save_it();
+    else if (s == "Save as")
+      UmlWindow::saveas_it();
+    else if (s == "Close")
+      UmlWindow::do_close();
+    else if (s == "Quit")
+      UmlWindow::do_quit();
+    else if (s == "Browser search")
+      UmlWindow::browser_search_it();
+    else if (s == "Open project")
+      UmlWindow::load_it();
+    else {
+      BrowserNode * bn = (BrowserNode *) selectedItem();
+
+      if (bn != 0) {
+	if (s == "Menu")
+	  rightPressed(bn);
+	else if (s == "Delete") {
+	  QApplication::setOverrideCursor(::Qt::waitCursor);
+	  bn->apply_shortcut("Delete");
+	  QApplication::restoreOverrideCursor();
+	}
+	else if ((s != "Move left") && (s != "Move right") &&
+		 (s != "Move up") && (s != "Move down"))
+	  bn->apply_shortcut(s);
+	else
+          Q3ListView::keyPressEvent(e);
+      }
     }
+  }
+  else {
+    // no shortcut
+    Q3ListView::keyPressEvent(e);
+  }
 }
 
-void BrowserView::selected (QListViewItem * b)
+void BrowserView::menu() {
+  if (project != 0) {
+    if (BrowserSearchDialog::get() == 0)
+      (new BrowserSearchDialog())->show();
+    else
+      BrowserSearchDialog::get()->raise();
+  }
+}
+
+void BrowserView::selected(Q3ListViewItem * b)
 {
-    UmlWindow::set_commented ( (BrowserNode *) b);
+  UmlWindow::set_commented((BrowserNode *) b);
 }

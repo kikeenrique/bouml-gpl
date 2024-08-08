@@ -8,7 +8,7 @@
 class UmlView : public UmlBaseView {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlView(void * id, const QCString & s) : UmlBaseView(id, s) {
+     UmlView(void * id, const QByteArray & s) : UmlBaseView(id, s) {
     }
 
 };

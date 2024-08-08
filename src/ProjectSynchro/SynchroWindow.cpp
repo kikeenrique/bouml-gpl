@@ -159,7 +159,7 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
       QFileInfo * pfi;
       QString ids;
       
-      while ((pfi = it.current()) != 0) {
+      while ((pfi = (*it)) != 0) {
 	if (pfi->isDir() && (my_baseName(*pfi) != "all"))
 	  ids += " " + my_baseName(*pfi);
 	++it;

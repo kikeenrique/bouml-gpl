@@ -32,7 +32,7 @@
 #include "UmlSettings.h"
 #include "JavaSettings.h"
 
-void UmlClassMember::remove_comments(QCString & s)
+void UmlClassMember::remove_comments(QByteArray & s)
 {
   int index1 = 0;
   
@@ -63,7 +63,7 @@ void UmlClassMember::remove_comments(QCString & s)
   }
 }
 
-void UmlClassMember::remove_arrays(QCString & s)
+void UmlClassMember::remove_arrays(QByteArray & s)
 {
   int index1 = 0;
   
@@ -79,7 +79,7 @@ void UmlClassMember::remove_arrays(QCString & s)
   }
 }
 
-void UmlClassMember::generate_visibility(QTextOStream & f, const char * parent_st) {
+void UmlClassMember::generate_visibility(QTextStream & f, const char * parent_st) {
   switch (visibility()) {
   case PublicVisibility:
     if ((parent()->kind() != aClass) ||
@@ -101,7 +101,7 @@ void UmlClassMember::generate_visibility(QTextOStream & f, const char * parent_s
 
 /*
 bool UmlClassMember::compute_dependency(QList<JavaRefType> & dependencies,
-					QCString decl, const UmlTypeSpec & t)
+					QByteArray decl, const UmlTypeSpec & t)
 {
   remove_comments(decl);
   remove_arrays(decl);
@@ -173,7 +173,7 @@ bool UmlClassMember::compute_dependency(QList<JavaRefType> & dependencies,
 	ts.explicit_type = p2 + 1;
       
       if (dontsubstituteuntil == 0) {
-	QCString subst = JavaSettings::type(ts.explicit_type);
+	QByteArray subst = JavaSettings::type(ts.explicit_type);
 	
 	if (subst != ts.explicit_type) {
 	  decl = subst + ' ' + p;

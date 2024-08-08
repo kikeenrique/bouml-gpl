@@ -46,8 +46,8 @@ QValueList<FormalParameterList> ClassContainer::empty;
 ClassContainer::~ClassContainer() {
 }
 
-Class * ClassContainer::declare_if_needed(const QCString & name,
-					  const QCString & stereotype,
+Class * ClassContainer::declare_if_needed(const QByteArray & name,
+					  const QByteArray & stereotype,
 					  const FormalParameterList & formals,
 					  NDict<Class> & declared, 
 					  NDict<Class> & defined) {
@@ -61,7 +61,7 @@ Class * ClassContainer::declare_if_needed(const QCString & name,
   
   if (! formals.isEmpty()) {
     FormalParameterList::ConstIterator it;
-    QCString st = stereotype;
+    QByteArray st = stereotype;
     
     if (st.isEmpty())
       st = "class";
@@ -86,8 +86,8 @@ Class * ClassContainer::declare_if_needed(const QCString & name,
     ? result : 0;
 }
 
-Class * ClassContainer::define(const QCString & name,
-			       const QCString & stereotype,
+Class * ClassContainer::define(const QByteArray & name,
+			       const QByteArray & stereotype,
 			       NDict<Class> & declared, 
 			       NDict<Class> & defined) {
   if (! name.isEmpty()) {
@@ -130,8 +130,8 @@ Class * ClassContainer::define(const QCString & name,
   return new_class(name, stereotype, FALSE);
 }
 
-void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
-				  QCString & typeform,
+void ClassContainer::compute_type(QByteArray type, UmlTypeSpec & typespec,
+				  QByteArray & typeform,
 				  bool get_first_template_actual,
 				  const QValueList<FormalParameterList> & tmplts) {
   typespec.type = 0;
@@ -159,8 +159,8 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
     // look at each actual in <>
     unsigned level = 1;
     int index2;
-    QCString tf1;
-    QCString t1;
+    QByteArray tf1;
+    QByteArray t1;
     
     for (;;) {
       // earch for the current arg end
@@ -178,14 +178,14 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
       }
       
       if (p[index2]) {
-	QCString tf = type.left(index + 1) + typeform + type.mid(index2);
-	QCString t = type.mid(index + 1, index2 - index - 1).stripWhiteSpace();
+	QByteArray tf = type.left(index + 1) + typeform + type.mid(index2);
+	QByteArray t = type.mid(index + 1, index2 - index - 1).stripWhiteSpace();
 #ifdef DEBUG_BOUML
 	cout << "typeform '" << tf << "' type '" << t << "'\n";
 #endif
 	UmlTypeSpec ts;
 	
-	QCString normalized = Lex::normalize(t);
+	QByteArray normalized = Lex::normalize(t);
   
 	if (!find_type(normalized, ts) &&
 	     (Namespace::current().isEmpty() ||
@@ -235,7 +235,7 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
     }
   }
   
-  QCString normalized;
+  QByteArray normalized;
   
   if (typespec.type == 0) {
     normalized = Lex::normalize(type);
@@ -268,7 +268,7 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
 	if (!Lex::identifierp(type, TRUE))
 	  typespec.explicit_type = type;
 	else {
-	  QCString t = type;
+	  QByteArray t = type;
 	  
 	  while ((index = t.find(':')) == 0)
 	    t = t.mid(1);
@@ -307,7 +307,7 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
   }
 }
 
-bool ClassContainer::find_type(QCString type, UmlTypeSpec & typespec,
+bool ClassContainer::find_type(QByteArray type, UmlTypeSpec & typespec,
 			       NDict<Class> & defined) {
   typespec.explicit_type = 0;
   
@@ -361,7 +361,7 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
 {
   tmplt.clear();
   
-  QCString t = Lex::read_word(TRUE);
+  QByteArray t = Lex::read_word(TRUE);
   
   if (t != "<") {
     if (!Package::scanning() && (t != "class"))
@@ -378,8 +378,8 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
       if (t == ">")
 	break;
       
-      QCString x;
-      QCString s;
+      QByteArray x;
+      QByteArray s;
       
       if ((t == "class") || (t == "typename")) {
 	x = Lex::read_word();
@@ -401,10 +401,10 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
 	return FALSE;
       }
       else {
-	QCString pre_pre_region;
-	QCString pre_region = Lex::region();
-	QCString pre_pre_word;
-	QCString pre_word = t;
+	QByteArray pre_pre_region;
+	QByteArray pre_region = Lex::region();
+	QByteArray pre_pre_word;
+	QByteArray pre_word = t;
 	int level = 0;
 	
 	for (;;) {
@@ -442,7 +442,7 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
 	}	
       }
       
-      QCString v;
+      QByteArray v;
 		
       if (s == "=") {
 	v = Lex::read_list_elt();

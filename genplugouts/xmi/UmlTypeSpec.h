@@ -14,7 +14,7 @@ class UmlClass;
 class UmlTypeSpec {
   public:
     // significant in case type == 0
-    QCString explicit_type;
+    QByteArray explicit_type;
 
     // if != 0 the class representing the type
     UmlClass * type;
@@ -22,7 +22,7 @@ class UmlTypeSpec {
     UmlTypeSpec() : type(0) {};
 
     // returns the type as a string in all cases
-    const QCString & toString() const;
+    const QByteArray & toString() const;
 
 };
 

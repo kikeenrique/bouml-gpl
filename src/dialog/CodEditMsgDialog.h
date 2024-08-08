@@ -26,15 +26,14 @@
 #ifndef CODEDITMSGDIALOG_H
 #define CODEDITMSGDIALOG_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 class ColMsgList;
 class ColDiagramView;
 
-class CodEditMsgDialog
-{
-    public:
-        static void exec (ColDiagramView * view, ColMsgList & msgs);
+class CodEditMsgDialog {
+  public:
+    static void exec(ColDiagramView * view, ColMsgList & msgs);
 };
 
 #endif

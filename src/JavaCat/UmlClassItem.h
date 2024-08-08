@@ -26,7 +26,7 @@
 #ifndef CLASSITEM_H
 #define CLASSITEM_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClassItem.h"
 
@@ -37,7 +37,7 @@ class UmlClassItem : public UmlBaseClassItem {
     bool useless;
 #endif
   public:
-    UmlClassItem(void * id, const QCString & n)
+    UmlClassItem(void * id, const QByteArray & n)
       : UmlBaseClassItem(id, n)
 #ifdef ROUNDTRIP
 	, roundtrip_expected(FALSE), useless(FALSE)

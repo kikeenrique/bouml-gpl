@@ -28,12 +28,12 @@
 
 #include "UmlBaseItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlPackage;
 
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n)
+    UmlItem(void * id, const QByteArray & n)
       : UmlBaseItem(id, n) {
     };
     virtual ~UmlItem();
@@ -43,9 +43,9 @@ class UmlItem : public UmlBaseItem {
     void manage_comment(const char *& p, const char *& pp);
     void manage_description(const char *& p, const char *& pp);  
     void manage_docstring(const char *& p, const char *& pp, BooL & indent_needed,
-			  QCString & indent, QCString & saved_indent);  
-    void manage_alias(const char *& p, QTextOStream & ts,
-		      QCString indent, BooL & indent_needed);
+			  QByteArray & indent, QByteArray & saved_indent);  
+    void manage_alias(const char *& p, QTextStream & ts,
+		      QByteArray indent, BooL & indent_needed);
 };
 
 #endif

@@ -14,7 +14,7 @@ class UmlStateDiagram : public UmlBaseStateDiagram, public UmlStateItem {
     virtual void memo_ref();
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     static void ref_index();
 
@@ -27,7 +27,7 @@ class UmlStateDiagram : public UmlBaseStateDiagram, public UmlStateItem {
 
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlStateDiagram(void * id, const QCString & s) : UmlBaseStateDiagram(id, s) {
+     UmlStateDiagram(void * id, const QByteArray & s) : UmlBaseStateDiagram(id, s) {
     }
 
 };

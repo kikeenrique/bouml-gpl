@@ -125,8 +125,8 @@ Token & FileIn::read(bool any) {
   return token;
 }
 
-QCString FileIn::body(QCString what) {
-  QCString r;
+QByteArray FileIn::body(QByteArray what) {
+  QByteArray r;
   int index = 0;
   int c;
   
@@ -203,7 +203,7 @@ const char * FileIn::readWord(bool any, BooL & str) {
     
 }
 
-void FileIn::finish(QCString what) {
+void FileIn::finish(QByteArray what) {
  for (;;) {
    Token & tk = read(TRUE);
    
@@ -212,7 +212,7 @@ void FileIn::finish(QCString what) {
    else if (tk.close())
      error("'&lt;/" + tk.what() + "&gt;' while wait for '&lt;/" + what + "&gt;'");
    else {
-     QCString s = tk.xmiId();
+     QByteArray s = tk.xmiId();
      
      if (! s.isEmpty())
        BypassedIds.insert(QString(s), "");
@@ -226,7 +226,7 @@ void FileIn::finish(QCString what) {
 void FileIn::bypass(Token & tk) {
   static QDict<char> bypassed;
   
-  QCString s = tk.xmiType();
+  QByteArray s = tk.xmiType();
   
   if (s.isEmpty()) {
     QString k = QString(tk.what());
@@ -256,25 +256,25 @@ void FileIn::bypass(Token & tk) {
 }
 
 void FileIn::bypassedId(Token & tk) {
-  QCString s = tk.xmiId();
+  QByteArray s = tk.xmiId();
   
   if (! s.isEmpty())
     BypassedIds.insert(QString(s), "");
 
 }
 
-void FileIn::error(QCString s) {
-  QCString num;
-  QCString err = QCString("error in ") + _path + " line " +
+void FileIn::error(QByteArray s) {
+  QByteArray num;
+  QByteArray err = QByteArray("error in ") + _path + " line " +
     num.setNum(_linenum) + " : " + s + "<br>";
   
   UmlCom::trace(err);
   throw 0;
 }
 
-void FileIn::warning(QCString s) {
-  QCString num;
-  QCString warn = QCString("warning in ") + _path + " line " +
+void FileIn::warning(QByteArray s) {
+  QByteArray num;
+  QByteArray warn = QByteArray("warning in ") + _path + " line " +
     num.setNum(_linenum) + " : " + s + "<br>";
   
   UmlCom::trace(warn);
@@ -302,7 +302,7 @@ const char * FileIn::read_word(int c, bool any) {
     cs[0] = c;
     cs[1] = 0;
     
-    error("unexpected character '" + QCString(cs) + "'");
+    error("unexpected character '" + QByteArray(cs) + "'");
   }
 
   int index = 1;
@@ -442,7 +442,7 @@ char FileIn::read_special_char() {
     }
     s[index] = 0; // check on index useless
 
-    QMap<QCString, char>::ConstIterator iter = _special_chars.find(s);
+    QMap<QByteArray, char>::ConstIterator iter = _special_chars.find(s);
     
     if (iter == _special_chars.end())
       // doesn't return
@@ -452,7 +452,7 @@ char FileIn::read_special_char() {
   }
 }
 
-void FileIn::setEncoding(QCString s) {
+void FileIn::setEncoding(QByteArray s) {
   if (s.left(3).lower() == "utf") {
     if (s.right(1) != "8") {
       UmlCom::trace("sorry, in the UTF encoding, only UTF-8 is managed");

@@ -14,10 +14,10 @@ class UmlItem;
 // You can modify it as you want (except the constructor)
 class UmlArtifact : public UmlBaseArtifact {
   public:
-    UmlArtifact(void * id, const QCString & n) : UmlBaseArtifact(id, n) { NumberOf += 1; };
+    UmlArtifact(void * id, const QByteArray & n) : UmlBaseArtifact(id, n) { NumberOf += 1; };
 
     //  call at end of import : try to manifestation
-    virtual void solveManifestation(QCString s, QCString idref);
+    virtual void solveManifestation(QByteArray s, QByteArray idref);
 
     static void init();
 

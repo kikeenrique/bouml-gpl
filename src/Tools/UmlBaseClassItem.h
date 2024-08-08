@@ -6,128 +6,127 @@
 #include <qcstring.h>
 
 //  Mother class of the all the class's items including the class themself
-class UmlBaseClassItem : public UmlItem
-{
-    public:
+class UmlBaseClassItem : public UmlItem {
+  public:
 #ifdef WITHCPP
-        //  return the C++ declaration
+    //  return the C++ declaration
+    
+    const QByteArray & cppDecl();
 
-        const QCString & cppDecl();
-
-        //  to set the C++ declaration
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_CppDecl (const char * s);
+    //  to set the C++ declaration
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppDecl(const char * s);
 #endif
 
 #ifdef WITHJAVA
-        //  return the Java defininition
+    //  return the Java defininition
+    
+    const QByteArray & javaDecl();
 
-        const QCString & javaDecl();
-
-        //  to set the Java definition
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_JavaDecl (const char * s);
+    //  to set the Java definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaDecl(const char * s);
 #endif
 
 #ifdef WITHPHP
-        //  return the Php defininition
+    //  return the Php defininition
+    
+    const QByteArray & phpDecl();
 
-        const QCString & phpDecl();
-
-        //  to set the Php definition
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_PhpDecl (const char * s);
+    //  to set the Php definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpDecl(const char * s);
 #endif
 
 #ifdef WITHPYTHON
-        //  return the Python defininition
+    //  return the Python defininition
+    
+    const QByteArray & pythonDecl();
 
-        const QCString & pythonDecl();
-
-        //  to set the Python definition
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_PythonDecl (const char * s);
+    //  to set the Python definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonDecl(const char * s);
 #endif
 
 #ifdef WITHIDL
-        //  return the IDL declaration
+    //  return the IDL declaration
+    
+    const QByteArray & idlDecl();
 
-        const QCString & idlDecl();
-
-        //  set the IDL declaration
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_IdlDecl (const char * s);
+    //  set the IDL declaration
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_IdlDecl(const char * s);
 #endif
 
-        virtual void unload (bool = FALSE, bool = FALSE);
+    virtual void unload(bool = FALSE, bool = FALSE);
 
-        friend class UmlBaseAttribute;
-        friend class UmlBaseOperation;
-        friend class UmlBaseRelation;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseOperation;
+  friend class UmlBaseRelation;
 
-    private:
+  private:
 #ifdef WITHCPP
-        QCString _cpp_decl;
+    QByteArray _cpp_decl;
 #endif
 
 #ifdef WITHJAVA
-        QCString _java_decl;
+    QByteArray _java_decl;
 #endif
 
 #ifdef WITHPHP
-        QCString _php_decl;
+    QByteArray _php_decl;
 #endif
 
 #ifdef WITHPYTHON
-        QCString _python_decl;
+    QByteArray _python_decl;
 #endif
 
 #ifdef WITHIDL
-        QCString _idl_decl;
+    QByteArray _idl_decl;
 #endif
 
 
-    protected:
-        UmlBaseClassItem (void * id, const QCString & n) : UmlItem (id, n) {};
+  protected:
+    UmlBaseClassItem(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 #ifdef WITHCPP
-        //internal, do NOT use it
-
-        virtual void read_cpp_();
+    //internal, do NOT use it
+    
+    virtual void read_cpp_();
 #endif
 
 #ifdef WITHJAVA
-        //internal, do NOT use it
-
-        virtual void read_java_();
+    //internal, do NOT use it
+    
+    virtual void read_java_();
 #endif
 
 #ifdef WITHPHP
-        //internal, do NOT use it
-
-        virtual void read_php_();
+    //internal, do NOT use it
+    
+    virtual void read_php_();
 #endif
 
 #ifdef WITHPYTHON
-        //internal, do NOT use it
-
-        virtual void read_python_();
+    //internal, do NOT use it
+    
+    virtual void read_python_();
 #endif
 
 #ifdef WITHIDL
-        //internal, do NOT use it
-
-        virtual void read_idl_();
+    //internal, do NOT use it
+    
+    virtual void read_idl_();
 #endif
 
-        friend class UmlBaseClassMember;
-        friend class UmlBaseExtraClassMember;
-        friend class UmlBaseClass;
+  friend class UmlBaseClassMember;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClass;
 };
 
 #endif

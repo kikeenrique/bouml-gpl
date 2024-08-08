@@ -7,18 +7,18 @@
 //  Internal class used to know how what code is produced for a stereotype in each language
 
 struct UmlStereotype {
-    QCString uml;
+    QByteArray uml;
 
 #ifdef WITHCPP
-    QCString cpp;
+    QByteArray cpp;
 #endif
 
 #ifdef WITHJAVA
-    QCString java;
+    QByteArray java;
 #endif
 
 #ifdef WITHIDL
-    QCString idl;
+    QByteArray idl;
 #endif
 
 };

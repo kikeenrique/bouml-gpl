@@ -11,7 +11,7 @@ void UmlClass::utilities() {
   const QVector<UmlItem> ch = children();
   bool have_constructor = FALSE;
   bool have_destructor = FALSE;
-  QCString destr = "~" + name();
+  QByteArray destr = "~" + name();
   bool have_copy = FALSE;
   bool have_const_copy = FALSE;
   bool have_assignment = FALSE;
@@ -19,7 +19,7 @@ void UmlClass::utilities() {
   
   for (unsigned i = 0; i != ch.size(); i += 1) {
     if (ch[i]->kind() == anOperation) {
-      QCString s = ch[i]->name();
+      QByteArray s = ch[i]->name();
       
       if (s == name()) {
 	// may be a constructor or a copy constructor
@@ -72,7 +72,7 @@ void UmlClass::addContructor(bool expl) {
   if (op == 0)
     UmlCom::trace("can't add contructor");
   else {
-    QCString s;
+    QByteArray s;
     int index;
     
     // remove the useless "${type} " mainly to remove the space
@@ -104,7 +104,7 @@ void UmlClass::addDestructor(bool virt) {
     if (virt)
       op->set_isCppVirtual(TRUE);
     
-    QCString s;
+    QByteArray s;
     int index;
     
     // remove the useless "${type} " mainly to remove the space
@@ -149,8 +149,8 @@ void UmlClass::addCopy(bool cte) {
     // add the parameter profile, and 
     // remove the useless "${type} " mainly to remove the space
     
-    QCString p = (cte) ? "const ${t0} & ${p0}" : "${t0} & ${p0}";
-    QCString s;
+    QByteArray p = (cte) ? "const ${t0} & ${p0}" : "${t0} & ${p0}";
+    QByteArray s;
     int index;
     
     s = op->cppDecl();
@@ -197,8 +197,8 @@ void UmlClass::addAssign(bool cte) {
     
     op->set_ReturnType(t);
     
-    QCString p = (cte) ? "const ${t0} & ${p0}" : "${t0} & ${p0}";
-    QCString s;
+    QByteArray p = (cte) ? "const ${t0} & ${p0}" : "${t0} & ${p0}";
+    QByteArray s;
     int index;
     
     s = op->cppDecl();

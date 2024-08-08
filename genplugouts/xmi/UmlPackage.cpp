@@ -17,10 +17,10 @@ void UmlPackage::xmi(int argc, char ** argv) {
   // the project
 
   bool noarg = (argc == 0);
-  QCString path;
-  QCString genviews;
-  QCString encoding;
-  QCString taggedvalue;
+  QByteArray path;
+  QByteArray genviews;
+  QByteArray encoding;
+  QByteArray taggedvalue;
 
   if (noarg) {
     propertyValue("gxmi path", path);

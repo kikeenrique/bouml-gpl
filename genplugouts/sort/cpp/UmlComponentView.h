@@ -12,7 +12,7 @@ class UmlComponentView : public UmlBaseComponentView {
   public:
     virtual void sort();
 
-    UmlComponentView(void * id, const QCString & n) : UmlBaseComponentView(id, n) {};
+    UmlComponentView(void * id, const QByteArray & n) : UmlBaseComponentView(id, n) {};
 
     virtual int orderWeight();
 

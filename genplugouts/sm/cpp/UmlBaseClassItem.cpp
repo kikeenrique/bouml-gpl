@@ -3,7 +3,7 @@
 
 #include "UmlCom.h"
 #ifdef WITHCPP
-const QCString & UmlBaseClassItem::cppDecl() {
+const QByteArray & UmlBaseClassItem::cppDecl() {
   read_if_needed_();
   
   return _cpp_decl;
@@ -15,7 +15,7 @@ bool UmlBaseClassItem::set_CppDecl(const char * s) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseClassItem::javaDecl() {
+const QByteArray & UmlBaseClassItem::javaDecl() {
   read_if_needed_();
   
   return _java_decl;
@@ -27,7 +27,7 @@ bool UmlBaseClassItem::set_JavaDecl(const char * s) {
 #endif
 
 #ifdef WITHPHP
-const QCString & UmlBaseClassItem::phpDecl() {
+const QByteArray & UmlBaseClassItem::phpDecl() {
   read_if_needed_();
   
   return _php_decl;
@@ -39,7 +39,7 @@ bool UmlBaseClassItem::set_PhpDecl(const char * s) {
 #endif
 
 #ifdef WITHIDL
-const QCString & UmlBaseClassItem::idlDecl() {
+const QByteArray & UmlBaseClassItem::idlDecl() {
   read_if_needed_();
   
   return _idl_decl;

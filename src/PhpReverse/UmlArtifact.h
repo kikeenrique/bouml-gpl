@@ -33,7 +33,7 @@
 
 class UmlArtifact : public UmlBaseArtifact {
   public:
-    UmlArtifact(void * id, const QCString & n)
+    UmlArtifact(void * id, const QByteArray & n)
       : UmlBaseArtifact(id, n) {};
 };
 

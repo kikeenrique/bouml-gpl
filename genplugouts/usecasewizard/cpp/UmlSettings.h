@@ -39,31 +39,31 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static unsigned multiplicity_column(const QCString & mult);
+    static unsigned multiplicity_column(const QByteArray & mult);
 
     //internal, do NOT use it
     
-    static QCString uml_type(const QCString & t, QCString UmlBuiltin::* f);
+    static QByteArray uml_type(const QByteArray & t, QByteArray UmlBuiltin::* f);
 
     //internal, do NOT use it
     
-    static QCString uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_rel_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
     //internal, do NOT use it
     
-    static QCString uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QByteArray uml_class_stereotype(const QByteArray & t, QByteArray UmlStereotype::* f);
 
     //internal, do NOT use it
     
-    static UmlBuiltin * add_type(const QCString & s);
+    static UmlBuiltin * add_type(const QByteArray & s);
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_rel_stereotype(const QCString & s);
+    static UmlStereotype * add_rel_stereotype(const QByteArray & s);
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_class_stereotype(const QCString & s);
+    static UmlStereotype * add_class_stereotype(const QByteArray & s);
 
 };
 

@@ -34,7 +34,7 @@ void FileOut::idref(UmlItem * x) {
 
 }
 
-void FileOut::idref(QCString s, UmlItem * x) {
+void FileOut::idref(QByteArray s, UmlItem * x) {
   QString keys;
   {
     QTextStream keyst(&keys, IO_WriteOnly);
@@ -42,7 +42,7 @@ void FileOut::idref(QCString s, UmlItem * x) {
     keyst << ((void *) x) << "_" << s;
   }
 
-  QMap<QCString, int>::ConstIterator it =
+  QMap<QByteArray, int>::ConstIterator it =
     _modifiedtypes.find((const char *) keys);
   
   if (it == _modifiedtypes.end())
@@ -65,11 +65,11 @@ void FileOut::idref_prefix(UmlItem * x, const char * pfix, int n) {
 
 }
 
-void FileOut::idref_datatype(const QCString & t) {
+void FileOut::idref_datatype(const QByteArray & t) {
   if (t.isEmpty())
     return;
     
-  QMap<QCString, int>::ConstIterator it = _datatypes.find(t);
+  QMap<QByteArray, int>::ConstIterator it = _datatypes.find(t);
   
   if (it == _datatypes.end())
     it = _datatypes.insert(t, _datatypes.count());
@@ -101,7 +101,7 @@ void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extens
 	: ((uml_20) ? "<ownedMember xmi:type=\"uml:DataType\""
 		    : "<packagedElement xmi:type=\"uml:DataType\"");
 
-  QMap<QCString, int>::ConstIterator it;
+  QMap<QByteArray, int>::ConstIterator it;
   
   for (it = _datatypes.begin();
        it != _datatypes.end();
@@ -119,7 +119,7 @@ void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extens
   for (it = _modifiedtypes.begin();
        it != _modifiedtypes.end();
        ++it) {
-    QCString k = it.key();
+    QByteArray k = it.key();
     int index = k.find('_');
     
     indent();

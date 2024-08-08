@@ -7,7 +7,7 @@
 #include "UmlItem.h"
 #include "anItemKind.h"
 #include <qvaluelist.h>
-#include <qptrvector.h>
+#include <qvector.h>
 #include <qcstring.h>
 
 class UmlClassInstance;
@@ -86,7 +86,7 @@ class UmlBaseClassInstance : public UmlItem {
     virtual void read_uml_();
 
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseClassInstance(void * id, const QCString & s) : UmlItem(id, s) {
+     UmlBaseClassInstance(void * id, const QByteArray & s) : UmlItem(id, s) {
     }
 
 };

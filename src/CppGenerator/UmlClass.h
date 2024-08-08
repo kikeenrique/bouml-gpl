@@ -27,14 +27,14 @@
 #define UMLCLASS_H
 
 #include <qdict.h>
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"
 #include "UmlFormalParameter.h"
 #include "UmlActualParameter.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlPackage;
 class UmlClass;
@@ -49,39 +49,39 @@ class UmlClass : public UmlBaseClass {
     static QValueList<UmlActualParameter> noactuals;
     
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n), managed(FALSE) {};
   
-    QCString cpp_stereotype();
+    QByteArray cpp_stereotype();
     
     void compute_dependencies(QList<CppRefType> &, bool all_in_h);
     
     virtual void compute_dependency(QList<CppRefType> & dependency,
-				    const QCString & cl_stereotype,
+				    const QByteArray & cl_stereotype,
 				    bool all_in_h);
     virtual void generate_decl(aVisibility & current_visibility,
-			       QTextOStream & f_h,
-			       const QCString & cl_stereotype,
-			       QCString indent,
+			       QTextStream & f_h,
+			       const QByteArray & cl_stereotype,
+			       QByteArray indent,
 			       BooL & first, bool last);
-    void generate_def(QTextOStream & f, QCString indent, bool h);
-    virtual void generate_def(QTextOStream & f, QCString indent, bool h,
-			      QCString templates, QCString cl_names,
-			      QCString templates_tmplop, 
-			      QCString cl_names_tmplop);
+    void generate_def(QTextStream & f, QByteArray indent, bool h);
+    virtual void generate_def(QTextStream & f, QByteArray indent, bool h,
+			      QByteArray templates, QByteArray cl_names,
+			      QByteArray templates_tmplop, 
+			      QByteArray cl_names_tmplop);
 				         
     virtual void generate();
-    void generate_decl(QTextOStream &, QCString indent);
+    void generate_decl(QTextStream &, QByteArray indent);
     
-    void get_template_prefixes(QCString & template1, QCString & template2);
-    void spec(QCString & templates, QCString & names,
-	      QCString & templates_tmplop, QCString & names_tmplop);
-    QCString decl();
+    void get_template_prefixes(QByteArray & template1, QByteArray & template2);
+    void spec(QByteArray & templates, QByteArray & names,
+	      QByteArray & templates_tmplop, QByteArray & names_tmplop);
+    QByteArray decl();
     
-    void write(QTextOStream &, bool with_formals = TRUE,
+    void write(QTextStream &, bool with_formals = TRUE,
 	       BooL * is_template = 0,
 	       const QValueList<UmlActualParameter> & actuals = noactuals);
-    static void write(QTextOStream &, const UmlTypeSpec &,
+    static void write(QTextStream &, const UmlTypeSpec &,
 		      bool with_formals = TRUE,
 		      BooL * is_template = 0);
 };

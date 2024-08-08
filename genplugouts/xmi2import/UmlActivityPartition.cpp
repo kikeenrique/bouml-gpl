@@ -15,8 +15,8 @@ UmlItem * UmlActivityPartition::container(anItemKind kind, Token & token, FileIn
 
 }
 
-void UmlActivityPartition::solve(QCString idref) {
-  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+void UmlActivityPartition::solve(QByteArray idref) {
+  QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
   
   if (it == All.end()) {
     if (!FileIn::isBypassedId(idref))
@@ -38,7 +38,7 @@ void UmlActivityPartition::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(aPartition, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlActivityPartition * r = create(where, s);
     
     if (r == 0)
@@ -53,10 +53,10 @@ void UmlActivityPartition::importIt(FileIn & in, Token & token, UmlItem * where)
     if (token.valueOf("isexternal") == "true")
       r->set_isExternal(TRUE);
     
-    QCString idref = token.valueOf("represents");
+    QByteArray idref = token.valueOf("represents");
   
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr)) {
@@ -73,7 +73,7 @@ void UmlActivityPartition::importIt(FileIn & in, Token & token, UmlItem * where)
     }
     
     if (! idref.isEmpty()) {
-      QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+      QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
       
       if (it == All.end())
 	Unresolved::addRef(r, idref);

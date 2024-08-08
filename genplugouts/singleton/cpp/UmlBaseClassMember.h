@@ -66,7 +66,7 @@ class UmlBaseClassMember : public UmlClassItem {
 
 
   protected:
-    UmlBaseClassMember(void * id, const QCString & n) : UmlClassItem(id, n) {};
+    UmlBaseClassMember(void * id, const QByteArray & n) : UmlClassItem(id, n) {};
 
     void read_uml_();
 

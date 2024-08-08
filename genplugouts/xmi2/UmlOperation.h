@@ -15,30 +15,30 @@ class FileOut;
 // You can modify it as you want (except the constructor)
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n) {};
+    UmlOperation(void * id, const QByteArray & n) : UmlBaseOperation(id, n) {};
 
     virtual void write(FileOut & out);
 
     void write_exceptions(FileOut & out);
 
-    void write_return_type(FileOut & out, QCString decl);
+    void write_return_type(FileOut & out, QByteArray decl);
 
-    void write_cpp_returntype(FileOut & out, QCString decl);
+    void write_cpp_returntype(FileOut & out, QByteArray decl);
 
-    void write_java_returntype(FileOut & out, QCString decl);
+    void write_java_returntype(FileOut & out, QByteArray decl);
 
     void write_uml_params(FileOut & out);
 
-    void write_cpp_java_params(FileOut & out, QCString decl);
+    void write_cpp_java_params(FileOut & out, QByteArray decl);
 
-    bool get_param(QCString s, int & index, QCString & r, QCString & kname, QCString & ktype, int & rank);
+    bool get_param(QByteArray s, int & index, QByteArray & r, QByteArray & kname, QByteArray & ktype, int & rank);
 
     // oper is sent/received in sequence/communication diagram, return event prefix
     // warning a class modify previous operation results
     const char * event(bool rec);
 
     // explicit operation/message sent in sequence/communication diagram, return event prefix
-    static const char * event(const char * pfix, QCString msg);
+    static const char * event(const char * pfix, QByteArray msg);
 
     static void write_events(FileOut & out);
 

@@ -43,7 +43,7 @@ class UmlBaseRelation : public UmlClassMember {
     bool set_isReadOnly(bool y);
 
     // returns the default relation value, may be an empty string
-    const QCString & defaultValue();
+    const QByteArray & defaultValue();
 
     // to set the default relation value ("" allowed)
     // 
@@ -55,7 +55,7 @@ class UmlBaseRelation : public UmlClassMember {
     // On error return FALSE in C++, produce a RuntimeException in Java
     // redefined in case the relation is bidirectional to set the stereotype
     // of the relation corresponding to the other direction
-    virtual bool set_Stereotype(const QCString & s);
+    virtual bool set_Stereotype(const QByteArray & s);
 
     // returns the 'end' class (the 'start' class is the parent of the relation) no set !
     UmlClass * roleType();
@@ -69,7 +69,7 @@ class UmlBaseRelation : public UmlClassMember {
     bool set_Association(const UmlTypeSpec & t);
 
     // returns the name of the role
-    const QCString & roleName();
+    const QByteArray & roleName();
 
     // to set the name of the role
     // 
@@ -77,7 +77,7 @@ class UmlBaseRelation : public UmlClassMember {
     bool set_RoleName(const char * s);
 
     // returns the multiplicity (may be an empty string)
-    const QCString & multiplicity();
+    const QByteArray & multiplicity();
 
     // to set the multiplicity
     // 
@@ -140,7 +140,7 @@ class UmlBaseRelation : public UmlClassMember {
 
     // in case the relation is an IDL union's member returns the
     // corresponding 'case', an empty string in case it is not specified
-    QCString idlCase();
+    QByteArray idlCase();
 
     // to set the 'case' even the relation is not (already) known as
     // an IDL union's member
@@ -179,13 +179,13 @@ class UmlBaseRelation : public UmlClassMember {
 
     aRelationKind _rel_kind : 8;
 
-    QCString _default_value;
+    QByteArray _default_value;
 
     UmlClass * _role_type;
 
-    QCString _role_name;
+    QByteArray _role_name;
 
-    QCString _multiplicity;
+    QByteArray _multiplicity;
 
     UmlTypeSpec _association;
 
@@ -197,7 +197,7 @@ class UmlBaseRelation : public UmlClassMember {
     UmlAttribute * _idl_case;
 
 #ifdef WITHIDL
-    QCString _idl_explicit_case;
+    QByteArray _idl_explicit_case;
 #endif
 
 
@@ -225,11 +225,11 @@ class UmlBaseRelation : public UmlClassMember {
 #endif
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseRelation(void * id, const QCString & n);
+    UmlBaseRelation(void * id, const QByteArray & n);
 
 };
 
-inline UmlBaseRelation::UmlBaseRelation(void * id, const QCString & n) : UmlClassMember(id, n) {
+inline UmlBaseRelation::UmlBaseRelation(void * id, const QByteArray & n) : UmlClassMember(id, n) {
   _role_type = 0;
   _get_oper = 0;
   _set_oper = 0;

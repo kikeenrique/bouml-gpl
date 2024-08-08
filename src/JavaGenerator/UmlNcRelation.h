@@ -34,9 +34,9 @@
 // You can modify it as you want (except the constructor)
 class UmlNcRelation : public UmlBaseNcRelation {
   public:
-    UmlNcRelation(void * id, const QCString & n) : UmlBaseNcRelation(id, n) {};
+    UmlNcRelation(void * id, const QByteArray & n) : UmlBaseNcRelation(id, n) {};
   
-    virtual void generate_import(QTextOStream & f, const QCString & indent);
+    virtual void generate_import(QTextStream & f, const QByteArray & indent);
 };
 
 #endif

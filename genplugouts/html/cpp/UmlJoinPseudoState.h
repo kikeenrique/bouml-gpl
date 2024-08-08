@@ -8,7 +8,7 @@
 class UmlJoinPseudoState : public UmlBaseJoinPseudoState {
   public:
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlJoinPseudoState(void * id) : UmlBaseJoinPseudoState(id, "") {

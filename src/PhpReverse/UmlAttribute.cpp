@@ -42,10 +42,10 @@ using namespace std;
 #include "Statistic.h"
 #endif
 
-bool UmlAttribute::new_one(Class * container, QCString name,
+bool UmlAttribute::new_one(Class * container, QByteArray name,
 			   aVisibility visibility, bool constp,
-			   bool staticp, const QCString & value,
-			   QCString comment, QCString description)
+			   bool staticp, const QByteArray & value,
+			   QByteArray comment, QByteArray description)
 {
 #ifdef TRACE
   cout << "ATTRIBUTE '" << name << "'\n";
@@ -63,7 +63,7 @@ bool UmlAttribute::new_one(Class * container, QCString name,
   UmlAttribute * at = UmlBaseAttribute::create(cl, name);
   
   if (at == 0) {
-    PhpCatWindow::trace(QCString("<font face=helvetica><b>cannot add attribute <i>")
+    PhpCatWindow::trace(QByteArray("<font face=helvetica><b>cannot add attribute <i>")
 			 + name + "</i> in <i>" + cl->name() 
 			 + "</i></b></font><br>");  
     return FALSE;
@@ -73,7 +73,7 @@ bool UmlAttribute::new_one(Class * container, QCString name,
 #endif
   
   if (!comment.isEmpty()) {
-    QCString s = (at->phpDecl().find("${description}") != -1)
+    QByteArray s = (at->phpDecl().find("${description}") != -1)
       ? description : comment;
     UmlTypeSpec t;
     int index;

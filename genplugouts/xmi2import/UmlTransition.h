@@ -13,7 +13,7 @@ class UmlItem;
 
 class UmlTransition : public UmlBaseTransition, public UmlStateItem {
   public:
-     UmlTransition(void * id, const QCString & n) : UmlBaseTransition(id, n) {
+     UmlTransition(void * id, const QByteArray & n) : UmlBaseTransition(id, n) {
     }
 
     static void init();
@@ -24,23 +24,23 @@ class UmlTransition : public UmlBaseTransition, public UmlStateItem {
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
     struct Transition {
-        QCString id;
+        QByteArray id;
 
-        QCString name;
+        QByteArray name;
 
-        QCString source;
+        QByteArray source;
 
-        QCString target;
+        QByteArray target;
 
-        QCString guard;
+        QByteArray guard;
 
-        QCString effect;
+        QByteArray effect;
 
-        QCString trigger;
+        QByteArray trigger;
 
-        QCString triggerRef;
+        QByteArray triggerRef;
 
-        QCString kind;
+        QByteArray kind;
 
     };
     

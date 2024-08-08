@@ -30,28 +30,28 @@
 
 #include "UmlBaseRelation.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlActualParameter;
 
 class UmlRelation : public UmlBaseRelation {
   public:
-    UmlRelation(void * id, const QCString & n)
+    UmlRelation(void * id, const QByteArray & n)
       : UmlBaseRelation(id, n) {
     };
   
     virtual void compute_dependency(QList<CppRefType> & dependency,
-				    const QCString & cl_stereotype,
+				    const QByteArray & cl_stereotype,
 				    bool all_in_h);
-    void generate_inherit(const char *& sep, QTextOStream & f_h, 
+    void generate_inherit(const char *& sep, QTextStream & f_h, 
 			  const QValueList<UmlActualParameter> & actuals,
-			  const QCString & cl_stereotype);
-    virtual void generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
-			       const QCString & cl_stereotype, QCString indent,
+			  const QByteArray & cl_stereotype);
+    virtual void generate_decl(aVisibility & current_visibility, QTextStream & f_h,
+			       const QByteArray & cl_stereotype, QByteArray indent,
 			       BooL & first, bool last);
-    virtual void generate_def(QTextOStream & f, QCString indent, bool h,
-			      QCString templates, QCString cl_names,
-			      QCString templates_tmplop, 
-			      QCString cl_names_tmplop);
+    virtual void generate_def(QTextStream & f, QByteArray indent, bool h,
+			      QByteArray templates, QByteArray cl_names,
+			      QByteArray templates_tmplop, 
+			      QByteArray cl_names_tmplop);
 };
 
 #endif

@@ -10,52 +10,51 @@
 class UmlExpansionRegion;
 class UmlItem;
 
-class UmlBaseExpansionRegion : public UmlActivityRegion
-{
-    public:
-        //  returns a new expansion region named 's' created under 'parent'
-        //
-        // In case it cannot be created (the name is already used or
-        // invalid, 'parent' cannot contain it etc ...) return 0 in C++
-        // and produce a RuntimeException in Java
-        static UmlExpansionRegion * create (UmlItem * parent, const char * s);
+class UmlBaseExpansionRegion : public UmlActivityRegion {
+  public:
+    //  returns a new expansion region named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlExpansionRegion * create(UmlItem * parent, const char * s);
 
-        // returns the kind of the item
-        virtual anItemKind kind();
-
-
-    protected:
-        //  the constructor, do not call it yourself !!!!!!!!!!
-        UmlBaseExpansionRegion (void * id, const QCString & s) : UmlActivityRegion (id, s) {
-        }
+    // returns the kind of the item
+    virtual anItemKind kind();
 
 
-    public:
-        // return the isMustIsolate attribute, if TRUE the actions in the region execute in isolation from actions outside the region.
-        bool isMustIsolate();
-
-        // set the isMustIsolate attribute
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_isMustIsolate (bool v);
-
-        // return the mode attribute, the way in which the execution interact.
-        anExpansionKind mode();
-
-        // set the mode attribute
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_Mode (anExpansionKind v);
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseExpansionRegion(void * id, const QByteArray & s) : UmlActivityRegion(id, s) {
+    }
 
 
-    private:
-        bool _must_isolate;
+  public:
+    // return the isMustIsolate attribute, if TRUE the actions in the region execute in isolation from actions outside the region.
+    bool isMustIsolate();
 
-        anExpansionKind _mode;
+    // set the isMustIsolate attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isMustIsolate(bool v);
+
+    // return the mode attribute, the way in which the execution interact.
+    anExpansionKind mode();
+
+    // set the mode attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Mode(anExpansionKind v);
 
 
-    protected:
-        virtual void read_uml_();
+  private:
+    bool _must_isolate;
+
+    anExpansionKind _mode;
+
+
+  protected:
+    virtual void read_uml_();
 
 };
 

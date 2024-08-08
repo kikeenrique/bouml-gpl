@@ -26,7 +26,7 @@
 #ifndef _UMLACTUALPARAMETER_H
 #define _UMLACTUALPARAMETER_H
 
-class QTextOStream;
+class QTextStream;
 
 
 #include "UmlBaseActualParameter.h"
@@ -40,7 +40,7 @@ class UmlActualParameter : public UmlBaseActualParameter {
   public:
     UmlActualParameter() {};
 
-    bool generate(QTextOStream & f_h, BooL & need_space) const;
+    bool generate(QTextStream & f_h, BooL & need_space) const;
 
 };
 

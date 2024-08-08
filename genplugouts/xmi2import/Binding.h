@@ -2,7 +2,7 @@
 #define _BINDING_H
 
 
-#include <qptrlist.h>
+#include <qlist.h>
 #include <qcstring.h>
 
 class FileIn;
@@ -22,20 +22,20 @@ class Binding {
     static QList<Binding> All;
 
     //xmiId of the class having the binbing
-    QCString boundId;
+    QByteArray boundId;
 
     //xmiId of the formal
-    QCString formalId;
+    QByteArray formalId;
 
     //xmiId of the actual, may be a class, or an opaque expression
-    QCString actualId;
+    QByteArray actualId;
 
     //the actual if actualId is empty
-    QCString actual;
+    QByteArray actual;
 
     //xmiId of the signature
     
-    QCString signatureId;
+    QByteArray signatureId;
 
 };
 

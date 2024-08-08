@@ -28,7 +28,7 @@
 #include "UmlFormalParameter.h"
 #include "IdlSettings.h"
 
-void UmlFormalParameter::generate(QTextOStream & f, QCString & s, const char *& sep) const {
+void UmlFormalParameter::generate(QTextStream & f, QByteArray & s, const char *& sep) const {
   f << sep << type() << ' ' << name();
   
   s += sep;
@@ -36,7 +36,7 @@ void UmlFormalParameter::generate(QTextOStream & f, QCString & s, const char *& 
   s += ' ';
   s += name();
       
-  QCString dflt = IdlSettings::type(defaultValue().toString());
+  QByteArray dflt = IdlSettings::type(defaultValue().toString());
       
   if (!dflt.isEmpty())
     f << " = " << dflt;

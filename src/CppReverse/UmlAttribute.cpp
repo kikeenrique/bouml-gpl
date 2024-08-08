@@ -44,7 +44,7 @@ using namespace std;
 #endif
 
 #ifdef ROUNDTRIP
-UmlAttribute * UmlAttribute::search_attr(UmlClass * cl, const QCString & name)
+UmlAttribute * UmlAttribute::search_attr(UmlClass * cl, const QByteArray & name)
 {
   UmlItem * x = cl->search_for_att_rel(name);
   
@@ -76,13 +76,13 @@ UmlAttribute * UmlAttribute::search_attr(UmlClass * cl, const QCString & name)
 
 #endif
 
-bool UmlAttribute::new_one(Class * container, const QCString & name,
-			   const QCString & type, const QCString & modifier,
-			   const QCString & pretype, const QCString & array,
+bool UmlAttribute::new_one(Class * container, const QByteArray & name,
+			   const QByteArray & type, const QByteArray & modifier,
+			   const QByteArray & pretype, const QByteArray & array,
 			   aVisibility visibility, bool staticp, bool constp,
 			   bool typenamep, bool mutablep, bool volatilep,
-			   const QCString & bitfield, const QCString & value,
-			   QCString comment, QCString description
+			   const QByteArray & bitfield, const QByteArray & value,
+			   QByteArray comment, QByteArray description
 #ifdef ROUNDTRIP
 			   , bool roundtrip, QList<UmlItem> & expected_order
 #endif
@@ -114,8 +114,8 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     at = UmlBaseAttribute::create(cl, name);
     
     if (at == 0) {
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot add attribute <i>")
-		    + name + "</i> in <i>" + QCString(cl->name())
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot add attribute <i>")
+		    + name + "</i> in <i>" + QByteArray(cl->name())
 		    + "</i></b></font><br><hr>");  
       return FALSE;
     }
@@ -140,12 +140,12 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   
   bool pfunc = (type.find('$') != -1);
   UmlTypeSpec typespec;
-  QCString typeform;
-  QCString stereotype;
+  QByteArray typeform;
+  QByteArray stereotype;
   
   if (! pfunc) {
     typeform = (pretype.isEmpty())
-      ? QCString("${type}")
+      ? QByteArray("${type}")
       : pretype + " ${type}";
     
     container->compute_type(type, typespec, typeform);
@@ -159,7 +159,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
       typespec.explicit_type.remove(index, 7);
   }
   
-  QCString decl = CppSettings::attributeDecl("");
+  QByteArray decl = CppSettings::attributeDecl("");
   int index = decl.find("${type}");
   
   if ((index == -1) ||
@@ -176,12 +176,12 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     decl.replace(index, decl.find("${name}") + 7 - index, type);
   else {
     if (!modifier.isEmpty())
-      decl.insert(index + 7, QCString(" ") + modifier);
+      decl.insert(index + 7, QByteArray(" ") + modifier);
         
     if (typeform != "${type}")
       decl.replace(index, 7, typeform);
     else if (typespec.type == 0) {
-      QCString t = typespec.explicit_type;
+      QByteArray t = typespec.explicit_type;
       int index2;
       
       if (!t.isEmpty() &&
@@ -199,7 +199,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
       decl.insert(decl.find("${name}") + 7, "${multiplicity}");
     
     if (!bitfield.isEmpty())
-      decl.insert(decl.find(';'), QCString(" : ") + bitfield);
+      decl.insert(decl.find(';'), QByteArray(" : ") + bitfield);
   }
   
   if (typenamep) {
@@ -255,7 +255,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     }
     
     if (!staticp) {
-      QCString v = at->defaultValue();
+      QByteArray v = at->defaultValue();
       
       if (!v.isEmpty() && (((const char *) v)[0] == '='))
 	v = v.mid(1);
@@ -272,7 +272,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
     }
     
     if (!stereotype.isEmpty()) {
-      QCString cppst;
+      QByteArray cppst;
       
       if (!at->stereotype().isEmpty())
 	cppst = CppSettings::relationAttributeStereotype(at->stereotype());

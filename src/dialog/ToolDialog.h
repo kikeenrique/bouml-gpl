@@ -26,7 +26,9 @@
 #ifndef TOOLDIALOG_H
 #define TOOLDIALOG_H
 
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 #include "StringTable.h"
 #include "UmlEnum.h"
@@ -34,43 +36,41 @@
 class QPixmap;
 
 struct ToolColumnDef {
-    UmlCode kind;
-    QPixmap ** pixmap;
+  UmlCode kind;
+  QPixmap ** pixmap;
 };
 
-class ToolDialog : public QTabDialog
-{
-        Q_OBJECT
-
-    public:
-        ToolDialog();
-        virtual ~ToolDialog();
-
-    private:
-        static QSize previous_size;
-
-    protected slots:
-        virtual void accept();
-        virtual void polish();
+class ToolDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  public:
+    ToolDialog(); 
+    virtual ~ToolDialog(); 
+    
+  private:
+    static QSize previous_size;
+  
+  protected slots:
+    virtual void accept();
+    virtual void polish();
 };
 
-class ToolTable : public StringTable
-{
-        Q_OBJECT
+class ToolTable : public StringTable {
+  Q_OBJECT
+    
+  private:
+    const ToolColumnDef * cd;
+  
+  public:
+    ToolTable(QWidget * parent, const ToolColumnDef * tcd, unsigned ncols);
+  
+    virtual void init_row(int r);
 
-    private:
-        const ToolColumnDef * cd;
-
-    public:
-        ToolTable (QWidget * parent, const ToolColumnDef * tcd, unsigned ncols);
-
-        virtual void init_row (int r);
-
-        unsigned ntools();
-        unsigned update (unsigned rank);
-
-    protected slots:
-        virtual void button_pressed (int row, int col, int button, const QPoint & mousePos);
+    unsigned ntools();
+    unsigned update(unsigned rank);
+  
+  protected slots:
+    virtual void button_pressed(int row, int col, int button, const QPoint & mousePos);
 };
 
 #endif

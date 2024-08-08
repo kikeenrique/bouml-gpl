@@ -21,8 +21,8 @@ void UmlTransition::solveThem()
   for (iter = All.begin(); iter != All.end(); ++iter) {
     Transition & transition = *iter;
     
-    QMap<QCString, UmlItem*>::Iterator isrc = UmlItem::All.find(transition.source);
-    QMap<QCString, UmlItem*>::Iterator itgt = UmlItem::All.find(transition.target);
+    QMap<QByteArray, UmlItem*>::Iterator isrc = UmlItem::All.find(transition.source);
+    QMap<QByteArray, UmlItem*>::Iterator itgt = UmlItem::All.find(transition.target);
     
     if ((isrc == UmlItem::All.end()) /*&& 
 	((isrc = Outgoings.find(transition.id)) == Outgoings.end())*/) {
@@ -51,7 +51,7 @@ void UmlTransition::solveThem()
 	if (! transition.trigger.isEmpty())
 	  t->set_Trigger(transition.trigger);
 	else if (! transition.triggerRef.isEmpty()) {
-	  QCString trig = Trigger::get(transition.triggerRef);
+	  QByteArray trig = Trigger::get(transition.triggerRef);
 	  
 	  if (!trig.isNull())
 	    t->set_Trigger(trig);
@@ -76,7 +76,7 @@ void UmlTransition::solveThem()
 void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
 {
   Transition & transition = *(All.append(Transition()));
-  QCString s;
+  QByteArray s;
   
   transition.id = token.xmiId();
   transition.name = token.valueOf("name");
@@ -86,7 +86,7 @@ void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
   transition.kind = token.valueOf("kind");
   
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
       
     while (in.read(), !token.close(kstr)) {
@@ -97,7 +97,7 @@ void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
       else if (s == "guard") {
 	if (! token.closed()) {
 	  while (in.read(), !token.close("guard")) {
-	    QCString s = token.what();
+	    QByteArray s = token.what();
 	    
 	    if (s == "specification") {
 	      transition.guard = token.valueOf("body");
@@ -107,7 +107,7 @@ void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
 	      
 	      if (! token.closed()) {
 		while (in.read(), !token.close("specification")) {
-		  QCString s = token.what();
+		  QByteArray s = token.what();
 		  
 		  if (s == "body")
 		    transition.guard = in.body("body");
@@ -122,7 +122,7 @@ void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
 	}
       }
       else if (s == "effect") {
-	QCString b = token.valueOf("body");
+	QByteArray b = token.valueOf("body");
 	
 	if (! b.isNull()) {
 	  transition.effect = b;

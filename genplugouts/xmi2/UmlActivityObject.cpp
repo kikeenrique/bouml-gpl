@@ -11,7 +11,7 @@ void UmlActivityObject::write(FileOut & out) {
   out.indent();
   out << '<' << k << " xmi:type=\"uml:";
   
-  QCString st = stereotype();
+  QByteArray st = stereotype();
   
   if (st == "datastore")
     out << "DataStoreNode";
@@ -67,9 +67,9 @@ void UmlActivityObject::solve_output_flows() {
 
   QListIterator<UmlFlow> it(_incoming_flows);
   
-  while (it.current() != 0) {
-    if (it.current()->control_or_data() == Unset)
-      it.current()->set_control_or_data(v);
+  while ((*it) != 0) {
+    if ((*it)->control_or_data() == Unset)
+      (*it)->set_control_or_data(v);
 
     ++it;
   }
@@ -96,7 +96,7 @@ void UmlActivityObject::write_ordering(FileOut & out) {
 }
 
 void UmlActivityObject::write_in_state(FileOut & out) {
-  QCString s = inState();
+  QByteArray s = inState();
   
   if (!s.isEmpty()) {
     UmlState * st = UmlState::find(s);

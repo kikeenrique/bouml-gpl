@@ -37,7 +37,7 @@ void UmlRegion::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(aRegion, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     
     UmlRegion * st = create((UmlState *) where, s);
     
@@ -48,7 +48,7 @@ void UmlRegion::importIt(FileIn & in, Token & token, UmlItem * where)
     st->addItem(token.xmiId(), in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       while (in.read(), !token.close(kstr))

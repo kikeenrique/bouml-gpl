@@ -13,7 +13,7 @@ class UmlItem;
 
 class UmlFlow : public UmlBaseFlow, public UmlActivityItem {
   public:
-     UmlFlow(void * id, const QCString & n) : UmlBaseFlow(id, n) {
+     UmlFlow(void * id, const QByteArray & n) : UmlBaseFlow(id, n) {
     }
 
     static void init();
@@ -24,23 +24,23 @@ class UmlFlow : public UmlBaseFlow, public UmlActivityItem {
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
     struct Flow {
-        QCString id;
+        QByteArray id;
 
-        QCString name;
+        QByteArray name;
 
         bool interrupt;
 
-        QCString source;
+        QByteArray source;
 
-        QCString target;
+        QByteArray target;
 
-        QCString selection;
+        QByteArray selection;
 
-        QCString transformation;
+        QByteArray transformation;
 
-        QCString weight;
+        QByteArray weight;
 
-        QCString guard;
+        QByteArray guard;
 
     };
     

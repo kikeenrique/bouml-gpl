@@ -29,7 +29,7 @@ bool UmlBaseUseCase::set_AssociatedDiagram(UmlUseCaseDiagram * d) {
     return FALSE;
 }
 
-const QCString & UmlBaseUseCase::extensionPoints() {
+const QByteArray & UmlBaseUseCase::extensionPoints() {
   read_if_needed_();
   return _extension_points;
 }

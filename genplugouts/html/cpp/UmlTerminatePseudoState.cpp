@@ -1,7 +1,7 @@
 
 #include "UmlTerminatePseudoState.h"
 
-QCString UmlTerminatePseudoState::sKind() {
+QByteArray UmlTerminatePseudoState::sKind() {
   return "terminate pseudo state";
 }
 

@@ -9,7 +9,7 @@
 class UmlActivityRegion : public UmlBaseActivityRegion, public UmlActivityItem {
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivityRegion(void * id, const QCString & s) : UmlBaseActivityRegion(id, s) {
+     UmlActivityRegion(void * id, const QByteArray & s) : UmlBaseActivityRegion(id, s) {
     }
 
 

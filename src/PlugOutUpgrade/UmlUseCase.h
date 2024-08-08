@@ -8,7 +8,7 @@
 
 class UmlUseCase : public UmlBaseUseCase {
   public:
-    UmlUseCase(void * id, const QCString & n)
+    UmlUseCase(void * id, const QByteArray & n)
       : UmlBaseUseCase(id, n) {};
   
 };

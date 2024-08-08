@@ -57,7 +57,7 @@ void UmlClass::deploy(UmlDeploymentView * view) {
 }
 
 int UmlClass::deployable() {
-  QCString st = stereotype();
+  QByteArray st = stereotype();
   
   if ((st == "metaclass") || (st == "stereotype"))
     return 0;

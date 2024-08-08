@@ -37,13 +37,13 @@ void UmlItem::write_description_properties(FileOut & out) {
     out << "\"/>\n";
   }
 
-  QCString ste = stereotype();
+  QByteArray ste = stereotype();
   
   if (_gen_extension) {
-    const QDict<QCString> up = properties();    
-    QDictIterator<QCString> it(up);
+    const QDict<QByteArray> up = properties();    
+    QDictIterator<QByteArray> it(up);
     
-    if (it.current()) {
+    if ((*it)) {
       out.indent();
       out << "<xmi:Extension extender=\"Bouml\">\n";
       
@@ -59,10 +59,10 @@ void UmlItem::write_description_properties(FileOut & out) {
 	out << "\t<taggedValue tag=\"";
 	out.quote(it.currentKey());
 	out << "\" value=\"";
-	out.quote(*(it.current()));
+	out.quote(*((*it)));
 	out << "\"/>\n";
 	++it;
-      } while (it.current());
+      } while ((*it));
       
       out.indent();
       out << "</xmi:Extension>\n";
@@ -91,11 +91,11 @@ void UmlItem::memo_ac_uc_assoc(UmlUseCaseDiagram * d) {
   parent()->memo_ac_uc_assoc(d);
 }
 
-void UmlItem::write_multiplicity(FileOut & out, QCString s, UmlItem * who)
+void UmlItem::write_multiplicity(FileOut & out, QByteArray s, UmlItem * who)
 {
   if (!s.isEmpty()) {
-    QCString min;
-    QCString max;
+    QByteArray min;
+    QByteArray max;
     int index = s.find("..");
     
     if (index != -1) {
@@ -154,7 +154,7 @@ void UmlItem::write_type(FileOut & out, const UmlTypeSpec & t, const char * tk)
 
 }
 
-void UmlItem::write_default_value(FileOut & out, QCString v, UmlItem * who, int rank)
+void UmlItem::write_default_value(FileOut & out, QByteArray v, UmlItem * who, int rank)
 {
   if (! v.isEmpty()) {
     if (v[0] == '=') {
@@ -177,14 +177,14 @@ void UmlItem::write_default_value(FileOut & out, QCString v, UmlItem * who, int 
 
 void UmlItem::write_stereotyped(FileOut & out)
 {
-  QMap<QCString, QList<UmlItem> >::Iterator it;
+  QMap<QByteArray, QList<UmlItem> >::Iterator it;
   
   for (it = _stereotypes.begin(); it != _stereotypes.end(); ++it) {
     const char * st = it.key();
     UmlClass * cl = UmlClass::findStereotype(it.key(), TRUE);
 		     
     if (cl != 0) {
-      QValueList<QCString> extended;
+      QValueList<QByteArray> extended;
 
       cl->get_extended(extended);
       
@@ -195,8 +195,8 @@ void UmlItem::write_stereotyped(FileOut & out)
 	out << "\t<" << st;
 	out.id_prefix(elt, "STELT_");
 	
-	const QDict<QCString> props = elt->properties();
-	QDictIterator<QCString> itp(props);
+	const QDict<QByteArray> props = elt->properties();
+	QDictIterator<QByteArray> itp(props);
 	
 	while (itp.current()) {
 	  QString k = itp.currentKey();
@@ -211,12 +211,12 @@ void UmlItem::write_stereotyped(FileOut & out)
 	  ++itp;
 	}
 	
-	QValueList<QCString>::Iterator iter_extended;
+	QValueList<QByteArray>::Iterator iter_extended;
 	
 	for (iter_extended = extended.begin(); 
 	     iter_extended != extended.end();
 	     ++iter_extended) {
-	  QCString vr = "base_" + *iter_extended;
+	  QByteArray vr = "base_" + *iter_extended;
 	  
 	  out.ref(elt, vr);
 	}
@@ -253,5 +253,5 @@ bool UmlItem::_gen_extension;
 
 bool UmlItem::_gen_eclipse;
 
-QMap<QCString, QList<UmlItem> > UmlItem::_stereotypes;
+QMap<QByteArray, QList<UmlItem> > UmlItem::_stereotypes;
 

@@ -25,7 +25,7 @@ class UmlBaseSequenceDiagram : public UmlDiagram {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseSequenceDiagram(void * id, const QCString & n) : UmlDiagram(id, n) {};
+    UmlBaseSequenceDiagram(void * id, const QByteArray & n) : UmlDiagram(id, n) {};
 
 };
 

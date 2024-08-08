@@ -6,16 +6,16 @@
 #include "UmlCom.h"
 void UmlClassDiagram::import(File & f, UmlClassView * p)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, "class diagram's name");
 
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
-  QCString s2;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
+  QByteArray s2;
   int k;
   
   do {

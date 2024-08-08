@@ -4,7 +4,7 @@
 #include <qtextstream.h>
 #include <qfile.h>
 
-bool FileWriter::open(QCString s) {
+bool FileWriter::open(QByteArray s) {
   f = new QFile(s);
   
   if (! f->open(IO_WriteOnly)) {
@@ -25,7 +25,7 @@ void FileWriter::close() {
   ts = 0;
 }
 
-void FileWriter::write(QCString s) {
+void FileWriter::write(QByteArray s) {
   ts->writeRawBytes(s, s.length());
 }
 
@@ -38,7 +38,7 @@ void FileWriter::write(char c) {
 }
 
 void FileWriter::write(unsigned n) {
-  QCString s;
+  QByteArray s;
   
   s.setNum(n);
   

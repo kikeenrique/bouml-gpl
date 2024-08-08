@@ -30,59 +30,58 @@
 
 
 
-#include <qptrdict.h>
+#include <q3ptrdict.h>
 #include <qmap.h>
-#include <qtabdialog.h>
+#include <q3tabdialog.h>
 
 #include "BrowserParameterSet.h"
 
 class QComboBox;
-class QListBox;
-class QVBox;
+class Q3ListBox;
+class Q3VBox;
 class LineEdit;
 class MultiLineEdit;
 class ParameterSetData;
 class KeyValuesTable;
 class BodyDialog;
 
-class ParameterSetDialog : public QTabDialog
-{
-        Q_OBJECT
+class ParameterSetDialog : public Q3TabDialog {
+  Q_OBJECT
+    
+  protected:
+    QWidget * umltab;
+    ParameterSetData * data;
+    LineEdit * edname;
+    QComboBox * edstereotype;
+    MultiLineEdit * comment;
+    QList<BodyDialog *> edits;
+    
+    // associated classes
+    Q3ListBox * lb_available;
+    Q3ListBox * lb_member;
+        
+    // user
+    KeyValuesTable * kvtable;
+    
+    static QSize previous_size;
+    
+    void init_uml_tab();
+    void init_pins_tab();
+      
+    static void post_edit_description(ParameterSetDialog * d, QString s);
+    
+  public:
+    ParameterSetDialog(ParameterSetData * nd);
+    virtual ~ParameterSetDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+    void edit_description();
+    void associate_cls();
+    void unassociate_cls();
 
-    protected:
-        QWidget * umltab;
-        ParameterSetData * data;
-        LineEdit * edname;
-        QComboBox * edstereotype;
-        MultiLineEdit * comment;
-        QList<BodyDialog> edits;
-
-        // associated classes
-        QListBox * lb_available;
-        QListBox * lb_member;
-
-        // user
-        KeyValuesTable * kvtable;
-
-        static QSize previous_size;
-
-        void init_uml_tab();
-        void init_pins_tab();
-
-        static void post_edit_description (ParameterSetDialog * d, QString s);
-
-    public:
-        ParameterSetDialog (ParameterSetData * nd);
-        virtual ~ParameterSetDialog();
-
-    protected slots:
-        virtual void polish();
-        virtual void accept();
-        void edit_description();
-        void associate_cls();
-        void unassociate_cls();
-
-        void change_tabs (QWidget *);
+    void change_tabs(QWidget *);
 };
 
 #endif

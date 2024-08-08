@@ -4,7 +4,7 @@
 #include "UmlCom.h"
 #include "UmlClass.h"
 #include "UmlDeploymentDiagram.h"
-void UmlArtifact::html(QCString, unsigned int, unsigned int) {
+void UmlArtifact::html(QByteArray, unsigned int, unsigned int) {
   UmlCom::message(name());
 
   UmlItem::html("Artifact", (UmlDiagram *) associatedDiagram());
@@ -41,7 +41,7 @@ void UmlArtifact::html(QCString, unsigned int, unsigned int) {
   unload(FALSE, FALSE);
 }
 
-QCString UmlArtifact::sKind() {
+QByteArray UmlArtifact::sKind() {
   return "artifact";
 }
 

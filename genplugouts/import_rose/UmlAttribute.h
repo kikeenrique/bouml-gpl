@@ -15,7 +15,7 @@ class UmlClass;
 // You can modify it as you want (except the constructor)
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n) :  UmlBaseAttribute(id, n) {
+    UmlAttribute(void * id, const QByteArray & n) :  UmlBaseAttribute(id, n) {
       cpt[kind()] += 1;
     };
 
@@ -27,17 +27,17 @@ class UmlAttribute : public UmlBaseAttribute {
   public:
     static void import(File & f, UmlClass * parent);
 
-    static void importIdlConstant(UmlClass * parent, const QCString & id, const QCString & s, const QCString & doc, QDict<QCString> & prop);
+    static void importIdlConstant(UmlClass * parent, const QByteArray & id, const QByteArray & s, const QByteArray & doc, QDict<QByteArray> & prop);
 
 
   private:
-    void cplusplus(QDict<QCString> & prop);
+    void cplusplus(QDict<QByteArray> & prop);
 
-    void oracle8(QDict<QCString> & prop);
+    void oracle8(QDict<QByteArray> & prop);
 
-    void corba(QDict<QCString> & prop);
+    void corba(QDict<QByteArray> & prop);
 
-    void java(QDict<QCString> & prop);
+    void java(QDict<QByteArray> & prop);
 
 };
 

@@ -28,71 +28,72 @@
 
 #include "DiagramCanvas.h"
 #include "Settings.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 #define ACTOR_CANVAS_SIZE 40
 
 class TemplateCanvas;
 
-class UcClassCanvas : public QObject, public DiagramCanvas
-{
-        Q_OBJECT
+class UcClassCanvas : public QObject, public DiagramCanvas {
+  Q_OBJECT
 
-    protected:
-        TemplateCanvas * templ;
-        UmlColor itscolor;
-        UmlColor used_color;
-        SimpleClassDiagramSettings settings;
-        SimpleClassDiagramSettings used_settings;
-        ClassDrawingMode used_view_mode;
-        QString full_name;
+  protected:
+    TemplateCanvas * templ;
+    UmlColor itscolor;
+    UmlColor used_color;
+    SimpleClassDiagramSettings settings;
+    SimpleClassDiagramSettings used_settings;
+    ClassDrawingMode used_view_mode;
+    QString full_name;
 
-    protected:
-        UcClassCanvas (UmlCanvas * canvas, int id);
+  protected:
+    UcClassCanvas(UmlCanvas * canvas, int id);
+    
+  public:
+    UcClassCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y, int id);
+    virtual ~UcClassCanvas();
+    
+    virtual void delete_it();
 
-    public:
-        UcClassCanvas (BrowserNode * bn, UmlCanvas * canvas, int x, int y, int id);
-        virtual ~UcClassCanvas();
+    virtual void draw(QPainter & p);
+    virtual void change_scale();
+    
+    void compute_size();
+    virtual UmlCode type() const;
+    virtual void delete_available(BooL & in_model, BooL & out_model) const;
+    virtual bool alignable() const;
+    virtual bool copyable() const;
+    virtual void remove(bool from_model);
+    virtual void open();
+    virtual void menu(const QPoint&);
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+    virtual bool has_relation(BasicData *) const; 
+    void draw_all_depend_gene(UcClassCanvas * end = 0);
+    virtual bool move_with_its_package() const;
+    virtual void moveBy(double dx, double dy);
+    virtual void set_z(double z);	// only called by upper() & lower()
 
-        virtual void delete_it();
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem *> &);
+    virtual void same_drawing_settings(QList<DiagramItem *> &);
+    void edit_drawing_settings();
+    virtual bool get_show_stereotype_properties() const;
+    
+    virtual void apply_shortcut(QString s);
+    
+    virtual void history_load(QBuffer &);
+    virtual void history_hide();
 
-        virtual void draw (QPainter & p);
-        virtual void change_scale();
-
-        void compute_size();
-        virtual UmlCode type() const;
-        virtual void delete_available (BooL & in_model, BooL & out_model) const;
-        virtual bool alignable() const;
-        virtual bool copyable() const;
-        virtual void remove (bool from_model);
-        virtual void open();
-        virtual void menu (const QPoint&);
-        virtual QString may_start (UmlCode &) const;
-        virtual QString may_connect (UmlCode & l, const DiagramItem * dest) const;
-        virtual void connexion (UmlCode, DiagramItem *, const QPoint &, const QPoint &);
-        virtual bool has_relation (BasicData *) const;
-        void draw_all_depend_gene (UcClassCanvas * end = 0);
-        virtual bool move_with_its_package() const;
-        virtual void moveBy (double dx, double dy);
-        virtual void set_z (double z);	// only called by upper() & lower()
-
-        virtual bool has_drawing_settings() const;
-        virtual void edit_drawing_settings (QList<DiagramItem> &);
-        virtual void same_drawing_settings (QList<DiagramItem> &);
-        void edit_drawing_settings();
-        virtual bool get_show_stereotype_properties() const;
-
-        virtual void apply_shortcut (QString s);
-
-        virtual void history_load (QBuffer &);
-        virtual void history_hide();
-
-        virtual void save (QTextStream &, bool ref, QString & warning) const;
-        static UcClassCanvas * read (char * &, UmlCanvas * canvas, char *);
-        virtual void post_loaded();
-
-    private slots:
-        void modified();	// canvas must be updated
-        void deleted();	// the class is deleted
+    virtual void save(QTextStream &, bool ref, QString & warning) const;
+    static UcClassCanvas * read(char * &, UmlCanvas * canvas, char *);
+    virtual void post_loaded();
+    
+  private slots:
+    void modified();	// canvas must be updated
+    void deleted();	// the class is deleted
 };
 
 #endif

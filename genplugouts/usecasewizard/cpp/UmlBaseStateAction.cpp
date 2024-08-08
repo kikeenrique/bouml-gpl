@@ -13,7 +13,7 @@ anItemKind UmlBaseStateAction::kind() {
   return aStateAction;
 }
 
-const QCString & UmlBaseStateAction::expression() {
+const QByteArray & UmlBaseStateAction::expression() {
   read_if_needed_();
   return _uml;
 }
@@ -23,7 +23,7 @@ bool UmlBaseStateAction::set_Expression(const char * s) {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseStateAction::cppExpression() {
+const QByteArray & UmlBaseStateAction::cppExpression() {
   read_if_needed_();
   return _cpp;
 }
@@ -34,7 +34,7 @@ bool UmlBaseStateAction::set_CppExpression(const char * s) {
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseStateAction::javaExpression() {
+const QByteArray & UmlBaseStateAction::javaExpression() {
   read_if_needed_();
   return _java;
 }

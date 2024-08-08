@@ -27,41 +27,38 @@
 #define ACTUALPARAMDATA_H
 
 #include <qobject.h>
+//Added by qt3to4:
+#include <QTextStream>
 
 #include "AType.h"
 
 class ToolCom;
 
-class ActualParamData : public QObject
-{
-        Q_OBJECT
-
-    protected:
-        BrowserClass * super;
-        unsigned rank;
-        AType value;
-
-    public:
-        ActualParamData (BrowserClass * p, unsigned r);
-        ActualParamData (const ActualParamData& p);
-        BrowserClass * get_class() const {
-            return super;
-        };
-
-        QString get_name (bool full = TRUE) const;
-
-        const AType & get_value() const {
-            return value;
-        };
-        void set_value (const AType & t);
-
-        void send_uml_def (ToolCom * com);
-
-        void save (QTextStream &, QString & warning) const;
-        static ActualParamData * read (char * &);
-
-    protected slots:
-        void on_delete();
+class ActualParamData : public QObject {
+  Q_OBJECT
+    
+  protected:
+    BrowserClass * super;
+    unsigned rank;
+    AType value;
+    
+  public:
+    ActualParamData(BrowserClass * p, unsigned r);
+    ActualParamData(const ActualParamData& p);  
+    BrowserClass * get_class() const { return super; };
+    
+    QString get_name(bool full = TRUE) const;
+    
+    const AType & get_value() const { return value; };
+    void set_value(const AType & t);
+    
+    void send_uml_def(ToolCom * com);
+    
+    void save(QTextStream &, QString & warning) const;
+    static ActualParamData * read(char * &);
+    
+  protected slots:
+    void on_delete();
 };
 
 

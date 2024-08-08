@@ -31,7 +31,7 @@ class UmlBaseUseCase : public UmlItem {
     bool set_AssociatedDiagram(UmlUseCaseDiagram * d);
 
     // return the extension points
-    const QCString & extensionPoints();
+    const QByteArray & extensionPoints();
 
     // set the extension points
     //
@@ -40,7 +40,7 @@ class UmlBaseUseCase : public UmlItem {
 
 
   private:
-    QCString _extension_points;
+    QByteArray _extension_points;
 
     UmlUseCaseDiagram * _assoc_diagram;
 
@@ -51,7 +51,7 @@ class UmlBaseUseCase : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCase(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseUseCase(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 };
 

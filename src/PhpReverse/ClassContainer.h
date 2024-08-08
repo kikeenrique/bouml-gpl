@@ -37,12 +37,12 @@ class ClassContainer {
     ClassContainer() {};
     virtual ~ClassContainer();
     
-    virtual void compute_type(QCString type, UmlTypeSpec & typespec,
+    virtual void compute_type(QByteArray type, UmlTypeSpec & typespec,
 			      Class ** need_object = 0) = 0;
-    virtual Class * define(const QCString & name, char st) = 0;
+    virtual Class * define(const QByteArray & name, char st) = 0;
     
     bool read_type(UmlTypeSpec & typespec, Class ** cl);
-    bool bypass_type(QCString s);
+    bool bypass_type(QByteArray s);
 
   protected:
     QDict<Class> Defined;

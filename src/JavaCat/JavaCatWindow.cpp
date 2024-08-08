@@ -353,7 +353,7 @@ void JavaCatWindow::trace(QString s)
   the->spl->setSizes(sz);
 }
 
-void JavaCatWindow::trace(QCString s)
+void JavaCatWindow::trace(QByteArray s)
 {
   trace(QString(s));
 }

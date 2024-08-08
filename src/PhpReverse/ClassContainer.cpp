@@ -32,7 +32,7 @@ ClassContainer::~ClassContainer() {
 }
 
 bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl) {
-  QCString s = Lex::read_word();
+  QByteArray s = Lex::read_word();
   
   if (s.isEmpty()) {
     Lex::premature_eof();
@@ -46,7 +46,7 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl) {
 
 // don't produce error
 
-bool ClassContainer::bypass_type(QCString s) {
+bool ClassContainer::bypass_type(QByteArray s) {
   if (s.isEmpty() && (s = Lex::read_word()).isEmpty())
     return FALSE;
     

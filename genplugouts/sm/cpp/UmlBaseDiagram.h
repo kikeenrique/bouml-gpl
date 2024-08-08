@@ -17,12 +17,12 @@ class UmlBaseDiagram : public UmlItem {
     // - else the default diagram aspect, which is probably not as you want
     //
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool saveIn(const QCString & s) const;
+    bool saveIn(const QByteArray & s) const;
 
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseDiagram(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseDiagram(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
 };
 

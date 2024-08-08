@@ -80,7 +80,7 @@ bool UmlItem::manage_comment(const char *& p, const char *& pp,
 }
 
 bool UmlItem::manage_description(const char *& p, const char *& pp) {
-  static QCString the_comment;
+  static QByteArray the_comment;
   
   p += 14;
   
@@ -103,7 +103,7 @@ bool UmlItem::manage_description(const char *& p, const char *& pp) {
   return TRUE;
 }
 
-void UmlItem::replace_alias(QCString & s) {
+void UmlItem::replace_alias(QByteArray & s) {
   int index = 0;
   
   while ((index = s.find("@{", index)) != -1) {
@@ -113,8 +113,8 @@ void UmlItem::replace_alias(QCString & s) {
       return;
     
     UmlBaseItem * obj = this;
-    QCString key = s.mid(index + 2, index2 - index - 2);
-    QCString value;
+    QByteArray key = s.mid(index + 2, index2 - index - 2);
+    QByteArray value;
     
     for (;;) {
       if (obj->propertyValue(key, value)) {
@@ -130,13 +130,13 @@ void UmlItem::replace_alias(QCString & s) {
   }
 }
 
-void UmlItem::manage_alias(const char *& p, QTextOStream & ts) {
+void UmlItem::manage_alias(const char *& p, QTextStream & ts) {
   // p starts by '@'
   const char * pclosed;
   
   if ((p[1] == '{') && ((pclosed = strchr(p + 2, '}')) != 0)) {
-    QCString key(p + 2, pclosed - p - 1);
-    QCString value;
+    QByteArray key(p + 2, pclosed - p - 1);
+    QByteArray value;
     UmlItem * node = this;
 
     do {

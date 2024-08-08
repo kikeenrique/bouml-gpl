@@ -28,12 +28,12 @@
 
 #include "UmlBaseItem.h"
 
-class QTextOStream;
+class QTextStream;
 class UmlPackage;
 
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n)
+    UmlItem(void * id, const QByteArray & n)
       : UmlBaseItem(id, n) {
     };
     virtual ~UmlItem();

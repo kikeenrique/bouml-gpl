@@ -10,7 +10,7 @@
 // You can modify it as you want (except the constructor)
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n) : UmlBasePackage(id, n) {};
+    UmlPackage(void * id, const QByteArray & n) : UmlBasePackage(id, n) {};
 
     virtual void sort();
 

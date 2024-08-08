@@ -9,85 +9,84 @@
 class UmlStateAction;
 class UmlState;
 
-class UmlBaseStateAction : public UmlItem
-{
-    public:
-        // returns a new state action created under 'parent'
-        //
-        // In case it cannot be created ('parent' cannot contain it etc ...)
-        // return 0 in C++ and produce a RuntimeException in Java
+class UmlBaseStateAction : public UmlItem {
+  public:
+    // returns a new state action created under 'parent'
+    //
+    // In case it cannot be created ('parent' cannot contain it etc ...)
+    // return 0 in C++ and produce a RuntimeException in Java
+    
+    static UmlStateAction * create(UmlState * parent);
 
-        static UmlStateAction * create (UmlState * parent);
-
-        // returns the kind of the item
-        virtual anItemKind kind();
-
-
-    protected:
-        //  the constructor, do not call it yourself !!!!!!!!!!
-        UmlBaseStateAction (void * id, const QCString & s) : UmlItem (id, s) {
-        }
+    // returns the kind of the item
+    virtual anItemKind kind();
 
 
-    public:
-        // return the expression in OCL
-        const QCString & expression();
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseStateAction(void * id, const QByteArray & s) : UmlItem(id, s) {
+    }
 
-        // set the expression in OCL
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_Expression (const char * s);
+
+  public:
+    // return the expression in OCL
+    const QByteArray & expression();
+
+    // set the expression in OCL
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Expression(const char * s);
 
 #ifdef WITHCPP
-        // return the expression in C++
-        const QCString & cppExpression();
+    // return the expression in C++
+    const QByteArray & cppExpression();
 
-        // set the expression in C++
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_CppExpression (const char * s);
+    // set the expression in C++
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppExpression(const char * s);
 #endif
 
 #ifdef WITHJAVA
-        // return the expression in Java
-        const QCString & javaExpression();
+    // return the expression in Java
+    const QByteArray & javaExpression();
 
-        // set the expression in Java
-        //
-        // On error return FALSE in C++, produce a RuntimeException in Java
-        bool set_JavaExpression (const char * s);
+    // set the expression in Java
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaExpression(const char * s);
 #endif
 
-        // to unload the object to free memory, it will be reloaded automatically
-        // if needed. Recursively done for the sub items if 'rec' is TRUE.
-        //
-        // if 'del' is true the sub items are deleted in C++, and removed from the
-        // internal dictionnary in C++ and Java (to allow it to be garbaged),
-        // you will have to call Children() to re-access to them
-        virtual void unload (bool = FALSE, bool = FALSE);
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. Recursively done for the sub items if 'rec' is TRUE. 
+    //
+    // if 'del' is true the sub items are deleted in C++, and removed from the
+    // internal dictionnary in C++ and Java (to allow it to be garbaged),
+    // you will have to call Children() to re-access to them
+    virtual void unload(bool = FALSE, bool = FALSE);
 
 
-    private:
-        QCString _uml;
+  private:
+    QByteArray _uml;
 
 #ifdef WITHCPP
-        QCString _cpp;
+    QByteArray _cpp;
 #endif
 
 #ifdef WITHJAVA
-        QCString _java;
+    QByteArray _java;
 #endif
 
 
-    protected:
-        virtual void read_uml_();
+  protected:
+    virtual void read_uml_();
 
 #ifdef WITHCPP
-        virtual void read_cpp_();
+    virtual void read_cpp_();
 #endif
 
 #ifdef WITHJAVA
-        virtual void read_java_();
+    virtual void read_java_();
 #endif
 
 };

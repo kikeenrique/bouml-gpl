@@ -28,27 +28,27 @@
 #include "UmlExtraClassMember.h"
 
 /*
-void UmlExtraClassMember::compute_dependency(QList<JavaRefType> &, QCString) {
+void UmlExtraClassMember::compute_dependency(QList<JavaRefType> &, QByteArray) {
   // does nothing
 }
 */
 
-void UmlExtraClassMember::generate(QTextOStream & f, const QCString &,
-				   QCString) {
+void UmlExtraClassMember::generate(QTextStream & f, const QByteArray &,
+				   QByteArray) {
   f << javaDecl();
 }
 
-void UmlExtraClassMember::generate_enum_pattern_item(QTextOStream & f, int &,
-						     const QCString &,
-						     QCString) {
+void UmlExtraClassMember::generate_enum_pattern_item(QTextStream & f, int &,
+						     const QByteArray &,
+						     QByteArray) {
   f << javaDecl();
 }
 
-void UmlExtraClassMember::generate_enum_pattern_case(QTextOStream & f,
-						     QCString) {
+void UmlExtraClassMember::generate_enum_pattern_case(QTextStream & f,
+						     QByteArray) {
   f << javaDecl();
 }
 
-void UmlExtraClassMember::generate_enum_member(QTextOStream & f, QCString) {
+void UmlExtraClassMember::generate_enum_member(QTextStream & f, QByteArray) {
   f << javaDecl();
 }

@@ -34,18 +34,18 @@ class Class;
 class UmlOperation : public UmlBaseOperation {
   private:
     static bool read_param(Class * container, unsigned rank,
-			   UmlParameter & param, QCString & decl, bool bypass);
+			   UmlParameter & param, QByteArray & decl, bool bypass);
   
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
 	
     static bool new_one(Class * container, aVisibility visibility,
 			bool finalp, bool abstractp, bool staticp,
-			QCString comment, QCString description);
+			QByteArray comment, QByteArray description);
 
     static void skip_body(int level = 0);
-    static QCString skip_expr(int level = 0);
+    static QByteArray skip_expr(int level = 0);
 };
 
 #endif

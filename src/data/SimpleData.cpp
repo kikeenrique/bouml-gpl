@@ -29,12 +29,10 @@
 
 #include "SimpleData.h"
 
-bool SimpleData::deletedp() const
-{
-    return is_deleted;
+bool SimpleData::deletedp() const {
+  return is_deleted;
 }
 
-void SimpleData::set_deletedp (bool y)
-{
-    is_deleted = y;
+void SimpleData::set_deletedp(bool y) {
+  is_deleted = y;
 }

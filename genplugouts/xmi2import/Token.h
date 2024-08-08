@@ -13,16 +13,16 @@ class Token {
     void read(FileIn & in, bool any);
 
     //return the work read just after <, may start by /
-     const QCString & what() const;
+     const QByteArray & what() const;
 
     //return the value of the xmi:type
-    const QCString & xmiType() const;
+    const QByteArray & xmiType() const;
 
     //return the value of the xmi:id
-    const QCString & xmiId() const;
+    const QByteArray & xmiId() const;
 
     //return the value of the xmi:idref
-    const QCString & xmiIdref() const;
+    const QByteArray & xmiIdref() const;
 
     //return true if the token is </...>
     bool close() const;
@@ -34,18 +34,18 @@ class Token {
     bool closed() const;
 
     //return the value associated to a key, "" if the couple doesn't exist
-     const QCString & valueOf(QCString key) const;
+     const QByteArray & valueOf(QByteArray key) const;
 
     //return TRUE if the couple exist and set v with the value associated to a key
-    bool valueOf(QCString key, QCString & v) const;
+    bool valueOf(QByteArray key, QByteArray & v) const;
 
 
   private:
     //associate a key and a value
     struct Couple {
-        QCString key;
+        QByteArray key;
 
-        QCString value;
+        QByteArray value;
 
     };
     
@@ -55,7 +55,7 @@ class Token {
     QValueList<Couple> _couples;
 
     //the work after < with out the / if it is </what>
-    QCString _what;
+    QByteArray _what;
 
     //true if the token is </..>
     bool _close;
@@ -65,19 +65,19 @@ class Token {
 
 };
 
-inline  const QCString & Token::what() const {
+inline  const QByteArray & Token::what() const {
   return _what;
 }
 
-inline const QCString & Token::xmiType() const {
+inline const QByteArray & Token::xmiType() const {
   return valueOf("xmi:type");
 }
 
-inline const QCString & Token::xmiId() const {
+inline const QByteArray & Token::xmiId() const {
   return valueOf("xmi:id");
 }
 
-inline const QCString & Token::xmiIdref() const {
+inline const QByteArray & Token::xmiIdref() const {
   return valueOf("xmi:idref");
 }
 

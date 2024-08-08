@@ -28,6 +28,11 @@
 
 #include "DiagramView.h"
 #include "ColMsg.h"
+//Added by qt3to4:
+#include <QTextStream>
+#include <QMouseEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 
 class ColDiagramWindow;
 class DiagramItem;
@@ -35,35 +40,32 @@ class UmlCanvas;
 class OperationData;
 class ToolCom;
 
-class ColDiagramView : public DiagramView
-{
-    protected:
-        ColMsgList msgs;
+class ColDiagramView : public DiagramView {
+  protected:
+    ColMsgList msgs;
+  
+  public:
+    ColDiagramView(QWidget * parent, UmlCanvas * canvas, int is);
 
-    public:
-        ColDiagramView (QWidget * parent, UmlCanvas * canvas, int is);
-
-        ColMsgList & get_msgs() {
-            return msgs;
-        };
-        void update_msgs();
-        void update_msg_supports();
-
-        virtual void menu (const QPoint&);
-        virtual void read (char *, char * k);
-        virtual void save (QTextStream & st, QString & warning, bool copy) const;
-
-        void send (ToolCom * com);
-
-    private:
-        ColDiagramWindow * window() const {
-            return (ColDiagramWindow *) parent();
-        };
-
-    protected:
-        virtual void contentsMousePressEvent (QMouseEvent *);
-        virtual void dragEnterEvent (QDragEnterEvent *);
-        virtual void dropEvent (QDropEvent *);
+    ColMsgList & get_msgs() { return msgs; };
+    void update_msgs();
+    void update_msg_supports();
+    
+    virtual void menu(const QPoint&);
+    virtual void read(char *, char * k);
+    virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+    void send(ToolCom * com);
+    
+  private:
+    ColDiagramWindow * window() const {
+      return (ColDiagramWindow *) parent();
+    };
+  
+  protected:
+    virtual void contentsMousePressEvent(QMouseEvent *);
+    virtual void dragEnterEvent(QDragEnterEvent *);
+    virtual void dropEvent(QDropEvent *);
 };
 
 #endif

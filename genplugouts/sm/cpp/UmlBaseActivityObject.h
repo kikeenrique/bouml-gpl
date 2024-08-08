@@ -27,7 +27,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivityObject(void * id, const QCString & s) : UmlActivityNode(id, s) {
+     UmlBaseActivityObject(void * id, const QByteArray & s) : UmlActivityNode(id, s) {
     }
 
 
@@ -41,7 +41,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
     bool set_Type(const UmlTypeSpec & v);
 
     // return the multiplicity
-    const QCString & multiplicity();
+    const QByteArray & multiplicity();
 
     // set the multiplicity
     //
@@ -49,7 +49,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
     bool set_Multiplicity(const char * v);
 
     // return the inState attribute
-    const QCString & inState();
+    const QByteArray & inState();
 
     // set the inState attribute
     //
@@ -57,7 +57,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
     bool set_InState(const char * v);
 
     // return the selection in OCL
-    const QCString & selection();
+    const QByteArray & selection();
 
     // set the selection in OCL
     //
@@ -66,7 +66,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
 
 #ifdef WITHCPP
     // return the selection in C++
-    const QCString & cppSelection();
+    const QByteArray & cppSelection();
 
     // set the selection in C++
     //
@@ -76,7 +76,7 @@ class UmlBaseActivityObject : public UmlActivityNode {
 
 #ifdef WITHJAVA
     // return the selection in Java
-    const QCString & javaSelection();
+    const QByteArray & javaSelection();
 
     // set the selection in Java
     //
@@ -122,18 +122,18 @@ class UmlBaseActivityObject : public UmlActivityNode {
 
     UmlTypeSpec _type;
 
-    QCString _multiplicity;
+    QByteArray _multiplicity;
 
-    QCString _in_state;
+    QByteArray _in_state;
 
-    QCString _selection;
+    QByteArray _selection;
 
 #ifdef WITHCPP
-    QCString _cpp_selection;
+    QByteArray _cpp_selection;
 #endif
 
 #ifdef WITHJAVA
-    QCString _java_selection;
+    QByteArray _java_selection;
 #endif
 
     anOrdering _ordering : 8;

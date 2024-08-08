@@ -45,11 +45,11 @@ class UmlClass : public UmlBaseClass {
 #endif
   
   public:
-    UmlClass(void * id, const QCString & n);
+    UmlClass(void * id, const QByteArray & n);
 #ifdef REVERSE
     void need_artifact(const QStringList & imports, bool remove_java_lang,
 		       const QStringList & static_imports,
-		       const QCString & path, UmlArtifact *& cp);
+		       const QByteArray & path, UmlArtifact *& cp);
     
 # ifdef ROUNDTRIP
     virtual void upload(ClassContainer * cnt);
@@ -60,12 +60,12 @@ class UmlClass : public UmlBaseClass {
     bool is_created() const { return created; }
     void set_created() { created = TRUE; }
     Class * get_class() const { return the_class; }
-    UmlItem * search_for_att_rel(const QCString & name);
+    UmlItem * search_for_att_rel(const QByteArray & name);
     void reorder(QList<UmlItem> & expected_order);
 # endif
 #endif
-    static void manage_generic(QCString & form, UmlTypeSpec & typespec,
-			       QCString str_actuals, const char * k);
+    static void manage_generic(QByteArray & form, UmlTypeSpec & typespec,
+			       QByteArray str_actuals, const char * k);
 };
 
 #endif

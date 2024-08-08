@@ -111,7 +111,7 @@ QValueList<FormalParameterList> Package::Formals;
 QApplication * Package::app;
 
 static QString RootSDir;	// empty or finish by a /
-static QCString RootCDir;	// empty or finish by a /
+static QByteArray RootCDir;	// empty or finish by a /
 
 static QDict<bool> FileManaged;
 
@@ -119,7 +119,7 @@ static QDict<bool> FileManaged;
 static QDict<bool> DirManaged;
 #endif
 
-static QCString force_final_slash(QCString p)
+static QByteArray force_final_slash(QByteArray p)
 {
   int ln = p.length();
   
@@ -131,12 +131,12 @@ static QCString force_final_slash(QCString p)
     : p;
 }
 
-static inline QCString force_final_slash(QString p)
+static inline QByteArray force_final_slash(QString p)
 {
-  return force_final_slash(QCString(p));
+  return force_final_slash(QByteArray(p));
 }
 
-static QCString root_relative_if_possible(QCString p)
+static QByteArray root_relative_if_possible(QByteArray p)
 {
   int pln = p.length();
   int rln = RootCDir.length();
@@ -176,7 +176,7 @@ Package::Package(Package * parent, UmlPackage * pk)
     path = RootCDir;
   else if (QDir::isRelativePath(path)) {
     if (RootCDir.isEmpty()) {
-      QCString err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
+      QByteArray err = "<font face=helvetica><b>root path not set in <i>generation settings</i>, "
 	"don't know where is <i>" + path + "<i></b></font><br>";
       
       UmlCom::trace(err);
@@ -394,7 +394,7 @@ int Package::file_number(QDir & d, bool rec)
     QFileInfoListIterator it(*list);
     QFileInfo * fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       if (fi->extension(FALSE) == Ext)
 	result += 1;
       
@@ -515,10 +515,10 @@ void Package::reverse_directory(QDir & d, bool rec) {
     QFileInfoListIterator it(*list);
     QFileInfo * fi;
     
-    while ((fi = it.current()) != 0) {
+    while ((fi = (*it)) != 0) {
       if (fi->extension() == Ext) {
 	if (allowed(FileFilter, fi->fileName()))
-	  reverse_file(QCString(fi->filePath())
+	  reverse_file(QByteArray(fi->filePath())
 #ifdef ROUNDTRIP
 		       , roundtriped.find(fi->baseName())
 #endif
@@ -543,7 +543,7 @@ void Package::reverse_directory(QDir & d, bool rec) {
 #ifndef REVERSE
 	  if (allowed(DirFilter, sd.dirName())) {
 #endif
-	    Package * p = find(QCString(sd.dirName()), TRUE);
+	    Package * p = find(QByteArray(sd.dirName()), TRUE);
 	    
 	    if (p != 0)
 	      p->reverse_directory(sd, TRUE);
@@ -560,11 +560,11 @@ void Package::reverse_directory(QDir & d, bool rec) {
 #ifdef ROUNDTRIP
 void Package::reverse(UmlArtifact * art) {
   if (allowed(FileFilter, QString(art->name()) + "." + Ext))
-    reverse_file(path + "/" + art->name() + "." + QCString(Ext), art);
+    reverse_file(path + "/" + art->name() + "." + QByteArray(Ext), art);
 }
 #endif
 
-void Package::reverse_file(QCString f
+void Package::reverse_file(QByteArray f
 #ifdef ROUNDTRIP
 			   , UmlArtifact * art
 #endif
@@ -576,7 +576,7 @@ void Package::reverse_file(QCString f
   if (! Lex::open(f)) {
 #ifdef ROUNDTRIP
     if (art != 0) {
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot open <i>")
 		    + f + "</i></b></font><br>");
       throw 0;
     }
@@ -584,7 +584,7 @@ void Package::reverse_file(QCString f
 #endif
     // very strange !
     if (!scan)
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot open <i>")
 		    + f + "</i></b></font><br>");
   }
   else {
@@ -607,10 +607,10 @@ void Package::reverse_file(QCString f
     for (;;) {		// not a true loop, to use break on error
       UmlCom::message(((scan) ? "scan " : "reverse ") + f);
       
-      QCString s = Lex::read_word();
+      QByteArray s = Lex::read_word();
 #ifdef REVERSE
-      QCString art_comment;
-      QCString art_description;
+      QByteArray art_comment;
+      QByteArray art_description;
 #endif
       
       if (s == "package") {
@@ -663,7 +663,7 @@ void Package::reverse_file(QCString f
       aVisibility visibility = PackageVisibility;
       bool abstractp = FALSE;
       bool finalp = FALSE;
-      QCString annotation;
+      QByteArray annotation;
       
       while (!s.isEmpty()) {
 	if ((s == "class") || (s == "enum") ||
@@ -730,8 +730,8 @@ void Package::reverse_file(QCString f
 
 void Package::manage_import()
 {
-  QCString s;
-  QCString s2;
+  QByteArray s;
+  QByteArray s2;
   
   if ((s = Lex::read_word()).isEmpty()) {
     if (! scan) 
@@ -790,7 +790,7 @@ void Package::manage_import()
   }
 }
 
-void Package::update_package_list(QCString name)
+void Package::update_package_list(QByteArray name)
 {
   if ((known_packages[name] == 0) &&
       (user_packages[name] == 0) &&
@@ -804,7 +804,7 @@ void Package::update_package_list(QCString name)
       int index;
       
       if ((index = name.findRev('.')) != -1) {
-	QCString subname = name.left(index);
+	QByteArray subname = name.left(index);
 	
 	if ((user_packages[subname] != 0) ||
 	    (unknown_packages.findIndex(subname) != -1))
@@ -830,7 +830,7 @@ void Package::update_package_list(QCString name)
   }
 }
 
-void Package::update_class_list(QCString pack, UmlItem * container)
+void Package::update_class_list(QByteArray pack, UmlItem * container)
 {
   const QVector<UmlItem> & ch = container->children();
   UmlItem ** v = ch.data();
@@ -853,7 +853,7 @@ void Package::update_class_list(QCString pack, UmlItem * container)
   }
 }
 
-Class * Package::define(const QCString & name, char st) {
+Class * Package::define(const QByteArray & name, char st) {
   Class * cl = Defined[name];
   
   if (cl != 0)
@@ -880,7 +880,7 @@ Class * Package::define(const QCString & name, char st) {
 #ifdef ROUNDTRIP
 Class * Package::upload_define(UmlClass * ucl) {
   Class * cl = new Class(this, ucl);
-  QCString s = ucl->name();	// not defined inside an other class
+  QByteArray s = ucl->name();	// not defined inside an other class
   
   classes.insert(package + "." + s, cl);
   Defined.insert(s, cl);
@@ -893,7 +893,7 @@ Class * Package::localy_defined(QString name) const {
 }
 #endif
 
-void Package::compute_type(QCString name, UmlTypeSpec & typespec,
+void Package::compute_type(QByteArray name, UmlTypeSpec & typespec,
 			   const QValueList<FormalParameterList> & tmplts,
 			   Class ** need_object) {
   typespec.type = 0;
@@ -948,7 +948,7 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
     }
     
     int index =  name.find('.');
-    QString left = QCString((index == -1) ? name : name.left(index));
+    QString left = QByteArray((index == -1) ? name : name.left(index));
     
     for (QStringList::Iterator it = imports.begin(); *it; ++it) {
       const QString & import = *it;
@@ -1022,7 +1022,7 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 // name is a formal but a class is needed,
 // create a pseudo one
 
-void Package::force_class(QCString name, UmlTypeSpec & typespec,
+void Package::force_class(QByteArray name, UmlTypeSpec & typespec,
 			  Class ** need_object) {
   Class * cl = Undefined[name];
   
@@ -1044,7 +1044,7 @@ void Package::force_class(QCString name, UmlTypeSpec & typespec,
 // the class is not a builtin, the package is the right,
 // the name doesn't contains '.'
 
-Class * Package::declare_if_needed(QCString name, char st) {
+Class * Package::declare_if_needed(QByteArray name, char st) {
   Class * cl;
   
   // the class already exist ?
@@ -1059,7 +1059,7 @@ Class * Package::declare_if_needed(QCString name, char st) {
   return cl;
 }
 
-void Package::declare(const QCString & name, Class * cl) {
+void Package::declare(const QByteArray & name, Class * cl) {
   if (! package.isEmpty())
     classes.insert(package + "." + name, cl);
   
@@ -1067,9 +1067,9 @@ void Package::declare(const QCString & name, Class * cl) {
     Undefined.insert(name, cl);
 }
 
-Package * Package::find(QCString s, bool nohack) {
+Package * Package::find(QByteArray s, bool nohack) {
   int index;
-  QCString name = ((index = s.find('.')) != -1) ? s.left(index) : s;
+  QByteArray name = ((index = s.find('.')) != -1) ? s.left(index) : s;
   
   // hack
   if (!nohack && (text(0) == (const char *) name)) {
@@ -1115,7 +1115,7 @@ Package * Package::package_unknown()
   return unknown;
 }
 
-void Package::set_package(QCString s) {
+void Package::set_package(QByteArray s) {
   Package * pack = this;
   
   while ((pack != 0) && pack->package.isEmpty()) {
@@ -1164,7 +1164,7 @@ UmlPackage * Package::get_uml(bool mandatory) {
 	return 0;
       
 #ifdef REVERSE
-      UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+      UmlCom::trace(QByteArray("<font face=helvetica><b>cannot create package <i>")
 		    + name + "</i> under package <i>" + uml_pa->name() +
 		    "</b></font><br>");
       UmlCom::message("");
@@ -1274,7 +1274,7 @@ void Package::menu() {
 	QApplication::restoreOverrideCursor();
       }
       else
-	UmlCom::trace(QCString("<font face=helvetica><i>") + path +
+	UmlCom::trace(QByteArray("<font face=helvetica><i>") + path +
 		      "</i> <b>doesn't exist !</b></font><br>");
 	
     }

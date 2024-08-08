@@ -12,32 +12,32 @@
 // You can modify it as you want (except the constructor)
 class UmlAttribute : public UmlBaseAttribute {
   public:
-    UmlAttribute(void * id, const QCString & n) :  UmlBaseAttribute(id, n) {};
+    UmlAttribute(void * id, const QByteArray & n) :  UmlBaseAttribute(id, n) {};
 
     //returns a string indicating the king of the element
-    virtual QCString sKind();
+    virtual QByteArray sKind();
 
     virtual void memo_ref();
 
     //entry to produce the html code receiving chapter number
     //path, rank in the mother and level in the browser tree
-    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+    virtual void html(QByteArray pfix, unsigned int rank, unsigned int level);
 
     static void ref_index();
 
     static void generate_index();
 
     //produce the definition in C++
-    void gen_cpp_decl(QCString s, bool descr);
+    void gen_cpp_decl(QByteArray s, bool descr);
 
     //produce the definition in Java
-    void gen_java_decl(QCString s, bool descr);
+    void gen_java_decl(QByteArray s, bool descr);
 
     //produce the definition in Php
-    void gen_php_decl(QCString s, bool descr);
+    void gen_php_decl(QByteArray s, bool descr);
 
     //produce the definition in Python
-    void gen_python_decl(QCString s);
+    void gen_python_decl(QByteArray s);
 
 
   private:

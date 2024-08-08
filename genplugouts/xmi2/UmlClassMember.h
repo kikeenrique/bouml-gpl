@@ -14,7 +14,7 @@ class UmlTypeSpec;
 // You can modify it as you want (except the constructor)
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n) : UmlBaseClassMember(id, n) {};
+    UmlClassMember(void * id, const QByteArray & n) : UmlBaseClassMember(id, n) {};
 
     void write_scope(FileOut & out);
 
@@ -26,7 +26,7 @@ class UmlClassMember : public UmlBaseClassMember {
 
     //  return the true name of the item
     
-    QCString true_name(QCString name, QCString decl);
+    QByteArray true_name(QByteArray name, QByteArray decl);
 
     static bool identChar(char c);
 
@@ -34,9 +34,9 @@ class UmlClassMember : public UmlBaseClassMember {
     //Have to remove the name and type keywords given in argument,
     //and to remove the initial value.
     //t.type != 0 or t.explicit_type != ""
-    static void write_type(FileOut & out, const UmlTypeSpec & t, QCString s, const char * k_name, const char * k_type);
+    static void write_type(FileOut & out, const UmlTypeSpec & t, QByteArray s, const char * k_name, const char * k_type);
 
-    static void remove_comments(QCString & s);
+    static void remove_comments(QByteArray & s);
 
 };
 

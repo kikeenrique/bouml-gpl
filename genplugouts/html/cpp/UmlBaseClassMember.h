@@ -55,7 +55,7 @@ class UmlBaseClassMember : public UmlClassItem {
 #endif
 #ifdef WITHJAVA
     // returns the Java annotations
-    QCString javaAnnotations();
+    QByteArray javaAnnotations();
 
     // set the Java annotations
     //
@@ -64,7 +64,7 @@ class UmlBaseClassMember : public UmlClassItem {
 #endif
 
     // return the constraint
-    const QCString & constraint();
+    const QByteArray & constraint();
 
     // set the constraint
     //
@@ -83,14 +83,14 @@ class UmlBaseClassMember : public UmlClassItem {
     aVisibility _cpp_visibility : 8;
 #endif
 #ifdef WITHJAVA
-    QCString _java_annotation;
+    QByteArray _java_annotation;
 #endif
 
-    QCString _constraint;
+    QByteArray _constraint;
 
 
   protected:
-    UmlBaseClassMember(void * id, const QCString & n) : UmlClassItem(id, n) {};
+    UmlBaseClassMember(void * id, const QByteArray & n) : UmlClassItem(id, n) {};
 
     void read_uml_();
 

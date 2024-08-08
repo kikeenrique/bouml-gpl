@@ -14,7 +14,7 @@ void UmlAttribute::import(File & f) {
     return;
   }
 
-  QCString s;
+  QByteArray s;
   UmlTypeSpec t;
         
   for (;;) {
@@ -74,16 +74,16 @@ void UmlAttribute::import(File & f) {
 
 void UmlAttribute::import(File & f, UmlClass * parent)
 {
-  QCString s;
+  QByteArray s;
 
   if (f.read(s) != STRING)
     f.syntaxError(s, "attributes's name");
     
-  QCString id;
-  QCString ste;
-  QCString doc;
-  QDict<QCString> prop;
-  QCString s2;
+  QByteArray id;
+  QByteArray ste;
+  QByteArray doc;
+  QDict<QByteArray> prop;
+  QByteArray s2;
   int k;
   
   do {
@@ -139,7 +139,7 @@ void UmlAttribute::import(File & f, UmlClass * parent)
 
 }
 
-void UmlAttribute::importIdlConstant(UmlClass * parent, const QCString & id, const QCString & s, const QCString & doc, QDict<QCString> & prop)
+void UmlAttribute::importIdlConstant(UmlClass * parent, const QByteArray & id, const QByteArray & s, const QByteArray & doc, QDict<QByteArray> & prop)
 {
   UmlAttribute * x;
 
@@ -155,7 +155,7 @@ void UmlAttribute::importIdlConstant(UmlClass * parent, const QCString & id, con
 
   x->set_IdlDecl(IdlSettings::constDecl());
   
-  QCString * v;
+  QByteArray * v;
   
   if ((v = prop.find("CORBA/ImplementationType")) != 0) {
     if (!v->isEmpty()) {
@@ -178,18 +178,18 @@ void UmlAttribute::importIdlConstant(UmlClass * parent, const QCString & id, con
   x->setProperties(prop);
 }
 
-void UmlAttribute::cplusplus(QDict<QCString> &) {
+void UmlAttribute::cplusplus(QDict<QByteArray> &) {
   set_CppDecl((parent()->stereotype() == "enum")
 	      ? CppSettings::enumItemDecl()
 	      : CppSettings::attributeDecl());
 }
 
-void UmlAttribute::oracle8(QDict<QCString> &) {
+void UmlAttribute::oracle8(QDict<QByteArray> &) {
 }
 
-void UmlAttribute::corba(QDict<QCString> & prop) {
-  QCString * v;
-  QCString decl;
+void UmlAttribute::corba(QDict<QByteArray> & prop) {
+  QByteArray * v;
+  QByteArray decl;
   
   if (parent()->stereotype() == "union")
     decl = IdlSettings::unionItemDecl();
@@ -223,8 +223,8 @@ void UmlAttribute::corba(QDict<QCString> & prop) {
   set_IdlDecl(decl);
 }
 
-void UmlAttribute::java(QDict<QCString> & prop) {
-  QCString * v;
+void UmlAttribute::java(QDict<QByteArray> & prop) {
+  QByteArray * v;
     
   if ((v = prop.find("Java/Final")) != 0) {
     if (*v == "TRUE")

@@ -29,11 +29,11 @@
 #include "UmlBaseOperation.h"
 #include "aLanguage.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n)
+    UmlOperation(void * id, const QByteArray & n)
       : UmlBaseOperation(id, n) {};
   
   static void roundtrip(const char * path, aLanguage who);

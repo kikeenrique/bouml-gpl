@@ -9,7 +9,7 @@
 #include "JavaSettings.h"
 #include "UmlPackage.h"
 void UmlOperation::write(FileOut & out) {
-  QCString decl;
+  QByteArray decl;
 
   switch (_lang) {
   case Uml:
@@ -91,7 +91,7 @@ void UmlOperation::write_exceptions(FileOut & out) {
   }
 }
 
-void UmlOperation::write_return_type(FileOut & out, QCString decl) {
+void UmlOperation::write_return_type(FileOut & out, QByteArray decl) {
   const UmlTypeSpec & t = returnType();
   static int return_rank = 0;
   
@@ -127,7 +127,7 @@ void UmlOperation::write_return_type(FileOut & out, QCString decl) {
   }
 }
 
-void UmlOperation::write_cpp_returntype(FileOut & out, QCString decl) {
+void UmlOperation::write_cpp_returntype(FileOut & out, QByteArray decl) {
   // doesn't manage function pointer
   // manage keywords
   int index;
@@ -156,7 +156,7 @@ void UmlOperation::write_cpp_returntype(FileOut & out, QCString decl) {
     write_type(out, t, decl, "${name}", "${type}");
 }
 
-void UmlOperation::write_java_returntype(FileOut & out, QCString decl) {
+void UmlOperation::write_java_returntype(FileOut & out, QByteArray decl) {
 // manage keywords
 int index;
 
@@ -216,7 +216,7 @@ void UmlOperation::write_uml_params(FileOut & out) {
   }
 }
 
-void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
+void UmlOperation::write_cpp_java_params(FileOut & out, QByteArray decl) {
   int index1 = decl.find("${(}");
     
   if (index1 == -1)
@@ -232,9 +232,9 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
   index1 = 0;
     
   const QValueList<UmlParameter> p = params();
-  QCString sparam;
-  QCString kname;
-  QCString ktype;
+  QByteArray sparam;
+  QByteArray kname;
+  QByteArray ktype;
   int rank;
         
   while (get_param(decl, index1, sparam, kname, ktype, rank)) {
@@ -270,7 +270,7 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
   }
 }
 
-bool UmlOperation::get_param(QCString s, int & index, QCString & r, QCString & kname, QCString & ktype, int & rank) {
+bool UmlOperation::get_param(QByteArray s, int & index, QByteArray & r, QByteArray & kname, QByteArray & ktype, int & rank) {
 int index0 = index;
 int level = 0;
 //const char * p = (const char *) s;
@@ -357,7 +357,7 @@ const char * UmlOperation::event(bool rec) {
   return s;
 }
 
-const char * UmlOperation::event(const char * pfix, QCString msg)
+const char * UmlOperation::event(const char * pfix, QByteArray msg)
 {
   int index0 = 0;
   int index1;

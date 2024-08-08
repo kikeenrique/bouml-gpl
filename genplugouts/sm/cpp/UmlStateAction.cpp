@@ -6,7 +6,7 @@
 #include "UmlCom.h"
 #include "UmlTransition.h"
 
-void UmlStateAction::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent) {
+void UmlStateAction::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent) {
   body += indent + cppExpression() + '\n';
   
   const QVector<UmlItem> ch = children();

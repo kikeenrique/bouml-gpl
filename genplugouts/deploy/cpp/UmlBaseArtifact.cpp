@@ -56,7 +56,7 @@ bool UmlBaseArtifact::removeAssociatedClass(UmlClass * cl) {
 		   ((UmlBaseClass *) cl)->_identifier);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      unsigned index = (unsigned) _assoc_classes.findRef(cl);
+      unsigned index = (unsigned) _assoc_classes.indexOf(cl);
       
       if (((int) index) == -1)
 	// theo impossible
@@ -111,7 +111,7 @@ bool UmlBaseArtifact::removeAssociatedArtifact(UmlArtifact * cp) {
 		   ((UmlBaseArtifact *) cp)->_identifier);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      unsigned index = (unsigned) _associated.findRef(cp);
+      unsigned index = (unsigned) _associated.indexOf(cp);
       
       if (((int) index) == -1)
 	// theo impossible
@@ -141,71 +141,71 @@ bool UmlBaseArtifact::removeAllAssociatedArtifacts() {
 }
 
 #ifdef WITHCPP
-const QCString & UmlBaseArtifact::cppHeader() {
+const QByteArray & UmlBaseArtifact::cppHeader() {
   read_if_needed_();
   
   return _cpp_h;
 }
 
-bool UmlBaseArtifact::set_CppHeader(const QCString & s) {
+bool UmlBaseArtifact::set_CppHeader(const QByteArray & s) {
   return set_it_(_cpp_h, s, setCppHCmd);
 }
 
-const QCString & UmlBaseArtifact::cppSource() {
+const QByteArray & UmlBaseArtifact::cppSource() {
   read_if_needed_();
   
   return _cpp_src;
 }
 
-bool UmlBaseArtifact::set_CppSource(const QCString & s) {
+bool UmlBaseArtifact::set_CppSource(const QByteArray & s) {
   return set_it_(_cpp_src, s, setCppSrcCmd);
 }
 #endif
 
 #ifdef WITHJAVA
-const QCString & UmlBaseArtifact::javaSource() {
+const QByteArray & UmlBaseArtifact::javaSource() {
   read_if_needed_();
   
   return _java_src;
 }
 
-bool UmlBaseArtifact::set_JavaSource(const QCString & s) {
+bool UmlBaseArtifact::set_JavaSource(const QByteArray & s) {
   return set_it_(_java_src, s, setJavaSrcCmd);
 }
 #endif
 
 #ifdef WITHPHP
-const QCString & UmlBaseArtifact::phpSource() {
+const QByteArray & UmlBaseArtifact::phpSource() {
   read_if_needed_();
   
   return _php_src;
 }
 
-bool UmlBaseArtifact::set_PhpSource(const QCString & s) {
+bool UmlBaseArtifact::set_PhpSource(const QByteArray & s) {
   return set_it_(_php_src, s, setPhpSrcCmd);
 }
 #endif
 
 #ifdef WITHPYTHON
-const QCString & UmlBaseArtifact::pythonSource() {
+const QByteArray & UmlBaseArtifact::pythonSource() {
   read_if_needed_();
   
   return _python_src;
 }
 
-bool UmlBaseArtifact::set_PythonSource(const QCString & s) {
+bool UmlBaseArtifact::set_PythonSource(const QByteArray & s) {
   return set_it_(_python_src, s, setPythonSrcCmd);
 }
 #endif
 
 #ifdef WITHIDL
-const QCString & UmlBaseArtifact::idlSource() {
+const QByteArray & UmlBaseArtifact::idlSource() {
   read_if_needed_();
   
   return _idl_src;
 }
 
-bool UmlBaseArtifact::set_IdlSource(const QCString & s) {
+bool UmlBaseArtifact::set_IdlSource(const QByteArray & s) {
   return set_it_(_idl_src, s, setIdlSrcCmd);
 }
 #endif

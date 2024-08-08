@@ -25,7 +25,7 @@ void UmlActivityObject::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anActivityObject, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
+    QByteArray s = token.valueOf("name");
     UmlActivityObject * a = create(where, s);
     
     if (a == 0)
@@ -34,7 +34,7 @@ void UmlActivityObject::importIt(FileIn & in, Token & token, UmlItem * where)
     
     a->addItem(token.xmiId(), in);
     
-    QCString ste;
+    QByteArray ste;
     
     s = token.xmiType();
     switch (((const char *) s)[0]) {
@@ -56,7 +56,7 @@ void UmlActivityObject::importIt(FileIn & in, Token & token, UmlItem * where)
 
 }
 
-void UmlActivityObject::setType(QCString idref) {
+void UmlActivityObject::setType(QByteArray idref) {
   UmlTypeSpec ts;
   
   if (UmlItem::setType(idref, 0, ts))
@@ -72,7 +72,7 @@ void UmlActivityObject::setType(Token & token) {
 
 }
 
-void UmlActivityObject::setOrdering(QCString s, FileIn & in) {
+void UmlActivityObject::setOrdering(QByteArray s, FileIn & in) {
  if (s == "unordered")
    set_Ordering(unordered);
  else if (s == "ordered")
@@ -85,8 +85,8 @@ void UmlActivityObject::setOrdering(QCString s, FileIn & in) {
    in.warning("wrong ordering '" + s + "'");
 }
 
-void UmlActivityObject::setSelection(QCString idref) {
-  QMap<QCString, QCString>::Iterator it = OpaqueDefs.find(idref);
+void UmlActivityObject::setSelection(QByteArray idref) {
+  QMap<QByteArray, QByteArray>::Iterator it = OpaqueDefs.find(idref);
   
   if (it != OpaqueDefs.end())
     set_Selection(*it);
@@ -94,11 +94,11 @@ void UmlActivityObject::setSelection(QCString idref) {
     UnresolvedWithContext::add(this, idref, 2);
 }
 
-void UmlActivityObject::setInState(QCString s) {
+void UmlActivityObject::setInState(QByteArray s) {
   if (FromBouml && (s.left(8) != "BOUML_0x"))
     set_InState(s);
   else {
-    QMap<QCString, UmlItem *>::Iterator it = All.find(s);
+    QMap<QByteArray, UmlItem *>::Iterator it = All.find(s);
   
     if (it != All.end()) {
       if ((*it)->kind() == aState)
@@ -110,11 +110,11 @@ void UmlActivityObject::setInState(QCString s) {
 }
 
 void UmlActivityObject::importMultiplicity(FileIn & in, Token & token, bool upper) {
-  QCString s = token.valueOf("value");
+  QByteArray s = token.valueOf("value");
   
   if (!s.isEmpty() && 
       (s != "Unspecified")) {	// VP
-    QCString m = multiplicity();
+    QByteArray m = multiplicity();
     
     if (m.isEmpty())
       m = s;
@@ -136,7 +136,7 @@ void UmlActivityObject::import_it(FileIn & in, Token & token) {
   if (token.valueOf("iscontroltype") == "true")
     set_IsControlType(TRUE);
   
-  QCString s;
+  QByteArray s;
     
   if (!(s = token.valueOf("ordering")).isEmpty())
     setOrdering(s, in);
@@ -148,7 +148,7 @@ void UmlActivityObject::import_it(FileIn & in, Token & token) {
     setType(s);
   
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
@@ -183,7 +183,7 @@ void UmlActivityObject::import_it(FileIn & in, Token & token) {
   }
 }
 
-void UmlActivityObject::solve(int context, QCString idref) {
+void UmlActivityObject::solve(int context, QByteArray idref) {
   switch (context) {
   case 0:
     // type
@@ -199,7 +199,7 @@ void UmlActivityObject::solve(int context, QCString idref) {
   case 1:
     // state
     {
-      QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+      QMap<QByteArray, UmlItem *>::Iterator it = All.find(idref);
       
       if (it != All.end()) {
 	if ((*it)->kind() == aState)
@@ -212,7 +212,7 @@ void UmlActivityObject::solve(int context, QCString idref) {
   default:
     // selection
     {
-      QMap<QCString, QCString>::Iterator it = OpaqueDefs.find(idref);
+      QMap<QByteArray, QByteArray>::Iterator it = OpaqueDefs.find(idref);
       
       if (it != OpaqueDefs.end())
 	set_Selection(*it);

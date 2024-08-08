@@ -34,44 +34,43 @@ class QSpinBox;
 class ComponentDiagramView;
 class BrowserComponentDiagram;
 
-class ComponentDiagramWindow : public DiagramWindow
-{
-        Q_OBJECT
+class ComponentDiagramWindow : public DiagramWindow {
+  Q_OBJECT
+    
+  protected:
+    ComponentDiagramView * view;
+    QToolButton * addComponent;
+    QToolButton * addPackage;
+    QToolButton * addFragment;
+    QToolButton * inherit;
+    QToolButton * dependency;
+    QToolButton * required;
+    QToolButton * provided;
+    QToolButton * note;
+    QToolButton * anchor;
+    QToolButton * text;
+    QToolButton * image;
+  
+  public:
+    ComponentDiagramWindow(const QString & s, BrowserComponentDiagram * b, int id = -1);
+    ~ComponentDiagramWindow();
 
-    protected:
-        ComponentDiagramView * view;
-        QToolButton * addComponent;
-        QToolButton * addPackage;
-        QToolButton * addFragment;
-        QToolButton * inherit;
-        QToolButton * dependency;
-        QToolButton * required;
-        QToolButton * provided;
-        QToolButton * note;
-        QToolButton * anchor;
-        QToolButton * text;
-        QToolButton * image;
-
-    public:
-        ComponentDiagramWindow (const QString & s, BrowserComponentDiagram * b, int id = -1);
-        ~ComponentDiagramWindow();
-
-        virtual DiagramView * get_view() const;
-
-        virtual void hit_button (UmlCode, QToolButton *);
-
-    protected slots:
-        void hit_component();
-        void hit_package();
-        void hit_fragment();
-        void hit_inherit();
-        void hit_dependency();
-        void hit_required();
-        void hit_provided();
-        void hit_note();
-        void hit_anchor();
-        void hit_text();
-        void hit_image();
+    virtual DiagramView * get_view() const;
+    
+    virtual void hit_button(UmlCode, QToolButton *);
+    
+  protected slots:
+    void hit_component();
+    void hit_package();
+    void hit_fragment();
+    void hit_inherit();
+    void hit_dependency();
+    void hit_required();
+    void hit_provided();
+    void hit_note();
+    void hit_anchor();
+    void hit_text();
+    void hit_image();
 };
 
 #endif

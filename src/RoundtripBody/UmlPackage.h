@@ -30,31 +30,31 @@
 #include "aLanguage.h"
 
 struct Dir {
-  QCString src;
-  QCString h;
+  QByteArray src;
+  QByteArray h;
   bool read;
 };
  
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
   protected:
     Dir dir;
   
   public:
-    QCString source_path(const QCString &);
-    QCString header_path(const QCString &);
-    QCString java_path(const QCString &);
-    QCString php_path(const QCString &);
-    QCString python_path(const QCString &);
+    QByteArray source_path(const QByteArray &);
+    QByteArray header_path(const QByteArray &);
+    QByteArray java_path(const QByteArray &);
+    QByteArray php_path(const QByteArray &);
+    QByteArray python_path(const QByteArray &);
     virtual void roundtrip_cpp();
     virtual void roundtrip_java();
     virtual void roundtrip_php();
     virtual void roundtrip_python();
     virtual UmlPackage * package();
     
-    static QCString rootDir(aLanguage who);
+    static QByteArray rootDir(aLanguage who);
 };
 
 #endif

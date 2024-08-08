@@ -30,7 +30,7 @@
 
 class UmlClassView : public UmlBaseClassView {
   public:
-    UmlClassView(void * id, const QCString & n)
+    UmlClassView(void * id, const QByteArray & n)
       : UmlBaseClassView(id, n) {};
 
     void generate();

@@ -13,17 +13,17 @@ class UmlItem;
 class UmlActivity : public UmlBaseActivity, public FlowContainer {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlActivity(void * id, const QCString & s) : UmlBaseActivity(id, s) {
+     UmlActivity(void * id, const QByteArray & s) : UmlBaseActivity(id, s) {
     }
 
     //write the definition if it is not empty for the target language
     virtual void write(FileOut & out);
 
-    void write_condition(FileOut & out, QCString cond, bool pre);
+    void write_condition(FileOut & out, QByteArray cond, bool pre);
 
-    UmlItem * add_opaque_behavior(QCString beh, UmlItem * who, const char * k);
+    UmlItem * add_opaque_behavior(QByteArray beh, UmlItem * who, const char * k);
 
-    UmlItem * add_opaque_expression(QCString val, UmlItem * who);
+    UmlItem * add_opaque_expression(QByteArray val, UmlItem * who);
 
 
   private:
@@ -41,9 +41,9 @@ class UmlActivity : public UmlBaseActivity, public FlowContainer {
     
 
   protected:
-    QMap<QCString, Opaque> _opaque_behavior;
+    QMap<QByteArray, Opaque> _opaque_behavior;
 
-    QMap<QCString, UmlItem *> _opaque_expression;
+    QMap<QByteArray, UmlItem *> _opaque_expression;
 
 };
 

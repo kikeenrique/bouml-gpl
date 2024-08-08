@@ -19,29 +19,29 @@ class File : public QFile {
 
     //// read a token in 's', returns its kind
     
-    int read(QCString & s);
+    int read(QByteArray & s);
 
     //// e is expected, return TRUE if ok
     
     void read(const char * e);
 
-    void unread(int k, const QCString & s);
+    void unread(int k, const QByteArray & s);
 
-    QCString context();
+    QByteArray context();
 
 
   protected:
-    int readString(QCString & s);
+    int readString(QByteArray & s);
 
-    int readMLString(QCString & s);
+    int readMLString(QByteArray & s);
 
-    int readAtom(QCString & s);
+    int readAtom(QByteArray & s);
 
 
   public:
-    void syntaxError(const QCString s);
+    void syntaxError(const QByteArray s);
 
-    void syntaxError(const QCString s, const QCString e);
+    void syntaxError(const QByteArray s, const QByteArray e);
 
     //// skip the end of the current block
     //// '(' already read
@@ -61,9 +61,9 @@ class File : public QFile {
 
     Language readLanguage();
 
-    int readDefinitionBeginning(QCString & s, QCString & id, QCString & ste, QCString & doc, QDict<QCString> & prop);
+    int readDefinitionBeginning(QByteArray & s, QByteArray & id, QByteArray & ste, QByteArray & doc, QDict<QByteArray> & prop);
 
-    void readProperties(QDict<QCString> & d);
+    void readProperties(QDict<QByteArray> & d);
 
 
   protected:
@@ -71,7 +71,7 @@ class File : public QFile {
 
     int unread_k;
 
-    QCString unread_s;
+    QByteArray unread_s;
 
 };
 

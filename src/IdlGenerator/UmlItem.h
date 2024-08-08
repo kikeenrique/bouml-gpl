@@ -28,11 +28,11 @@
 
 #include "UmlBaseItem.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n)
+    UmlItem(void * id, const QByteArray & n)
       : UmlBaseItem(id, n) {
     };
     virtual ~UmlItem();
@@ -40,7 +40,7 @@ class UmlItem : public UmlBaseItem {
     virtual void generate();
     void manage_comment(const char *& p, const char *& pp);
     void manage_description(const char *& p, const char *& pp);    
-    void manage_alias(const char *& p, QTextOStream & ts);
+    void manage_alias(const char *& p, QTextStream & ts);
 };
 
 #endif

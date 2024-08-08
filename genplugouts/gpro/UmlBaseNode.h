@@ -37,7 +37,7 @@ class UmlBaseNode : public UmlItem {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseNode(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseNode(void * id, const QByteArray & n) : UmlItem(id, n) {};
 
     virtual void read_uml_();
 

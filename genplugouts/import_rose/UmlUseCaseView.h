@@ -14,13 +14,13 @@ class File;
 // You can modify it as you want (except the constructor)
 class UmlUseCaseView : public UmlBaseUseCaseView, public Uc {
   public:
-    UmlUseCaseView(void * id, const QCString & n) : UmlBaseUseCaseView(id, n) {
+    UmlUseCaseView(void * id, const QByteArray & n) : UmlBaseUseCaseView(id, n) {
       cpt[kind()] += 1;
     };
 
     virtual UmlItem * item();
 
-    virtual void readObject(File & f, QCString s);
+    virtual void readObject(File & f, QByteArray s);
 
     //read and create a new use case view, its name is the next token
     

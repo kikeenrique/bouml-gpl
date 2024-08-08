@@ -24,13 +24,13 @@ class UmlBaseActivityParameter : public UmlPinParameter {
 
   protected:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseActivityParameter(void * id, const QCString & s) : UmlPinParameter(id, s) {
+     UmlBaseActivityParameter(void * id, const QByteArray & s) : UmlPinParameter(id, s) {
     }
 
 
   public:
     // return the default value
-    const QCString & defaultValue();
+    const QByteArray & defaultValue();
 
     // set the default value
     //
@@ -47,7 +47,7 @@ class UmlBaseActivityParameter : public UmlPinParameter {
 
 
   private:
-    QCString _default_value;
+    QByteArray _default_value;
 
 
   protected:

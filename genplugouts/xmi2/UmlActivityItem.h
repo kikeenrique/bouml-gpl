@@ -13,7 +13,7 @@ class UmlActivityItem {
     
     virtual void memo_incoming_flow() = 0;
 
-    void write_selection(FileOut & out, QCString s);
+    void write_selection(FileOut & out, QByteArray s);
 
     UmlActivity * activity();
 

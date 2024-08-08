@@ -1,7 +1,7 @@
 
 #include "UmlDeepHistoryPseudoState.h"
 
-QCString UmlDeepHistoryPseudoState::sKind() {
+QByteArray UmlDeepHistoryPseudoState::sKind() {
   return "deep history pseudo state";
 }
 

@@ -29,25 +29,25 @@
 #include "UmlBasePackage.h"
 
 struct Dir {
-  QCString file;
+  QByteArray file;
   bool file_absolute;
   bool read;
 };
  
 class UmlPackage : public UmlBasePackage {
   public:
-    UmlPackage(void * id, const QCString & n);
+    UmlPackage(void * id, const QByteArray & n);
   
   protected:
     Dir dir;
   
   public:
-    QCString file_path(const QCString &, QCString relto = "");
-    QCString text_path(const QCString &);
+    QByteArray file_path(const QByteArray &, QByteArray relto = "");
+    QByteArray text_path(const QByteArray &);
     virtual void generate();
     virtual UmlPackage * package();
     
-    static QCString rootDir();
+    static QByteArray rootDir();
 };
 
 #endif

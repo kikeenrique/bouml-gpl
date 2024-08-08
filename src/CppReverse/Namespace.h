@@ -39,9 +39,9 @@
 
 class Namespace {
   public:
-    static void set(const QCString & s);
+    static void set(const QByteArray & s);
     static void unset();
-    static void enter(const QCString & s);
+    static void enter(const QByteArray & s);
     static void exit();
     static void enter_anonymous() { AnonymousLevel += 1; }
     static void exit_anonymous() { AnonymousLevel -= 1; }
@@ -53,26 +53,26 @@ class Namespace {
     static void restore_using_scope();
     static const QStringList stack() { return Stack; }
     
-    static void add_using(const QCString & s) {
+    static void add_using(const QByteArray & s) {
       Usings.append(QString(s) + "::");
     }
     static void clear_usings() { Usings.clear(); }
     static const QStringList & usings() { return Usings; }
     
-    static void add_alias(const QCString & a, const QCString & s) {
+    static void add_alias(const QByteArray & a, const QByteArray & s) {
       Aliases.replace(a, s);
     }
     static void clear_aliases() { Aliases.clear(); }
     
-    static QString namespacify(QCString s, bool local);
-    static QCString current();
+    static QString namespacify(QByteArray s, bool local);
+    static QByteArray current();
     
   private:
     static QStringList Stack;
     static int AnonymousLevel;
     static QStringList Usings;
     static QValueList<QStringList> UsingScope;
-    static QMap<QCString,QCString> Aliases;
+    static QMap<QByteArray,QByteArray> Aliases;
 };
 
 // does not not inherit QDict to not allow to use directly
@@ -85,10 +85,10 @@ class NDict {
     NDict() : hasAnonymous(FALSE) {}
     NDict(unsigned n) : hasAnonymous(FALSE) { d.resize(n); }
   
-    void insert(const QCString & key, const T * item);
-    void replace(const QCString & key, const T * item);
-    bool remove(const QCString & key);
-    T * operator[] (const QCString & key) const;
+    void insert(const QByteArray & key, const T * item);
+    void replace(const QByteArray & key, const T * item);
+    bool remove(const QByteArray & key);
+    T * operator[] (const QByteArray & key) const;
       
   private:
     bool hasAnonymous;
@@ -96,24 +96,24 @@ class NDict {
 };
 
 template<class T>
-void NDict<T>::insert(const QCString & key, const T * item) {
+void NDict<T>::insert(const QByteArray & key, const T * item) {
   hasAnonymous |= Namespace::underAnonymous();
   d.insert(Namespace::namespacify(key, Namespace::underAnonymous()), item);
 }
 
 template<class T>
-void NDict<T>::replace(const QCString & key, const T * item) {
+void NDict<T>::replace(const QByteArray & key, const T * item) {
   hasAnonymous |= Namespace::underAnonymous();
   d.replace(Namespace::namespacify(key, Namespace::underAnonymous()), item);
 }
 
 template<class T>
-bool NDict<T>::remove(const QCString & key) {
+bool NDict<T>::remove(const QByteArray & key) {
   return d.remove(Namespace::namespacify(key, Namespace::underAnonymous()));
 }
 
 template<class T>
-T * NDict<T>::operator[] (const QCString & key) const {
+T * NDict<T>::operator[] (const QByteArray & key) const {
   QString k = Namespace::namespacify(key, FALSE);
   T * r = d[k];
   

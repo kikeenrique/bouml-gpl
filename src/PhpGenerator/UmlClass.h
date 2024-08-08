@@ -26,12 +26,12 @@
 #ifndef UMLCLASS_H
 #define UMLCLASS_H
 
-#include <qptrlist.h>
+#include <qlist.h>
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"
 
-class QTextOStream;
+class QTextStream;
 
 class UmlPackage;
 class UmlClass;
@@ -41,21 +41,21 @@ class UmlClass : public UmlBaseClass {
     bool managed;
     
   public:
-    UmlClass(void * id, const QCString & n)
+    UmlClass(void * id, const QByteArray & n)
       : UmlBaseClass(id, n), managed(FALSE) {};
   
-    QCString php_stereotype();
-    void generate(QTextOStream &, QCString indent);
+    QByteArray php_stereotype();
+    void generate(QTextStream &, QByteArray indent);
     
     virtual void generate();
-    virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
-			  QCString indent, int & enum_item_rank); 
-    void generate_require_onces(QTextOStream & f, QCString & made);
-    void generate_require_onces(QTextOStream & f, QCString & made, UmlArtifact *);
+    virtual void generate(QTextStream & f, const QByteArray & cl_stereotype,
+			  QByteArray indent, int & enum_item_rank); 
+    void generate_require_onces(QTextStream & f, QByteArray & made);
+    void generate_require_onces(QTextStream & f, QByteArray & made, UmlArtifact *);
     UmlArtifact * assocArtifact();
     
-    void write(QTextOStream &);
-    static void write(QTextOStream &, const UmlTypeSpec &);
+    void write(QTextStream &);
+    static void write(QTextStream &, const UmlTypeSpec &);
 };
 
 #endif

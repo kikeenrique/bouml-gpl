@@ -28,8 +28,8 @@
 #include "UmlActualParameter.h"
 #include "UmlClass.h"
 
-bool UmlActualParameter::generate(QTextOStream & f_h, BooL & need_space) const {
-  QCString s = value().toString();
+bool UmlActualParameter::generate(QTextStream & f_h, BooL & need_space) const {
+  QByteArray s = value().toString();
   
   if (s.isEmpty()) {
     if (rank() == 0)

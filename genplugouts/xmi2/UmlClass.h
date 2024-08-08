@@ -16,7 +16,7 @@ class UmlRelation;
 
 class UmlClass : public UmlBaseClass {
   public:
-    UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n), _assoc(0) {};
+    UmlClass(void * id, const QByteArray & n) : UmlBaseClass(id, n), _assoc(0) {};
 
     virtual void write(FileOut & out);
 
@@ -34,7 +34,7 @@ class UmlClass : public UmlBaseClass {
     UmlClass * set_assoc(UmlRelation * rel);
 
     //  the class is a stereotype, computes the list of extended meta classes
-    void get_extended(QValueList<QCString> & r);
+    void get_extended(QValueList<QByteArray> & r);
 
 
   protected:

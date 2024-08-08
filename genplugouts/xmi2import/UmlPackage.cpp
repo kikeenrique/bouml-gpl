@@ -57,27 +57,27 @@ void UmlPackage::import(QString path) {
       init();
       importHeader(in);
       
-      UmlCom::trace(QCString("<br><font face=helvetica>xmi import done<br><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(numberOf() - 1) + QCString(" packages </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlUseCase::numberOf()) + QCString(" use cases </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlClass::numberOf()) + QCString(" classes </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlActivity::numberOf()) + QCString(" activities </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlState::numberOf()) + " states </font><br>" +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlComponent::numberOf()) + QCString(" components </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlArtifact::numberOf()) + QCString(" artifacts </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlNode::numberOf()) + QCString(" deployment nodes </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlPackage::numberOfProfile()) + QCString(" profiles </font><br>") +
-		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlClass::numberOfStereotype()) + QCString(" stereotypes </font><br><br>"));
+      UmlCom::trace(QByteArray("<br><font face=helvetica>xmi import done<br><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(numberOf() - 1) + QByteArray(" packages </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlUseCase::numberOf()) + QByteArray(" use cases </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlClass::numberOf()) + QByteArray(" classes </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlActivity::numberOf()) + QByteArray(" activities </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlState::numberOf()) + " states </font><br>" +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlComponent::numberOf()) + QByteArray(" components </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlArtifact::numberOf()) + QByteArray(" artifacts </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlNode::numberOf()) + QByteArray(" deployment nodes </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlPackage::numberOfProfile()) + QByteArray(" profiles </font><br>") +
+		    QByteArray("<font face=helvetica> ") +
+		    QByteArray().setNum(UmlClass::numberOfStereotype()) + QByteArray(" stereotypes </font><br><br>"));
       
       if (manual)
 	getProject()->set_childrenVisible(TRUE);
@@ -101,7 +101,7 @@ void UmlPackage::importHeader(FileIn & in) {
   (void) in.read();	// update tk
   
   if (tk.what() == "xmi:xmi") {
-    QCString ver = tk.valueOf("xmi:version");
+    QByteArray ver = tk.valueOf("xmi:version");
 
     if (ver.isEmpty())
       UmlCom::trace("warning : unknown xmi version<br><br>");
@@ -115,8 +115,8 @@ void UmlPackage::importHeader(FileIn & in) {
       UmlCom::trace("xmi file produced under <b>Eclipse</b><br><br>");
 
     // read all before stereotype use
-    QCString prof_st;
-    QValueList<QCString> base_v;
+    QByteArray prof_st;
+    QValueList<QByteArray> base_v;
     
     while ((void) in.read(), !tk.close("xmi:xmi")) {
       if (UmlClass::isAppliedStereotype(tk, prof_st, base_v))
@@ -141,7 +141,7 @@ void UmlPackage::importHeader(FileIn & in) {
     // Borland Together 2006 for Eclipse
     // Visual Paradigm for UML 6.1
     // RSA Eclipse (profile)
-    QCString ver = tk.valueOf("xmi:version");
+    QByteArray ver = tk.valueOf("xmi:version");
 
     if (ver.isEmpty())
       UmlCom::trace("warning : unknown xmi version<br><br>");
@@ -200,7 +200,7 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
   while (where->kind() != aPackage)
     where = where->parent();
     
-  QCString s = token.valueOf("name");
+  QByteArray s = token.valueOf("name");
   
   if (s.isEmpty()) {
     static unsigned n = 0;
@@ -235,7 +235,7 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
     pack->addItem(s, in);
     
     if (! token.closed()) {
-      QCString k = token.what();
+      QByteArray k = token.what();
       const char * kstr = k;
       
       if (profile) {
@@ -272,12 +272,12 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
 void UmlPackage::appliedProfile(FileIn & in, Token & token, UmlItem *)
 {
   if (! token.closed()) {
-    QCString k = token.what();
+    QByteArray k = token.what();
     const char * kstr = k;
     
     while (in.read(), !token.close(kstr)) {
       if (token.what() == "appliedprofile") {
-	QCString s = token.valueOf("href");
+	QByteArray s = token.valueOf("href");
 	
 	importProfile(in, s);
       }
@@ -319,16 +319,16 @@ void UmlPackage::init()
 }
 
 void UmlPackage::applyStereotype(FileIn & in, Token & token) {
-  QCString prof_st;
-  QValueList<QCString> base_v;
-  QCString s;
+  QByteArray prof_st;
+  QValueList<QByteArray> base_v;
+  QByteArray s;
   
   if (UmlClass::isAppliedStereotype(token, prof_st, base_v)) {
-    QCString s;
-    QValueList<QCString>::Iterator it_ext;
+    QByteArray s;
+    QValueList<QByteArray>::Iterator it_ext;
     
     for (it_ext = base_v.begin(); it_ext != base_v.end(); ++it_ext) {
-      QCString s2;
+      QByteArray s2;
       
       if (token.valueOf(*it_ext, s2)) {
 	if (s.isEmpty())
@@ -351,11 +351,11 @@ void UmlPackage::applyStereotype(FileIn & in, Token & token) {
 	elt->set_Stereotype(prof_st);
 	elt->UmlItem::applyStereotype();	// set properties
 	
-	QDict<QCString> props = elt->properties();
-	QDictIterator<QCString> it(props);
+	QDict<QByteArray> props = elt->properties();
+	QDictIterator<QByteArray> it(props);
 	
-	while (it.current()) {
-	  QCString k = it.currentKey().latin1();
+	while ((*it)) {
+	  QByteArray k = it.currentKey().latin1();
 	  
 	  if (token.valueOf(k.mid(k.findRev(':') + 1).lower(), s))
 	    elt->set_PropertyValue(k, s);
@@ -373,14 +373,14 @@ void UmlPackage::applyStereotype(FileIn & in, Token & token) {
 
 }
 
-UmlPackage * UmlPackage::importProfile(FileIn & in, QCString href)
+UmlPackage * UmlPackage::importProfile(FileIn & in, QByteArray href)
 {
   if (!href.isEmpty() && (href.left(5) != "http:") && (href.left(8) != "pathmap:")) {
     int index = href.find('#');
     
     if (index != -1) {
-      QCString id = href.mid(index + 1);
-      QMap<QCString, UmlItem *>::Iterator it = All.find(id);
+      QByteArray id = href.mid(index + 1);
+      QMap<QByteArray, UmlItem *>::Iterator it = All.find(id);
       
       if (it == All.end()) {
 	UmlPackage * pf = getProject()->findProfile(id);
@@ -391,7 +391,7 @@ UmlPackage * UmlPackage::importProfile(FileIn & in, QCString href)
 	  QString fn = d.absFilePath(href.left(index));
 	  
 	  if (QFile::exists(fn)) {
-	    QCString cmd = qApp->argv()[0] + QCString(" ") + QCString(fn);
+	    QByteArray cmd = qApp->argv()[0] + QByteArray(" ") + QByteArray(fn);
 	    int pid = UmlCom::targetItem()->apply(cmd);
 	    
 	    while (isToolRunning(pid)) {
@@ -427,17 +427,17 @@ UmlPackage * UmlPackage::importProfile(FileIn & in, QCString href)
 
 void UmlPackage::packageImport(FileIn & in, Token & tk) {
   if (! tk.closed()) {
-    QCString id = tk.xmiId();
-    QCString k = tk.what();
+    QByteArray id = tk.xmiId();
+    QByteArray k = tk.what();
     const char * kstr = k;
     
     while (in.read(), !tk.close(kstr)) {
       if (tk.what() == "importedpackage") {
 	if (tk.xmiType() == "uml:Model") {
-	  QCString v;
+	  QByteArray v;
 	  
 	  if (propertyValue("metamodelReference", v) && (v == id)) {
-	    QCString href = tk.valueOf("href");
+	    QByteArray href = tk.valueOf("href");
 	    int index = href.find('#');
 	    
 	    set_PropertyValue("metamodelReference",
@@ -446,11 +446,11 @@ void UmlPackage::packageImport(FileIn & in, Token & tk) {
 	  }
 	}
 	else if (tk.xmiType() == "uml:Profile") {
-	  QCString s = tk.xmiIdref();
+	  QByteArray s = tk.xmiIdref();
 	  UmlPackage * pf = 0;
 	  
 	  if (!s.isEmpty()) {
-	    QMap<QCString, UmlItem *>::Iterator it = All.find(s);
+	    QMap<QByteArray, UmlItem *>::Iterator it = All.find(s);
 	    
 	    if (it == All.end())
 	      UnresolvedRelation::add(4, this->id(), s, "", "");
@@ -469,10 +469,10 @@ void UmlPackage::packageImport(FileIn & in, Token & tk) {
 	}
       }
       else if (tk.what() == "importedelement") {
-	QCString v;
+	QByteArray v;
 	  
 	if (propertyValue("metaclassReference", v) && (v == id)) {
-	  QCString href = tk.valueOf("href");
+	  QByteArray href = tk.valueOf("href");
 	  int index = href.find('#');
 	    
 	  set_PropertyValue("metaclassReference",
@@ -502,9 +502,9 @@ void UmlPackage::solveRefs() {
 
 }
 
-UmlPackage * UmlPackage::findProfile(QCString xmiId) {
+UmlPackage * UmlPackage::findProfile(QByteArray xmiId) {
   if (stereotype() == "profile") {
-    QCString id;
+    QByteArray id;
     
     if (propertyValue("xmiId", id) && (id == xmiId))
       return this;

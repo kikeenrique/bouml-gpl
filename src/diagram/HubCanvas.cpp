@@ -27,9 +27,11 @@
 
 
 
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qcursor.h>
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QTextStream>
 
 #include "HubCanvas.h"
 #include "ArrowCanvas.h"
@@ -39,150 +41,131 @@
 #include "MenuTitle.h"
 #include "translate.h"
 
-HubCanvas::HubCanvas (UmlCanvas * canvas, int x, int y, int id)
-    : DiagramCanvas (0, canvas, x, y, -HUB_SIZE, -HUB_SIZE, id)
-{
-    browser_node = canvas->browser_diagram();
+HubCanvas::HubCanvas(UmlCanvas * canvas, int x, int y, int id)
+    : DiagramCanvas(0, canvas, x, y, -HUB_SIZE, -HUB_SIZE, id) {
+  browser_node = canvas->browser_diagram();
 }
 
-HubCanvas::~HubCanvas()
-{
+HubCanvas::~HubCanvas() {
 }
 
-void HubCanvas::delete_available (BooL &, BooL & out_model) const
-{
-    out_model |= TRUE;
+void HubCanvas::delete_available(BooL &, BooL & out_model) const {
+  out_model |= TRUE;
 }
 
-bool HubCanvas::alignable() const
-{
-    return TRUE;
+bool HubCanvas::alignable() const {
+  return TRUE;
 }
 
-bool HubCanvas::copyable() const
-{
-    return selected();
+bool HubCanvas::copyable() const {
+  return selected();
 }
 
-void HubCanvas::change_scale()
-{
-    // the size is not modified
-    QCanvasRectangle::setVisible (FALSE);
-    recenter();
-    QCanvasRectangle::setVisible (TRUE);
+void HubCanvas::change_scale() {
+  // the size is not modified
+  Q3CanvasRectangle::setVisible(FALSE);
+  recenter();
+  Q3CanvasRectangle::setVisible(TRUE);
 }
 
-void HubCanvas::draw (QPainter & p)
-{
-    if (! visible()) {
-        return;
-    }
+void HubCanvas::draw(QPainter & p) {
+  if (! visible()) return;
 
-    QRect r = rect();
+  QRect r = rect();
 
-    p.drawRect (r);
+  p.drawRect(r);
 
-    FILE * fp = svg();
+  FILE * fp = svg();
 
-    if (fp != 0)
-        fprintf (fp, "<g>\n"
-                 "\t<rect fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
-                 " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n"
-                 "</g>\n",
-                 r.left(), r.top(), r.width() - 1, r.height() - 1);
+  if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<rect fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n"
+	    "</g>\n",
+	    r.left(), r.top(), r.width() - 1, r.height() - 1);
 
-    if (selected()) {
-        show_mark (p, r);
-    }
+  if (selected())
+    show_mark(p, r);
 }
 
-UmlCode HubCanvas::type() const
-{
-    return UmlHub;
+UmlCode HubCanvas::type() const {
+  return UmlHub;
 }
 
-void HubCanvas::open()
-{
+void HubCanvas::open() {
 }
 
-void HubCanvas::menu (const QPoint&)
-{
-    QPopupMenu m;
+void HubCanvas::menu(const QPoint&) {
+  Q3PopupMenu m;
 
-    m.insertItem (new MenuTitle (TR ("Network connexion"), m.font()), -1);
-    m.insertSeparator();
-    m.insertItem (TR ("Remove from diagram"), 0);
+  m.insertItem(new MenuTitle(TR("Network connexion"), m.font()), -1);
+  m.insertSeparator();
+  m.insertItem(TR("Remove from diagram"), 0);
 
-    switch (m.exec (QCursor::pos())) {
-        case 0:
-            delete_it();
-            break;
-        default:
-            return;
-    }
+  switch (m.exec(QCursor::pos())) {
+  case 0:
+    delete_it();
+    break;
+  default:
+    return;
+  }
 
-    package_modified();
+  package_modified();
 }
 
-QString HubCanvas::may_start (UmlCode & l) const
-{
-    switch (l) {
-        case UmlAssociation:
-        case UmlAnchor:
-            return 0;
-        default:
-            return TR ("illegal");
-    }
+QString HubCanvas::may_start(UmlCode & l) const {
+  switch (l) {
+  case UmlAssociation:
+  case UmlAnchor:
+    return 0;
+  default:
+    return TR("illegal");
+  }
 }
 
-QString HubCanvas::may_connect (UmlCode & l, const DiagramItem * dest) const
-{
-    if (l == UmlAnchor) {
-        return dest->may_start (l);
-    }
+QString HubCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if (l == UmlAnchor)
+    return dest->may_start(l);
 
-    switch (dest->type()) {
-        case UmlDeploymentNode:
-        case UmlHub:
-            return (l == UmlAssociation) ? 0 : TR ("illegal");
-        default:
-            return TR ("illegal");
-    }
+  switch (dest->type()) {
+  case UmlDeploymentNode:
+  case UmlHub:
+    return (l == UmlAssociation) ? QString() : TR("illegal");
+  default:
+    return TR("illegal");
+  }
 }
 
-void HubCanvas::save (QTextStream & st, bool ref, QString &) const
-{
-    if (ref) {
-        st << "hubcanvas_ref " << get_ident();
-    } else {
-        nl_indent (st);
-        st << "hubcanvas " << get_ident();
-        save_xyz (st, this, " xyz");
-    }
+void HubCanvas::save(QTextStream & st, bool ref, QString &) const {
+  if (ref)
+    st << "hubcanvas_ref " << get_ident();
+  else {
+    nl_indent(st);
+    st << "hubcanvas " << get_ident();
+    save_xyz(st, this, " xyz");
+  }
 }
 
-HubCanvas * HubCanvas::read (char * & st, UmlCanvas * canvas,
-                             char * k)
+HubCanvas * HubCanvas::read(char * & st, UmlCanvas * canvas,
+			    char * k)
 {
-    if (!strcmp (k, "hubcanvas_ref")) {
-        return ( (HubCanvas *) dict_get (read_id (st), "hubcanvas", canvas));
-    }
-    if (strcmp (k, "hubcanvas")) {
-        return 0;
-    }
+  if (!strcmp(k, "hubcanvas_ref"))
+    return ((HubCanvas *) dict_get(read_id(st), "hubcanvas", canvas));
+  if (strcmp(k, "hubcanvas"))
+    return 0;
 
-    int id = read_id (st);
+  int id = read_id(st);
 
-    read_keyword (st, "xyz");
+  read_keyword(st, "xyz");
 
-    int x = (int) read_double (st);
+  int x = (int) read_double(st);
 
-    HubCanvas * result =
-        new HubCanvas (canvas, x, (int) read_double (st), id);
+  HubCanvas * result =
+    new HubCanvas(canvas, x, (int) read_double(st), id);
 
-    result->setZ (read_double (st));
-    result->show();
+  result->setZ(read_double(st));
+  result->show();
 
-    return result;
+  return result;
 }
 

@@ -13,7 +13,7 @@ class Uc {
     
     virtual UmlItem * item() = 0;
 
-    virtual void readObject(File & f, QCString s) = 0;
+    virtual void readObject(File & f, QByteArray s) = 0;
 
     void import(File & f);
 

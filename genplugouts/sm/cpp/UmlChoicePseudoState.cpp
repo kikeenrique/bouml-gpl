@@ -5,7 +5,7 @@
 
 #include "UmlTransition.h"
 
-void UmlChoicePseudoState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent) {
+void UmlChoicePseudoState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QByteArray & body, QByteArray indent) {
   const QVector<UmlItem> ch = children();
   QList<UmlTransition> trs;
   unsigned index;

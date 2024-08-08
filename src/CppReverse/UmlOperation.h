@@ -36,25 +36,25 @@ class Class;
 
 class UmlOperation : public UmlBaseOperation {
   public:
-    UmlOperation(void * id, const QCString & n);
+    UmlOperation(void * id, const QByteArray & n);
     virtual ~UmlOperation();
   
-    static bool new_one(Class * cl, const QCString & name,
+    static bool new_one(Class * cl, const QByteArray & name,
 			const QValueList<FormalParameterList> & tmplt,
-			QCString type, const QCString & modifier,
-			const QCString & pretype, aVisibility visibility,
+			QByteArray type, const QByteArray & modifier,
+			const QByteArray & pretype, aVisibility visibility,
 			bool inlinep, bool virtualp, bool staticp, bool constp,
 			bool volatilep, bool typenamep,	bool explicitp,
-			bool friendp, QCString friend_template,
-			QCString comment, QCString description, bool pfunc
+			bool friendp, QByteArray friend_template,
+			QByteArray comment, QByteArray description, bool pfunc
 #ifdef ROUNDTRIP
 			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
 			);
-    static void reverse_definition(Package * pack, QCString name, QCString type,
+    static void reverse_definition(Package * pack, QByteArray name, QByteArray type,
 				   QValueList<FormalParameterList> & tmplt,
-				   bool inlinep, const QCString & comment,
-				   const QCString & description);
+				   bool inlinep, const QByteArray & comment,
+				   const QByteArray & description);
 
 #ifdef REVERSE
     virtual bool need_source();
@@ -64,45 +64,45 @@ class UmlOperation : public UmlBaseOperation {
 #endif
   
     static void skip_body(int level = 0);
-    static void skip_expr(QCString end, bool allow_templ = FALSE);
-    static bool pfunc(BooL & func, QCString & name, QCString & type,
+    static void skip_expr(QByteArray end, bool allow_templ = FALSE);
+    static bool pfunc(BooL & func, QByteArray & name, QByteArray & type,
 		      const char * namespec);
   private:
 #ifdef ROUNDTRIP
-    static QPtrDict<QCString> DefNotYetSet;
+    static QPtrDict<QByteArray> DefNotYetSet;
 #endif
     static NDict< QList<UmlOperation> > friends;
     FormalParameterList * formals;
-    QCString def0;	// for template operations
+    QByteArray def0;	// for template operations
   
     static bool read_param(ClassContainer * container, unsigned rank, 
-			   UmlParameter & param, QCString & decl,
+			   UmlParameter & param, QByteArray & decl,
 			   const QValueList<FormalParameterList> & tmplt,
 			   BooL & on_error, bool add_defaultvalue);
     static void friend_operations(QList<UmlOperation> & candidates,
 				  const QValueList<FormalParameterList> & tmplt,
-				  const QCString & name);
+				  const QByteArray & name);
     static bool operations(QList<UmlOperation> & candidates, UmlClass * cl,
 			   const QValueList<FormalParameterList> & tmplt,
 			   const FormalParameterList *& oper_tmplt,
-			   const QCString & name);
+			   const QByteArray & name);
     static bool read_throw_elt(ClassContainer * container,
 			       UmlTypeSpec & typespec,
 			       const QValueList<FormalParameterList> & tmplts);
     bool reverse_if_def(Package * pack,
 			QValueList<FormalParameterList> & tmplts,
 			const FormalParameterList * oper_tmplt,
-			bool inlinep, bool pfct, const QCString & comment,
-			const QCString & description, BooL & on_error,
-			unsigned & nargs, QCString oper_name);
+			bool inlinep, bool pfct, const QByteArray & comment,
+			const QByteArray & description, BooL & on_error,
+			unsigned & nargs, QByteArray oper_name);
 
     void update_param_names(QValueList<UmlParameter> & params);
 #ifdef ROUNDTRIP
     void update_params(Class * cl, QValueList<UmlParameter> & params);
     void update_exceptions(Class * cl, const QValueList<UmlTypeSpec> & exceptions);
     
-    static void clean_body(QCString & body);
-    static UmlOperation * already_exist(Class * container, const QCString & name,
+    static void clean_body(QByteArray & body);
+    static UmlOperation * already_exist(Class * container, const QByteArray & name,
 					QValueList<UmlParameter> & params,
 					bool empty_decl);
 #endif

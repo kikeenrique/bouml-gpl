@@ -12,12 +12,12 @@ class UmlState;
 class UmlRegion : public UmlBaseRegion, public UmlStateItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlRegion(void * id, const QCString & s) : UmlBaseRegion(id, s) {
+     UmlRegion(void * id, const QByteArray & s) : UmlBaseRegion(id, s) {
     }
 
     //  initialization before generation
     
-    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
+    virtual void init(UmlClass * mother, QByteArray path, QByteArray pretty_path, UmlState * state);
 
 };
 

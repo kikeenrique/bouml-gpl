@@ -6,11 +6,11 @@
 
 class TransitionBehavior {
   public:
-    QCString trigger;
+    QByteArray trigger;
 
-    QCString guard;
+    QByteArray guard;
 
-    QCString activity;
+    QByteArray activity;
 
     void read();
 

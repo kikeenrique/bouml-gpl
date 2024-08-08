@@ -27,10 +27,10 @@
 
 #include "UmlExtraClassMember.h"
 
-void UmlExtraClassMember::generate(QTextOStream & f, const QCString &,
-				   QCString indent, BooL & indent_needed,
-				   int &, const QCString &) {
-  const QCString & d = pythonDecl();
+void UmlExtraClassMember::generate(QTextStream & f, const QByteArray &,
+				   QByteArray indent, BooL & indent_needed,
+				   int &, const QByteArray &) {
+  const QByteArray & d = pythonDecl();
   
   if (! d.isEmpty()) {
     if (indent_needed)

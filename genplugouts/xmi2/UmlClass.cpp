@@ -5,7 +5,7 @@
 #include "UmlRelation.h"
 #include "UmlCom.h"
 void UmlClass::write(FileOut & out) {
-  QCString st = stereotype();
+  QByteArray st = stereotype();
   
   if (st == "metaclass")
     return;
@@ -98,7 +98,7 @@ void UmlClass::write(FileOut & out) {
     ch[i]->write(out);
   
   if (is_stereotype) {
-    QCString path;
+    QByteArray path;
     
     if (propertyValue("stereotypeIconPath", path) && !path.isEmpty()) {
       out.indent();
@@ -207,7 +207,7 @@ UmlClass * UmlClass::set_assoc(UmlRelation * rel) {
     return this;
   }
   else {
-    QCString msg = "warning : class '" +  name() +
+    QByteArray msg = "warning : class '" +  name() +
       "' is an association class associated with several relations<br>";
     
     UmlCom::trace(msg);
@@ -215,7 +215,7 @@ UmlClass * UmlClass::set_assoc(UmlRelation * rel) {
   }
 }
 
-void UmlClass::get_extended(QValueList<QCString> & r) {
+void UmlClass::get_extended(QValueList<QByteArray> & r) {
   r.clear();
   
   const QVector<UmlItem> ch = children();

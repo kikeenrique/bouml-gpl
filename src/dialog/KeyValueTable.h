@@ -26,25 +26,24 @@
 #ifndef KEYVALUETABLE_H
 #define KEYVALUETABLE_H
 
-#include <qdict.h>
+#include <q3dict.h>
 #include "StringTable.h"
 
 class HaveKeyValueData;
 
-class KeyValuesTable : public StringTable
-{
-    public:
-        KeyValuesTable (HaveKeyValueData * h, QWidget * parent, bool visit);
+class KeyValuesTable : public StringTable {
+  public:
+    KeyValuesTable(HaveKeyValueData * h, QWidget * parent, bool visit);
+  
+    virtual void init_row(int index);
+				
+    bool check_unique();
+    void update(HaveKeyValueData * h);
+    bool get_value(const char * key, QString & value);
+    void remove(const char * key);
 
-        virtual void init_row (int index);
-
-        bool check_unique();
-        void update (HaveKeyValueData * h);
-        bool get_value (const char * key, QString & value);
-        void remove (const char * key);
-
-    private:
-        QDict<QStringList> props;
+  private:
+    Q3Dict<QStringList> props;
 };
 
 #endif

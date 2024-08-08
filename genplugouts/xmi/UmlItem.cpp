@@ -89,10 +89,10 @@ void UmlItem::write_description_properties(FileOut & out) {
       out << "</UML:ModelElement.taggedValue>\n";
     }
       
-    const QDict<QCString> up = properties();    
-    QDictIterator<QCString> it(up);
+    const QDict<QByteArray> up = properties();    
+    QDictIterator<QByteArray> it(up);
     
-    while (it.current()) {
+    while ((*it)) {
       out.indent();
       out << "<UML:ModelElement.taggedValue>\n";
       out.indent();
@@ -100,7 +100,7 @@ void UmlItem::write_description_properties(FileOut & out) {
 	out << "\t<UML:TaggedValue tag=\"";
 	out.quote(it.currentKey());
 	out << "\" value=\"";
-	out.quote(*(it.current()));
+	out.quote(*((*it)));
 	out << "\"/>\n";
       }
       else {
@@ -109,7 +109,7 @@ void UmlItem::write_description_properties(FileOut & out) {
 	out << "</UML:TaggedValue.tag>\n";
 	out.indent();
 	out << "\t<UML:TaggedValue.value>";
-	out.quote(*(it.current()));
+	out.quote(*((*it)));
 	out << "</UML:TaggedValue.value>\n";
       }
       out.indent();

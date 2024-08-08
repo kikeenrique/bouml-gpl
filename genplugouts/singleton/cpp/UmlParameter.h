@@ -13,9 +13,9 @@ struct UmlParameter {
 
     UmlTypeSpec type;
 
-    QCString name;
+    QByteArray name;
 
-    QCString default_value;
+    QByteArray default_value;
 
 };
 

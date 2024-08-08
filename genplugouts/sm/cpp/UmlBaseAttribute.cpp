@@ -24,7 +24,7 @@ bool UmlBaseAttribute::set_isReadOnly(bool y) {
   return set_it_(_read_only, y, setIsReadOnlyCmd);
 }
 
-const QCString & UmlBaseAttribute::defaultValue() {
+const QByteArray & UmlBaseAttribute::defaultValue() {
   read_if_needed_();
   
   return _default_value;
@@ -44,7 +44,7 @@ bool UmlBaseAttribute::set_Type(const UmlTypeSpec & t) {
   return set_it_(_type, t, setTypeCmd);
 }
 
-const QCString & UmlBaseAttribute::multiplicity() {
+const QByteArray & UmlBaseAttribute::multiplicity() {
   read_if_needed_();
   
   return _multiplicity;
@@ -112,7 +112,7 @@ bool UmlBaseAttribute::set_isJavaTransient(bool y) {
 #endif
 
 #ifdef WITHIDL
-QCString UmlBaseAttribute::idlCase() {
+QByteArray UmlBaseAttribute::idlCase() {
   read_if_needed_();
   
   return (_idl_case != 0) ? _idl_case->name() : _idl_explicit_case;

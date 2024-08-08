@@ -34,15 +34,15 @@
 
 class UmlClassMember : public UmlBaseClassMember {
   public:
-    UmlClassMember(void * id, const QCString & n)
+    UmlClassMember(void * id, const QByteArray & n)
       : UmlBaseClassMember(id, n) {};
   
-    virtual void generate_require_onces(QTextOStream & f, QCString & made);
+    virtual void generate_require_onces(QTextStream & f, QByteArray & made);
 	
-    void generate_visibility(QTextOStream & f);
+    void generate_visibility(QTextStream & f);
     
-    static void remove_comments(QCString & s);
-    static void remove_arrays(QCString & s);
+    static void remove_comments(QByteArray & s);
+    static void remove_arrays(QByteArray & s);
 };
 
 #endif

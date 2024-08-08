@@ -41,7 +41,7 @@ class BrowserNode : public TreeItem {
     virtual ~BrowserNode() {};	// to avoid compiler warning
   
     virtual bool isa_package() const = 0;
-    virtual bool find_type(QCString type, UmlTypeSpec & typespec) = 0;
+    virtual bool find_type(QByteArray type, UmlTypeSpec & typespec) = 0;
     
 #ifndef REVERSE
     BrowserNode(BrowserView * parent, const char * n);
@@ -62,9 +62,9 @@ class BrowserNode : public TreeItem {
 
 // a sortable list of BrowserNode
 
-#include <qptrlist.h>
+#include <qlist.h>
 
-class BrowserNodeList : public QList<BrowserNode> {
+class BrowserNodeList : public QList<BrowserNode *> {
   public:
     void search(BrowserNode * bn, int k, const QString & s, bool cs);
     virtual int compareItems(QCollection::Item item1, QCollection::Item item2);

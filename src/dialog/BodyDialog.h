@@ -30,25 +30,24 @@
 
 #include "DialogUtil.h"
 
-class QTabDialog;
+class Q3TabDialog;
 class MultiLineEdit;
 
-class BodyDialog : public QDialog
-{
-        Q_OBJECT
-
-    protected:
-        MultiLineEdit * e;
-        QTabDialog * dlg;
-        post_edit f;
-        QList<BodyDialog> & eds;
-
-        static QSize previous_size;
-
-    public:
-        BodyDialog (QString t, QTabDialog * d, post_edit pf,
-                    EditType k, QString what, QList<BodyDialog> & edits);
-        virtual ~BodyDialog();
+class BodyDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    MultiLineEdit * e;
+    Q3TabDialog * dlg;
+    post_edit f;
+    QList<BodyDialog *> & eds;
+    
+    static QSize previous_size;
+  
+  public:
+    BodyDialog(QString t, Q3TabDialog * d, post_edit pf,
+	       EditType k, QString what, QList<BodyDialog *> & edits);
+    virtual ~BodyDialog();
 };
 
 #endif
